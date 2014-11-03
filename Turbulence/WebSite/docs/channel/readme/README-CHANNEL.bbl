@@ -1,0 +1,21 @@
+\begin{thebibliography}{1}
+
+\bibitem{Kim1987}
+J.~Kim, P.~Moin, and R.~Moser.
+\newblock Turbulence statistics in fully developed channel flow at low reynolds
+  number.
+\newblock {\em J. Fluid Mech.}, 177:133--166, 1987.
+
+\bibitem{Lee2013}
+M.~Lee, N.~Malaya, and R.~D. Moser.
+\newblock Petascale direct numerical simulation of turbulent channel flow on up
+  to 786k cores.
+\newblock Supercomputing (SC13), 2013.
+
+\bibitem{Orszag1971}
+S.~A. Orszag.
+\newblock On the elimination of aliasing in finite--difference schemes by
+  filtering high--wavenumber components.
+\newblock {\em J. Atmos. Sci.}, 28:1074--1074, 1971.
+
+\end{thebibliography}

@@ -1,0 +1,33 @@
+<ServerManagerConfiguration>
+  <ProxyGroup name="sources">
+   <SourceProxy name="vtkJHTDBReader" class="vtkJHTDBReader" label="JHTDB Reader">
+     <Documentation
+        long_help="Read data from the Johns Hopkins Turbulence Databases."
+        short_help="Read data from the JHTDB.">
+     </Documentation>
+     <IntVectorProperty name="Timestep" 
+         command="SetTimestep" 
+         number_of_elements="1" 
+         default_values="0">
+     </IntVectorProperty>
+     <IntVectorProperty name="Extent" 
+         command="SetWholeExtent" 
+         number_of_elements="6" 
+         default_values="0 23 0 23 0 15">
+     </IntVectorProperty>
+     <IntVectorProperty
+         name="Field"
+         command="SetField"
+         number_of_elements="1"
+         default_values="0">
+        <EnumerationDomain name="enum">
+          <Entry value="0" text="Velocity"/>
+          <Entry value="1" text="Pressure"/>
+        </EnumerationDomain>
+        <Documentation>
+          Retrieve data for the selected field.
+        </Documentation>
+     </IntVectorProperty>
+   </SourceProxy>
+ </ProxyGroup>
+</ServerManagerConfiguration>

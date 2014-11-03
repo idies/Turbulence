@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{c252feb5-a946-4202-b1d4-9916a0590387};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CBE305D7-8868-4A9D-8885-5E67A8507C78}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>Turbulence</AssemblyName>
+    <RootNamespace>Turbulence</RootNamespace>
+    <PermissionLevel>3</PermissionLevel>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+    <ConnectionString>
+    </ConnectionString>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DeployCode>true</DeployCode>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants>
+    </DefineConstants>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DeployCode>false</DeployCode>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Debug\Turbulence.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisLogFile>bin\Release\Turbulence.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSetDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\\Rule Sets</CodeAnalysisRuleSetDirectories>
+    <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisRuleDirectories>;c:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildBinPath)\SqlServer.targets" />
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SciLib\Computations.cs" />
+    <Compile Include="SciLib\Filtering.cs" />
+    <Compile Include="SciLib\FiniteDiff.cs" />
+    <Compile Include="SciLib\LagInterpolation.cs" />
+    <Compile Include="SciLib\Particle.cs" />
+    <Compile Include="SciLib\TemporalInterpolation.cs" />
+    <Compile Include="SQLInterface\GetPDF.cs" />
+    <Compile Include="SQLInterface\GetThreshold.cs" />
+    <Compile Include="SQLInterface\FilteringJoinTableDataReader.cs" />
+    <Compile Include="SQLInterface\ExecuteBoxFilterWorker.cs" />
+    <Compile Include="SQLInterface\ExecuteGetPositionWorker.cs" />
+    <Compile Include="SQLInterface\GetDataCutout.cs" />
+    <Compile Include="SQLInterface\TempTableDataReader.cs" />
+    <Compile Include="SQLInterface\ExecuteParticleTrackingWorker.cs" />
+    <Compile Include="SQLInterface\ExecuteTurbulenceWorker.cs" />
+    <Compile Include="SQLInterface\ExecuteMHDWorker.cs" />
+    <Compile Include="SQLInterface\JoinTableDataReader.cs" />
+    <Compile Include="SQLInterface\TrackingJoinTableDataReader.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelQ.cs" />
+    <Compile Include="SQLInterface\workers\GetQ.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelCurl.cs" />
+    <Compile Include="SQLInterface\workers\GetCurl.cs" />
+    <Compile Include="SQLInterface\workers\GetSplinesWorker.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelLaplacian.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelGradient.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelHessian.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SQLInterface\workers\GetChannelVelocity.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelPressure.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelWorker.cs" />
+    <Compile Include="SQLInterface\workers\GetLaplacianOfGradient.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDBoxFilterGradient.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDBoxFilterSGS_SV.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDBoxFilterSGS.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDBoxFilter.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDBoxFilterSV.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDPressureHessian.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDHessian.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDLaplacian.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDPressureGradient.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDGradient.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDPressure.cs" />
+    <Compile Include="SQLInterface\workers\GetPositionWorker.cs" />
+    <Compile Include="SQLInterface\workers\GetMHDWorker.cs" />
+    <Compile Include="SQLInterface\workers\GetVelocityWorkerOld.cs" />
+    <Compile Include="SQLInterface\workers\GetPosition.cs" />
+    <Compile Include="SQLInterface\workers\GetPressureGradient.cs" />
+    <Compile Include="SQLInterface\workers\VelocityLaplacian.cs" />
+    <Compile Include="SQLInterface\workers\GetVelocityGradient.cs" />
+    <Compile Include="SQLInterface\workers\PressureHessian.cs" />
+    <Compile Include="SQLInterface\workers\SampleWorker.cs" />
+    <Compile Include="SQLInterface\workers\VelocityHessian.cs" />
+    <Compile Include="SQLInterface\workers\Worker.cs" />
+    <Compile Include="SQLInterface\MortonFunctions.cs" />
+    <Compile Include="SQLInterface\workers\GetVelocityWorker.cs" />
+    <Compile Include="SQLInterface\SQLUtility.cs" />
+    <Compile Include="TurbBatch\Atom.cs" />
+    <Compile Include="TurbBatch\BatchCounter.cs" />
+    <Compile Include="TurbBatch\BatchMeta.cs" />
+    <Compile Include="TurbBatch\BatchQuery.cs" />
+    <Compile Include="TurbBatch\BatchTools.cs" />
+    <Compile Include="TurbBatch\TimePlane.cs" />
+    <Compile Include="TurbLib\BarycentricWeights.cs" />
+    <Compile Include="TurbLib\BigArray.cs" />
+    <Compile Include="TurbLib\DataTypes.cs" />
+    <Compile Include="TurbLib\GridPoints.cs" />
+    <Compile Include="TurbLib\TurbulenceBlob.cs" />
+    <Compile Include="TurbLib\Morton3D.cs" />
+    <Compile Include="TurbLib\TurbDataTable.cs" />
+    <Compile Include="TurbLib\TurbulenceOptions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Test Scripts\Test.sql">
+      <SubType>Content</SubType>
+    </Content>
+  </ItemGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Folder Include="Properties\App_Data\" />
+    <Folder Include="SQL\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+</Project>

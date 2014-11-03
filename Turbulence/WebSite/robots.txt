@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /logs/
+Disallow: /webquery/
+Disallow: /download/
