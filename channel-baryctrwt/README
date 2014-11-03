@@ -1,0 +1,42 @@
+Date: 2013-11-04
+
+Written by:
+    Jason Graham <jgraha8@gmail.com>
+
+Contained here are the barycentric weights for the TDB channel flow
+database. The files "baryctrwt-x-<LAG>.dat" and "baryctrwt-z-<LAG>.dat" contain
+the interpolation weights for the x and z directions, respectively, where <LAG>
+is either lag4, lag6, or lag8. For the x and z directions a single set of
+weights are given for each Lagrangian interpolation method.
+
+The files "baryctrwt-y-<LAG>.dat" are column formatted files with the columns given
+as:
+    j   - cell index
+    j_o - offset index for calculating j_s near the boundaries
+    j_s - starting index for the stencil
+    j_e - ending index for the stencil
+    w   - weights (number of columns: q = j_e - j_s + 1)
+
+Also included are the differencing matrices for the first derivatives in the
+
+    baryctrwt-diffmat-x-r-1-<FD>.dat
+    baryctrwt-diffmat-z-r-1-<FD>.dat
+    baryctrwt-diffmat-y-r-1-<FD>.dat
+
+files where <FD> is either fd4, fd6, or fd8. The differencing matrices for the
+second derivatives are in the
+       
+    baryctrwt-diffmat-x-r-2-<FD>.dat
+    baryctrwt-diffmat-z-r-2-<FD>.dat
+    baryctrwt-diffmat-y-r-2-<FD>.dat
+
+files. The formatting for the differencing matrix files in the y direction is
+given as:
+    j   - grid point index
+    j_o - offset index for calculating j_s near the boundaries
+    j_s - starting index for the stencil
+    j_e - ending index for the stencil
+    D   - differencing matrix values (number of columns: q = j_e - j_s + 1)
+
+The program used to generate the files is also included and is called
+"channel_baryctrwt.c".

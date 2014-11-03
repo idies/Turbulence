@@ -1,0 +1,11 @@
+# Package files
+cachedata/*.cache
+authtoken.txt
+Turbmat*
+
+# Matlab autosave files
+*.m~
+
+# OS generated files
+.DS_Store
+Thumbs.db

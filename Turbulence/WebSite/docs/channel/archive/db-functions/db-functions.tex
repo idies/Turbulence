@@ -1,0 +1,154 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[latin1]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{fullpage}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{algorithmic}
+
+\author{Jason Graham, Kalin Kanov, Gregory Eyink, and Charles Meneveau}
+\title{Channel Flow Database Functions: interpolation and differentiation}
+\begin{document}
+\maketitle
+The channel flow database functions for the JHU Turbulence Database Cluster are discussed here. The functions discussed consist of spatial interpolation, spatial differentiation, and temporal interpolation. Other functionality such as spatial filtering and integration methods such as particle tracking will be add later.
+%
+\section{Spatial interpolation inside the database}\label{sec:interp}
+Spatial interpolation is applied using multivariate polynomial interpolation
+of the barycentric Lagrange form from Ref.~\cite{Berrut2004}. Using this
+approach, we are interested in interpolating the field $f$ at point
+$\bm{x}^\prime$. The point $\bm{x}^\prime$ is known to exist within the grid
+cell at location $(x_m,y_n,z_p)$ where $(m,n,p)$ are the cell indices. The cell
+indices are obtained for the $x$ and $z$ directions, which are uniformly
+distributed, according to
+\begin{align}
+  m &= \text{floor}( x^\prime / dx ) \\
+  p &= \text{floor}( z^\prime / dz ) \mbox{ .} \notag
+\end{align}
+In the $y$ direction the grid is formed by Marsden-Schoenberg collocation points
+which are not uniformly distributed. Along this direction we perform a search to obtain $n$ such that 
+\begin{align}
+  y_n  \leq y^\prime < y_{n+1} &\text{\hspace{1ex} if } y^\prime \leq 0 \\
+  y_{n-1} < y^\prime \leq y_n &\text{\hspace{1ex} if } y^\prime > 0 \notag
+\end{align}
+
+The cell indices are also assured to obey the following:
+\begin{align}
+  0 \leq m \leq N_x - 2 & \notag \\
+  0 \leq n \leq N_y/2 - 1 &\text{\hspace{1ex} if } y^\prime \leq 0 \\
+  N_y/2 \leq n \leq N_y - 1 &\text{\hspace{1ex} if } y^\prime > 0 \notag \\
+  0 \leq p \leq N_z - 2 &\notag
+\end{align}
+where $N_x$, $N_y$, and $N_z$ are the number of grid points along the $x$, $y$, and
+$z$ directions, respectively. In the case that $x^\prime = x_{N_x-1}$ the cell index set to be $m=N_x-2$; likewise for the $z$ direction.
+ 
+The interpolation stencil also contains $q$ points in each direction for an order $q$
+interpolant (with degree $q-1$). The resulting interpolated value is expressed as:
+\begin{equation}\label{eq:interp_poly}
+  f(\bm{x}^\prime) = \sum_{i=i_s}^{i_e}\sum_{j=j_s}^{j_e}\sum_{k=k_s}^{k_e}  l_x^{i}(x^\prime) l_y^{j}(y^\prime) l_z^{k}(z^\prime)f(x_{i}, y_{j}, z_{k})
+\end{equation}
+where the starting and ending indices are given as
+\begin{align}
+i_s &= m - \text{ceil}(q/2) + 1\notag\\
+i_e &= i_s + q - 1 \notag\\
+j_s &= 
+\begin{cases} 
+  n - \text{ceil}(q/2) + 1 + j_o &\mbox{if } n \leq N_y / 2 - 1 \\
+  n - \text{floor}(q/2) + j_o &\mbox{otherwise} 
+\end{cases} \\
+j_e &= j_s + q - 1 \notag\\
+k_s &= p - \text{ceil}(q/2) + 1 \notag\\
+k_e &= k_s + q - 1 \notag
+\end{align}
+and $j_o$ is the index offset for the $y$ direction depending on the distance from the top and bottom walls. The $\text{ceil}()$ function ensures that stencil remains symmetric about the interpolation point when $q$ is odd. In the case for $j_s$, the separate treatments for the top and bottom halves of the channel is done to ensure that the one-sided stencils remain symmetric with respect to the channel center. The value for $j_o$ may be evaluated based upon the $y$ cell index and the interpolation order as 
+\begin{equation}
+  j_o = 
+  \begin{cases} 
+    \text{max}(\text{ceil}(q/2)-n-1,0) &\mbox{if } n \leq N_y/2-1 \\
+    \text{min}(N_y - n - \text{ceil}(q/2),0) & \mbox{otherwise}  
+  \end{cases}	
+  \mbox{ .}
+\end{equation}
+
+The interpolation weights, $l_x$, $l_y$, and $l_z$, are given as
+\begin{equation}\label{eq:interp_poly_coefs}
+  l_\theta^\xi(\theta^\prime) = \frac{\frac{w_\xi}{\theta^\prime - \theta_\xi}}{\sum_{\eta=\xi_s}^{\xi_e} \frac{w_{\eta}}{\theta^\prime - \theta_\eta} }
+\end{equation}
+where $\theta$ may either be $x$, $y$, or $z$. The barycentric weights, $w_\xi$, in \eqref{eq:interp_poly_coefs} are given as
+\begin{equation}\label{eq:interp_bary_weight}
+  w_\xi = \frac{1}{\prod_{\eta=\xi_s,\eta\neq \xi}^{\xi_e} \theta_\xi - \theta_\eta}
+\end{equation}
+The weights may be computed by applying a recursive update procedure as in Ref.\cite{Berrut2004}. A slightly modified version of the algorithm in Ref.~\cite{Berrut2004}  is given below:
+\begin{algorithmic}
+  \FOR{$\xi=\xi_s$ to $\xi_e$}\STATE{$w_\xi = 1$}\ENDFOR
+  \FOR {$\xi = \xi_s +1$ to $\xi_e$}  
+  \FOR {$\eta = \xi_s$ to $\xi-1$} 
+  \STATE{
+    $w_\eta = (\theta_\eta - \theta_\xi) w_\eta$ \\
+    $w_\xi = (\theta_\xi - \theta_\eta) w_\xi$ 
+  }
+  \ENDFOR
+  \ENDFOR
+  \FOR{$\xi=\xi_s$ to $\xi_e$}\STATE{$w_\xi = 1/w_\xi$}\ENDFOR
+\end{algorithmic}
+
+To account for the periodic domain along the $x$ and $z$ directions we may adjust the $i$ and $k$ indices when referencing $f$ in \eqref{eq:interp_poly} such that
+\begin{equation}
+  f(\bm{x}^\prime) = \sum_{i=i_s}^{i_e}\sum_{j=j_s}^{j_e}\sum_{k=k_s}^{k_e}  l_x^{i}(x^\prime) l_y^{j}(y^\prime) l_z^{k}(z^\prime)f(x_{i\%Nx}, y_{j}, z_{k\%Nz})
+\end{equation}
+and $\%$ is the modulus operator. The indices for the interpolation coefficients will remain the same, however, we may use the fact that the grid points are uniformly spaced such that \eqref{eq:interp_poly_coefs} becomes
+\begin{equation}
+  l_\theta^\xi(\theta^\prime) = \frac{\frac{w_\xi}{\theta^\prime - \xi \Delta\theta}}{\sum_{\eta=\xi_s}^{\xi_e} \frac{w_{\eta}}{\theta^\prime - \eta \Delta\theta} }
+\end{equation}
+and similarly for the barycentric weights, \eqref{eq:interp_bary_weight} becomes
+\begin{equation}\label{eq:interp_bary_weight_periodic}
+  w_\xi = \frac{1}{\prod_{\eta=\xi_s,\eta\neq \xi}^{\xi_e} (\xi - \eta)\Delta\theta}
+\end{equation}
+for the $x$ and $z$ directions. The computation of the barycentric weights for the $x$ and $z$ directions may be carried out once (for a given interpolation order) for all grid points using \eqref{eq:interp_bary_weight_periodic}; for the $y$ direction the barycentric weights will have to be computed for each point using \eqref{eq:interp_bary_weight}.
+
+\section{Spatial differentiation inside the database}
+Spatial differentiation is performed using the barycentric method of the interpolating polynomial. In one dimension (assuming the $x$ direction; the same applies for the $y$ and $z$ directions), the interpolant for the field $f$ is given as
+\begin{equation}
+f(x) = \sum_{j=i_s}^{i_e} l^{j}_x(x) f(x_j) \text{ .}
+\end{equation}
+It follows that the $r^{th}$ derivative may be computed as
+\begin{equation}
+\frac{d^rf}{dx^r}(x) = \sum_{j=i_s}^{i_e} \frac{d^r l^{j}_x}{dx^r}(x) f(x_j) \text{ .}
+\end{equation}
+Within the database we compute the derivatives at the grid sites for the $FD4NoInt$, $FD6NoInt$, and $FD8NoInt$ differencing methods where no interpolation is performed. If a sample point is given that does not coincide with a grid point, the derivative at the \textit{nearest} grid point is computed and returned. For the $FD4Lag4$ method we compute the derivatives with the $FD4NoInt$ method (at the grid sites) and then these data are interpolated to the interpolation point using the $Lag4$ interpolation method presented in \S\ref{sec:interp}. 
+
+For evaluating derivatives at the grid sites we follow the method presented in Ref.~\cite{Berrut2004} such that
+\begin{equation}
+\frac{d^rf}{dx^r}(x_i) = \sum_{j=i_s}^{i_e} D^{(r)}_{x,ij} f(x_j) \text{ .}
+\end{equation}
+where $D^{(r)}_{x,ij} = \frac{d^r l^{j}_x}{dx^r}(x_i)$ is the differentiation matrix~\cite{Berrut2004}. The differentiation matrices for $r=1$ and $r=2$ are given, respectively, as
+\begin{align}
+D^{(1)}_{x,ij} &= \frac{w_j / w_i}{x_i - x_j} \\\label{eq:l_second_deriv}
+D^{(2)}_{x,ij} &= -2\frac{w_j / w_i}{x_i - x_j}\left[\sum_{k \neq i} \frac{w_k / w_i}{x_i - x_k} + \frac{1}{x_i-x_j}\right]
+\end{align}
+for $i \neq j$ and
+\begin{equation}\label{eq:l_i_eq_j}
+D^{(r)}_{x,jj} = -\sum_{i\neq j} D^{(r)}_{x,ji}
+\end{equation}
+when $i = j$ for all $r>0$. We note that in \eqref{eq:l_second_deriv} and \eqref{eq:l_i_eq_j} fixes have been applied to the respective equations presented in Ref.~\cite{Berrut2004}, i.e., (9.4) and (9.5). As with the interpolation schemes, the grid point locations for the uniformly distributed directions may be expressed as $\theta_\xi = \xi \Delta\theta$, where $\theta$ may either be $x$ or $z$. 
+
+For second order mixed derivatives (such as for the pressure Hessian) we compute the derivatives at the grid sites within the respective plane. When computing the mixed partials along $x$ and $y$ we have
+\begin{equation}
+\frac{d^2f}{dxy}(x_m,y_n) = \sum_{i=i_s}^{i_e} \sum_{j=j_s}^{j_e} D^{(1)}_{x,mj} D^{(1)}_{y,nj} f(x_i,y_j) \textbf{ .}
+\end{equation}
+Similar formulae exist for mixed partials along $x$ and $z$, and $y$ and $z$. 
+
+The differencing stencil size depends on the required order of the differencing method and the derivative order, $r$. In general, the resulting stencil size may be determined as
+\begin{equation}
+q = 
+\begin{cases}
+  q^\prime + r & \text{ for non--symmetric grid distribution about evaluation point} \\
+  q^\prime +r-(r+1)\%2 & \text{ for symmetric grid distribution about evalutation point} 
+\end{cases}
+\end{equation}
+where $q^\prime$ is the order of the differencing method. For example, to obtain a $6^{th}$ order differencing method for the first derivative of $f$ along the $x$, $y$, and $z$ directions, a value of $q=7$ is required. For the second derivative, the $x$ or $z$ directions require a value of $q=7$ where the $y$ direction requires $q=8$ to acheive a $6^{th}$ order differencing method.
+
+\bibliographystyle{plain}
+\bibliography{db-functions}
+\end{document}
