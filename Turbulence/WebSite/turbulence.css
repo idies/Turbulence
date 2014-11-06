@@ -168,3 +168,16 @@ body
     font: normal normal 10px Arial, Tahoma, Helvetica, sans-serif;
 
 }
+iframe {
+    display: block;
+    width: 560px;
+    margin: 0 auto;
+    border: 0;
+}
+video {
+    display: block;
+    width: 560px;
+   
+    margin: 0 auto;
+    border: 0;
+}

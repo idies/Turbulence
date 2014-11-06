@@ -20,16 +20,16 @@
 <div class="content">
 <div id="main">
 <div class="transparency"></div>
-<div id="title">
+<div id="title"><br />
 <p >Johns Hopkins Turbulence Databases</p>
-<p >turbulence.pha.jhu.edu</p>
+
 </div>
 <!--#include file="navbar.htm" -->
 
 <div id="centercolumn-wide">
       
       <h2 class="titletext">JHTDB Cutout Service</h2>
-    <h2 class="subtitle"><a href="http://turbulence.pha.jhu.edu/">turbulence.pha.jhu.edu</a></h2>
+     
     <form id="cutout_query" runat="server">
     <div>
         <hr />

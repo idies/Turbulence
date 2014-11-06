@@ -15,19 +15,20 @@
 <div class="content">
 <div id="main">
 <div class="transparency"></div>
-<div id="title">
+<div id="title"><br />
 <p >Johns Hopkins Turbulence Databases</p>
-<p >turbulence.pha.jhu.edu</p>
 </div>
 <!--#include file="navbar.htm" -->
-<div id="leftcolumn">
+<div id="leftcolumn"><br /><br /><br />
    <p><img src="images/isotropic.jpg" width="205"  /></p>
    <div style="text-align: center">Forced Isotropic Turbulence</div><br />
-      <p><img src="images/mhd.jpg" width="205"/></p>
-      <div style="text-align: center">Forced MHD Turbulence</div><br />
+   <br /><br /><br /><br /><br /><br /> 
+      <p><img src="images/mhd.jpg" width="205"/></p><div style="text-align: center">Forced MHD Turbulence</div><br />
+      <br /><br /><br /><br /><br /><br /><br /><br /><br /> 
       <p><img src="images/channel.jpg" width="205"/></p>
       <div style="text-align: center">Channel Flow</div><br />
-      <p><img src="images/turb3d.png" width="205"/></p>
+      <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+      <p><img src="images/rstrt_0285_density.png" width="205"/></p>
       <div style="text-align: center">HB Driven Turbulence</div>
 </div>
 <div id="centercolumn">

@@ -20,8 +20,7 @@
 <div class="transparency"></div>
 <div id="title"><br />
 <p >Johns Hopkins Turbulence Databases</p>
-<span class="style33"><asp:Literal ID="testingserver" runat="server"></asp:Literal>
-<asp:Literal ID="status" runat="server"></asp:Literal><br /></span> 
+
 </div>
 <!--navbar -->
 <!--#include file="navbar.htm" -->
@@ -30,7 +29,8 @@
    
 </div>
 <div id="centercolumn">
-      
+      <asp:Literal ID="testingserver" runat="server"></asp:Literal>
+<asp:Literal ID="status" runat="server"></asp:Literal>
       <p align="center"><span class="style29"><strong><font face="Arial, Helvetica, sans-serif">Welcome
                 to the Johns Hopkins Turbulence Database (JHTDB) site</font></strong></span><span class="style27"><font face="Arial, Helvetica, sans-serif"></font></span></p>
       

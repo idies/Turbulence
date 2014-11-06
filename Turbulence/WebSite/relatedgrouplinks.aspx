@@ -15,9 +15,9 @@
 <div class="content">
 <div id="main">
 <div class="transparency"></div>
-<div id="title">
+<div id="title"><br />
 <p >Johns Hopkins Turbulence Databases</p>
-<p >turbulence.pha.jhu.edu</p>
+
 </div>
 <!--#include file="navbar.htm" -->
 <div id="leftcolumn">

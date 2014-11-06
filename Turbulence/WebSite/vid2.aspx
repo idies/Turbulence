@@ -15,17 +15,14 @@
 <div class="content">
 <div id="main">
 <div class="transparency"></div>
-<div id="title">
+<div id="title"><br />
 <p >Johns Hopkins Turbulence Databases</p>
-<p >turbulence.pha.jhu.edu</p>
+
 </div>
 <!--#include file="navbar.htm" -->
-<div id="leftcolumn">
-   <p><img src="images/fig4-1.jpg" width="205" height="365" /></p>
-      <p><img src="images/fig2.jpg" width="205" height="163" /></p>
-</div>
-<div id="centercolumn">
-      <iframe width="740" height="415" src="//www.youtube.com/embed/y0AsKGhx-Ug" frameborder="0" allowfullscreen></iframe>
+
+<div id="centercolumnwide">
+      <iframe width="560" height="315" src="//www.youtube.com/embed/y0AsKGhx-Ug" frameborder="0" allowfullscreen></iframe>
       
     
 </div>
@@ -33,7 +30,7 @@
       
 </div>  
 </div><!-- Main -->   
-
+<br /><br />
 <div id="bottom">
             Disclaimer: <em>While many efforts have
             been made to ensure that these data are accurate and reliable within
