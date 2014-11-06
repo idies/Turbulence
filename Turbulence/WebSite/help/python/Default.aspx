@@ -22,9 +22,9 @@
 <div class="content">
 <div id="main">
 <div class="transparency"></div>
-<div id="title">
+<div id="title"><br />
 <p >Johns Hopkins Turbulence Databases</p>
-<p >turbulence.pha.jhu.edu</p>
+
 </div>
 <!--#include file="../../navbar.htm" -->
 <div id="leftcolumn">
@@ -60,7 +60,7 @@ sudo easy_install matplotlib<br />
 sudo python setup.py install<br />
  </p>
 <br />
-More information and source code can be found on github at <a href="https://github.com/chichilalescu/pyJHTDB">https://github.com/chichilalescu/pyJHTDB</a>
+More information and source code can be found on github at <a href="https://github.com/idies/pyJHTDB">https://github.com/idies/pyJHTDB</a>
     
 </div>
 <div id="rightcolumn"> 
