@@ -15,17 +15,14 @@
 <div class="content">
 <div id="main">
 <div class="transparency"></div>
-<div id="title">
+<div id="title"><br />
 <p >Johns Hopkins Turbulence Databases</p>
-<p >turbulence.pha.jhu.edu</p>
-</div>
-<!--#include file="navbar.htm" -->
-<div id="leftcolumn">
-   <p><img src="images/fig4-1.jpg" width="205" height="365" /></p>
 
 </div>
-<div id="centercolumn">
-<video width="500" height="600"  controls>
+<!--#include file="navbar.htm" -->
+
+<div id="centercolumnwide">
+<video width="500" height="630"  controls>
   <source src='images/nature12128.mp4' type='video/mp4' />
   <source src='images/nature12128.ogv' type='video/ogg; codecs="theora, vorbis"' />
 <object id="flowplayer" data="flowplayer-3.2.2.swf" type="application/x-shockwave-flash" width="500"  >
@@ -42,7 +39,7 @@
       
 </div>  
 </div><!-- Main -->   
-
+<br /><br />
 <div id="bottom">
             Disclaimer: <em>While many efforts have
             been made to ensure that these data are accurate and reliable within
