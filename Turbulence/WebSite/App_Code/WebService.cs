@@ -81,10 +81,6 @@ namespace TurbulenceService {
             object rowid = null;
 
             int worker = (int)Worker.Workers.GetMHDVelocity;
-            if (TurbulenceOptions.SplinesOption(spatialInterpolation))
-            {
-                worker = (int)Worker.Workers.GetSplinesVelocity;
-            }
 
             switch (dataset_enum)
             {
@@ -909,10 +905,6 @@ namespace TurbulenceService {
             object rowid = null;
 
             int worker = (int)Worker.Workers.GetMHDVelocityGradient;
-            if (TurbulenceOptions.SplinesOption(spatialInterpolation))
-            {
-                worker = (int)Worker.Workers.GetSplinesGradient;
-            }
 
             switch (dataset_enum)
             {
@@ -1180,10 +1172,6 @@ namespace TurbulenceService {
             object rowid = null;
 
             int worker = (int)Worker.Workers.GetMHDVelocityHessian;
-            if (TurbulenceOptions.SplinesOption(spatialInterpolation))
-            {
-                worker = (int)Worker.Workers.GetSplinesHessian;
-            }
             
             switch (dataset_enum)
             {

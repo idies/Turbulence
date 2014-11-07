@@ -592,6 +592,10 @@ namespace Turbulence.TurbLib
             }
             return grid_values;
         }
+        public double GetGridValueY(int cell_index)
+        {
+            return gridPointsY.GetGridValue(cell_index);
+        }
 
         public override int CalcNodeY(double value, TurbulenceOptions.SpatialInterpolation spatialInterp)
         {
@@ -604,6 +608,30 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.None_Fd4:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd8:
+                case TurbulenceOptions.SpatialInterpolation.M1Q4:
+                case TurbulenceOptions.SpatialInterpolation.M1Q6:
+                case TurbulenceOptions.SpatialInterpolation.M1Q8:
+                case TurbulenceOptions.SpatialInterpolation.M1Q10:
+                case TurbulenceOptions.SpatialInterpolation.M1Q12:
+                case TurbulenceOptions.SpatialInterpolation.M1Q14:
+                case TurbulenceOptions.SpatialInterpolation.M2Q4:
+                case TurbulenceOptions.SpatialInterpolation.M2Q6:
+                case TurbulenceOptions.SpatialInterpolation.M2Q8:
+                case TurbulenceOptions.SpatialInterpolation.M2Q10:
+                case TurbulenceOptions.SpatialInterpolation.M2Q12:
+                case TurbulenceOptions.SpatialInterpolation.M2Q14:
+                case TurbulenceOptions.SpatialInterpolation.M3Q4:
+                case TurbulenceOptions.SpatialInterpolation.M3Q6:
+                case TurbulenceOptions.SpatialInterpolation.M3Q8:
+                case TurbulenceOptions.SpatialInterpolation.M3Q10:
+                case TurbulenceOptions.SpatialInterpolation.M3Q12:
+                case TurbulenceOptions.SpatialInterpolation.M3Q14:
+                case TurbulenceOptions.SpatialInterpolation.M4Q4:
+                case TurbulenceOptions.SpatialInterpolation.M4Q6:
+                case TurbulenceOptions.SpatialInterpolation.M4Q8:
+                case TurbulenceOptions.SpatialInterpolation.M4Q10:
+                case TurbulenceOptions.SpatialInterpolation.M4Q12:
+                case TurbulenceOptions.SpatialInterpolation.M4Q14:
                     return gridPointsY.GetCellIndex(value, 0.0);
                 case TurbulenceOptions.SpatialInterpolation.None:
                     return gridPointsY.GetCellIndexRound(value);

@@ -30,8 +30,8 @@ namespace Turbulence.SQLInterface
         public virtual TurbDataTable setInfo { get; set; }
         public TurbulenceOptions.SpatialInterpolation spatialInterp { get; protected set; }
 
-        public abstract float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input);
-        public abstract float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input);
+        public abstract double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input);
+        public abstract double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input);
         public virtual HashSet<SQLUtility.PartialResult> GetResult(TurbulenceBlob blob, Dictionary<long, SQLUtility.PartialResult> active_points)
         {
             throw new NotImplementedException();
@@ -176,20 +176,13 @@ namespace Turbulence.SQLInterface
             GetChannelVelocityHessian = 125,
             GetChannelPressureHessian = 126,
 
-            GetSplinesVelocity = 130,
-            GetSplinesPressure = 131,
-            GetSplinesGradient = 132,
-            GetSplinesPressureGradient = 133,
-            GetSplinesHessian = 134,
-            GetSplinesPressureHessian = 135,
+            GetDensity = 150,
+            GetDensityGradient = 151,
+            GetDensityHessian = 152,
+            GetRawDensity = 153,
 
-            GetDensity = 140,
-            GetDensityGradient = 141,
-            GetDensityHessian = 142,
-            GetRawDensity = 143,
-
-            GetVelocityWorkerDirectOpt = 156,
-            GetVelocityWorkerDirectWorst = 157
+            GetVelocityWorkerDirectOpt = 556,
+            GetVelocityWorkerDirectWorst = 557
 
         }
 
@@ -237,19 +230,47 @@ namespace Turbulence.SQLInterface
                 case Workers.GetVelocityThreshold:
                 case Workers.GetMagneticThreshold:
                 case Workers.GetPotentialThreshold:
-                    return new workers.GetMHDWorker(setInfo, spatialInterp);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetSplinesWorker(setInfo, spatialInterp, 0);
+                    }
+                    else
+                    {
+                        return new workers.GetMHDWorker(setInfo, spatialInterp);
+                    }
                 case Workers.GetMHDPressure:
                 case Workers.GetDensity:
                 case Workers.GetPressureThreshold:
                 case Workers.GetDensityThreshold:
-                    return new workers.GetMHDPressure(setInfo, spatialInterp);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetSplinesWorker(setInfo, spatialInterp, 0);
+                    }
+                    else
+                    {
+                        return new workers.GetMHDPressure(setInfo, spatialInterp);
+                    }
                 case Workers.GetMHDVelocityGradient:
                 case Workers.GetMHDMagneticGradient:
                 case Workers.GetMHDPotentialGradient:
-                    return new workers.GetMHDGradient(setInfo, spatialInterp);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetSplinesWorker(setInfo, spatialInterp, 1);
+                    }
+                    else
+                    {
+                        return new workers.GetMHDGradient(setInfo, spatialInterp);
+                    }
                 case Workers.GetMHDPressureGradient:
                 case Workers.GetDensityGradient:
-                    return new workers.GetMHDPressureGradient(setInfo, spatialInterp);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetSplinesWorker(setInfo, spatialInterp, 1);
+                    }
+                    else
+                    {
+                        return new workers.GetMHDPressureGradient(setInfo, spatialInterp);
+                    }
                 case Workers.GetMHDVelocityLaplacian:
                 case Workers.GetMHDMagneticLaplacian:
                 case Workers.GetMHDPotentialLaplacian:
@@ -257,10 +278,24 @@ namespace Turbulence.SQLInterface
                 case Workers.GetMHDVelocityHessian:
                 case Workers.GetMHDMagneticHessian:
                 case Workers.GetMHDPotentialHessian:
-                    return new workers.GetMHDHessian(setInfo, spatialInterp);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetSplinesWorker(setInfo, spatialInterp, 2);
+                    }
+                    else
+                    {
+                        return new workers.GetMHDHessian(setInfo, spatialInterp);
+                    }
                 case Workers.GetMHDPressureHessian:
                 case Workers.GetDensityHessian:
-                    return new workers.GetMHDPressureHessian(setInfo, spatialInterp);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetSplinesWorker(setInfo, spatialInterp, 2);
+                    }
+                    else
+                    {
+                        return new workers.GetMHDPressureHessian(setInfo, spatialInterp);
+                    }
 
                 case Workers.GetMHDBoxFilter:
                     return new workers.GetMHDBoxFilter(setInfo, spatialInterp, arg);
@@ -289,31 +324,46 @@ namespace Turbulence.SQLInterface
 
                 case Workers.GetChannelVelocity:
                 case Workers.GetChannelVelocityThreshold:
-                    return new workers.GetChannelVelocity(setInfo, spatialInterp, sqlcon);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetChannelSplinesWorker(setInfo, spatialInterp, 0, sqlcon);
+                    }
+                    else
+                    {
+                        return new workers.GetChannelVelocity(setInfo, spatialInterp, sqlcon);
+                    }
                 case Workers.GetChannelPressure:
                 case Workers.GetChannelPressureThreshold:
-                    return new workers.GetChannelPressure(setInfo, spatialInterp, sqlcon);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetChannelSplinesWorker(setInfo, spatialInterp, 0, sqlcon);
+                    }
+                    else
+                    {
+                        return new workers.GetChannelPressure(setInfo, spatialInterp, sqlcon);
+                    }
                 case Workers.GetChannelVelocityGradient:
                 case Workers.GetChannelPressureGradient:
-                    return new workers.GetChannelGradient(setInfo, spatialInterp, sqlcon);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetChannelSplinesWorker(setInfo, spatialInterp, 1, sqlcon);
+                    }
+                    else
+                    {
+                        return new workers.GetChannelGradient(setInfo, spatialInterp, sqlcon);
+                    }
                 case Workers.GetChannelVelocityLaplacian:
                     return new workers.GetChannelLaplacian(setInfo, spatialInterp, sqlcon);
                 case Workers.GetChannelVelocityHessian:
                 case Workers.GetChannelPressureHessian:
-                    return new workers.GetChannelHessian(setInfo, spatialInterp, sqlcon);
-
-                case Workers.GetSplinesVelocity:
-                    return new workers.GetSplinesWorker(setInfo, spatialInterp, 0);
-                case Workers.GetSplinesPressure:
-                    return new workers.GetSplinesWorker(setInfo, spatialInterp, 0);
-                case Workers.GetSplinesGradient:
-                    return new workers.GetSplinesWorker(setInfo, spatialInterp, 1);
-                case Workers.GetSplinesPressureGradient:
-                    return new workers.GetSplinesWorker(setInfo, spatialInterp, 1);
-                case Workers.GetSplinesHessian:
-                    return new workers.GetSplinesWorker(setInfo, spatialInterp, 2);
-                case Workers.GetSplinesPressureHessian:
-                    return new workers.GetSplinesWorker(setInfo, spatialInterp, 2);
+                    if (TurbulenceOptions.SplinesOption(spatialInterp))
+                    {
+                        return new workers.GetChannelSplinesWorker(setInfo, spatialInterp, 2, sqlcon);
+                    }
+                    else
+                    {
+                        return new workers.GetChannelHessian(setInfo, spatialInterp, sqlcon);
+                    }                    
 
                 default:
                     throw new Exception(String.Format("Unknown worker type: {0}", procedure));

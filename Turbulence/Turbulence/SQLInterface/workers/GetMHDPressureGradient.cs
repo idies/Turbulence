@@ -13,7 +13,7 @@ namespace Turbulence.SQLInterface.workers
     //TODO: We can remove this class and just use the GetMHDGradient instead.
     public class GetMHDPressureGradient : Worker
     {
-        float[] CenteredFiniteDiffCoeff = null;
+        double[] CenteredFiniteDiffCoeff = null;
         double[] lagDenominator = null;
 
         public GetMHDPressureGradient(TurbDataTable setInfo,
@@ -25,34 +25,34 @@ namespace Turbulence.SQLInterface.workers
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None_Fd4)
             {
                 this.kernelSize = 4;
-                CenteredFiniteDiffCoeff = new float[5] { 
-                    1.0f / 12.0f / setInfo.DxFloat, -2.0f / 3.0f / setInfo.DxFloat, 
-                    0.0f, 
-                    2.0f / 3.0f / setInfo.DxFloat, -1.0f / 12.0f / setInfo.DxFloat };
+                CenteredFiniteDiffCoeff = new double[5] { 
+                    1.0 / 12.0 / setInfo.Dx, -2.0 / 3.0 / setInfo.Dx, 
+                    0.0, 
+                    2.0 / 3.0 / setInfo.Dx, -1.0 / 12.0 / setInfo.Dx };
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None_Fd6)
             {
                 this.kernelSize = 6;
-                CenteredFiniteDiffCoeff = new float[7] { 
-                    -1.0f / 60.0f / setInfo.DxFloat, 3.0f / 20.0f / setInfo.DxFloat, -3.0f / 4.0f / setInfo.DxFloat, 
-                    0.0f, 
-                    3.0f / 4.0f / setInfo.DxFloat, -3.0f / 20.0f / setInfo.DxFloat, 1.0f / 60.0f / setInfo.DxFloat };
+                CenteredFiniteDiffCoeff = new double[7] { 
+                    -1.0 / 60.0 / setInfo.Dx, 3.0 / 20.0 / setInfo.Dx, -3.0 / 4.0 / setInfo.Dx, 
+                    0.0, 
+                    3.0 / 4.0 / setInfo.Dx, -3.0 / 20.0 / setInfo.Dx, 1.0 / 60.0 / setInfo.Dx };
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None_Fd8)
             {
                 this.kernelSize = 8;
-                CenteredFiniteDiffCoeff = new float[9] { 
-                    1.0f / 280.0f / setInfo.DxFloat, -4.0f / 105.0f / setInfo.DxFloat, 1.0f / 5.0f / setInfo.DxFloat, -4.0f / 5.0f / setInfo.DxFloat, 
-                    0.0f, 
-                    4.0f / 5.0f / setInfo.DxFloat, -1.0f / 5.0f / setInfo.DxFloat, 4.0f / 105.0f / setInfo.DxFloat, -1.0f / 280.0f / setInfo.DxFloat };
+                CenteredFiniteDiffCoeff = new double[9] { 
+                    1.0 / 280.0 / setInfo.Dx, -4.0 / 105.0 / setInfo.Dx, 1.0 / 5.0 / setInfo.Dx, -4.0 / 5.0 / setInfo.Dx, 
+                    0.0, 
+                    4.0 / 5.0 / setInfo.Dx, -1.0 / 5.0 / setInfo.Dx, 4.0 / 105.0 / setInfo.Dx, -1.0 / 280.0 / setInfo.Dx };
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
             {
                 this.kernelSize = 8;
-                CenteredFiniteDiffCoeff = new float[5] { 
-                    1.0f / 12.0f / setInfo.DxFloat, -2.0f / 3.0f / setInfo.DxFloat, 
-                    0.0f, 
-                    2.0f / 3.0f / setInfo.DxFloat, -1.0f / 12.0f / setInfo.DxFloat };
+                CenteredFiniteDiffCoeff = new double[5] { 
+                    1.0 / 12.0 / setInfo.Dx, -2.0 / 3.0 / setInfo.Dx, 
+                    0.0, 
+                    2.0 / 3.0 / setInfo.Dx, -1.0 / 12.0 / setInfo.Dx };
                 lagDenominator = new double[4];
                 LagInterpolation.InterpolantDenominator(4, lagDenominator);
             }
@@ -71,145 +71,6 @@ namespace Turbulence.SQLInterface.workers
                 new SqlMetaData("dpdx", SqlDbType.Real),
                 new SqlMetaData("Cubes Read", SqlDbType.Int) };
         }
-
-        //public override void GetAtomsForPoint(float xp, float yp, float zp, long mask, HashSet<long> atoms)
-        //{
-        //    int X, Y, Z;
-        //    int[] x_values;
-        //    int[] y_values;
-        //    int[] z_values;
-
-        //    long zindex;
-
-        //    // The following computation will be repeated 3 times
-        //    // Once for each of the 3 spatial dimensions
-        //    // This is necessary because the kernel of computation is a box/line 
-        //    // with different dimensions and not a cube
-
-        //    // We start of with the kernel for dudx
-        //    if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
-        //    {
-        //        // The integer coordinates are computed only once
-        //        X = LagInterpolation.CalcNode(xp, setInfo.dx);
-        //        Y = LagInterpolation.CalcNode(yp, setInfo.dx);
-        //        Z = LagInterpolation.CalcNode(zp, setInfo.dx);
-
-        //        // For Lagrange Polynomial interpolation we need a box of data
-        //        // For 4^3 we have to check 3 points in each dimension (the corners and the middle point)
-        //        // For 8^3 and larger we would only have to check the corners
-        //        int LagIntOrder = 4;
-        //        x_values = new int[] { X - kernelSize / 2 + 1, X + kernelSize / 2 };    // From X-3 to X+4
-        //        y_values = new int[] { Y - LagIntOrder / 2 + 1, Y + LagIntOrder / 2 };  // From Y-1 to Y+2
-        //        z_values = new int[] { Z - LagIntOrder / 2 + 1, Z + LagIntOrder / 2 };  // From Z-1 to Z+2
-        //    }
-        //    else
-        //    {
-        //        // The integer coordinates are computed only once
-        //        X = LagInterpolation.CalcNodeWithRound(xp, setInfo.dx);
-        //        Y = LagInterpolation.CalcNodeWithRound(yp, setInfo.dx);
-        //        Z = LagInterpolation.CalcNodeWithRound(zp, setInfo.dx);
-
-        //        // This is the case for None_FD4, None_FD6, and None_FD8
-        //        // for which we only need data along a line in each of the x, y, z dimensions
-        //        // In this case we are not performing Lagrange Polynomial interpolation 
-
-        //        // For 4^3 we have to check 3 points in each dimension (the corners and the middle point)
-        //        // For 8^3 and larger we would only have to check the corners
-        //        x_values = new int[] { X - kernelSize / 2, X + kernelSize / 2 };
-        //        y_values = new int[] { Y };
-        //        z_values = new int[] { Z };
-        //    }
-
-        //    foreach (int x in x_values)
-        //    {
-        //        foreach (int y in y_values)
-        //        {
-        //            foreach (int z in z_values)
-        //            {
-        //                // Wrap the coordinates into the grid space
-        //                int xi = ((x % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-        //                int yi = ((y % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-        //                int zi = ((z % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-
-        //                zindex = new Morton3D(zi, yi, xi).Key & mask;
-        //                if (!atoms.Contains(zindex))
-        //                {
-        //                    atoms.Add(zindex);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    // Next we look at the kernel for dudy
-        //    if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
-        //    {
-        //        int LagIntOrder = 4;
-        //        x_values = new int[] { X - LagIntOrder / 2 + 1, X + LagIntOrder / 2 };
-        //        y_values = new int[] { Y - kernelSize / 2 + 1, Y + kernelSize / 2 };
-        //        z_values = new int[] { Z - LagIntOrder / 2 + 1, Z + LagIntOrder / 2 };
-        //    }
-        //    else
-        //    {
-        //        x_values = new int[] { X };
-        //        y_values = new int[] { Y - kernelSize / 2, Y + kernelSize / 2 };
-        //        z_values = new int[] { Z };
-        //    }
-
-        //    foreach (int x in x_values)
-        //    {
-        //        foreach (int y in y_values)
-        //        {
-        //            foreach (int z in z_values)
-        //            {
-        //                // Wrap the coordinates into the grid space
-        //                int xi = ((x % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-        //                int yi = ((y % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-        //                int zi = ((z % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-
-        //                zindex = new Morton3D(zi, yi, xi).Key & mask;
-        //                if (!atoms.Contains(zindex))
-        //                {
-        //                    atoms.Add(zindex);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    // Next we look at the kernel for dudz
-        //    if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
-        //    {
-        //        int LagIntOrder = 4;
-        //        x_values = new int[] { X - LagIntOrder / 2 + 1, X + LagIntOrder / 2 };
-        //        y_values = new int[] { Y - LagIntOrder / 2 + 1, Y + LagIntOrder / 2 };
-        //        z_values = new int[] { Z - kernelSize / 2 + 1, Z + kernelSize / 2 };
-        //    }
-        //    else
-        //    {
-        //        x_values = new int[] { X };
-        //        y_values = new int[] { Y };
-        //        z_values = new int[] { Z - kernelSize / 2, Z + kernelSize / 2 };
-        //    }
-
-        //    foreach (int x in x_values)
-        //    {
-        //        foreach (int y in y_values)
-        //        {
-        //            foreach (int z in z_values)
-        //            {
-        //                // Wrap the coordinates into the grid space
-        //                int xi = ((x % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-        //                int yi = ((y % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-        //                int zi = ((z % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-
-        //                zindex = new Morton3D(zi, yi, xi).Key & mask;
-        //                if (!atoms.Contains(zindex))
-        //                {
-        //                    atoms.Add(zindex);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
 
         public override void GetAtomsForPoint(SQLUtility.MHDInputRequest request, long mask, int pointsPerCubeEstimate, Dictionary<long, List<int>> map, ref int total_points)
         {
@@ -413,12 +274,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             float xp = input.x;
             float yp = input.y;
@@ -439,11 +300,11 @@ namespace Turbulence.SQLInterface.workers
         /// The Lagrangian evaluation function [LagInterpolation.EvaluateOpt] was moved
         /// into the function and some loop unrolling was performed.
         /// </remarks>
-        unsafe public float[] CalcGradient(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcGradient(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
         {
-            float[] result = new float[GetResultSize()]; // Result value for the user
+            double[] result = new double[GetResultSize()]; // Result value for the user
             for (int i = 0; i < GetResultSize(); i++)
-                result[i] = 0.0f;
+                result[i] = 0.0;
 
             float[] data = blob.data;
 
@@ -495,40 +356,43 @@ namespace Turbulence.SQLInterface.workers
                     else if (iLagIntz < 0)
                         iLagIntz += blob.GetGridResolution;
 
-                    fixed (float* FDCoeff = CenteredFiniteDiffCoeff, fdata = data)
+                    fixed (double* FDCoeff = CenteredFiniteDiffCoeff)
                     {
-                        int off = 0;
-                        if (y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide
-                            && z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
+                        fixed (float* fdata = data)
                         {
-                            off = startx * blob.GetComponents + (y - blob.GetBaseY) * blob.GetSide * blob.GetComponents + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
-                            for (int ix = startx; ix <= endx; ix++)
+                            int off = 0;
+                            if (y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide
+                                && z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
                             {
-                                float coeff = FDCoeff[iLagIntx + ix - startx];
-                                result[0] += coeff * fdata[off];
-                                off += blob.GetComponents;
+                                off = startx * blob.GetComponents + (y - blob.GetBaseY) * blob.GetSide * blob.GetComponents + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                for (int ix = startx; ix <= endx; ix++)
+                                {
+                                    double coeff = FDCoeff[iLagIntx + ix - startx];
+                                    result[0] += coeff * fdata[off];
+                                    off += blob.GetComponents;
+                                }
                             }
-                        }
-                        if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide
-                            && z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
-                        {
-                            off = (x - blob.GetBaseX) * blob.GetComponents + starty * blob.GetSide * blob.GetComponents + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
-                            for (int iy = starty; iy <= endy; iy++)
+                            if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide
+                                && z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
                             {
-                                float coeff = FDCoeff[iLagInty + iy - starty];
-                                result[1] += coeff * fdata[off];
-                                off += blob.GetSide * blob.GetComponents;
+                                off = (x - blob.GetBaseX) * blob.GetComponents + starty * blob.GetSide * blob.GetComponents + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                for (int iy = starty; iy <= endy; iy++)
+                                {
+                                    double coeff = FDCoeff[iLagInty + iy - starty];
+                                    result[1] += coeff * fdata[off];
+                                    off += blob.GetSide * blob.GetComponents;
+                                }
                             }
-                        }
-                        if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide
-                            && y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide)
-                        {
-                            off = (x - blob.GetBaseX) * blob.GetComponents + (y - blob.GetBaseY) * blob.GetSide * blob.GetComponents + startz * blob.GetSide * blob.GetSide * blob.GetComponents;
-                            for (int iz = startz; iz <= endz; iz++)
+                            if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide
+                                && y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide)
                             {
-                                float coeff = FDCoeff[iLagIntz + iz - startz];
-                                result[2] += coeff * fdata[off];
-                                off += blob.GetSide * blob.GetSide * blob.GetComponents;
+                                off = (x - blob.GetBaseX) * blob.GetComponents + (y - blob.GetBaseY) * blob.GetSide * blob.GetComponents + startz * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                for (int iz = startz; iz <= endz; iz++)
+                                {
+                                    double coeff = FDCoeff[iLagIntz + iz - startz];
+                                    result[2] += coeff * fdata[off];
+                                    off += blob.GetSide * blob.GetSide * blob.GetComponents;
+                                }
                             }
                         }
                     }
@@ -593,20 +457,20 @@ namespace Turbulence.SQLInterface.workers
                     else if (iLagIntz < 0)
                         iLagIntz += blob.GetGridResolution;
 
-                    fixed (double* lagint = input.lagInt)
+                    fixed (double* lagint = input.lagInt, FDCoeff = CenteredFiniteDiffCoeff)
                     {
-                        fixed (float* FDCoeff = CenteredFiniteDiffCoeff, fdata = data)
+                        fixed (float* fdata = data)
                         {
-                            double ax = 0.0F, ay = 0.0F, az = 0.0F;
+                            double ax = 0.0, ay = 0.0, az = 0.0;
                             int off0 = startx * blob.GetComponents;
                             for (int iz = startz; iz <= endz; iz++)
                             {
-                                double bx = 0.0F, by = 0.0F, bz = 0.0F;
+                                double bx = 0.0, by = 0.0, bz = 0.0;
                                 int LagIntIndexZ = iLagIntz + iz - startz;
                                 int off1 = off0 + iz * blob.GetSide * blob.GetSide * blob.GetComponents;
                                 for (int iy = starty; iy <= endy; iy++)
                                 {
-                                    double cx = 0.0F, cy = 0.0F, cz = 0.0F;
+                                    double cx = 0.0, cy = 0.0, cz = 0.0;
                                     int LagIntIndexY = iLagInty + iy - starty;
                                     int off = off1 + iy * blob.GetSide * blob.GetComponents;
                                     for (int ix = startx; ix <= endx; ix++)
@@ -690,9 +554,9 @@ namespace Turbulence.SQLInterface.workers
                                 }
                                 #endregion
                             }
-                            result[0] = (float)ax;
-                            result[1] = (float)ay;
-                            result[2] = (float)az;
+                            result[0] = ax;
+                            result[1] = ay;
+                            result[2] = az;
                         }
                     }
 

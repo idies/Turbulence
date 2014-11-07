@@ -199,7 +199,7 @@ public partial class StoredProcedures
                     foreach (int point in map[thisBlob])
                     {
                         //point = input[thisBlob][i];
-                        float[] result = worker.GetResult(blob, input[point]);
+                        double[] result = worker.GetResult(blob, input[point]);
                         for (int r = 0; r < result.Length; r++)
                         {
                             input[point].result[r] += result[r];
@@ -222,7 +222,7 @@ public partial class StoredProcedures
                             int r = 0;
                             for (; r < input[point].result.Length; r++)
                             {
-                                record.SetSqlSingle(r + 1, input[point].result[r]);
+                                record.SetSqlSingle(r + 1, (float)input[point].result[r]);
                             }
 
                             //record.SetInt32(r + 1, input[point].cubesRead);
@@ -291,7 +291,7 @@ public partial class StoredProcedures
 
             float delta = time2 - time1;
 
-            float[] result;
+            double[] result;
 
             TurbulenceBlob blob = new TurbulenceBlob(table);
             cmd = new SqlCommand(
@@ -360,7 +360,7 @@ public partial class StoredProcedures
                             int r = 0;
                             for (; r < input[point].result.Length; r++)
                             {
-                                record.SetSqlSingle(r + 1, input[point].result[r]);
+                                record.SetSqlSingle(r + 1, (float)input[point].result[r]);
                             }
                             //record.SetInt32(r + 1, input[point].cubesRead);
                             SqlContext.Pipe.SendResultsRow(record);
@@ -617,7 +617,7 @@ public partial class StoredProcedures
                         // ---------------------------------
 
                         //point = input[thisBlob][i];
-                        float[] result = worker[queryIndex].GetResult(blob, input[point]);
+                        double[] result = worker[queryIndex].GetResult(blob, input[point]);
                         for (int r = 0; r < result.Length; r++)
                         {
                             input[point].result[r] += result[r];
@@ -637,7 +637,7 @@ public partial class StoredProcedures
                             int r = 0;
                             for (; r < input[point].result.Length; r++)
                             {
-                                record.SetSqlSingle(r + 1, input[point].result[r]);
+                                record.SetSqlSingle(r + 1, (float)input[point].result[r]);
                             }
                             record.SetInt32(r + 1, input[point].cubesRead);
                             SqlContext.Pipe.SendResultsRow(record);

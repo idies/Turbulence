@@ -28,10 +28,10 @@ namespace Turbulence.SQLInterface.workers
         /// <summary>
         /// Q = duxdx * duydy + duxdx * duzdz + duydy * duzdz − duxdy * duydx − duxdz * duzdx − duydz * duzdy
         /// </summary>
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            float[] q = new float[GetResultSize()];
-            float[] gradient = CalcGradient(blob, input);
+            double[] q = new double[GetResultSize()];
+            double[] gradient = CalcGradient(blob, input);
             q[0] = gradient[0] * gradient[4] + gradient[0] * gradient[8] + gradient[4] * gradient[8]
                 - gradient[1] * gradient[3] - gradient[2] * gradient[6] - gradient[5] * gradient[7];
             return q;

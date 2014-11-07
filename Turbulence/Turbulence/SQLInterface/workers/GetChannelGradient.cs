@@ -221,12 +221,12 @@ namespace Turbulence.SQLInterface.workers
         }
 
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             return CalcGradient(blob, input);
         }
@@ -248,10 +248,10 @@ namespace Turbulence.SQLInterface.workers
         /// instead of from [0,0,0] to [7,7,7].
         /// Similarly, for dudy and dudz and in GetMHDGradient/Hessian, etc.
         /// </remarks>
-        unsafe public float[] CalcGradient(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcGradient(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             // Result value for the user
-            float[] result = new float[3 * setInfo.Components];
+            double[] result = new double[3 * setInfo.Components];
             // Temp variables for the partial computations
             double[] ax = new double[setInfo.Components], ay = new double[setInfo.Components], az = new double[setInfo.Components];
 
@@ -571,9 +571,9 @@ namespace Turbulence.SQLInterface.workers
 
             for (int j = 0; j < setInfo.Components; j++)
             {
-                result[0 + 3 * j] = (float)ax[j];
-                result[1 + 3 * j] = (float)ay[j];
-                result[2 + 3 * j] = (float)az[j];
+                result[0 + 3 * j] = ax[j];
+                result[1 + 3 * j] = ay[j];
+                result[2 + 3 * j] = az[j];
             }
             return result;
         }

@@ -128,6 +128,7 @@
     <Compile Include="SQLInterface\ExecuteMHDWorker.cs" />
     <Compile Include="SQLInterface\JoinTableDataReader.cs" />
     <Compile Include="SQLInterface\TrackingJoinTableDataReader.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelSplinesWorker.cs" />
     <Compile Include="SQLInterface\workers\GetChannelQ.cs" />
     <Compile Include="SQLInterface\workers\GetQ.cs" />
     <Compile Include="SQLInterface\workers\GetChannelCurl.cs" />
@@ -177,6 +178,8 @@
     <Compile Include="TurbLib\BigArray.cs" />
     <Compile Include="TurbLib\DataTypes.cs" />
     <Compile Include="TurbLib\GridPoints.cs" />
+    <Compile Include="TurbLib\SplineWeights.cs" />
+    <Compile Include="TurbLib\Tuple.cs" />
     <Compile Include="TurbLib\TurbulenceBlob.cs" />
     <Compile Include="TurbLib\Morton3D.cs" />
     <Compile Include="TurbLib\TurbDataTable.cs" />

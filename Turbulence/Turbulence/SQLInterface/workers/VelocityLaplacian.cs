@@ -43,13 +43,13 @@ namespace Turbulence.SQLInterface.workers
                 new SqlMetaData("grad2uz", SqlDbType.Real)};
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
-            return (float[])compute.CalcVelocityLaplacian(blob,
+            return (double[])compute.CalcVelocityLaplacian(blob,
                 new float[] { (float)input.x, (float)input.y, (float)input.z }, spatialInterp).Clone();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             throw new NotImplementedException();
         }

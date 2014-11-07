@@ -132,12 +132,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             float xp = input.x;
             float yp = input.y;
@@ -157,9 +157,9 @@ namespace Turbulence.SQLInterface.workers
         /// <remarks>
         /// Similar to GetMHDWorker
         /// </remarks>
-        unsafe public float[] CalcBoxFilter(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcBoxFilter(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
         {
-            float[] up = new float[resultSize]; // Result value for the user
+            double[] up = new double[resultSize]; // Result value for the user
 
             double[] result = new double[resultSize]; // Result value for computations
             for (int i = 0; i < GetResultSize(); i++)
@@ -314,7 +314,7 @@ namespace Turbulence.SQLInterface.workers
             //}
 
             for (int i = 0; i < resultSize; i++)
-                up[i] = (float)result[i];
+                up[i] = result[i];
 
             return up;
         }

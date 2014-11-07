@@ -131,7 +131,7 @@ public partial class StoredProcedures
                     foreach (SQLUtility.InputRequest point in input[thisBlob])
                     {
                         startTime = DateTime.Now;
-                        float[] result;
+                        double[] result;
                         try
                         {
                              result = worker.GetResult(blob, point);
@@ -145,7 +145,7 @@ public partial class StoredProcedures
                         int r = 0;
                         for (; r < result.Length; r++)
                         {
-                                record.SetSqlSingle(r + 1, result[r]);
+                                record.SetSqlSingle(r + 1, (float)result[r]);
                         }
 
                         endTime = DateTime.Now;
@@ -193,7 +193,7 @@ public partial class StoredProcedures
             { 
                 // TODO: Get rid of the jagged arrays.
                 //       This will require a rewrite of the workers
-                float[,][] results = new float[inputSize, 4][];
+                double[,][] results = new double[inputSize, 4][];
                 int[] localResultMap = new int[inputSize];  // store original ID numbers
                 while (reader.Read())
                 {
@@ -241,7 +241,7 @@ public partial class StoredProcedures
                         record.SetSqlSingle(r + 1,
                             TemporalInterpolation.PCHIP(time,
                             times[0], times[1], times[2], times[3],
-                            results[i, 0][r], results[i, 1][r], results[i, 2][r], results[i, 3][r]));
+                            (float)results[i, 0][r], (float)results[i, 1][r], (float)results[i, 2][r], (float)results[i, 3][r]));
                     }
                     SqlContext.Pipe.SendResultsRow(record);
                 }
