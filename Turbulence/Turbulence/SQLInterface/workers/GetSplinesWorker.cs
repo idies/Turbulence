@@ -1226,20 +1226,20 @@ namespace Turbulence.SQLInterface.workers
                 blob.GetSubcubeEnd(z + (kernelSize / 2), y + (kernelSize / 2), x + (kernelSize / 2), ref endz, ref endy, ref endx);
 
                 int iLagIntx = blob.GetRealX - x + startx + kernelSize / 2 - 1;
-                if (iLagIntx >= blob.GetGridResolution)
-                    iLagIntx -= blob.GetGridResolution;
+                if (iLagIntx >= setInfo.GridResolutionX)
+                    iLagIntx -= setInfo.GridResolutionX;
                 else if (iLagIntx < 0)
                     iLagIntx += blob.GetGridResolution;
                 int iLagInty = blob.GetRealY - y + starty + kernelSize / 2 - 1;
-                if (iLagInty >= blob.GetGridResolution)
-                    iLagInty -= blob.GetGridResolution;
+                if (iLagInty >= setInfo.GridResolutionY)
+                    iLagInty -= setInfo.GridResolutionY;
                 else if (iLagInty < 0)
-                    iLagInty += blob.GetGridResolution;
+                    iLagInty += setInfo.GridResolutionY;
                 int iLagIntz = blob.GetRealZ - z + startz + kernelSize / 2 - 1;
-                if (iLagIntz >= blob.GetGridResolution)
-                    iLagIntz -= blob.GetGridResolution;
+                if (iLagIntz >= setInfo.GridResolutionZ)
+                    iLagIntz -= setInfo.GridResolutionZ;
                 else if (iLagIntz < 0)
-                    iLagIntz += blob.GetGridResolution;
+                    iLagIntz += setInfo.GridResolutionZ;
 
                 if (derivative == 0)
                 {

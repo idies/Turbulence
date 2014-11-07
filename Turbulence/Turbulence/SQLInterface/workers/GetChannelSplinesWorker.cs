@@ -57,7 +57,7 @@ namespace Turbulence.SQLInterface.workers
                     double[] weights = weights_y[derivative].GetWeights(cell_index, i);
                     for (int j = 0; j < weights.Length; j++)
                     {
-                        poly_val[offset + i - stencil_start] += Math.Pow(x, weights.Length - 1 - j) * weights[j];
+                        poly_val[offset + i - stencil_start] += Math.Pow(x, j) * weights[j];
                     }
                 }
             }
@@ -170,20 +170,20 @@ namespace Turbulence.SQLInterface.workers
                 blob.GetSubcubeEnd(z + (kernelSize / 2), GetStencilEndY(input.cell_y), x + (kernelSize / 2), ref endz, ref endy, ref endx);
 
                 int iLagIntx = blob.GetRealX - x + startx + kernelSize / 2 - 1;
-                if (iLagIntx >= blob.GetGridResolution)
-                    iLagIntx -= blob.GetGridResolution;
+                if (iLagIntx >= setInfo.GridResolutionX)
+                    iLagIntx -= setInfo.GridResolutionX;
                 else if (iLagIntx < 0)
-                    iLagIntx += blob.GetGridResolution;
+                    iLagIntx += setInfo.GridResolutionX;
                 int iLagInty = blob.GetRealY + starty - GetStencilStartY(input.cell_y);
-                if (iLagInty >= blob.GetGridResolution)
-                    iLagInty -= blob.GetGridResolution;
+                if (iLagInty >= setInfo.GridResolutionY)
+                    iLagInty -= setInfo.GridResolutionY;
                 else if (iLagInty < 0)
-                    iLagInty += blob.GetGridResolution;
+                    iLagInty += setInfo.GridResolutionY;
                 int iLagIntz = blob.GetRealZ - z + startz + kernelSize / 2 - 1;
-                if (iLagIntz >= blob.GetGridResolution)
-                    iLagIntz -= blob.GetGridResolution;
+                if (iLagIntz >= setInfo.GridResolutionZ)
+                    iLagIntz -= setInfo.GridResolutionZ;
                 else if (iLagIntz < 0)
-                    iLagIntz += blob.GetGridResolution;
+                    iLagIntz += setInfo.GridResolutionZ;
 
                 if (derivative == 0)
                 {
