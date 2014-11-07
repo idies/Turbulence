@@ -34,10 +34,10 @@ namespace Turbulence.SQLInterface.workers
         /// cy = (dux / dz) - (duz / dx)
         /// cz = (duy / dx) - (dux / dy)
         /// </summary>
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            float[] curl = new float[GetResultSize()];
-            float[] gradient = CalcGradient(blob, input);
+            double[] curl = new double[GetResultSize()];
+            double[] gradient = CalcGradient(blob, input);
             curl[0] = gradient[7] - gradient[5];
             curl[1] = gradient[2] - gradient[6];
             curl[2] = gradient[3] - gradient[1];

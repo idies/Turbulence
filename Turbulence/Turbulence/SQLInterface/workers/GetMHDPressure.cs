@@ -114,12 +114,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             return CalcPressure(blob, input);
         }
@@ -137,13 +137,13 @@ namespace Turbulence.SQLInterface.workers
         /// The Lagrangian evaluation function [LagInterpolation.EvaluateOpt] was moved
         /// into the function and some loop unrolling was performed.
         /// </remarks>
-        unsafe public float[] CalcPressure(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcPressure(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             float xp = input.x;
             float yp = input.y;
             float zp = input.z;
 
-            float[] up = new float[1]; // Result value for the user
+            double[] up = new double[1]; // Result value for the user
 
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
             {
@@ -261,7 +261,7 @@ namespace Turbulence.SQLInterface.workers
                             a0 += b0 * a;
                         }
 
-                        up[0] = (float)a0;
+                        up[0] = a0;
                     }
                 }
             }

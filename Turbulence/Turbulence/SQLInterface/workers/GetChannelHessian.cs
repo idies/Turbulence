@@ -281,12 +281,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             return CalcHessian(blob, input);
         }
@@ -306,9 +306,9 @@ namespace Turbulence.SQLInterface.workers
         /// The only difference is that we are not summing the unmixed second derivatives and
         /// that we have to compute the mixed derivatives as well.
         /// </remarks>
-        unsafe public float[] CalcHessian(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcHessian(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            float[] result = new float[GetResultSize()]; // Result value for the user
+            double[] result = new double[GetResultSize()]; // Result value for the user
             // Temp variables for the partial computations
             double[] ax = new double[setInfo.Components], ay = new double[setInfo.Components], az = new double[setInfo.Components], 
                 axy = new double[setInfo.Components], axz = new double[setInfo.Components], ayz = new double[setInfo.Components];
@@ -818,12 +818,12 @@ namespace Turbulence.SQLInterface.workers
 
             for (int i = 0; i < setInfo.Components; i++)
             {
-                result[0 + 6 * i] = (float)ax[i];
-                result[1 + 6 * i] = (float)axy[i];
-                result[2 + 6 * i] = (float)axz[i];
-                result[3 + 6 * i] = (float)ay[i];
-                result[4 + 6 * i] = (float)ayz[i];
-                result[5 + 6 * i] = (float)az[i];
+                result[0 + 6 * i] = ax[i];
+                result[1 + 6 * i] = axy[i];
+                result[2 + 6 * i] = axz[i];
+                result[3 + 6 * i] = ay[i];
+                result[4 + 6 * i] = ayz[i];
+                result[5 + 6 * i] = az[i];
             }
             
             return result;

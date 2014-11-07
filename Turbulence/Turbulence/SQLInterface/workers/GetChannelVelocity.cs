@@ -31,12 +31,12 @@ namespace Turbulence.SQLInterface.workers
             };
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             return CalcLagInterpolation(blob, input);
         }
@@ -53,9 +53,9 @@ namespace Turbulence.SQLInterface.workers
         /// The Lagrangian evaluation function [LagInterpolation.EvaluateOpt] was moved
         /// into the function and some loop unrolling was performed.
         /// </remarks>
-        unsafe public float[] CalcLagInterpolation(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcLagInterpolation(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            float[] up = new float[3]; // Result value for the user
+            double[] up = new double[3]; // Result value for the user
 
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
             {
@@ -162,9 +162,9 @@ namespace Turbulence.SQLInterface.workers
                             a2 += b2 * a;
                             a3 += b3 * a;
                         }
-                        up[0] = (float)a1;
-                        up[1] = (float)a2;
-                        up[2] = (float)a3;
+                        up[0] = a1;
+                        up[1] = a2;
+                        up[2] = a3;
                     }
                 }
             }

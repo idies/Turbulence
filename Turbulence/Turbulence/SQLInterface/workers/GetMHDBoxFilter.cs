@@ -15,7 +15,7 @@ namespace Turbulence.SQLInterface.workers
         int filter_width;
 
         private int resultSize = 3;
-        private float[] cachedAtomSum = new float[3];
+        private double[] cachedAtomSum = new double[3];
         private long  cachedAtomZindex;
 
         public GetMHDBoxFilter(TurbDataTable setInfo,
@@ -39,46 +39,6 @@ namespace Turbulence.SQLInterface.workers
                 new SqlMetaData("Z", SqlDbType.Real),
                 new SqlMetaData("Cubes Read", SqlDbType.Int)};
         }
-
-        //TODO: Check with a list instead of hashset
-        //public override void GetAtomsForPoint(float xp, float yp, float zp, long mask, HashSet<long> atoms)
-        //{
-        //    int X, Y, Z;
-        //    X = LagInterpolation.CalcNodeWithRound(xp, setInfo.dx);
-        //    Y = LagInterpolation.CalcNodeWithRound(yp, setInfo.dx);
-        //    Z = LagInterpolation.CalcNodeWithRound(zp, setInfo.dx);
-            
-        //    int startz = Z - filter_width / 2, starty = Y - filter_width / 2, startx = X - filter_width / 2;
-        //    int endz = Z + filter_width / 2, endy = Y + filter_width / 2, endx = X + filter_width / 2;
-        //    // we do not want a request to appear more than 1 in the list for an atom
-        //    // with the below logic we are going to check distinct atoms only
-        //    // we want to start at the start of a DB atom and then move from atom to atom
-        //    startz = startz - startz % setInfo.atomDim;
-        //    starty = starty - starty % setInfo.atomDim;
-        //    startx = startx - startx % setInfo.atomDim;
-
-        //    long zindex;
-
-        //    for (int z = startz; z <= endz; z += setInfo.atomDim)
-        //    {
-        //        for (int y = starty; y <= endy; y += setInfo.atomDim)
-        //        {
-        //            for (int x = startx; x <= endx; x += setInfo.atomDim)
-        //            {
-        //                // Wrap the coordinates into the grid space
-        //                int xi = ((x % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-        //                int yi = ((y % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-        //                int zi = ((z % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
-
-        //                if (setInfo.PointInRange(xi, yi, zi))
-        //                {
-        //                    zindex = new Morton3D(zi, yi, xi).Key & mask;
-        //                    atoms.Add(zindex);
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
 
         public override void GetAtomsForPoint(SQLUtility.MHDInputRequest request, long mask, int pointsPerCubeEstimate, Dictionary<long, List<int>> map, ref int total_points)
         {
@@ -127,12 +87,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             float xp = input.x;
             float yp = input.y;
@@ -152,9 +112,9 @@ namespace Turbulence.SQLInterface.workers
         /// <remarks>
         /// Similar to GetMHDWorker
         /// </remarks>
-        unsafe public float[] CalcBoxFilter(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcBoxFilter(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
         {
-            float[] up = new float[3]; // Result value for the user
+            double[] up = new double[3]; // Result value for the user
 
             int x = LagInterpolation.CalcNodeWithRound(xp, setInfo.Dx);
             int y = LagInterpolation.CalcNodeWithRound(yp, setInfo.Dx);
@@ -174,9 +134,9 @@ namespace Turbulence.SQLInterface.workers
             {
                 if (cachedAtomZindex == blob.Key)
                 {
-                    up[0] = (float)cachedAtomSum[0];
-                    up[1] = (float)cachedAtomSum[1];
-                    up[2] = (float)cachedAtomSum[2];
+                    up[0] = cachedAtomSum[0];
+                    up[1] = cachedAtomSum[1];
+                    up[2] = cachedAtomSum[2];
                     return up;
                 }
             }
@@ -214,14 +174,14 @@ namespace Turbulence.SQLInterface.workers
             if (startx == 0 && starty == 0 && startz == 0 && endx == blob.GetSide - 1 && endy == blob.GetSide - 1 && endz == blob.GetSide - 1)
             {
                 cachedAtomZindex = blob.Key;
-                cachedAtomSum[0] = (float)c1;
-                cachedAtomSum[1] = (float)c2;
-                cachedAtomSum[2] = (float)c3;
+                cachedAtomSum[0] = c1;
+                cachedAtomSum[1] = c2;
+                cachedAtomSum[2] = c3;
             }
 
-            up[0] = (float)c1;
-            up[1] = (float)c2;
-            up[2] = (float)c3;
+            up[0] = c1;
+            up[1] = c2;
+            up[2] = c3;
             
             return up;
         }

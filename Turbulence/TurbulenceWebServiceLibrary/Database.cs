@@ -23,9 +23,9 @@ namespace TurbulenceService
         string infodb;
         protected int[] gridResolution; // Dimensions of the entire grid given az [z,y,x]
         int atomDim;                // length of side of a single data atom
-        List<string> servers;           // name of each server (resolved via web.config)
-        List<string> databases;         // name of the database holding turbulence data
-        List<string> codeDatabase;        // name of database from which turbulence code is executed
+        List<string> servers;       // name of each server (resolved via web.config)
+        List<string> databases;     // name of the database holding turbulence data
+        List<string> codeDatabase;  // name of database from which turbulence code is executed
         public int serverCount;     // Number of servers to balance against
         SqlConnection[] connections;// SQL Connetion Handles
         SqlCommand[] sqlcmds;
@@ -1303,33 +1303,6 @@ namespace TurbulenceService
                 }
             }
         }
-
-        ///// <summary>
-        ///// Calculate the coordinates of a point and send it to the correct server.
-        ///// </summary>
-        //public void AddWorkloadTrackingPoint(int id, TrackingInfo tInfo, bool round, bool time_round)
-        //{
-        //    int z, y, x;
-        //    if (tInfo.flag)
-        //    {
-        //        z = GetIntLoc(tInfo.pos.z, round);
-        //        y = GetIntLoc(tInfo.pos.y, round);
-        //        x = GetIntLoc(tInfo.pos.x, round);
-        //    }
-        //    else
-        //    {
-        //        z = GetIntLoc(tInfo.pre_pos.z, round);
-        //        y = GetIntLoc(tInfo.pre_pos.y, round);
-        //        x = GetIntLoc(tInfo.pre_pos.x, round);
-
-        //    }
-
-        //    //throw new Exception(String.Format("{0} {1} {2}; {3} {4} {5}", z, y, x, (double)zp, (double)yp, (double)xp));
-        //    //tInfo[i].time, tInfo[i].pos.z, tInfo[i].pos.y, tInfo[i].pos.x
-        //    int server = PickServer(z, y, x);
-        //    InsertIntoTrackingTempTable(server, id, z, y, x, tInfo, time_round);
-
-        //}
 
         /// <summary>
         /// Commit input tables using BulkInsert

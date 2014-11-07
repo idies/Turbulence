@@ -37,15 +37,16 @@ namespace Turbulence.SQLInterface.workers
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             count++;
-            return new float[] { (float) count };
+            return new double[] { (double)count };
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            throw new NotImplementedException();
+            count++;
+            return new double[] { (double)count };
         }
 
         public override int GetResultSize()

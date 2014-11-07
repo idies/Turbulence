@@ -220,13 +220,13 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
-            return (float[])compute.CalcLaplacianOfVelocityGradient(blob,
+            return (double[])compute.CalcLaplacianOfVelocityGradient(blob,
                 new float[] { (float)input.x, (float)input.y, (float)input.z }, spatialInterp).Clone();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             float xp = input.x;
             float yp = input.y;
@@ -237,9 +237,9 @@ namespace Turbulence.SQLInterface.workers
         /// <summary>
         /// Function to calculate the Laplacian of the gradient of a field using I/O streaming.
         /// </summary>
-        unsafe public float[] CalcLaplacianOfGradient(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcLaplacianOfGradient(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
         {
-            float[] result = new float[GetResultSize()]; // Result value for the user
+            double[] result = new double[GetResultSize()]; // Result value for the user
             for (int i = 0; i < GetResultSize(); i++)
                 result[i] = 0.0f;
 

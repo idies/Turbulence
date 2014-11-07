@@ -226,12 +226,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             return CalcLaplacian(blob, input);
         }
@@ -252,9 +252,9 @@ namespace Turbulence.SQLInterface.workers
         /// Also, since the Laplacian is the sum of the unmixed second partial derivatives we are
         /// summing these as part of the partial-sums.
         /// </remarks>
-        unsafe public float[] CalcLaplacian(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcLaplacian(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            float[] result = new float[GetResultSize()]; // Result value for the user
+            double[] result = new double[GetResultSize()]; // Result value for the user
             // Temp variables for the partial computations
             double[] ax = new double[setInfo.Components], ay = new double[setInfo.Components], az = new double[setInfo.Components];
 
@@ -580,9 +580,9 @@ namespace Turbulence.SQLInterface.workers
                     throw new Exception("Invalid Spatial Interpolation Option");
             }
 
-            result[0] = (float)(ax[0] + ay[0] + az[0]);
-            result[1] = (float)(ax[1] + ay[1] + az[1]);
-            result[2] = (float)(ax[2] + ay[2] + az[2]);
+            result[0] = ax[0] + ay[0] + az[0];
+            result[1] = ax[1] + ay[1] + az[1];
+            result[2] = ax[2] + ay[2] + az[2];
             
             return result;
         }

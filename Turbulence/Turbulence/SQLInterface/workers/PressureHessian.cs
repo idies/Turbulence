@@ -46,14 +46,14 @@ namespace Turbulence.SQLInterface.workers
                 new SqlMetaData("d2pdzdz", SqlDbType.Real) };
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             //return new float[] { 5.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f };
-            return (float[])compute.CalcPressureHessian(blob,
+            return (double[])compute.CalcPressureHessian(blob,
                 new float[] { (float)input.x, (float)input.y, (float)input.z }, spatialInterp).Clone();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             throw new NotImplementedException();
         }

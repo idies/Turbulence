@@ -62,21 +62,21 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             if (usePressure)
             {
-                return (float[])compute.CalcVelocityWithPressureOld(blob,
+                return (double[])compute.CalcVelocityWithPressureOld(blob,
                     new float[] { (float)input.x, (float)input.y, (float)input.z }, spatialInterp).Clone();
             }
             else
             {
-                return (float[])compute.CalcVelocityOld(blob,
+                return (double[])compute.CalcVelocityOld(blob,
                     new float[] { (float)input.x, (float)input.y, (float)input.z }, spatialInterp).Clone();
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             throw new NotImplementedException();
         }
