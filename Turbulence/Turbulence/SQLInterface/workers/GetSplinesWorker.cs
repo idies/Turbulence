@@ -1229,7 +1229,7 @@ namespace Turbulence.SQLInterface.workers
                 if (iLagIntx >= setInfo.GridResolutionX)
                     iLagIntx -= setInfo.GridResolutionX;
                 else if (iLagIntx < 0)
-                    iLagIntx += blob.GetGridResolution;
+                    iLagIntx += setInfo.GridResolutionX;
                 int iLagInty = blob.GetRealY - y + starty + kernelSize / 2 - 1;
                 if (iLagInty >= setInfo.GridResolutionY)
                     iLagInty -= setInfo.GridResolutionY;
