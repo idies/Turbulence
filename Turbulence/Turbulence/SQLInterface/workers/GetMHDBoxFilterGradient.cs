@@ -171,8 +171,8 @@ namespace Turbulence.SQLInterface.workers
 
             // Wrap the coordinates into the grid space
             x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-            y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-            z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+            y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+            z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
             float[] data = blob.data;
             int startz = 0, starty = 0, startx = 0, endz = 0, endy = 0, endx = 0;
@@ -194,21 +194,21 @@ namespace Turbulence.SQLInterface.workers
             // in order to use the correct coefficient in the FD computaion
             int xLocation = blob.GetRealX + startx;
             if (xLocation > x + filter_width / 2 + dx)
-                xLocation -= blob.GetGridResolution;
+                xLocation -= setInfo.GridResolutionX;
             else if (xLocation < x - filter_width / 2 - dx)
-                xLocation += blob.GetGridResolution;
+                xLocation += setInfo.GridResolutionX;
 
             int yLocation = blob.GetRealY + starty;
             if (yLocation > y + filter_width / 2 + dx)
-                yLocation -= blob.GetGridResolution;
+                yLocation -= setInfo.GridResolutionY;
             else if (yLocation < y - filter_width / 2 - dx)
-                yLocation += blob.GetGridResolution;
+                yLocation += setInfo.GridResolutionY;
 
             int zLocation = blob.GetRealZ + startz;
             if (zLocation > z + filter_width / 2 + dx)
-                zLocation -= blob.GetGridResolution;
+                zLocation -= setInfo.GridResolutionZ;
             else if (zLocation < z - filter_width / 2 - dx)
-                zLocation += blob.GetGridResolution;
+                zLocation += setInfo.GridResolutionZ;
 
             int off0 = startx * blob.GetComponents;
 

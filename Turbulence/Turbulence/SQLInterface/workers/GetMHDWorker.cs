@@ -186,8 +186,8 @@ namespace Turbulence.SQLInterface.workers
 
                 // Wrap the coordinates into the grid space
                 x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                 float[] data = blob.data;
                 //int off0 = blob.GetLocalOffset(z - (kernelSize / 2), y - (kernelSize / 2), x - (kernelSize / 2), 0);
@@ -198,23 +198,23 @@ namespace Turbulence.SQLInterface.workers
 
                 //int iLagInt;
                 int iLagIntx = blob.GetRealX - x + startx + kernelSize / 2 - 1;
-                //iLagIntx = ((iLagIntx % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagIntx >= blob.GetGridResolution)
-                    iLagIntx -= blob.GetGridResolution;
+                //iLagIntx = ((iLagIntx % blob.GetGridResolutionX) + blob.GetGridResolutionX) % blob.GetGridResolutionX;
+                if (iLagIntx >= setInfo.GridResolutionX)
+                    iLagIntx -= setInfo.GridResolutionX;
                 else if (iLagIntx < 0)
-                    iLagIntx += blob.GetGridResolution;
+                    iLagIntx += setInfo.GridResolutionX;
                 int iLagInty = blob.GetRealY - y + starty + kernelSize / 2 - 1;
-                //iLagInty = ((iLagInty % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagInty >= blob.GetGridResolution)
-                    iLagInty -= blob.GetGridResolution;
+                //iLagInty = ((iLagInty % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                if (iLagInty >= setInfo.GridResolutionY)
+                    iLagInty -= setInfo.GridResolutionY;
                 else if (iLagInty < 0)
-                    iLagInty += blob.GetGridResolution;
+                    iLagInty += setInfo.GridResolutionY;
                 int iLagIntz = blob.GetRealZ - z + startz + kernelSize / 2 - 1;
-                //iLagIntz = ((iLagIntz % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagIntz >= blob.GetGridResolution)
-                    iLagIntz -= blob.GetGridResolution;
+                //iLagIntz = ((iLagIntz % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                if (iLagIntz >= setInfo.GridResolutionZ)
+                    iLagIntz -= setInfo.GridResolutionZ;
                 else if (iLagIntz < 0)
-                    iLagIntz += blob.GetGridResolution;
+                    iLagIntz += setInfo.GridResolutionZ;
 
                 fixed (double* lagint = lagInt)
                 {

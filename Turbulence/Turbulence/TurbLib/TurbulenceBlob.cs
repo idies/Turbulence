@@ -638,6 +638,5 @@ namespace Turbulence.TurbLib
 
      public int GetComponents { get { return table.Components; } }
 
-     public int GetGridResolution { get { return table.GridResolutionX; } }
     }
 }

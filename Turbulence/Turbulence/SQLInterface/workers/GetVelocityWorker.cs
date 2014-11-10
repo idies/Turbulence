@@ -396,23 +396,23 @@ namespace Turbulence.SQLInterface.workers
 
                 //int iLagInt;
                 int iLagIntx = blob.GetRealX - x + startx + nOrder / 2 - 1;
-                //iLagIntx = ((iLagIntx % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagIntx >= blob.GetGridResolution)
-                    iLagIntx -= blob.GetGridResolution;
+                //iLagIntx = ((iLagIntx % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
+                if (iLagIntx >= setInfo.GridResolutionX)
+                    iLagIntx -= setInfo.GridResolutionX;
                 else if (iLagIntx < 0)
-                    iLagIntx += blob.GetGridResolution;
+                    iLagIntx += setInfo.GridResolutionX;
                 int iLagInty = blob.GetRealY - y + starty + nOrder / 2 - 1;
-                //iLagInty = ((iLagInty % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagInty >= blob.GetGridResolution)
-                    iLagInty -= blob.GetGridResolution;
+                //iLagInty = ((iLagInty % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
+                if (iLagInty >= setInfo.GridResolutionY)
+                    iLagInty -= setInfo.GridResolutionY;
                 else if (iLagInty < 0)
-                    iLagInty += blob.GetGridResolution;
+                    iLagInty += setInfo.GridResolutionY;
                 int iLagIntz = blob.GetRealZ - z + startz + nOrder / 2 - 1;
-                //iLagIntz = ((iLagIntz % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagIntz >= blob.GetGridResolution)
-                    iLagIntz -= blob.GetGridResolution;
+                //iLagIntz = ((iLagIntz % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
+                if (iLagIntz >= setInfo.GridResolutionZ)
+                    iLagIntz -= setInfo.GridResolutionZ;
                 else if (iLagIntz < 0)
-                    iLagIntz += blob.GetGridResolution;
+                    iLagIntz += setInfo.GridResolutionZ;
 
                 fixed (double* lagint = input.lagInt)
                 {
