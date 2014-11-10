@@ -1610,17 +1610,17 @@ namespace TestApp
 
             blob.Setup(251, key, rawdata);
 
-            float[] result = computations.CalcPressureHessian(blob, particle, TurbulenceOptions.SpatialInterpolation.None_Fd4);
+            double[] result = computations.CalcPressureHessian(blob, particle, TurbulenceOptions.SpatialInterpolation.None_Fd4);
             Console.WriteLine("d2pdxdx={0} d2pdxdy={1} d2pdxdz={2} d2pdydy={3} d2pdydz={4} d2pdzdz={5} ",
                 result[0], result[1], result[2], result[3], result[4], result[5]);
 
             turbulence.PressureHessian p_hessian_result = new turbulence.PressureHessian();
-            p_hessian_result.d2pdxdx = result[0];
-            p_hessian_result.d2pdxdy = result[1];
-            p_hessian_result.d2pdxdz = result[2];
-            p_hessian_result.d2pdydy = result[3];
-            p_hessian_result.d2pdydz = result[4];
-            p_hessian_result.d2pdzdz = result[5];
+            p_hessian_result.d2pdxdx = (float)result[0];
+            p_hessian_result.d2pdxdy = (float)result[1];
+            p_hessian_result.d2pdxdz = (float)result[2];
+            p_hessian_result.d2pdydy = (float)result[3];
+            p_hessian_result.d2pdydz = (float)result[4];
+            p_hessian_result.d2pdzdz = (float)result[5];
 
             return p_hessian_result;
         }
