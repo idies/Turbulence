@@ -58,12 +58,12 @@ namespace Turbulence.SciLib
             this.dataCube_dydz = new float[10, 10, 10, turbTable.Components];
             this.dataLine = new float[10, 3, turbTable.Components];
         }
-        
 
-        public float[] CalcVelocityOld(TurbulenceBlob blob, float [] particle,
+
+        public double[] CalcVelocityOld(TurbulenceBlob blob, float[] particle,
             TurbulenceOptions.SpatialInterpolation spatialOpt)
         {
-            float[] up = new float[3]; // create a new array since it will be stored for PCHIP
+            double[] up = new double[3]; // create a new array since it will be stored for PCHIP
 
             if (spatialOpt == TurbulenceOptions.SpatialInterpolation.None)
             {
@@ -102,10 +102,10 @@ namespace Turbulence.SciLib
             return up;
         }
 
-        public float[] CalcVelocityWithPressureOld(TurbulenceBlob blob, float[] particle,
+        public double[] CalcVelocityWithPressureOld(TurbulenceBlob blob, float[] particle,
             TurbulenceOptions.SpatialInterpolation spatialOpt)
         {
-            float[] up = new float[4]; // create a new array since it will be stored for PCHIP
+            double[] up = new double[4]; // create a new array since it will be stored for PCHIP
 
             if (spatialOpt == TurbulenceOptions.SpatialInterpolation.None)
             {
@@ -153,11 +153,11 @@ namespace Turbulence.SciLib
         /// <remarks>
         /// This method should be updated to use one dimensional ararys.
         /// </remarks>
-        public float[] CalcPressureHessian(TurbulenceBlob blob, float[] particle,
+        public double[] CalcPressureHessian(TurbulenceBlob blob, float[] particle,
             TurbulenceOptions.SpatialInterpolation spatialOpt)
         {
             float[][] lagInt = new float[3][];
-            float[] d2pdxidxj = new float[6];
+            double[] d2pdxidxj = new double[6];
 
             int nOrder = -1;
             if (spatialOpt == TurbulenceOptions.SpatialInterpolation.None_Fd4)
@@ -344,12 +344,12 @@ namespace Turbulence.SciLib
         /// <remarks>
         /// This method should be updated to use one dimensional ararys.
         /// </remarks>
-        public float[] CalcVelocityHessian(TurbulenceBlob blob, float[] particle,
+        public double[] CalcVelocityHessian(TurbulenceBlob blob, float[] particle,
             TurbulenceOptions.SpatialInterpolation spatialOpt)
         {
             float[][] lagInt = new float[3][];
             float[][] d2ukdxidxj = new float[6][];
-            float[] result = new float[18];
+            double[] result = new double[18];
 
             for (int i = 0; i < 6; i++)
             {
@@ -548,14 +548,14 @@ namespace Turbulence.SciLib
         }
 
 
-        public float[] CalcVelocityGradient(TurbulenceBlob blob, float[] particle,
+        public double[] CalcVelocityGradient(TurbulenceBlob blob, float[] particle,
             TurbulenceOptions.SpatialInterpolation spatialOpt)
         {
             float[][] lagInt = new float[3][];
             //float[][] lagInt_dx = new float[3][];
             float[][] duidxj = new float[3][];
-            
-            float[] result = new float[9];
+
+            double[] result = new double[9];
 
             int nOrder = -1;            
             if (spatialOpt == TurbulenceOptions.SpatialInterpolation.None_Fd4)
@@ -710,14 +710,14 @@ namespace Turbulence.SciLib
 
 
 
-        public float[] CalcPressureGradient(TurbulenceBlob blob, float[] particle,
+        public double[] CalcPressureGradient(TurbulenceBlob blob, float[] particle,
             TurbulenceOptions.SpatialInterpolation spatialOpt)
         {
             float[][] lagInt = new float[3][];
             //float[][] lagInt_dx = new float[3][];
             //float[] dpdxi = new float[3];
 
-            float[] result = new float[3];
+            double[] result = new double[3];
 
             int nOrder = -1;
             if (spatialOpt == TurbulenceOptions.SpatialInterpolation.None_Fd4)
@@ -840,12 +840,12 @@ namespace Turbulence.SciLib
 
 
 
-        public float[] CalcVelocityLaplacian(TurbulenceBlob blob, float[] particle,
+        public double[] CalcVelocityLaplacian(TurbulenceBlob blob, float[] particle,
             TurbulenceOptions.SpatialInterpolation spatialOpt)
         {
             float[][] lagInt = new float[3][];
             float[][] grad2ui = new float[3][];
-            float[] result = new float[3];
+            double[] result = new double[3];
 
             for (int i = 0; i < 3; i++)
             {
@@ -975,7 +975,7 @@ namespace Turbulence.SciLib
             return result;
         }
 
-        public float[] CalcLaplacianOfVelocityGradient(TurbulenceBlob blob, float[] particle,
+        public double[] CalcLaplacianOfVelocityGradient(TurbulenceBlob blob, float[] particle,
             TurbulenceOptions.SpatialInterpolation spatialOpt)
         {
             // particle: 0-x,1-y,2-z
@@ -986,7 +986,7 @@ namespace Turbulence.SciLib
             float[][] lagInt_dx3 = new float[3][];
             float[][] grad2duidxj = new float[9][];
 
-            float[] result = new float[9];
+            double[] result = new double[9];
 
             int nOrder = -1;
             if (spatialOpt == TurbulenceOptions.SpatialInterpolation.Lag6)

@@ -48,6 +48,7 @@ namespace TurbulenceService
         List<ServerBoundaries> serverBoundaries; // info about the spatial partitioning of the data across servers
         const int MAX_READ_LENGTH = 256000000;
         const int MAX_NUMBER_THRESHOLD_POINTS = 1024 * 1024;
+        const double DENSITY_CONSTANT = 80.0;
 
         // zindex ranges stored on each server for the channel flow DB
         long[] range_start;
@@ -1418,7 +1419,7 @@ namespace TurbulenceService
 
             // For dense workloads we execute the query by means of Summed Volumes
             // The constant is empirically determined (see Filtering Paper)
-            if (density > 80.0)
+            if (density > DENSITY_CONSTANT)
             {
                 // We check if a box filter of the parameters is desired
                 // or the sub-grid stress tensor

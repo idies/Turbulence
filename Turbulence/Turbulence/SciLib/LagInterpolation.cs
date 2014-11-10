@@ -167,7 +167,7 @@ namespace Turbulence.SciLib
         }
 
         // For velocity -- optimized [using 1 dimensional arrays ONLY]
-        public static void EvaluateOpt(float[] u, float[] up, float[] lagInt, int nOrder, int comps, int dims)
+        public static void EvaluateOpt(float[] u, double[] up, float[] lagInt, int nOrder, int comps, int dims)
         {
 //#if (WORST || SORTED)
             EvaluateOpt(u, 0, up, lagInt, nOrder, comps, dims);
@@ -176,7 +176,7 @@ namespace Turbulence.SciLib
 //#endif
         }
 
-        public static void EvaluateOpt(float[] u, int offset, float[] up, float[] lagInt, int nOrder, int comps, int dims)
+        public static void EvaluateOpt(float[] u, int offset, double[] up, float[] lagInt, int nOrder, int comps, int dims)
         {
             // URGENT: Add a flag for pressure (or not)
             int nDim = dims;
@@ -357,10 +357,10 @@ namespace Turbulence.SciLib
 
 
         // For pressure
-        public static void EvaluatePressure(ref float[, , ,] dataBlob, ref float p, ref float[] lagIntx,
+        public static void EvaluatePressure(ref float[, , ,] dataBlob, ref double p, ref float[] lagIntx,
             ref float[] lagInty, ref float[] lagIntz, int nOrder)
         {
-            p = 0.0F;
+            p = 0.0;
             switch (nOrder)
             {
                 case 4:
