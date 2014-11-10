@@ -326,8 +326,8 @@ namespace Turbulence.SQLInterface.workers
                     z = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dx);
                     // Wrap the coordinates into the grid space
                     x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     // We are computing the following: 
                     // 4/3dx^2[f(x_(m+1, y_n)) + f(x_(m-1, y_n)) - 2f(x_m, y_n)] - 1/12dx^2[f(x_(m+2, y_n)) + f(x_(m-2, y_n)) - 2f(x_m, y_n)]
@@ -339,22 +339,22 @@ namespace Turbulence.SQLInterface.workers
 
                     // We also need to determine where we are starting, e.g. f(x_(n-2)), f(x_(n-1)), etc.
                     KernelStartX = blob.GetRealX - x + startx + length;
-                    if (KernelStartX >= blob.GetGridResolution)
-                        KernelStartX -= blob.GetGridResolution;
+                    if (KernelStartX >= setInfo.GridResolutionX)
+                        KernelStartX -= setInfo.GridResolutionX;
                     else if (KernelStartX < 0)
-                        KernelStartX += blob.GetGridResolution;
+                        KernelStartX += setInfo.GridResolutionX;
 
                     KernelStartY = blob.GetRealY - y + starty + length;
-                    if (KernelStartY >= blob.GetGridResolution)
-                        KernelStartY -= blob.GetGridResolution;
+                    if (KernelStartY >= setInfo.GridResolutionY)
+                        KernelStartY -= setInfo.GridResolutionY;
                     else if (KernelStartY < 0)
-                        KernelStartY += blob.GetGridResolution;
+                        KernelStartY += setInfo.GridResolutionY;
 
                     KernelStartZ = blob.GetRealZ - z + startz + length;
-                    if (KernelStartZ >= blob.GetGridResolution)
-                        KernelStartZ -= blob.GetGridResolution;
+                    if (KernelStartZ >= setInfo.GridResolutionZ)
+                        KernelStartZ -= setInfo.GridResolutionZ;
                     else if (KernelStartZ < 0)
-                        KernelStartZ += blob.GetGridResolution;
+                        KernelStartZ += setInfo.GridResolutionZ;
 
                     fixed (double* FDCoeff = CenteredFiniteDiffCoeff)
                     {
@@ -446,22 +446,22 @@ namespace Turbulence.SQLInterface.workers
                 
                     // We also need to determine where we are starting, e.g. n - 3, n - 2, ..., n + 4
                     KernelStartX = blob.GetRealX - x + startx + 3;
-                    if (KernelStartX >= blob.GetGridResolution)
-                        KernelStartX -= blob.GetGridResolution;
+                    if (KernelStartX >= setInfo.GridResolutionX)
+                        KernelStartX -= setInfo.GridResolutionX;
                     else if (KernelStartX < 0)
-                        KernelStartX += blob.GetGridResolution;
+                        KernelStartX += setInfo.GridResolutionX;
 
                     KernelStartY = blob.GetRealY - y + starty + 3;
-                    if (KernelStartY >= blob.GetGridResolution)
-                        KernelStartY -= blob.GetGridResolution;
+                    if (KernelStartY >= setInfo.GridResolutionY)
+                        KernelStartY -= setInfo.GridResolutionY;
                     else if (KernelStartY < 0)
-                        KernelStartY += blob.GetGridResolution;
+                        KernelStartY += setInfo.GridResolutionY;
 
                     KernelStartZ = blob.GetRealZ - z + startz + 3;
-                    if (KernelStartZ >= blob.GetGridResolution)
-                        KernelStartZ -= blob.GetGridResolution;
+                    if (KernelStartZ >= setInfo.GridResolutionZ)
+                        KernelStartZ -= setInfo.GridResolutionZ;
                     else if (KernelStartZ < 0)
-                        KernelStartZ += blob.GetGridResolution;
+                        KernelStartZ += setInfo.GridResolutionZ;
 
                     fixed (double* lagint = input.lagInt, FDCoeff = CenteredFiniteDiffCoeff)
                     {

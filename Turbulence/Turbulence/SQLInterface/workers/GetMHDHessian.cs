@@ -286,8 +286,8 @@ namespace Turbulence.SQLInterface.workers
                     z = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dx);
                     // Wrap the coordinates into the grid space
                     x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     // We are computing the following: 
                     // 4/3dx^2[f(x_(m+1, y_n)) + f(x_(m-1, y_n)) - 2f(x_m, y_n)] - 1/12dx^2[f(x_(m+2, y_n)) + f(x_(m-2, y_n)) - 2f(x_m, y_n)]
@@ -301,22 +301,22 @@ namespace Turbulence.SQLInterface.workers
 
                     // We also need to determine where we are starting, e.g. f(x_(n-2)), f(x_(n-1)), etc.
                     iLagIntx = blob.GetRealX - x + startx + length;
-                    if (iLagIntx >= blob.GetGridResolution)
-                        iLagIntx -= blob.GetGridResolution;
+                    if (iLagIntx >= setInfo.GridResolutionX)
+                        iLagIntx -= setInfo.GridResolutionX;
                     else if (iLagIntx < 0)
-                        iLagIntx += blob.GetGridResolution;
+                        iLagIntx += setInfo.GridResolutionX;
 
                     iLagInty = blob.GetRealY - y + starty + length;
-                    if (iLagInty >= blob.GetGridResolution)
-                        iLagInty -= blob.GetGridResolution;
+                    if (iLagInty >= setInfo.GridResolutionY)
+                        iLagInty -= setInfo.GridResolutionY;
                     else if (iLagInty < 0)
-                        iLagInty += blob.GetGridResolution;
+                        iLagInty += setInfo.GridResolutionY;
 
                     iLagIntz = blob.GetRealZ - z + startz + length;
-                    if (iLagIntz >= blob.GetGridResolution)
-                        iLagIntz -= blob.GetGridResolution;
+                    if (iLagIntz >= setInfo.GridResolutionZ)
+                        iLagIntz -= setInfo.GridResolutionZ;
                     else if (iLagIntz < 0)
-                        iLagIntz += blob.GetGridResolution;
+                        iLagIntz += setInfo.GridResolutionZ;
 
                     fixed (double* FDCoeff = CenteredFiniteDiffCoeff)
                     {
@@ -468,8 +468,8 @@ namespace Turbulence.SQLInterface.workers
                 
                     // Wrap the coordinates into the grid space
                     x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     // This computation has 2 stages:
                     // 4th-order finite difference evaluation of the derivative (see above)
@@ -496,22 +496,22 @@ namespace Turbulence.SQLInterface.workers
                 
                     // We also need to determine where we are starting, e.g. n - 3, n - 2, ..., n + 4
                     iLagIntx = blob.GetRealX - x + startx + 3;
-                    if (iLagIntx >= blob.GetGridResolution)
-                        iLagIntx -= blob.GetGridResolution;
+                    if (iLagIntx >= setInfo.GridResolutionX)
+                        iLagIntx -= setInfo.GridResolutionX;
                     else if (iLagIntx < 0)
-                        iLagIntx += blob.GetGridResolution;
+                        iLagIntx += setInfo.GridResolutionX;
 
                     iLagInty = blob.GetRealY - y + starty + 3;
-                    if (iLagInty >= blob.GetGridResolution)
-                        iLagInty -= blob.GetGridResolution;
+                    if (iLagInty >= setInfo.GridResolutionY)
+                        iLagInty -= setInfo.GridResolutionY;
                     else if (iLagInty < 0)
-                        iLagInty += blob.GetGridResolution;
+                        iLagInty += setInfo.GridResolutionY;
 
                     iLagIntz = blob.GetRealZ - z + startz + 3;
-                    if (iLagIntz >= blob.GetGridResolution)
-                        iLagIntz -= blob.GetGridResolution;
+                    if (iLagIntz >= setInfo.GridResolutionZ)
+                        iLagIntz -= setInfo.GridResolutionZ;
                     else if (iLagIntz < 0)
-                        iLagIntz += blob.GetGridResolution;
+                        iLagIntz += setInfo.GridResolutionZ;
 
                     fixed (double* lagint = input.lagInt, FDCoeff = CenteredFiniteDiffCoeff)
                     {
