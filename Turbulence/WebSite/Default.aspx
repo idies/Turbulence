@@ -1,5 +1,5 @@
-
-<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default.aspx.cs" Inherits="_Default" %>
+﻿
+<%@ Page Language="C#" AutoEventWireup="true" Inherits="_Default" Codebehind="Default.aspx.cs" %>
 <%@ OutputCache Duration="60" Location="Any" VaryByParam="none" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -8,8 +8,8 @@
 <head><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
 
 <link href="bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script  type="text/javascript" src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <link href="turbulence.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -29,8 +29,10 @@
    
 </div>
 <div id="centercolumn">
-      <asp:Literal ID="testingserver" runat="server"></asp:Literal>
+<p class="style34"><font size="2" face="Arial, Helvetica, sans-serif">
+<asp:Literal ID="testingserver" runat="server"></asp:Literal>
 <asp:Literal ID="status" runat="server"></asp:Literal>
+</font></p>
       <p align="center"><span class="style29"><strong><font face="Arial, Helvetica, sans-serif">Welcome
                 to the Johns Hopkins Turbulence Database (JHTDB) site</font></strong></span><span class="style27"><font face="Arial, Helvetica, sans-serif"></font></span></p>
       
