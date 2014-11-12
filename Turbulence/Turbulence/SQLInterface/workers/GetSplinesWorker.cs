@@ -14,106 +14,15 @@ namespace Turbulence.SQLInterface.workers
 {
     public class GetSplinesWorker : Worker
     {
-        private int derivative;
-        private int result_size;
+        protected int derivative;
+        protected int result_size;
 
-        private void ComputeBetas(int deriv, double x, double[] poly_val, int offset)
+        //TODO: Consider reading all of these from the DB. They are already included in the python library that generates the CSV files.
+        //      Then the coefficients can be handled the same way as for the non-uniform y dimension of the channel grid.
+        protected void ComputeBetas(int deriv, double x, double[] poly_val, int offset)
         {
             switch (spatialInterp)
             {
-                //case TurbulenceOptions.SpatialInterpolation.M0Q4:
-                //    switch (deriv)
-                //    {
-                //        case 0:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = -x + 1;
-                //            poly_val[offset + 2] = x;
-                //            poly_val[offset + 3] = 0;
-                //            break;
-                //        case 1:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = -1;
-                //            poly_val[offset + 2] = 1;
-                //            poly_val[offset + 3] = 0;
-                //            break;
-                //        case 2:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = 0;
-                //            poly_val[offset + 2] = 0;
-                //            poly_val[offset + 3] = 0;
-                //            break;
-                //        default:
-                //            throw new Exception("Invalid derivative option!");
-                //    }
-                //    break;
-                //case TurbulenceOptions.SpatialInterpolation.M0Q6:
-                //    switch (deriv)
-                //    {
-                //        case 0:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = 0;
-                //            poly_val[offset + 2] = -x + 1;
-                //            poly_val[offset + 3] = x;
-                //            poly_val[offset + 4] = 0;
-                //            poly_val[offset + 5] = 0;
-                //            break;
-                //        case 1:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = 0;
-                //            poly_val[offset + 2] = -1;
-                //            poly_val[offset + 3] = 1;
-                //            poly_val[offset + 4] = 0;
-                //            poly_val[offset + 5] = 0;
-                //            break;
-                //        case 2:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = 0;
-                //            poly_val[offset + 2] = 0;
-                //            poly_val[offset + 3] = 0;
-                //            poly_val[offset + 4] = 0;
-                //            poly_val[offset + 5] = 0;
-                //            break;
-                //        default:
-                //            throw new Exception("Invalid derivative option!");
-                //    }
-                //    break;
-                //case TurbulenceOptions.SpatialInterpolation.M0Q8:
-                //    switch (deriv)
-                //    {
-                //        case 0:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = 0;
-                //            poly_val[offset + 2] = 0;
-                //            poly_val[offset + 3] = -x + 1;
-                //            poly_val[offset + 4] = x;
-                //            poly_val[offset + 5] = 0;
-                //            poly_val[offset + 6] = 0;
-                //            poly_val[offset + 7] = 0;
-                //            break;
-                //        case 1:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = 0;
-                //            poly_val[offset + 2] = 0;
-                //            poly_val[offset + 3] = -1;
-                //            poly_val[offset + 4] = 1;
-                //            poly_val[offset + 5] = 0;
-                //            poly_val[offset + 6] = 0;
-                //            poly_val[offset + 7] = 0;
-                //            break;
-                //        case 2:
-                //            poly_val[offset + 0] = 0;
-                //            poly_val[offset + 1] = 0;
-                //            poly_val[offset + 2] = 0;
-                //            poly_val[offset + 3] = 0;
-                //            poly_val[offset + 4] = 0;
-                //            poly_val[offset + 5] = 0;
-                //            poly_val[offset + 6] = 0;
-                //            poly_val[offset + 7] = 0;
-                //            break;
-                //        default:
-                //            throw new Exception("Invalid derivative option!");
-                //    }
-                //    break;
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                     switch (deriv)
                     {
@@ -1201,15 +1110,21 @@ namespace Turbulence.SQLInterface.workers
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
                 throw new Exception("GetAtomsForPoint should only be called when spatial interpolation is performed!");
 
-            int X, Y, Z;
-            X = LagInterpolation.CalcNode(request.x, setInfo.Dx);
-            Y = LagInterpolation.CalcNode(request.y, setInfo.Dx);
-            Z = LagInterpolation.CalcNode(request.z, setInfo.Dx);
-            // For Lagrange Polynomial interpolation we need a cube of data 
-            
-            int startz = Z - kernelSize / 2 + 1, starty = Y - kernelSize / 2 + 1, startx = X - kernelSize / 2 + 1;
-            int endz = Z + kernelSize / 2, endy = Y + kernelSize / 2, endx = X + kernelSize / 2;
+            int startz = request.cell_z - kernelSize / 2 + 1, starty = request.cell_y - kernelSize / 2 + 1, startx = request.cell_x - kernelSize / 2 + 1;
+            int endz = request.cell_z + kernelSize / 2, endy = request.cell_y + kernelSize / 2, endx = request.cell_x + kernelSize / 2;
 
+            // we do not want a request to appear more than once in the list for an atom
+            // with the below logic we are going to check distinct atoms only
+            // we want to start at the start of a DB atom
+            startz = startz - ((startz % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
+            starty = starty - ((starty % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
+            startx = startx - ((startx % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
+
+            AddAtoms(request, mask, startz, starty, startx, endz, endy, endx, map, ref total_points);
+        }
+
+        protected void AddAtoms(SQLUtility.MHDInputRequest request, long mask, int startz, int starty, int startx, int endz, int endy, int endx, Dictionary<long, List<int>> map, ref int total_points)
+        {
             // we do not want a request to appear more than once in the list for an atom
             // with the below logic we are going to check distinct atoms only
             // we want to start at the start of a DB atom
@@ -1227,8 +1142,8 @@ namespace Turbulence.SQLInterface.workers
                     {
                         // Wrap the coordinates into the grid space
                         int xi = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                        int yi = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                        int zi = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                        int yi = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                        int zi = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                         if (setInfo.PointInRange(xi, yi, zi))
                         {
@@ -1248,17 +1163,14 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            float xp = input.x;
-            float yp = input.y;
-            float zp = input.z; 
-            return CalcSplines(blob, xp, yp, zp, ref input.lagInt);
+            return CalcSplines(blob, input);
         }
 
         public override int GetResultSize()
@@ -1274,18 +1186,14 @@ namespace Turbulence.SQLInterface.workers
         /// The Lagrangian evaluation function [LagInterpolation.EvaluateOpt] was moved
         /// into the function and some loop unrolling was performed.
         /// </remarks>
-        public float[] CalcSplines(TurbulenceBlob blob, float xp, float yp, float zp, ref double[] poly_val)
+        public virtual double[] CalcSplines(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            float[] up = new float[result_size]; // Result value for the user
+            double[] up = new double[result_size]; // Result value for the user
 
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
             {
-                int xi = LagInterpolation.CalcNodeWithRound(xp, setInfo.Dx);
-                int yi = LagInterpolation.CalcNodeWithRound(yp, setInfo.Dx);
-                int zi = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dx);
-
                 float[] data = blob.data;
-                int off0 = blob.GetLocalOffsetMHD(zi, yi, xi, 0);
+                int off0 = blob.GetLocalOffsetMHD(input.cell_z, input.cell_y, input.cell_x, 0);
                 for (int j = 0; j < setInfo.Components; j++)
                 {
                     up[j] = data[off0 + j];
@@ -1293,75 +1201,90 @@ namespace Turbulence.SQLInterface.workers
             }
             else
             {
-                int x = LagInterpolation.CalcNode(xp, setInfo.Dx);
-                int y = LagInterpolation.CalcNode(yp, setInfo.Dx);
-                int z = LagInterpolation.CalcNode(zp, setInfo.Dx);
-
                 // The coefficients are computed only once and cached, so that they don't have to be 
                 // recomputed for each partial sum
-                if (poly_val == null)
+                if (input.lagInt == null)
                 {
                     int dimensions = 3;
-                    poly_val = new double[dimensions * kernelSize * (derivative + 1)];
+                    input.lagInt = new double[dimensions * kernelSize * (derivative + 1)];
 
                     for (int i = 0; i <= derivative; i++)
                     {
-                        ComputeBetas(i, (xp / setInfo.Dx) - x, poly_val, (i * dimensions) * kernelSize);
-                        ComputeBetas(i, (yp / setInfo.Dy) - y, poly_val, (i * dimensions + 1) * kernelSize);
-                        ComputeBetas(i, (zp / setInfo.Dz) - z, poly_val, (i * dimensions + 2) * kernelSize);
+                        ComputeBetas(i, (input.x / setInfo.Dx) - input.cell_x, input.lagInt, (i * dimensions) * kernelSize);
+                        ComputeBetas(i, (input.y / setInfo.Dy) - input.cell_y, input.lagInt, (i * dimensions + 1) * kernelSize);
+                        ComputeBetas(i, (input.z / setInfo.Dz) - input.cell_z, input.lagInt, (i * dimensions + 2) * kernelSize);
                     }
                 }
 
                 // Wrap the coordinates into the grid space
-                x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                int x = ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                int y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                int z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                 int startz = 0, starty = 0, startx = 0, endz = 0, endy = 0, endx = 0;
                 blob.GetSubcubeStart(z - (kernelSize / 2) + 1, y - (kernelSize / 2) + 1, x - (kernelSize / 2) + 1, ref startz, ref starty, ref startx);
                 blob.GetSubcubeEnd(z + (kernelSize / 2), y + (kernelSize / 2), x + (kernelSize / 2), ref endz, ref endy, ref endx);
 
                 int iLagIntx = blob.GetRealX - x + startx + kernelSize / 2 - 1;
-                if (iLagIntx >= blob.GetGridResolution)
-                    iLagIntx -= blob.GetGridResolution;
+                if (iLagIntx >= setInfo.GridResolutionX)
+                    iLagIntx -= setInfo.GridResolutionX;
                 else if (iLagIntx < 0)
-                    iLagIntx += blob.GetGridResolution;
+                    iLagIntx += setInfo.GridResolutionX;
                 int iLagInty = blob.GetRealY - y + starty + kernelSize / 2 - 1;
-                if (iLagInty >= blob.GetGridResolution)
-                    iLagInty -= blob.GetGridResolution;
+                if (iLagInty >= setInfo.GridResolutionY)
+                    iLagInty -= setInfo.GridResolutionY;
                 else if (iLagInty < 0)
-                    iLagInty += blob.GetGridResolution;
+                    iLagInty += setInfo.GridResolutionY;
                 int iLagIntz = blob.GetRealZ - z + startz + kernelSize / 2 - 1;
-                if (iLagIntz >= blob.GetGridResolution)
-                    iLagIntz -= blob.GetGridResolution;
+                if (iLagIntz >= setInfo.GridResolutionZ)
+                    iLagIntz -= setInfo.GridResolutionZ;
                 else if (iLagIntz < 0)
-                    iLagIntz += blob.GetGridResolution;
+                    iLagIntz += setInfo.GridResolutionZ;
 
                 if (derivative == 0)
                 {
-                    ClacSplineInterpolation(blob, ref poly_val, startz, endz, starty, endy, startx, endx, iLagIntz, iLagInty, iLagIntx, ref up);
+                    ClacSplineInterpolation(blob, ref input.lagInt, startz, endz, starty, endy, startx, endx, iLagIntz, iLagInty, iLagIntx, ref up);
                 }
                 else if (derivative == 1)
                 {
-                    ClacSplineGradient(blob, ref poly_val, startz, endz, starty, endy, startx, endx, iLagIntz, iLagInty, iLagIntx, ref up);
+                    ClacSplineGradient(blob, ref input.lagInt, startz, endz, starty, endy, startx, endx, iLagIntz, iLagInty, iLagIntx, ref up);
+
+                    int dimensions = 3;
+                    for (int j = 0; j < setInfo.Components; j++)
+                    {
+                        up[dimensions * j] = up[dimensions * j] / setInfo.Dx;
+                        up[1 + dimensions * j] = up[1 + dimensions * j] / setInfo.Dy;
+                        up[2 + dimensions * j] = up[2 + dimensions * j] / setInfo.Dz;
+                    }
                 }
                 else if (derivative == 2)
                 {
-                    ClacSplineHessian(blob, ref poly_val, startz, endz, starty, endy, startx, endx, iLagIntz, iLagInty, iLagIntx, ref up);
+                    ClacSplineHessian(blob, ref input.lagInt, startz, endz, starty, endy, startx, endx, iLagIntz, iLagInty, iLagIntx, ref up);
+                    
+                    int hessian_components = 6;
+                    for (int j = 0; j < setInfo.Components; j++)
+                    {
+                        up[j * hessian_components] = up[j * hessian_components] / setInfo.Dx / setInfo.Dx;
+                        up[j * hessian_components + 1] = up[j * hessian_components + 1] / setInfo.Dx / setInfo.Dy;
+                        up[j * hessian_components + 2] = up[j * hessian_components + 2] / setInfo.Dx / setInfo.Dz;
+                        up[j * hessian_components + 3] = up[j * hessian_components + 3] / setInfo.Dy / setInfo.Dy;
+                        up[j * hessian_components + 4] = up[j * hessian_components + 4] / setInfo.Dy / setInfo.Dz;
+                        up[j * hessian_components + 5] = up[j * hessian_components + 5] / setInfo.Dz / setInfo.Dz;
+                    }
                 }
             }
             return up;
         }
 
-        private double GetBeta(double[] poly_val, int kernel_size, int derivative, int coordinate, int position)
+        protected double GetBeta(double[] poly_val, int kernel_size, int derivative, int coordinate, int position)
         {
             int dimensions = 3;
             return poly_val[(dimensions * derivative + coordinate) * kernel_size + position];
         }
 
-        unsafe private void ClacSplineInterpolation(TurbulenceBlob blob, ref double[] poly_val, 
-            int startz, int endz, int starty, int endy, int startx, int endx, 
-            int iLagIntz, int iLagInty, int iLagIntx, ref float[] up)
+        unsafe protected void ClacSplineInterpolation(TurbulenceBlob blob, ref double[] poly_val, 
+            int startz, int endz, int starty, int endy, int startx, int endx,
+            int iLagIntz, int iLagInty, int iLagIntx, ref double[] up)
         {
             float[] data = blob.data;
             int off0 = startx * setInfo.Components;
@@ -1373,7 +1296,6 @@ namespace Turbulence.SQLInterface.workers
             {
                 fixed (float* fdata = data)
                 {
-                    double[] a = new double[setInfo.Components];
                     for (int iz = startz; iz <= endz; iz++)
                     {
                         double[] b = new double[setInfo.Components];
@@ -1400,21 +1322,16 @@ namespace Turbulence.SQLInterface.workers
                         double z_coeff = GetBeta(poly_val, kernelSize, derivative, z_coordinate, iLagIntz + iz - startz); //polyVal[2 * kernelSize + iLagIntz + iz - startz];
                         for (int j = 0; j < setInfo.Components; j++)
                         {
-                            a[j] += b[j] * z_coeff;
+                            up[j] += b[j] * z_coeff;
                         }
-                    }
-
-                    for (int j = 0; j < setInfo.Components; j++)
-                    {
-                        up[j] = (float)a[j];
                     }
                 }
             }
         }
 
-        unsafe private void ClacSplineGradient(TurbulenceBlob blob, ref double[] poly_val,
+        unsafe protected void ClacSplineGradient(TurbulenceBlob blob, ref double[] poly_val,
             int startz, int endz, int starty, int endy, int startx, int endx,
-            int iLagIntz, int iLagInty, int iLagIntx, ref float[] up)
+            int iLagIntz, int iLagInty, int iLagIntx, ref double[] up)
         {
             float[] data = blob.data;
             int off0 = startx * setInfo.Components;
@@ -1429,7 +1346,6 @@ namespace Turbulence.SQLInterface.workers
             {
                 fixed (float* fdata = data)
                 {
-                    double[] a = new double[result_size];
                     for (int iz = startz; iz <= endz; iz++)
                     {
                         double[] b = new double[result_size];
@@ -1473,28 +1389,20 @@ namespace Turbulence.SQLInterface.workers
                         for (int j = 0; j < setInfo.Components; j++)
                         {
                             // dudx computation
-                            a[j] += dudx_z_coeff * b[j];
+                            up[dimensions * j] += dudx_z_coeff * b[j];
                             // dudy computation
-                            a[j + dimensions] += dudx_z_coeff * b[j + dimensions];
+                            up[1 + dimensions * j] += dudx_z_coeff * b[j + dimensions];
                             // dudz computation
-                            a[j + 2 * dimensions] += dudz_z_coeff * b[j + 2 * dimensions];
-                        }
-                    }
-
-                    for (int j = 0; j < setInfo.Components; j++)
-                    {
-                        for (int k = 0; k < dimensions; k++)
-                        {
-                            up[k + dimensions * j] = (float)(a[j + k * dimensions] / setInfo.Dx);
+                            up[2 + dimensions * j] += dudz_z_coeff * b[j + 2 * dimensions];
                         }
                     }
                 }
             }
         }
 
-        unsafe private void ClacSplineHessian(TurbulenceBlob blob, ref double[] poly_val,
+        unsafe protected void ClacSplineHessian(TurbulenceBlob blob, ref double[] poly_val,
             int startz, int endz, int starty, int endy, int startx, int endx,
-            int iLagIntz, int iLagInty, int iLagIntx, ref float[] up)
+            int iLagIntz, int iLagInty, int iLagIntx, ref double[] up)
         {
             float[] data = blob.data;
             int off0 = startx * setInfo.Components;
@@ -1510,7 +1418,6 @@ namespace Turbulence.SQLInterface.workers
             {
                 fixed (float* fdata = data)
                 {
-                    double[] a = new double[result_size];
                     for (int iz = startz; iz <= endz; iz++)
                     {
                         double[] b = new double[result_size];
@@ -1572,28 +1479,18 @@ namespace Turbulence.SQLInterface.workers
                         for (int j = 0; j < setInfo.Components; j++)
                         {
                             // d2udxdx computation
-                            a[j * hessian_components] += d2udxdy_z_coeff * b[j * hessian_components];
+                            up[j * hessian_components] += d2udxdy_z_coeff * b[j * hessian_components];
                             // d2udxdy computation
-                            a[j * hessian_components + 1] += d2udxdy_z_coeff * b[j * hessian_components + 1];
+                            up[j * hessian_components + 1] += d2udxdy_z_coeff * b[j * hessian_components + 1];
                             // d2udxdz computation
-                            a[j * hessian_components + 2] += d2udxdz_z_coeff * b[j * hessian_components + 2];
+                            up[j * hessian_components + 2] += d2udxdz_z_coeff * b[j * hessian_components + 2];
                             // d2udydy computation
-                            a[j * hessian_components + 3] += d2udxdy_z_coeff * b[j * hessian_components + 3];
+                            up[j * hessian_components + 3] += d2udxdy_z_coeff * b[j * hessian_components + 3];
                             // d2udydz computation
-                            a[j * hessian_components + 4] += d2udxdz_z_coeff * b[j * hessian_components + 4];
+                            up[j * hessian_components + 4] += d2udxdz_z_coeff * b[j * hessian_components + 4];
                             // d2udzdz computation
-                            a[j * hessian_components + 5] += d2udzdz_z_coeff * b[j * hessian_components + 5];
+                            up[j * hessian_components + 5] += d2udzdz_z_coeff * b[j * hessian_components + 5];
                         }
-                    }
-
-                    for (int j = 0; j < setInfo.Components; j++)
-                    {
-                        up[j * hessian_components] = (float)(a[j * hessian_components] / setInfo.Dx / setInfo.Dx);
-                        up[j * hessian_components + 1] = (float)(a[j * hessian_components + 1] / setInfo.Dx / setInfo.Dx);
-                        up[j * hessian_components + 2] = (float)(a[j * hessian_components + 2] / setInfo.Dx / setInfo.Dx);
-                        up[j * hessian_components + 3] = (float)(a[j * hessian_components + 3] / setInfo.Dx / setInfo.Dx);
-                        up[j * hessian_components + 4] = (float)(a[j * hessian_components + 4] / setInfo.Dx / setInfo.Dx);
-                        up[j * hessian_components + 5] = (float)(a[j * hessian_components + 5] / setInfo.Dx / setInfo.Dx);
                     }
                 }
             }

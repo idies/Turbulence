@@ -137,19 +137,19 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             throw new NotImplementedException();
         }
 
         public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestep, int basetime)
         {
-            float[] velocity = new float[3];
+            double[] velocity = new double[3];
 
             if (turbulence_worker == null)
                 throw new Exception("turbulence_worker is null!");
@@ -199,30 +199,30 @@ namespace Turbulence.SQLInterface.workers
 
                 if (timestep == timestep0)
                 {
-                    point.vel_inc.x += -velocity[0] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
-                    point.vel_inc.y += -velocity[1] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
-                    point.vel_inc.z += -velocity[2] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.x += -(float)velocity[0] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.y += -(float)velocity[1] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.z += -(float)velocity[2] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
                     //point.result[r] += -result[r] * (time - time1) * (1 + (time - time1) * (-1 + (time - time2) / delta) / delta) / 2 / delta;
                 }
                 else if (timestep == timestep1)
                 {
-                    point.vel_inc.x += velocity[0] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
-                    point.vel_inc.y += velocity[1] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
-                    point.vel_inc.z += velocity[2] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
+                    point.vel_inc.x += (float)velocity[0] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
+                    point.vel_inc.y += (float)velocity[1] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
+                    point.vel_inc.z += (float)velocity[2] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
                     //point.result[r] += result[r] * (1 + ((time - time1) * (time - time1) * (-2 + 3 * (time - time2) / delta) / 2 / delta / delta));
                 }
                 else if (timestep == timestep2)
                 {
-                    point.vel_inc.x += velocity[0] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
-                    point.vel_inc.y += velocity[1] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
-                    point.vel_inc.z += velocity[2] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.x += (float)velocity[0] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.y += (float)velocity[1] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.z += (float)velocity[2] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
                     //point.result[r] += result[r] * (time - time1) * (1 + (time - time1) * (1 - 3 * (time - time2) / delta) / delta) / 2 / delta;
                 }
                 else if (timestep == timestep3)
                 {
-                    point.vel_inc.x += velocity[0] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
-                    point.vel_inc.y += velocity[1] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
-                    point.vel_inc.z += velocity[2] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
+                    point.vel_inc.x += (float)velocity[0] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
+                    point.vel_inc.y += (float)velocity[1] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
+                    point.vel_inc.z += (float)velocity[2] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
                     //point.result[r] += result[r] * (time - time1) * (time - time1) * (time - time2) / 2 / delta / delta / delta;
                 }
             }

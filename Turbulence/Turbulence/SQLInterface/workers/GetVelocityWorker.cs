@@ -87,7 +87,7 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             return CalcVelocity(blob, (float)input.x, (float)input.y, (float)input.z);
         }
@@ -102,21 +102,21 @@ namespace Turbulence.SQLInterface.workers
         /// 
         /// This function assumes that Vx, Vy, Vz and P are stored together in a blob
         /// </remarks>
-        unsafe public float[] CalcVelocity(TurbulenceBlob blob, float xp, float yp, float zp)
+        unsafe public double[] CalcVelocity(TurbulenceBlob blob, float xp, float yp, float zp)
         {
-            float[] up; // Result value for the user
+            double[] up; // Result value for the user
 
             if (velocity && !pressure)
             {
-                up = new float[3];
+                up = new double[3];
             }
             else if (velocity && pressure)
             {
-                up = new float[4];
+                up = new double[4];
             }
             else if (!velocity && pressure)
             {
-                up = new float[1];
+                up = new double[1];
             }
             else
             {
@@ -214,11 +214,11 @@ namespace Turbulence.SQLInterface.workers
                                 if (pressure)
                                     a4 += b4 * a;
                             }
-                            up[0] = (float)a1;
-                            up[1] = (float)a2;
-                            up[2] = (float)a3;
+                            up[0] = a1;
+                            up[1] = a2;
+                            up[2] = a3;
                             if (pressure)
-                                up[3] = (float)a4;
+                                up[3] = a4;
 
                         }
                         else if (pressure) // Presure only
@@ -246,7 +246,7 @@ namespace Turbulence.SQLInterface.workers
                                 a0 += b0 * a;
                             }
 
-                            up[0] = (float)a0;
+                            up[0] = a0;
                         }
                         /*
                         if (velocity) // Velocity with or without pressure
@@ -337,9 +337,9 @@ namespace Turbulence.SQLInterface.workers
         /// 
         /// This function assumes that Vx, Vy and Vz are stored together in a blob
         /// </remarks>
-        unsafe public float[] CalcVelocity(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcVelocity(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
         {
-            float[] up = new float[3]; // Result value for the user
+            double[] up = new double[3]; // Result value for the user
 
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
             {
@@ -396,23 +396,23 @@ namespace Turbulence.SQLInterface.workers
 
                 //int iLagInt;
                 int iLagIntx = blob.GetRealX - x + startx + nOrder / 2 - 1;
-                //iLagIntx = ((iLagIntx % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagIntx >= blob.GetGridResolution)
-                    iLagIntx -= blob.GetGridResolution;
+                //iLagIntx = ((iLagIntx % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
+                if (iLagIntx >= setInfo.GridResolutionX)
+                    iLagIntx -= setInfo.GridResolutionX;
                 else if (iLagIntx < 0)
-                    iLagIntx += blob.GetGridResolution;
+                    iLagIntx += setInfo.GridResolutionX;
                 int iLagInty = blob.GetRealY - y + starty + nOrder / 2 - 1;
-                //iLagInty = ((iLagInty % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagInty >= blob.GetGridResolution)
-                    iLagInty -= blob.GetGridResolution;
+                //iLagInty = ((iLagInty % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
+                if (iLagInty >= setInfo.GridResolutionY)
+                    iLagInty -= setInfo.GridResolutionY;
                 else if (iLagInty < 0)
-                    iLagInty += blob.GetGridResolution;
+                    iLagInty += setInfo.GridResolutionY;
                 int iLagIntz = blob.GetRealZ - z + startz + nOrder / 2 - 1;
-                //iLagIntz = ((iLagIntz % blob.GetGridResolution) + blob.GetGridResolution) % blob.GetGridResolution;
-                if (iLagIntz >= blob.GetGridResolution)
-                    iLagIntz -= blob.GetGridResolution;
+                //iLagIntz = ((iLagIntz % setInfo.GridResolution) + setInfo.GridResolution) % setInfo.GridResolution;
+                if (iLagIntz >= setInfo.GridResolutionZ)
+                    iLagIntz -= setInfo.GridResolutionZ;
                 else if (iLagIntz < 0)
-                    iLagIntz += blob.GetGridResolution;
+                    iLagIntz += setInfo.GridResolutionZ;
 
                 fixed (double* lagint = input.lagInt)
                 {
@@ -458,16 +458,16 @@ namespace Turbulence.SQLInterface.workers
                             a2 += b2 * a;
                             a3 += b3 * a;
                         }
-                        up[0] = (float)a1;
-                        up[1] = (float)a2;
-                        up[2] = (float)a3;
+                        up[0] = a1;
+                        up[1] = a2;
+                        up[2] = a3;
                     }
                 }
             }
             return up;
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             float xp = input.x;
             float yp = input.y;

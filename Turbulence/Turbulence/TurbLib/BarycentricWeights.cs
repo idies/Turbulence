@@ -164,7 +164,7 @@ namespace Turbulence.TurbLib
 
         private void AddWeights(int cell_index, int offset_index, int stencil_start, int stencil_end, double[] weights)
         {
-            Weights uniformWeights = new Weights(cell_index, offset_index, stencil_start, stencil_end, weights);
+            Weights uniformWeights = new Weights(offset_index, stencil_start, stencil_end, weights);
             grid_weights.Add(cell_index, uniformWeights);
         }
         public override double[] GetWeights(int cell_index)
@@ -197,16 +197,16 @@ namespace Turbulence.TurbLib
 
     // Class representing the weights for a given cell index for non-uniform grids.
     // Equivalent to a record in the database table for the barycentric weights.
+    // Also used for the spline weights, where the offset_index is treated as the neighbor index.
     class Weights
     {
         public Weights(int size)
         {
             weights = new double[size];
         }
-        public Weights(int cell_index, int offset_index, int stencil_start, int stencil_end, double[] weights)
+        public Weights(int offset_index, int stencil_start, int stencil_end, double[] weights)
         {
             this.weights = weights;
-            this.cell_index = cell_index;
             this.offset_index = offset_index;
             this.stencil_start = stencil_start;
             this.stencil_end = stencil_end;
@@ -219,11 +219,6 @@ namespace Turbulence.TurbLib
         {
             set { weights[index] = value; }
             get { return weights[index]; }
-        }
-        public int CellIndex
-        {
-            set { cell_index = value; }
-            get { return cell_index; }
         }
         public int StencilStart
         {
@@ -240,7 +235,6 @@ namespace Turbulence.TurbLib
             set { offset_index = value; }
             get { return offset_index; }
         }
-        int cell_index;
         int offset_index;
         int stencil_start;
         int stencil_end;

@@ -283,12 +283,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             return CalcGradient(blob, input);
         }
@@ -305,10 +305,10 @@ namespace Turbulence.SQLInterface.workers
         /// The Lagrangian evaluation function [LagInterpolation.EvaluateOpt] was moved
         /// into the function and some loop unrolling was performed.
         /// </remarks>
-        unsafe public float[] CalcGradient(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcGradient(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             // Result value for the user
-            float[] result = new float[3 * setInfo.Components];
+            double[] result = new double[3 * setInfo.Components];
             // Temp variables for the partial computations
             double[] ax = new double[setInfo.Components], ay = new double[setInfo.Components], az = new double[setInfo.Components];
 
@@ -345,22 +345,22 @@ namespace Turbulence.SQLInterface.workers
 
                     // We also need to determine where we are starting, e.g. f(x_(n-2)), f(x_(n-1)), etc.
                     iLagIntx = blob.GetRealX - x + startx + length;
-                    if (iLagIntx >= blob.GetGridResolution)
-                        iLagIntx -= blob.GetGridResolution;
+                    if (iLagIntx >= setInfo.GridResolutionX)
+                        iLagIntx -= setInfo.GridResolutionX;
                     else if (iLagIntx < 0)
-                        iLagIntx += blob.GetGridResolution;
+                        iLagIntx += setInfo.GridResolutionX;
 
                     iLagInty = blob.GetRealY - y + starty + length;
-                    if (iLagInty >= blob.GetGridResolution)
-                        iLagInty -= blob.GetGridResolution;
+                    if (iLagInty >= setInfo.GridResolutionY)
+                        iLagInty -= setInfo.GridResolutionY;
                     else if (iLagInty < 0)
-                        iLagInty += blob.GetGridResolution;
+                        iLagInty += setInfo.GridResolutionY;
 
                     iLagIntz = blob.GetRealZ - z + startz + length;
-                    if (iLagIntz >= blob.GetGridResolution)
-                        iLagIntz -= blob.GetGridResolution;
+                    if (iLagIntz >= setInfo.GridResolutionZ)
+                        iLagIntz -= setInfo.GridResolutionZ;
                     else if (iLagIntz < 0)
-                        iLagIntz += blob.GetGridResolution;
+                        iLagIntz += setInfo.GridResolutionZ;
 
                     fixed (double* FDCoeff = CenteredFiniteDiffCoeff)
                     {
@@ -455,22 +455,22 @@ namespace Turbulence.SQLInterface.workers
                 
                     // We also need to determine where we are starting, e.g. n - 3, n - 2, ..., n + 4
                     iLagIntx = blob.GetRealX - x + startx + 3;
-                    if (iLagIntx >= blob.GetGridResolution)
-                        iLagIntx -= blob.GetGridResolution;
+                    if (iLagIntx >= setInfo.GridResolutionX)
+                        iLagIntx -= setInfo.GridResolutionX;
                     else if (iLagIntx < 0)
-                        iLagIntx += blob.GetGridResolution;
+                        iLagIntx += setInfo.GridResolutionX;
 
                     iLagInty = blob.GetRealY - y + starty + 3;
-                    if (iLagInty >= blob.GetGridResolution)
-                        iLagInty -= blob.GetGridResolution;
+                    if (iLagInty >= setInfo.GridResolutionY)
+                        iLagInty -= setInfo.GridResolutionY;
                     else if (iLagInty < 0)
-                        iLagInty += blob.GetGridResolution;
+                        iLagInty += setInfo.GridResolutionY;
 
                     iLagIntz = blob.GetRealZ - z + startz + 3;
-                    if (iLagIntz >= blob.GetGridResolution)
-                        iLagIntz -= blob.GetGridResolution;
+                    if (iLagIntz >= setInfo.GridResolutionZ)
+                        iLagIntz -= setInfo.GridResolutionZ;
                     else if (iLagIntz < 0)
-                        iLagIntz += blob.GetGridResolution;
+                        iLagIntz += setInfo.GridResolutionZ;
 
                     fixed (double* lagint = input.lagInt, FDCoeff = CenteredFiniteDiffCoeff)
                     {
@@ -599,9 +599,9 @@ namespace Turbulence.SQLInterface.workers
 
             for (int j = 0; j < setInfo.Components; j++)
             {
-                result[0 + 3 * j] = (float)ax[j];
-                result[1 + 3 * j] = (float)ay[j];
-                result[2 + 3 * j] = (float)az[j];
+                result[0 + 3 * j] = ax[j];
+                result[1 + 3 * j] = ay[j];
+                result[2 + 3 * j] = az[j];
             }
             return result;
         }

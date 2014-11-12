@@ -182,9 +182,9 @@ namespace Turbulence.SQLInterface.workers
             return result;
         }
 
-        public float[] GetResult(SQLUtility.MHDInputRequest input, float dt)
+        public double[] GetResult(SQLUtility.MHDInputRequest input, float dt)
         {
-            float[] result = new float[3]; // Result value for the user
+            double[] result = new double[3]; // Result value for the user
             result[0] = input.x + input.result[0] * dt;
             result[1] = input.y + input.result[1] * dt;
             result[2] = input.z + input.result[2] * dt;
@@ -215,15 +215,15 @@ namespace Turbulence.SQLInterface.workers
             return result;
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
-            float[] result = new float[3]; // Result value for the user
-            float[] velocity = new float[3];
+            double[] result = new double[3]; // Result value for the user
+            double[] velocity = new double[3];
             if (velocity_worker == null || mhd_worker == null)
                 throw new Exception("velocity_worker or mhd_worker is null!");
             if (setInfo.EdgeRegion >= kernelSize / 2)

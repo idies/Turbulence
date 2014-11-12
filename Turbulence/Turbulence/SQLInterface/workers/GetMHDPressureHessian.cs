@@ -14,7 +14,7 @@ namespace Turbulence.SQLInterface.workers
     //      A loop over the components needs to be added
     public class GetMHDPressureHessian : Worker
     {
-        float[,] CenteredFiniteDiffCoeff = null;
+        double[,] CenteredFiniteDiffCoeff = null;
         double[] lagDenominator = null;
 
         public GetMHDPressureHessian(TurbDataTable setInfo,
@@ -28,90 +28,90 @@ namespace Turbulence.SQLInterface.workers
             {
                 case TurbulenceOptions.SpatialInterpolation.None_Fd4:
                     this.kernelSize += 4; // kernelSize will be 4 in the case of None_Fd4 and 8 in the case of Fd4Lag4 (4+4)
-                    CenteredFiniteDiffCoeff = new float[5, 5];
+                    CenteredFiniteDiffCoeff = new double[5, 5];
                     for (int j = 0; j < 5; j++)
                         for (int i = 0; i < 5; i++)
-                            CenteredFiniteDiffCoeff[i, j] = 0.0f;
+                            CenteredFiniteDiffCoeff[i, j] = 0.0;
 
-                    CenteredFiniteDiffCoeff[2, 0] = -1.0f / 12.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[2, 1] = 4.0f / 3.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[2, 2] = -15.0f / 6.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[2, 3] = 4.0f / 3.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[2, 4] = -1.0f / 12.0f / setInfo.DxFloat / setInfo.DxFloat;
+                    CenteredFiniteDiffCoeff[2, 0] = -1.0 / 12.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[2, 1] = 4.0 / 3.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[2, 2] = -15.0 / 6.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[2, 3] = 4.0 / 3.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[2, 4] = -1.0 / 12.0 / setInfo.Dx / setInfo.Dx;
 
 
-                    CenteredFiniteDiffCoeff[0, 0] = -1.0f / 48.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[0, 4] = 1.0f / 48.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 4] = -1.0f / 48.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 0] = 1.0f / 48.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[1, 1] = 1.0f / 3.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[1, 3] = -1.0f / 3.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 3] = 1.0f / 3.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 1] = -1.0f / 3.0f / setInfo.DxFloat / setInfo.DxFloat;
+                    CenteredFiniteDiffCoeff[0, 0] = -1.0 / 48.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[0, 4] = 1.0 / 48.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 4] = -1.0 / 48.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 0] = 1.0 / 48.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[1, 1] = 1.0 / 3.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[1, 3] = -1.0 / 3.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 3] = 1.0 / 3.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 1] = -1.0 / 3.0 / setInfo.Dx / setInfo.Dx;
                     break;
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
                     this.kernelSize = 6;
-                    CenteredFiniteDiffCoeff = new float[7, 7];
+                    CenteredFiniteDiffCoeff = new double[7, 7];
                     for (int j = 0; j < 5; j++)
                         for (int i = 0; i < 5; i++)
-                            CenteredFiniteDiffCoeff[i, j] = 0.0f;
+                            CenteredFiniteDiffCoeff[i, j] = 0.0;
 
-                    CenteredFiniteDiffCoeff[3, 0] = 1.0f / 90.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 1] = -3.0f / 20.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 2] = 3.0f / 2.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 3] = -49.0f / 18.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 4] = 3.0f / 2.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 5] = -3.0f / 20.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 6] = 1.0f / 90.0f / setInfo.DxFloat / setInfo.DxFloat;
+                    CenteredFiniteDiffCoeff[3, 0] = 1.0 / 90.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 1] = -3.0 / 20.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 2] = 3.0 / 2.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 3] = -49.0 / 18.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 4] = 3.0 / 2.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 5] = -3.0 / 20.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 6] = 1.0 / 90.0 / setInfo.Dx / setInfo.Dx;
 
 
-                    CenteredFiniteDiffCoeff[0, 0] = 1.0f / 360.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[0, 6] = -1.0f / 360.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[6, 6] = 1.0f / 360.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[6, 0] = -1.0f / 360.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[1, 1] = -3.0f / 80.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[1, 5] = 3.0f / 80.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[5, 5] = -3.0f / 80.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[5, 1] = 3.0f / 80.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[2, 2] = 3.0f / 8.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[2, 4] = -3.0f / 8.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 4] = 3.0f / 8.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 2] = -3.0f / 8.0f / setInfo.DxFloat / setInfo.DxFloat;
+                    CenteredFiniteDiffCoeff[0, 0] = 1.0 / 360.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[0, 6] = -1.0 / 360.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[6, 6] = 1.0 / 360.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[6, 0] = -1.0 / 360.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[1, 1] = -3.0 / 80.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[1, 5] = 3.0 / 80.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[5, 5] = -3.0 / 80.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[5, 1] = 3.0 / 80.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[2, 2] = 3.0 / 8.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[2, 4] = -3.0 / 8.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 4] = 3.0 / 8.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 2] = -3.0 / 8.0 / setInfo.Dx / setInfo.Dx;
                     break;
                 case TurbulenceOptions.SpatialInterpolation.None_Fd8:
                     this.kernelSize = 8;
-                    CenteredFiniteDiffCoeff = new float[9, 9];
+                    CenteredFiniteDiffCoeff = new double[9, 9];
                     for (int j = 0; j < 5; j++)
                         for (int i = 0; i < 5; i++)
-                            CenteredFiniteDiffCoeff[i, j] = 0.0f;
+                            CenteredFiniteDiffCoeff[i, j] = 0.0;
 
-                    CenteredFiniteDiffCoeff[4, 0] = 9.0f / 3152.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 1] = -104.0f / 8865.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 2] = -207.0f / 2955.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 3] = 792.0f / 591.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 4] = -35777.0f / 14184.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 5] = 792.0f / 591.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 6] = -207.0f / 2955.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 7] = -104.0f / 8865.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[4, 8] = 9.0f / 3152.0f / setInfo.DxFloat / setInfo.DxFloat;
+                    CenteredFiniteDiffCoeff[4, 0] = 9.0 / 3152.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 1] = -104.0 / 8865.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 2] = -207.0 / 2955.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 3] = 792.0 / 591.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 4] = -35777.0 / 14184.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 5] = 792.0 / 591.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 6] = -207.0 / 2955.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 7] = -104.0 / 8865.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[4, 8] = 9.0 / 3152.0 / setInfo.Dx / setInfo.Dx;
 
 
-                    CenteredFiniteDiffCoeff[0, 0] = -1.0f / 2240.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[0, 8] = 1.0f / 2240.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[8, 8] = -1.0f / 2240.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[8, 0] = 1.0f / 2240.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[1, 1] = 2.0f / 315.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[1, 7] = -2.0f / 315.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[7, 7] = 2.0f / 315.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[7, 1] = -2.0f / 315.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[2, 2] = -1.0f / 20.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[2, 6] = 1.0f / 20.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[6, 6] = -1.0f / 20.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[6, 2] = 1.0f / 20.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 3] = 14.0f / 35.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[3, 5] = -14.0f / 35.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[5, 5] = 14.0f / 35.0f / setInfo.DxFloat / setInfo.DxFloat;
-                    CenteredFiniteDiffCoeff[5, 3] = -14.0f / 35.0f / setInfo.DxFloat / setInfo.DxFloat;
+                    CenteredFiniteDiffCoeff[0, 0] = -1.0 / 2240.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[0, 8] = 1.0 / 2240.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[8, 8] = -1.0 / 2240.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[8, 0] = 1.0 / 2240.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[1, 1] = 2.0 / 315.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[1, 7] = -2.0 / 315.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[7, 7] = 2.0 / 315.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[7, 1] = -2.0 / 315.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[2, 2] = -1.0 / 20.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[2, 6] = 1.0 / 20.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[6, 6] = -1.0 / 20.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[6, 2] = 1.0 / 20.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 3] = 14.0 / 35.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[3, 5] = -14.0 / 35.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[5, 5] = 14.0 / 35.0 / setInfo.Dx / setInfo.Dx;
+                    CenteredFiniteDiffCoeff[5, 3] = -14.0 / 35.0 / setInfo.Dx / setInfo.Dx;
                     break;
                 case TurbulenceOptions.SpatialInterpolation.Fd4Lag4:
                     this.kernelSize = 4;
@@ -275,12 +275,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             float xp = input.x;
             float yp = input.y;
@@ -303,11 +303,11 @@ namespace Turbulence.SQLInterface.workers
         /// The only difference is that we are not summing the unmixed second derivatives and
         /// that we have to compute the mixed derivatives as well.
         /// </remarks>
-        unsafe public float[] CalcHessian(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
+        unsafe public double[] CalcHessian(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
         {
-            float[] result = new float[GetResultSize()]; // Result value for the user
+            double[] result = new double[GetResultSize()]; // Result value for the user
             for (int i = 0; i < GetResultSize(); i++)
-                result[i] = 0.0f;
+                result[i] = 0.0;
 
             float[] data = blob.data;
 
@@ -333,8 +333,8 @@ namespace Turbulence.SQLInterface.workers
                     z = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dx);
                     // Wrap the coordinates into the grid space
                     x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     // We are computing the following: 
                     // 4/3dx^2[f(x_(m+1, y_n)) + f(x_(m-1, y_n)) - 2f(x_m, y_n)] - 1/12dx^2[f(x_(m+2, y_n)) + f(x_(m-2, y_n)) - 2f(x_m, y_n)]
@@ -346,136 +346,139 @@ namespace Turbulence.SQLInterface.workers
 
                     // We also need to determine where we are starting, e.g. f(x_(n-2)), f(x_(n-1)), etc.
                     iLagIntx = blob.GetRealX - x + startx + length;
-                    if (iLagIntx >= blob.GetGridResolution)
-                        iLagIntx -= blob.GetGridResolution;
+                    if (iLagIntx >= setInfo.GridResolutionX)
+                        iLagIntx -= setInfo.GridResolutionX;
                     else if (iLagIntx < 0)
-                        iLagIntx += blob.GetGridResolution;
+                        iLagIntx += setInfo.GridResolutionX;
 
                     iLagInty = blob.GetRealY - y + starty + length;
-                    if (iLagInty >= blob.GetGridResolution)
-                        iLagInty -= blob.GetGridResolution;
+                    if (iLagInty >= setInfo.GridResolutionY)
+                        iLagInty -= setInfo.GridResolutionY;
                     else if (iLagInty < 0)
-                        iLagInty += blob.GetGridResolution;
+                        iLagInty += setInfo.GridResolutionY;
 
                     iLagIntz = blob.GetRealZ - z + startz + length;
-                    if (iLagIntz >= blob.GetGridResolution)
-                        iLagIntz -= blob.GetGridResolution;
+                    if (iLagIntz >= setInfo.GridResolutionZ)
+                        iLagIntz -= setInfo.GridResolutionZ;
                     else if (iLagIntz < 0)
-                        iLagIntz += blob.GetGridResolution;
+                        iLagIntz += setInfo.GridResolutionZ;
 
-                    fixed (float* FDCoeff = CenteredFiniteDiffCoeff, fdata = data)
+                    fixed (double* FDCoeff = CenteredFiniteDiffCoeff)
                     {
-                        int off = 0;
-                        #region unmixed derivatives
-                        if (y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide
-                                            && z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
+                        fixed (float* fdata = data)
                         {
-                            off = startx * blob.GetComponents + (y - blob.GetBaseY) * blob.GetSide * blob.GetComponents + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
-                            for (int ix = startx; ix <= endx; ix++)
+                            int off = 0;
+                            #region unmixed derivatives
+                            if (y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide
+                                                && z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
                             {
-                                // The coefficients for the unmixed derivatives are stored in the center row
-                                // This is why we add (nOrder + 1) * (nOrder / 2) to the offset
-                                float coeff = FDCoeff[iLagIntx + ix - startx + (nOrder + 1) * (nOrder / 2)];
-                                result[0] += coeff * fdata[off];
-                                off += blob.GetComponents;
-                            }
-                        }
-                        if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide
-                            && z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
-                        {
-                            off = (x - blob.GetBaseX) * blob.GetComponents + starty * blob.GetSide * blob.GetComponents + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
-                            for (int iy = starty; iy <= endy; iy++)
-                            {
-                                // The coefficients for the unmixed derivatives are stored in the center row
-                                float coeff = FDCoeff[iLagInty + iy - starty + (nOrder + 1) * (nOrder / 2)];
-                                result[3] += coeff * fdata[off];
-                                off += blob.GetSide * blob.GetComponents;
-                            }
-                        }
-                        if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide
-                            && y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide)
-                        {
-                            off = (x - blob.GetBaseX) * blob.GetComponents + (y - blob.GetBaseY) * blob.GetSide * blob.GetComponents + startz * blob.GetSide * blob.GetSide * blob.GetComponents;
-                            for (int iz = startz; iz <= endz; iz++)
-                            {
-                                // The coefficients for the unmixed derivatives are stored in the center row
-                                float coeff = FDCoeff[iLagIntz + iz - startz + (nOrder + 1) * (nOrder / 2)];
-                                result[5] += coeff * fdata[off];
-                                off += blob.GetSide * blob.GetSide * blob.GetComponents;
-                            }
-                        } 
-                        #endregion
-                        #region mixed derivatives
-                        // the mixed derivatives needs data from a plane (either x-y, x-z or y-z)
-                        if (z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
-                        {
-                            for (int iy = starty; iy <= endy; iy++)
-                            {
-                                int LagIntIndexY = iLagInty + iy - starty;
-                                // For the mixed derivatives the center line does not play a role
-                                if (LagIntIndexY != nOrder / 2)
+                                off = startx * blob.GetComponents + (y - blob.GetBaseY) * blob.GetSide * blob.GetComponents + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                for (int ix = startx; ix <= endx; ix++)
                                 {
-                                    // For the Turb dataset Vx, Vy, Vz ARE stored together
-                                    off = startx * blob.GetComponents + iy * blob.GetSide * blob.GetComponents + (z - blob.GetRealZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
-                                    for (int ix = startx; ix <= endx; ix++)
+                                    // The coefficients for the unmixed derivatives are stored in the center row
+                                    // This is why we add (nOrder + 1) * (nOrder / 2) to the offset
+                                    double coeff = FDCoeff[iLagIntx + ix - startx + (nOrder + 1) * (nOrder / 2)];
+                                    result[0] += coeff * fdata[off];
+                                    off += blob.GetComponents;
+                                }
+                            }
+                            if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide
+                                && z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
+                            {
+                                off = (x - blob.GetBaseX) * blob.GetComponents + starty * blob.GetSide * blob.GetComponents + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                for (int iy = starty; iy <= endy; iy++)
+                                {
+                                    // The coefficients for the unmixed derivatives are stored in the center row
+                                    double coeff = FDCoeff[iLagInty + iy - starty + (nOrder + 1) * (nOrder / 2)];
+                                    result[3] += coeff * fdata[off];
+                                    off += blob.GetSide * blob.GetComponents;
+                                }
+                            }
+                            if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide
+                                && y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide)
+                            {
+                                off = (x - blob.GetBaseX) * blob.GetComponents + (y - blob.GetBaseY) * blob.GetSide * blob.GetComponents + startz * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                for (int iz = startz; iz <= endz; iz++)
+                                {
+                                    // The coefficients for the unmixed derivatives are stored in the center row
+                                    double coeff = FDCoeff[iLagIntz + iz - startz + (nOrder + 1) * (nOrder / 2)];
+                                    result[5] += coeff * fdata[off];
+                                    off += blob.GetSide * blob.GetSide * blob.GetComponents;
+                                }
+                            }
+                            #endregion
+                            #region mixed derivatives
+                            // the mixed derivatives needs data from a plane (either x-y, x-z or y-z)
+                            if (z >= blob.GetBaseZ && z < blob.GetBaseZ + blob.GetSide)
+                            {
+                                for (int iy = starty; iy <= endy; iy++)
+                                {
+                                    int LagIntIndexY = iLagInty + iy - starty;
+                                    // For the mixed derivatives the center line does not play a role
+                                    if (LagIntIndexY != nOrder / 2)
                                     {
-                                        // Since FDCoeff is now a pointer we need to index into the one dimensional representation
-                                        // of the 2d array
-                                        float coeff = FDCoeff[iLagIntx + ix - startx + LagIntIndexY * (nOrder + 1)];
-                                        if (coeff != 0.0f)
+                                        // For the Turb dataset Vx, Vy, Vz ARE stored together
+                                        off = startx * blob.GetComponents + iy * blob.GetSide * blob.GetComponents + (z - blob.GetRealZ) * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                        for (int ix = startx; ix <= endx; ix++)
                                         {
-                                            result[1] += coeff * fdata[off];
+                                            // Since FDCoeff is now a pointer we need to index into the one dimensional representation
+                                            // of the 2d array
+                                            double coeff = FDCoeff[iLagIntx + ix - startx + LagIntIndexY * (nOrder + 1)];
+                                            if (coeff != 0.0)
+                                            {
+                                                result[1] += coeff * fdata[off];
+                                            }
+                                            off += blob.GetComponents;
                                         }
-                                        off += blob.GetComponents;
                                     }
                                 }
                             }
-                        }
-                        if (y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide)
-                        {
-                            for (int iz = startz; iz <= endz; iz++)
+                            if (y >= blob.GetBaseY && y < blob.GetBaseY + blob.GetSide)
                             {
-                                int LagIntIndexZ = iLagIntz + iz - startz;
-                                // For the mixed derivatives the center line does not play a role
-                                if (LagIntIndexZ != nOrder / 2)
+                                for (int iz = startz; iz <= endz; iz++)
                                 {
-                                    off = startx * blob.GetComponents + (y - blob.GetRealY) * blob.GetSide * blob.GetComponents + iz * blob.GetSide * blob.GetSide * blob.GetComponents;
-                                    for (int ix = startx; ix <= endx; ix++)
+                                    int LagIntIndexZ = iLagIntz + iz - startz;
+                                    // For the mixed derivatives the center line does not play a role
+                                    if (LagIntIndexZ != nOrder / 2)
                                     {
-                                        float coeff = FDCoeff[iLagIntx + ix - startx + LagIntIndexZ * (nOrder + 1)];
-                                        //float coeff = CenteredFiniteDiffCoeff[iLagIntx + ix - startx, iLagIntz + iz - startz];
-                                        if (coeff != 0.0f)
+                                        off = startx * blob.GetComponents + (y - blob.GetRealY) * blob.GetSide * blob.GetComponents + iz * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                        for (int ix = startx; ix <= endx; ix++)
                                         {
-                                            result[2] += coeff * fdata[off];
+                                            double coeff = FDCoeff[iLagIntx + ix - startx + LagIntIndexZ * (nOrder + 1)];
+                                            //double coeff = CenteredFiniteDiffCoeff[iLagIntx + ix - startx, iLagIntz + iz - startz];
+                                            if (coeff != 0.0)
+                                            {
+                                                result[2] += coeff * fdata[off];
+                                            }
+                                            off += blob.GetComponents;
                                         }
-                                        off += blob.GetComponents;
                                     }
                                 }
                             }
-                        }
-                        if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide)
-                        {
-                            for (int iz = startz; iz <= endz; iz++)
+                            if (x >= blob.GetBaseX && x < blob.GetBaseX + blob.GetSide)
                             {
-                                int LagIntIndexZ = iLagIntz + iz - startz;
-                                // For the mixed derivatives the center line does not play a role
-                                if (LagIntIndexZ != nOrder / 2)
+                                for (int iz = startz; iz <= endz; iz++)
                                 {
-                                    off = (x - blob.GetRealX) * blob.GetComponents + starty * blob.GetSide * blob.GetComponents + iz * blob.GetSide * blob.GetSide * blob.GetComponents;
-                                    for (int iy = starty; iy <= endy; iy++)
+                                    int LagIntIndexZ = iLagIntz + iz - startz;
+                                    // For the mixed derivatives the center line does not play a role
+                                    if (LagIntIndexZ != nOrder / 2)
                                     {
-                                        float coeff = FDCoeff[iLagInty + iy - starty + LagIntIndexZ * (nOrder + 1)];
-                                        //float coeff = CenteredFiniteDiffCoeff[iLagInty + iy - starty, iLagIntz + iz - startz];
-                                        if (coeff != 0.0f)
+                                        off = (x - blob.GetRealX) * blob.GetComponents + starty * blob.GetSide * blob.GetComponents + iz * blob.GetSide * blob.GetSide * blob.GetComponents;
+                                        for (int iy = starty; iy <= endy; iy++)
                                         {
-                                            result[4] += coeff * fdata[off];
+                                            double coeff = FDCoeff[iLagInty + iy - starty + LagIntIndexZ * (nOrder + 1)];
+                                            //double coeff = CenteredFiniteDiffCoeff[iLagInty + iy - starty, iLagIntz + iz - startz];
+                                            if (coeff != 0.0)
+                                            {
+                                                result[4] += coeff * fdata[off];
+                                            }
+                                            off += blob.GetSide * blob.GetComponents;
                                         }
-                                        off += blob.GetSide * blob.GetComponents;
                                     }
                                 }
                             }
-                        } 
-                        #endregion
+                            #endregion
+                        }
                     }
                     break;
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
@@ -506,8 +509,8 @@ namespace Turbulence.SQLInterface.workers
                 
                     // Wrap the coordinates into the grid space
                     x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     // This computation has 2 stages:
                     // 4th-order finite difference evaluation of the derivative (see above)
@@ -534,29 +537,29 @@ namespace Turbulence.SQLInterface.workers
                 
                     // We also need to determine where we are starting, e.g. n - 3, n - 2, ..., n + 4
                     iLagIntx = blob.GetRealX - x + startx + 3;
-                    if (iLagIntx >= blob.GetGridResolution)
-                        iLagIntx -= blob.GetGridResolution;
+                    if (iLagIntx >= setInfo.GridResolutionX)
+                        iLagIntx -= setInfo.GridResolutionX;
                     else if (iLagIntx < 0)
-                        iLagIntx += blob.GetGridResolution;
+                        iLagIntx += setInfo.GridResolutionX;
 
                     iLagInty = blob.GetRealY - y + starty + 3;
-                    if (iLagInty >= blob.GetGridResolution)
-                        iLagInty -= blob.GetGridResolution;
+                    if (iLagInty >= setInfo.GridResolutionY)
+                        iLagInty -= setInfo.GridResolutionY;
                     else if (iLagInty < 0)
-                        iLagInty += blob.GetGridResolution;
+                        iLagInty += setInfo.GridResolutionY;
 
                     iLagIntz = blob.GetRealZ - z + startz + 3;
-                    if (iLagIntz >= blob.GetGridResolution)
-                        iLagIntz -= blob.GetGridResolution;
+                    if (iLagIntz >= setInfo.GridResolutionZ)
+                        iLagIntz -= setInfo.GridResolutionZ;
                     else if (iLagIntz < 0)
-                        iLagIntz += blob.GetGridResolution;
+                        iLagIntz += setInfo.GridResolutionZ;
 
-                    fixed (double* lagint = input.lagInt)
+                    fixed (double* lagint = input.lagInt, FDCoeff = CenteredFiniteDiffCoeff)
                     {
-                        fixed (float* FDCoeff = CenteredFiniteDiffCoeff, fdata = data)
+                        fixed (float* fdata = data)
                         {
-                            double ax = 0.0F, ay = 0.0F, az = 0.0F,
-                                axy = 0.0F, axz = 0.0F, ayz = 0.0F;
+                            double ax = 0.0, ay = 0.0, az = 0.0,
+                                axy = 0.0, axz = 0.0, ayz = 0.0;
                             int off0 = startx * blob.GetComponents;
 
                             // Since the finite differencing coefficients are stored in a 2d array
@@ -564,14 +567,14 @@ namespace Turbulence.SQLInterface.workers
                             int FDOff = (nOrder + 1) * (nOrder / 2);
                             for (int iz = startz; iz <= endz; iz++)
                             {
-                                double bx = 0.0F, by = 0.0F, bz = 0.0F,
-                                    bxy = 0.0F, bxz = 0.0F, byz = 0.0F;
+                                double bx = 0.0, by = 0.0, bz = 0.0,
+                                    bxy = 0.0, bxz = 0.0, byz = 0.0;
                                 int LagIntIndexZ = iLagIntz + iz - startz;
                                 int off1 = off0 + iz * blob.GetSide * blob.GetSide * blob.GetComponents;
                                 for (int iy = starty; iy <= endy; iy++)
                                 {
-                                    double cx = 0.0F, cy = 0.0F, cz = 0.0F,
-                                        cxy = 0.0F, cxz = 0.0F, cyz = 0.0F;
+                                    double cx = 0.0, cy = 0.0, cz = 0.0,
+                                        cxy = 0.0, cxz = 0.0, cyz = 0.0;
                                     int LagIntIndexY = iLagInty + iy - starty;
                                     int off = off1 + iy * blob.GetSide * blob.GetComponents;
                                     for (int ix = startx; ix <= endx; ix++)
@@ -637,7 +640,7 @@ namespace Turbulence.SQLInterface.workers
                                                         if (LagIntIndexX - i >= 0 && LagIntIndexX - i <= 4)
                                                         {
                                                             double c = FDCoeff[LagIntIndexX - i + (LagIntIndexY - j) * (nOrder + 1)];
-                                                            if (c != 0.0f)
+                                                            if (c != 0.0)
                                                             {
                                                                 c *= lagint[1 * nOrder + j] * lagint[i];
                                                                 cxy += c * fdata[off];
@@ -661,7 +664,7 @@ namespace Turbulence.SQLInterface.workers
                                                         if (LagIntIndexX - i >= 0 && LagIntIndexX - i <= 4)
                                                         {
                                                             double c = FDCoeff[LagIntIndexX - i + (LagIntIndexZ - j) * (nOrder + 1)];
-                                                            if (c != 0.0f)
+                                                            if (c != 0.0)
                                                             {
                                                                 c *= lagint[2 * nOrder + j] * lagint[i];
                                                                 cxz += c * fdata[off];
@@ -709,7 +712,7 @@ namespace Turbulence.SQLInterface.workers
                                                 if (LagIntIndexZ - j >= 0 && LagIntIndexZ - j <= 4 && LagIntIndexZ - j != 2)
                                                 {
                                                     c = FDCoeff[LagIntIndexY - i + (LagIntIndexZ - j) * (nOrder + 1)];
-                                                    if (c != 0.0f)
+                                                    if (c != 0.0)
                                                     {
                                                         c *= lagint[2 * nOrder + j] * lagint[1 * nOrder + i];
                                                         byz += c * cyz;
@@ -744,12 +747,12 @@ namespace Turbulence.SQLInterface.workers
                                 }
                                 #endregion
                             }
-                            result[0] = (float)ax;
-                            result[1] = (float)axy;
-                            result[2] = (float)axz;
-                            result[3] = (float)ay;
-                            result[4] = (float)ayz;
-                            result[5] = (float)az;
+                            result[0] = ax;
+                            result[1] = axy;
+                            result[2] = axz;
+                            result[3] = ay;
+                            result[4] = ayz;
+                            result[5] = az;
                         }
                     }
 
