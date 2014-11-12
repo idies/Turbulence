@@ -52,7 +52,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="analysisdoc.aspx" />
-    <Content Include="Old_App_WebReferences\edu\jhu\pha\turbulence\turbulence.disco" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap-theme.css" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap-theme.min.css" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap.css" />
@@ -202,6 +201,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Code\WebService.cs" />
     <Compile Include="cutout.aspx.cs">
       <DependentUpon>cutout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -224,10 +224,6 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="service\WebService.cs">
-      <DependentUpon>turbulence.asmx</DependentUpon>
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
@@ -258,14 +254,11 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Old_App_Code\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Site.Master" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Old_App_WebReferences\edu\jhu\pha\turbulence\turbulence.discomap" />
-    <None Include="Old_App_WebReferences\edu\jhu\pha\turbulence\turbulence.wsdl" />
     <None Include="bootstrap-3.2.0-dist\css\bootstrap-theme.css.map" />
     <None Include="bootstrap-3.2.0-dist\css\bootstrap.css.map" />
     <None Include="bootstrap-3.2.0-dist\fonts\glyphicons-halflings-regular.eot" />
