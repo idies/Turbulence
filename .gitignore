@@ -3,3 +3,10 @@
 /Turbulence/CutoutService/Web.config
 /Turbulence/CutoutService/Web.Debug.config
 /Turbulence/CutoutService/Web.Release.config
+Website.Publish.xml
+Web.config
+Web.Debug.config
+Web.Release.config
+/Turbulence/Website/bin/*
+/Turbulence/Website/obj/*
+
