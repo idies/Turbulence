@@ -1,0 +1,1804 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://turbulence.pha.jhu.edu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://turbulence.pha.jhu.edu/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://turbulence.pha.jhu.edu/">
+      <s:element name="NullOp">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPoint3">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Point3" type="tns:Point3" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Point3">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="x" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="y" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="z" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="NullOpResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="NullOpResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfVector3">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Vector3" type="tns:Vector3" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Vector3">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="x" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="y" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="z" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetVelocity">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:simpleType name="SpatialInterpolation">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="None_Fd4" />
+          <s:enumeration value="None_Fd6" />
+          <s:enumeration value="None_Fd8" />
+          <s:enumeration value="Fd4Lag4" />
+          <s:enumeration value="Lag4" />
+          <s:enumeration value="Lag6" />
+          <s:enumeration value="Lag8" />
+          <s:enumeration value="M1Q4" />
+          <s:enumeration value="M2Q4" />
+          <s:enumeration value="M3Q4" />
+          <s:enumeration value="M4Q4" />
+          <s:enumeration value="M1Q6" />
+          <s:enumeration value="M2Q6" />
+          <s:enumeration value="M3Q6" />
+          <s:enumeration value="M4Q6" />
+          <s:enumeration value="M1Q8" />
+          <s:enumeration value="M2Q8" />
+          <s:enumeration value="M3Q8" />
+          <s:enumeration value="M4Q8" />
+          <s:enumeration value="M1Q10" />
+          <s:enumeration value="M2Q10" />
+          <s:enumeration value="M3Q10" />
+          <s:enumeration value="M4Q10" />
+          <s:enumeration value="M1Q12" />
+          <s:enumeration value="M2Q12" />
+          <s:enumeration value="M3Q12" />
+          <s:enumeration value="M4Q12" />
+          <s:enumeration value="M1Q14" />
+          <s:enumeration value="M2Q14" />
+          <s:enumeration value="M3Q14" />
+          <s:enumeration value="M4Q14" />
+        </s:restriction>
+      </s:simpleType>
+      <s:simpleType name="TemporalInterpolation">
+        <s:restriction base="s:string">
+          <s:enumeration value="None" />
+          <s:enumeration value="PCHIP" />
+        </s:restriction>
+      </s:simpleType>
+      <s:element name="GetVelocityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVelocityResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityBatch">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityBatchResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVelocityBatchResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawVelocity">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawVelocityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRawVelocityResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPressure">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPressureResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPressureResult" type="tns:ArrayOfPressure" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPressure">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Pressure" type="tns:Pressure" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Pressure">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="p" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetRawPressure">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawPressureResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRawPressureResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMagneticField">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMagneticFieldResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMagneticFieldResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawMagneticField">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawMagneticFieldResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRawMagneticFieldResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectorPotential">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectorPotentialResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVectorPotentialResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawVectorPotential">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawVectorPotentialResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRawVectorPotentialResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDensity">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDensityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDensityResult" type="tns:ArrayOfPressure" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDensityGradient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDensityGradientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDensityGradientResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDensityHessian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetDensityHessianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetDensityHessianResult" type="tns:ArrayOfPressureHessian" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfPressureHessian">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="PressureHessian" type="tns:PressureHessian" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="PressureHessian">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="d2pdxdx" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2pdxdy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2pdxdz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2pdydy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2pdydz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2pdzdz" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetRawDensity">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawDensityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRawDensityResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetForce">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetForceResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetForceResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityAndPressure">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityAndPressureResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVelocityAndPressureResult" type="tns:ArrayOfVector3P" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfVector3P">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="Vector3P" type="tns:Vector3P" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="Vector3P">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="x" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="y" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="z" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="p" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetVelocityGradient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityGradientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVelocityGradientResult" type="tns:ArrayOfVelocityGradient" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfVelocityGradient">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="VelocityGradient" type="tns:VelocityGradient" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="VelocityGradient">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="duxdx" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="duxdy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="duxdz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="duydx" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="duydy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="duydz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="duzdx" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="duzdy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="duzdz" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetMagneticFieldGradient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMagneticFieldGradientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMagneticFieldGradientResult" type="tns:ArrayOfVelocityGradient" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectorPotentialGradient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectorPotentialGradientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVectorPotentialGradientResult" type="tns:ArrayOfVelocityGradient" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPressureGradient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPressureGradientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPressureGradientResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPressureHessian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPressureHessianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPressureHessianResult" type="tns:ArrayOfPressureHessian" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityHessian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityHessianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVelocityHessianResult" type="tns:ArrayOfVelocityHessian" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfVelocityHessian">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="VelocityHessian" type="tns:VelocityHessian" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="VelocityHessian">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="d2uxdxdx" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uxdxdy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uxdxdz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uxdydy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uxdydz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uxdzdz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uydxdx" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uydxdy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uydxdz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uydydy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uydydz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uydzdz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uzdxdx" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uzdxdy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uzdxdz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uzdydy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uzdydz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="d2uzdzdz" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetMagneticHessian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMagneticHessianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMagneticHessianResult" type="tns:ArrayOfVelocityHessian" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectorPotentialHessian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectorPotentialHessianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVectorPotentialHessianResult" type="tns:ArrayOfVelocityHessian" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityLaplacian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityLaplacianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVelocityLaplacianResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMagneticFieldLaplacian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetMagneticFieldLaplacianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetMagneticFieldLaplacianResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectorPotentialLaplacian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVectorPotentialLaplacianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVectorPotentialLaplacianResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPosition">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="StartTime" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="EndTime" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="dt" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPositionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPositionResult" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilter">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBoxFilterResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBoxFilterSGSResult" type="tns:ArrayOfSGSTensor" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfSGSTensor">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="SGSTensor" type="tns:SGSTensor" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="SGSTensor">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="xx" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="yy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="zz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="xy" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="xz" type="s:float" />
+          <s:element minOccurs="1" maxOccurs="1" name="yz" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetBoxFilterGradient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spacing" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterGradientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBoxFilterGradientResult" type="tns:ArrayOfVelocityGradient" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetThreshold">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="threshold" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetThresholdResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetThresholdResult" type="tns:ArrayOfThresholdInfo" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfThresholdInfo">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ThresholdInfo" type="tns:ThresholdInfo" />
+        </s:sequence>
+      </s:complexType>
+      <s:complexType name="ThresholdInfo">
+        <s:sequence>
+          <s:element minOccurs="1" maxOccurs="1" name="x" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="y" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="z" type="s:int" />
+          <s:element minOccurs="1" maxOccurs="1" name="value" type="s:float" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetLaplacianOfGradient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetLaplacianOfGradientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetLaplacianOfGradientResult" type="tns:ArrayOfVelocityGradient" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="NullOpSoapIn">
+    <wsdl:part name="parameters" element="tns:NullOp" />
+  </wsdl:message>
+  <wsdl:message name="NullOpSoapOut">
+    <wsdl:part name="parameters" element="tns:NullOpResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocitySoapIn">
+    <wsdl:part name="parameters" element="tns:GetVelocity" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocitySoapOut">
+    <wsdl:part name="parameters" element="tns:GetVelocityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityBatchSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVelocityBatch" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityBatchSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVelocityBatchResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRawVelocitySoapIn">
+    <wsdl:part name="parameters" element="tns:GetRawVelocity" />
+  </wsdl:message>
+  <wsdl:message name="GetRawVelocitySoapOut">
+    <wsdl:part name="parameters" element="tns:GetRawVelocityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPressureSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPressure" />
+  </wsdl:message>
+  <wsdl:message name="GetPressureSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPressureResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRawPressureSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRawPressure" />
+  </wsdl:message>
+  <wsdl:message name="GetRawPressureSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRawPressureResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMagneticFieldSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMagneticField" />
+  </wsdl:message>
+  <wsdl:message name="GetMagneticFieldSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMagneticFieldResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRawMagneticFieldSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRawMagneticField" />
+  </wsdl:message>
+  <wsdl:message name="GetRawMagneticFieldSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRawMagneticFieldResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVectorPotentialSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVectorPotential" />
+  </wsdl:message>
+  <wsdl:message name="GetVectorPotentialSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVectorPotentialResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRawVectorPotentialSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRawVectorPotential" />
+  </wsdl:message>
+  <wsdl:message name="GetRawVectorPotentialSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRawVectorPotentialResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDensitySoapIn">
+    <wsdl:part name="parameters" element="tns:GetDensity" />
+  </wsdl:message>
+  <wsdl:message name="GetDensitySoapOut">
+    <wsdl:part name="parameters" element="tns:GetDensityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDensityGradientSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDensityGradient" />
+  </wsdl:message>
+  <wsdl:message name="GetDensityGradientSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDensityGradientResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetDensityHessianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetDensityHessian" />
+  </wsdl:message>
+  <wsdl:message name="GetDensityHessianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetDensityHessianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetRawDensitySoapIn">
+    <wsdl:part name="parameters" element="tns:GetRawDensity" />
+  </wsdl:message>
+  <wsdl:message name="GetRawDensitySoapOut">
+    <wsdl:part name="parameters" element="tns:GetRawDensityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetForceSoapIn">
+    <wsdl:part name="parameters" element="tns:GetForce" />
+  </wsdl:message>
+  <wsdl:message name="GetForceSoapOut">
+    <wsdl:part name="parameters" element="tns:GetForceResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityAndPressureSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVelocityAndPressure" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityAndPressureSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVelocityAndPressureResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityGradientSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVelocityGradient" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityGradientSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVelocityGradientResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMagneticFieldGradientSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMagneticFieldGradient" />
+  </wsdl:message>
+  <wsdl:message name="GetMagneticFieldGradientSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMagneticFieldGradientResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVectorPotentialGradientSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVectorPotentialGradient" />
+  </wsdl:message>
+  <wsdl:message name="GetVectorPotentialGradientSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVectorPotentialGradientResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPressureGradientSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPressureGradient" />
+  </wsdl:message>
+  <wsdl:message name="GetPressureGradientSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPressureGradientResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPressureHessianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPressureHessian" />
+  </wsdl:message>
+  <wsdl:message name="GetPressureHessianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPressureHessianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityHessianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVelocityHessian" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityHessianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVelocityHessianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMagneticHessianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMagneticHessian" />
+  </wsdl:message>
+  <wsdl:message name="GetMagneticHessianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMagneticHessianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVectorPotentialHessianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVectorPotentialHessian" />
+  </wsdl:message>
+  <wsdl:message name="GetVectorPotentialHessianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVectorPotentialHessianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityLaplacianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVelocityLaplacian" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityLaplacianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVelocityLaplacianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetMagneticFieldLaplacianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetMagneticFieldLaplacian" />
+  </wsdl:message>
+  <wsdl:message name="GetMagneticFieldLaplacianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetMagneticFieldLaplacianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVectorPotentialLaplacianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVectorPotentialLaplacian" />
+  </wsdl:message>
+  <wsdl:message name="GetVectorPotentialLaplacianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVectorPotentialLaplacianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPositionSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPosition" />
+  </wsdl:message>
+  <wsdl:message name="GetPositionSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPositionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBoxFilter" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGSSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGS" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGSSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGSResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterGradientSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterGradient" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterGradientSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterGradientResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetThresholdSoapIn">
+    <wsdl:part name="parameters" element="tns:GetThreshold" />
+  </wsdl:message>
+  <wsdl:message name="GetThresholdSoapOut">
+    <wsdl:part name="parameters" element="tns:GetThresholdResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetLaplacianOfGradientSoapIn">
+    <wsdl:part name="parameters" element="tns:GetLaplacianOfGradient" />
+  </wsdl:message>
+  <wsdl:message name="GetLaplacianOfGradientSoapOut">
+    <wsdl:part name="parameters" element="tns:GetLaplacianOfGradientResponse" />
+  </wsdl:message>
+  <wsdl:portType name="TurbulenceServiceSoap">
+    <wsdl:operation name="NullOp">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Perform a null operation -- for testing throughput</wsdl:documentation>
+      <wsdl:input message="tns:NullOpSoapIn" />
+      <wsdl:output message="tns:NullOpSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocity">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the velocity at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetVelocitySoapIn" />
+      <wsdl:output message="tns:GetVelocitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityBatch">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the velocity at a number of points for a given time (allow batching).</wsdl:documentation>
+      <wsdl:input message="tns:GetVelocityBatchSoapIn" />
+      <wsdl:output message="tns:GetVelocityBatchSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRawVelocity">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a cube of the raw velocity data with the given width cornered at the specified coordinates for the given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetRawVelocitySoapIn" />
+      <wsdl:output message="tns:GetRawVelocitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPressure">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the pressure field at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetPressureSoapIn" />
+      <wsdl:output message="tns:GetPressureSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRawPressure">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a cube of the raw pressure data with the given width cornered at the specified coordinates for the given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetRawPressureSoapIn" />
+      <wsdl:output message="tns:GetRawPressureSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticField">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the magnetic field at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetMagneticFieldSoapIn" />
+      <wsdl:output message="tns:GetMagneticFieldSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRawMagneticField">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a cube of the raw magnetic field data with the given width cornered at the specified coordinates for the given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetRawMagneticFieldSoapIn" />
+      <wsdl:output message="tns:GetRawMagneticFieldSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotential">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the magnetic field at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetVectorPotentialSoapIn" />
+      <wsdl:output message="tns:GetVectorPotentialSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRawVectorPotential">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a cube of the raw vector potential data with the given width cornered at the specified coordinates for the given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetRawVectorPotentialSoapIn" />
+      <wsdl:output message="tns:GetRawVectorPotentialSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDensity">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the density field at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetDensitySoapIn" />
+      <wsdl:output message="tns:GetDensitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDensityGradient">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the density gradient at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetDensityGradientSoapIn" />
+      <wsdl:output message="tns:GetDensityGradientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetDensityHessian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the density hessian at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetDensityHessianSoapIn" />
+      <wsdl:output message="tns:GetDensityHessianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRawDensity">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a cube of the raw density data with the given width cornered at the specified coordinates for the given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetRawDensitySoapIn" />
+      <wsdl:output message="tns:GetRawDensitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetForce">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the force for a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetForceSoapIn" />
+      <wsdl:output message="tns:GetForceSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityAndPressure">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the velocity for an array of points</wsdl:documentation>
+      <wsdl:input message="tns:GetVelocityAndPressureSoapIn" />
+      <wsdl:output message="tns:GetVelocityAndPressureSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityGradient">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the velocity gradient at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetVelocityGradientSoapIn" />
+      <wsdl:output message="tns:GetVelocityGradientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticFieldGradient">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the magnetic field gradient at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetMagneticFieldGradientSoapIn" />
+      <wsdl:output message="tns:GetMagneticFieldGradientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialGradient">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the vector potential gradient at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetVectorPotentialGradientSoapIn" />
+      <wsdl:output message="tns:GetVectorPotentialGradientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPressureGradient">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the pressure gradient at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetPressureGradientSoapIn" />
+      <wsdl:output message="tns:GetPressureGradientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPressureHessian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the pressure hessian at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetPressureHessianSoapIn" />
+      <wsdl:output message="tns:GetPressureHessianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityHessian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the velocity hessian at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetVelocityHessianSoapIn" />
+      <wsdl:output message="tns:GetVelocityHessianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticHessian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the magnetic field hessian at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetMagneticHessianSoapIn" />
+      <wsdl:output message="tns:GetMagneticHessianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialHessian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the vector potential hessian at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetVectorPotentialHessianSoapIn" />
+      <wsdl:output message="tns:GetVectorPotentialHessianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityLaplacian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the velocity laplacian at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetVelocityLaplacianSoapIn" />
+      <wsdl:output message="tns:GetVelocityLaplacianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticFieldLaplacian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the magnetic field Laplacian at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetMagneticFieldLaplacianSoapIn" />
+      <wsdl:output message="tns:GetMagneticFieldLaplacianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialLaplacian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the vector potential Laplacian at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetVectorPotentialLaplacianSoapIn" />
+      <wsdl:output message="tns:GetVectorPotentialLaplacianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPosition">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">FluidParticleTracking</wsdl:documentation>
+      <wsdl:input message="tns:GetPositionSoapIn" />
+      <wsdl:output message="tns:GetPositionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilter">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">GetBoxFilter of the specified field; uses workload density to decide how to evaluate.</wsdl:documentation>
+      <wsdl:input message="tns:GetBoxFilterSoapIn" />
+      <wsdl:output message="tns:GetBoxFilterSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGS">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">SGSBoxFilter</wsdl:documentation>
+      <wsdl:input message="tns:GetBoxFilterSGSSoapIn" />
+      <wsdl:output message="tns:GetBoxFilterSGSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterGradient">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">GetBoxFilter of the specified field; uses workload density to decide how to evaluate.</wsdl:documentation>
+      <wsdl:input message="tns:GetBoxFilterGradientSoapIn" />
+      <wsdl:output message="tns:GetBoxFilterGradientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetThreshold">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">GetThreshold of the specified field.</wsdl:documentation>
+      <wsdl:input message="tns:GetThresholdSoapIn" />
+      <wsdl:output message="tns:GetThresholdSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetLaplacianOfGradient">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!</wsdl:documentation>
+      <wsdl:input message="tns:GetLaplacianOfGradientSoapIn" />
+      <wsdl:output message="tns:GetLaplacianOfGradientSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TurbulenceServiceSoap" type="tns:TurbulenceServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="NullOp">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/NullOp" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocity">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityBatch">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityBatch" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawVelocity">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetRawVelocity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPressure">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetPressure" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawPressure">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetRawPressure" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticField">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetMagneticField" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawMagneticField">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetRawMagneticField" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotential">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVectorPotential" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawVectorPotential">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetRawVectorPotential" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDensity">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetDensity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDensityGradient">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetDensityGradient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDensityHessian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetDensityHessian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawDensity">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetRawDensity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetForce">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetForce" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityAndPressure">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityAndPressure" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityGradient">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityGradient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticFieldGradient">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetMagneticFieldGradient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialGradient">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVectorPotentialGradient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPressureGradient">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetPressureGradient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPressureHessian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetPressureHessian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityHessian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityHessian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticHessian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetMagneticHessian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialHessian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVectorPotentialHessian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityLaplacian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityLaplacian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticFieldLaplacian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetMagneticFieldLaplacian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialLaplacian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVectorPotentialLaplacian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPosition">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetPosition" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilter">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilter" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGS">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterGradient">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterGradient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetThreshold">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetThreshold" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLaplacianOfGradient">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetLaplacianOfGradient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="TurbulenceServiceSoap12" type="tns:TurbulenceServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="NullOp">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/NullOp" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocity">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityBatch">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityBatch" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawVelocity">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetRawVelocity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPressure">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetPressure" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawPressure">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetRawPressure" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticField">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetMagneticField" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawMagneticField">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetRawMagneticField" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotential">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVectorPotential" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawVectorPotential">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetRawVectorPotential" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDensity">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetDensity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDensityGradient">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetDensityGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetDensityHessian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetDensityHessian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawDensity">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetRawDensity" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetForce">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetForce" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityAndPressure">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityAndPressure" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityGradient">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticFieldGradient">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetMagneticFieldGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialGradient">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVectorPotentialGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPressureGradient">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetPressureGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPressureHessian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetPressureHessian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityHessian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityHessian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticHessian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetMagneticHessian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialHessian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVectorPotentialHessian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityLaplacian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityLaplacian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetMagneticFieldLaplacian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetMagneticFieldLaplacian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVectorPotentialLaplacian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVectorPotentialLaplacian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPosition">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetPosition" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilter">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilter" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGS">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterGradient">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetThreshold">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetThreshold" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetLaplacianOfGradient">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetLaplacianOfGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TurbulenceService">
+    <wsdl:port name="TurbulenceServiceSoap" binding="tns:TurbulenceServiceSoap">
+      <soap:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+    </wsdl:port>
+    <wsdl:port name="TurbulenceServiceSoap12" binding="tns:TurbulenceServiceSoap12">
+      <soap12:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
