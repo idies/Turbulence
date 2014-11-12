@@ -24,6 +24,23 @@ namespace Turbulence.SQLInterface
         //protected TurbDataTable setInfo;
         protected SqlDataRecord record;
         protected int kernelSize = -1; // This is the size of the kernel of computation
+        
+        protected float[] cutout = null;
+        protected BigArray<float> big_cutout = null;
+        protected int[] cutout_coordinates = null;
+        protected bool using_big_cutout;
+
+        public float GetDataItem(ulong index)
+        {
+            if (using_big_cutout)
+            {
+                return big_cutout[index];
+            }
+            else
+            {
+                return cutout[index];
+            }
+        }
 
         public SqlDataRecord Record { get { return record; } }
         public TurbDataTable DataTable { get { return setInfo; } }
@@ -36,11 +53,7 @@ namespace Turbulence.SQLInterface
         {
             throw new NotImplementedException();
         }
-        public virtual HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(float[] cutout, int[] cutout_coordinates, int[] coordiantes, double threshold)
-        {
-            throw new NotImplementedException();
-        }
-        public virtual HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(BigArray<float> cutout, int[] cutout_coordinates, int[] coordiantes, double threshold)
+        public virtual HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold)
         {
             throw new NotImplementedException();
         }
@@ -55,20 +68,6 @@ namespace Turbulence.SQLInterface
         public virtual void GetAtomsForPoint(SQLUtility.MHDInputRequest request, long mask, int pointsPerCubeEstimate, Dictionary<long, List<int>> map, ref int total_points) 
         { 
             throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Given the coordinates of region where we want to compute the particular field
-        /// returns coordinates [startx, starty, startz, endx, endy, endz]
-        /// of the data cutout need to perform the entire computation.
-        /// </summary>
-        /// <param name="coordinates"></param>
-        /// <returns></returns>
-        public virtual int[] GetCutoutCoordinates(int[] coordinates)
-        {
-            int half_kernel = KernelSize / 2;
-            return new int[] {coordinates[0] - half_kernel, coordinates[1] - half_kernel, coordinates[2] - half_kernel,
-                                                coordinates[3] + half_kernel, coordinates[4] + half_kernel, coordinates[5] + half_kernel};
         }
 
         protected virtual void AddAtoms(int startz, int starty, int startx, int endz, int endy, int endx, HashSet<long> atoms, long mask)
@@ -100,6 +99,323 @@ namespace Turbulence.SQLInterface
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Given the coordinates of region where we want to compute the particular field
+        /// returns coordinates [startx, starty, startz, endx, endy, endz]
+        /// of the data cutout need to perform the entire computation.
+        /// </summary>
+        /// <param name="coordinates"></param>
+        /// <returns></returns>
+        public virtual int[] GetCutoutCoordinates(int[] coordinates)
+        {
+            int half_kernel = KernelSize / 2;
+            return new int[] {coordinates[0] - half_kernel, coordinates[1] - half_kernel, coordinates[2] - half_kernel,
+                                                coordinates[3] + half_kernel, coordinates[4] + half_kernel, coordinates[5] + half_kernel};
+        }
+
+        public virtual void GetData(short datasetID, string turbinfodb, int timestep, int[] coordinates)
+        {
+            cutout_coordinates = GetCutoutCoordinates(coordinates);
+            int x_width, y_width, z_width;
+            x_width = cutout_coordinates[3] - cutout_coordinates[0];
+            y_width = cutout_coordinates[4] - cutout_coordinates[1];
+            z_width = cutout_coordinates[5] - cutout_coordinates[2];
+            //cutout = new byte[table.Components * sizeof(float) * x_width * y_width * z_width];
+            ulong cutout_size = (ulong)setInfo.Components * (ulong)x_width * (ulong)y_width * (ulong)z_width;
+            if (cutout_size > int.MaxValue / sizeof(float))
+            {
+                big_cutout = new BigArray<float>(cutout_size);
+                using_big_cutout = true;
+            }
+            else
+            {
+                cutout = new float[cutout_size];
+            }
+
+            GetCutout(datasetID, turbinfodb, timestep);
+        }
+
+        protected void GetCutout(short datasetID, string turbinfodb, int timestep)
+        {
+            SqlConnection turbInfoConn = new SqlConnection("Server=gw01;Database=turbinfo;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;");
+            turbInfoConn.Open();
+            SqlConnection sqlConn;
+
+            try
+            {
+                int[] local_coordinates,
+                    local_start_coordinates_x, local_end_coordinates_x,
+                    local_start_coordinates_y, local_end_coordinates_y,
+                    local_start_coordinates_z, local_end_coordinates_z;
+                GetLocalCoordiantes(cutout_coordinates[0], cutout_coordinates[3], setInfo.StartX, setInfo.EndX,
+                    out local_start_coordinates_x, out local_end_coordinates_x);
+                GetLocalCoordiantes(cutout_coordinates[1], cutout_coordinates[4], setInfo.StartY, setInfo.EndY,
+                    out local_start_coordinates_y, out local_end_coordinates_y);
+                GetLocalCoordiantes(cutout_coordinates[2], cutout_coordinates[5], setInfo.StartZ, setInfo.EndZ,
+                    out local_start_coordinates_z, out local_end_coordinates_z);
+
+                local_coordinates = new int[6];
+                for (int k = 0; k < local_start_coordinates_z.Length; k++)
+                {
+                    for (int j = 0; j < local_start_coordinates_y.Length; j++)
+                    {
+                        for (int i = 0; i < local_start_coordinates_x.Length; i++)
+                        {
+                            local_coordinates[0] = local_start_coordinates_x[i];
+                            local_coordinates[1] = local_start_coordinates_y[j];
+                            local_coordinates[2] = local_start_coordinates_z[k];
+                            local_coordinates[3] = local_end_coordinates_x[i];
+                            local_coordinates[4] = local_end_coordinates_y[j];
+                            local_coordinates[5] = local_end_coordinates_z[k];
+
+                            int wrapped_local_z = ((local_coordinates[2] % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                            int wrapped_local_y = ((local_coordinates[1] % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                            int wrapped_local_x = ((local_coordinates[0] % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+
+                            long zindex = new Morton3D(wrapped_local_z, wrapped_local_y, wrapped_local_x);
+                            SqlCommand cmd = turbInfoConn.CreateCommand();
+                            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                                "from {0}..DatabaseMap where DatasetID = @datasetID " +
+                                "and minLim <= @zindex and maxLim >= @zindex", turbinfodb);
+                            cmd.Parameters.AddWithValue("@datasetID", datasetID);
+                            cmd.Parameters.AddWithValue("@zindex", zindex);
+                            cmd.CommandTimeout = 600;
+                            SqlDataReader reader = cmd.ExecuteReader();
+                            if (!reader.HasRows)
+                            {
+                                throw new Exception(
+                                    String.Format("The DatabaseMap table does not contain information about this dataset, zindex combination: {0}, {1}",
+                                    datasetID, zindex));
+                            }
+                            reader.Read();
+                            string serverName = reader.GetString(0);
+                            string dbname = reader.GetString(1);
+                            string codedb = reader.GetString(2);
+                            reader.Close();
+                            reader.Dispose();
+
+                            sqlConn = new SqlConnection(
+                                String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;Connect Timeout = 600;",
+                                serverName, codedb));
+                            sqlConn.Open();
+
+                            GetLocalCutout(setInfo, dbname, timestep, local_coordinates, sqlConn);
+
+                            sqlConn.Close();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (turbInfoConn.State == ConnectionState.Open)
+                {
+                    turbInfoConn.Close();
+                }
+                throw ex;
+            }
+            turbInfoConn.Close();
+        }
+
+        private void GetLocalCoordiantes(int cutout_start_coordinate, int cutout_end_coordiante,
+            int grid_start, int grid_end,
+            out int[] local_start_coordinate, out int[] local_end_coordinate)
+        {
+            int num_regions = 1, max_regions = 3;
+            int[] temp_start_coordinates = new int[max_regions];
+            int[] temp_end_coordinates = new int[max_regions];
+            temp_start_coordinates[0] = cutout_start_coordinate;
+            if (cutout_start_coordinate < grid_start)
+            {
+                temp_start_coordinates[num_regions] = grid_start;
+                temp_end_coordinates[0] = grid_start;
+                num_regions++;
+            }
+            if (cutout_end_coordiante > grid_end + 1)
+            {
+                temp_start_coordinates[num_regions] = grid_end + 1;
+                temp_end_coordinates[num_regions - 1] = grid_end + 1;
+                num_regions++;
+            }
+            temp_end_coordinates[num_regions - 1] = cutout_end_coordiante;
+
+            local_start_coordinate = new int[num_regions];
+            local_end_coordinate = new int[num_regions];
+            for (int i = 0; i < num_regions; i++)
+            {
+                local_start_coordinate[i] = temp_start_coordinates[i];
+                local_end_coordinate[i] = temp_end_coordinates[i];
+            }
+        }
+        
+        protected virtual void GetLocalCutout(TurbDataTable table, string dbname, int timestep,
+            int[] local_coordinates,
+            SqlConnection connection)
+        {
+            int x_width, y_width, z_width, x, y, z;
+            x_width = cutout_coordinates[3] - cutout_coordinates[0];
+            y_width = cutout_coordinates[4] - cutout_coordinates[1];
+            z_width = cutout_coordinates[5] - cutout_coordinates[2];
+
+            byte[] rawdata = new byte[table.BlobByteSize];
+
+            string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
+            int atomWidth = table.atomDim;
+
+            string queryString = GetQueryString(local_coordinates, tableName, dbname, timestep);
+
+            int sourceX = 0, sourceY = 0, sourceZ = 0, lengthX = 0, lengthY = 0, lengthZ = 0;
+            ulong destinationX = 0, destinationY = 0, destinationZ = 0;
+            //ulong long_destinationX = 0, long_destinationY = 0, long_destinationZ = 0;
+            ulong long_components = (ulong)table.Components;
+            ulong long_x_width = (ulong)x_width;
+            ulong long_y_width = (ulong)y_width;
+
+            SqlCommand command = new SqlCommand(
+                queryString, connection);
+            command.CommandTimeout = 600;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    x = reader.GetSqlInt32(0).Value;
+                    y = reader.GetSqlInt32(1).Value;
+                    z = reader.GetSqlInt32(2).Value;
+                    int bytesread = 0;
+                    while (bytesread < table.BlobByteSize)
+                    {
+                        int bytes = (int)reader.GetBytes(3, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
+                        bytesread += bytes;
+                    }
+
+                    GetSourceDestLenWithWrapAround(x, local_coordinates[0], local_coordinates[3], cutout_coordinates[0], atomWidth, table.GridResolutionX,
+                        ref sourceX, ref destinationX, ref lengthX);
+                    GetSourceDestLenWithWrapAround(y, local_coordinates[1], local_coordinates[4], cutout_coordinates[1], atomWidth, table.GridResolutionY,
+                        ref sourceY, ref destinationY, ref lengthY);
+                    GetSourceDestLenWithWrapAround(z, local_coordinates[2], local_coordinates[5], cutout_coordinates[2], atomWidth, table.GridResolutionZ,
+                        ref sourceZ, ref destinationZ, ref lengthZ);
+
+                    int source0 = (sourceX + sourceY * atomWidth) * table.Components * sizeof(float);
+                    ulong dest0 = (destinationX + destinationY * long_x_width) * long_components * sizeof(float);
+
+                    for (int k = 0; k < lengthZ; k++)
+                    {
+                        int source = source0 + (sourceZ + k) * atomWidth * atomWidth * table.Components * sizeof(float);
+                        ulong dest = dest0 + (destinationZ + (ulong)k) * long_x_width * long_y_width * long_components * sizeof(float);
+                        for (int j = 0; j < lengthY; j++)
+                        {
+                            if (using_big_cutout)
+                            {
+                                big_cutout.BlockCopyInto(rawdata, source, dest, lengthX * table.Components * sizeof(float), sizeof(float));
+                            }
+                            else
+                            {
+                                Buffer.BlockCopy(rawdata, source, cutout, (int)dest, lengthX * table.Components * sizeof(float));
+                            }
+                            source += atomWidth * table.Components * sizeof(float);
+                            dest += long_x_width * long_components * sizeof(float);
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void GetSourceDestLenWithWrapAround(int coordinate, int local_start, int local_end, int cutout_start, int atomWidth, int gridResolution,
+            ref int source, ref ulong dest, ref int len)
+        {
+            if (coordinate + atomWidth <= local_start)
+            {
+                // This is due to wrap around
+                coordinate += gridResolution;
+            }
+            if (coordinate > local_end)
+            {
+                // This is due to wrap around
+                coordinate -= gridResolution;
+            }
+
+            if (coordinate < local_start)
+            {
+                if (coordinate + atomWidth <= local_start)
+                    throw new Exception("Atom read is outside of boundaries of query box!");
+                else if (coordinate + atomWidth <= local_end)
+                    len = coordinate + atomWidth - local_start;
+                else
+                    len = local_end - local_start;
+                source = local_start - coordinate;
+                dest = 0;
+            }
+            else if (coordinate >= local_end)
+                throw new Exception("Atom read is outside of boundaries of query box!");
+            else
+            {
+                if (coordinate + atomWidth <= local_end)
+                    len = atomWidth;
+                else
+                    len = local_end - coordinate;
+                source = 0;
+                dest = (ulong)(coordinate - cutout_start);
+            }
+        }
+
+        protected string GetQueryString(int[] local_coordinates, string tableName, string dbname, int timestep)
+        {
+            int start_z = local_coordinates[2];
+            int start_y = local_coordinates[1];
+            int start_x = local_coordinates[0];
+            int end_z = local_coordinates[5];
+            int end_y = local_coordinates[4];
+            int end_x = local_coordinates[3];
+
+            if (start_z < 0)
+            {
+                start_z += setInfo.GridResolutionZ;
+                end_z += setInfo.GridResolutionZ;
+            }
+            else if (start_z >= setInfo.GridResolutionZ)
+            {
+                start_z -= setInfo.GridResolutionZ;
+                end_z -= setInfo.GridResolutionZ;
+            }
+            if (start_y < 0)
+            {
+                start_y += setInfo.GridResolutionY;
+                end_y += setInfo.GridResolutionY;
+            }
+            else if (start_y >= setInfo.GridResolutionY)
+            {
+                start_y -= setInfo.GridResolutionY;
+                end_y -= setInfo.GridResolutionY;
+            }
+            if (start_x < 0)
+            {
+                start_x += setInfo.GridResolutionX;
+                end_x += setInfo.GridResolutionX;
+            }
+            else if (start_x >= setInfo.GridResolutionX)
+            {
+                start_x -= setInfo.GridResolutionX;
+                end_x -= setInfo.GridResolutionX;
+            }
+
+            return GetQueryString(start_x, start_y, start_z, end_x, end_y, end_z, tableName, dbname, timestep);
+        }
+
+        protected virtual string GetQueryString(int startx, int starty, int startz, int endx, int endy, int endz, string tableName, string dbname, int timestep)
+        {
+            return String.Format(
+                   "select dbo.GetMortonX(t.zindex), dbo.GetMortonY(t.zindex), dbo.GetMortonZ(t.zindex), t.data " +
+                   "from {7} as t inner join " +
+                   "(select zindex from {8}..zindex where " +
+                       "X >= {0} & -{6} and X < {3} and Y >= {1} & -{6} and Y < {4} and Z >= {2} & -{6} and z < {5}) " +
+                   "as c " +
+                   "on t.zindex = c.zindex " +
+                   "and t.timestep = {9}",
+                   startx, starty, startz,
+                   endx, endy, endz,
+                   setInfo.atomDim, tableName, dbname, timestep);
         }
 
         /*

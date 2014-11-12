@@ -604,7 +604,7 @@ namespace Turbulence.SQLInterface.workers
         /// <param name="coordiantes"></param>
         /// <param name="threshold"></param>
         /// <returns></returns>
-        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(BigArray<float> cutout, int[] cutout_coordinates, int[] coordiantes, double threshold)
+        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold)
         {
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
             {
@@ -633,7 +633,7 @@ namespace Turbulence.SQLInterface.workers
                         endz = diff_matrix_z.GetStencilEnd(z, FdOrder);
 
                         point = new SQLUtility.PartialResult(zindex, GetResultSize(), numPointsInKernel);
-                        GetResultUsingCutout(ref point, cutout, x, y, z, startx, starty, startz, endx, endy, endz, cutout_coordinates, cutout_dimensions, offset_y);
+                        GetResultUsingCutout(ref point, x, y, z, startx, starty, startz, endx, endy, endz, cutout_coordinates, cutout_dimensions, offset_y);
 
                         // Compute the norm.
                         double norm = 0.0f;
@@ -658,118 +658,7 @@ namespace Turbulence.SQLInterface.workers
             return points_above_threshold;
         }
 
-        /// <summary>
-        /// For each point on the grid specified by the coordinates parameter computes the curl using the given data cutout.
-        /// Each point that has a norm higher than the given threshold is stored in the set and the set is returned.
-        /// NOTE: Values are not interpolated as the target locations are on grid nodes.
-        /// </summary>
-        /// <param name="cutout"></param>
-        /// <param name="cutout_coordiantes"></param>
-        /// <param name="coordiantes"></param>
-        /// <param name="threshold"></param>
-        /// <returns></returns>
-        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(float[] cutout, int[] cutout_coordinates, int[] coordiantes, double threshold)
-        {
-            if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
-            {
-                throw new Exception("Invalid interpolation option specified!");
-            }
-            HashSet<SQLUtility.PartialResult> points_above_threshold = new HashSet<SQLUtility.PartialResult>();
-            SQLUtility.PartialResult point;
-            int[] cutout_dimensions = new int[] { cutout_coordinates[5] - cutout_coordinates[2],
-                                                  cutout_coordinates[4] - cutout_coordinates[1],
-                                                  cutout_coordinates[3] - cutout_coordinates[0] };
-            int startz = 0, endz = 0, starty = 0, endy = 0, startx = 0, endx = 0, offset_y = 0;
-            long zindex = 0;
-            for (int z = coordiantes[2]; z < coordiantes[5]; z++)
-            {
-                for (int y = coordiantes[1]; y < coordiantes[4]; y++)
-                {
-                    for (int x = coordiantes[0]; x < coordiantes[3]; x++)
-                    {
-                        zindex = new Morton3D(z, y, x);
-                        offset_y = diff_matrix_y.GetOffset(y);
-                        startx = diff_matrix_x.GetStencilStart(x, FdOrder);
-                        starty = diff_matrix_y.GetStencilStart(y, FdOrder);
-                        startz = diff_matrix_z.GetStencilStart(z, FdOrder);
-                        endx = diff_matrix_x.GetStencilEnd(x, FdOrder);
-                        endy = diff_matrix_y.GetStencilEnd(y);
-                        endz = diff_matrix_z.GetStencilEnd(z, FdOrder);
-
-                        point = new SQLUtility.PartialResult(zindex, GetResultSize(), numPointsInKernel);
-                        GetResultUsingCutout(ref point, cutout, x, y, z, startx, starty, startz, endx, endy, endz, cutout_coordinates, cutout_dimensions, offset_y);
-
-                        // Compute the norm.
-                        double norm = 0.0f;
-                        for (int i = 0; i < GetResultSize(); i++)
-                        {
-                            norm += point.result[i] * point.result[i];
-                        }
-                        norm = Math.Sqrt(norm);
-                        point.norm = norm;
-                        if (norm > threshold)
-                        {
-                            points_above_threshold.Add(point);
-                            if (points_above_threshold.Count > MAX_NUMBER_THRESHOLD_POINTS)
-                            {
-                                throw new Exception(String.Format("The number of points above the threshold exeeds max allowed number: {0}!", MAX_NUMBER_THRESHOLD_POINTS));
-                            }
-                        }
-                    }
-                }
-            }
-
-            return points_above_threshold;
-        }
-
-        protected virtual void GetResultUsingCutout(ref SQLUtility.PartialResult point, float[] cutout, int x, int y, int z, int startx, int starty, int startz, int endx, int endy, int endz,
-            int[] cutout_coordinates, int[] cutout_dimensions, int offset_y)
-        {
-            for (int x_i = startx; x_i <= endx; x_i++)
-            {
-                //Determine the kernel index, at which this data point is for the kernel of the above taget point.
-                int iKernelIndexX = x_i - x + kernelSize / 2;
-
-                double coeff = diff_matrix_x[iKernelIndexX];
-                int sourceIndex = ((z - cutout_coordinates[2]) * cutout_dimensions[2] * cutout_dimensions[1] +
-                    (y - cutout_coordinates[1]) * cutout_dimensions[2] +
-                    (x_i - cutout_coordinates[0])) * setInfo.Components;
-                point.result[0] += coeff * cutout[sourceIndex];     //dux/dx
-                point.result[3] += coeff * cutout[sourceIndex + 1]; //duy/dx
-                point.result[6] += coeff * cutout[sourceIndex + 2]; //duz/dx
-                point.numPointsProcessed++;
-            }
-            for (int y_i = starty; y_i <= endy; y_i++)
-            {
-                //Determine the kernel index, at which this data point is for the kernel of the above taget point.
-                int iKernelIndexY = y_i - y + kernelSize / 2 - offset_y;
-
-                double coeff = diff_matrix_y[y, iKernelIndexY];
-                int sourceIndex = ((z - cutout_coordinates[2]) * cutout_dimensions[2] * cutout_dimensions[1] +
-                    (y_i - cutout_coordinates[1]) * cutout_dimensions[2] +
-                    (x - cutout_coordinates[0])) * setInfo.Components;
-                point.result[1] += coeff * cutout[sourceIndex];     //dux/dy
-                point.result[4] += coeff * cutout[sourceIndex + 1]; //duy/dy
-                point.result[7] += coeff * cutout[sourceIndex + 2]; //duz/dy
-                point.numPointsProcessed++;
-            }
-            for (int z_i = startz; z_i <= endz; z_i++)
-            {
-                //Determine the kernel index, at which this data point is for the kernel of the above taget point.
-                int iKernelIndexZ = z_i - z + kernelSize / 2;
-
-                double coeff = diff_matrix_z[iKernelIndexZ];
-                int sourceIndex = ((z_i - cutout_coordinates[2]) * cutout_dimensions[2] * cutout_dimensions[1] +
-                    (y - cutout_coordinates[1]) * cutout_dimensions[2] +
-                    (x - cutout_coordinates[0])) * setInfo.Components;
-                point.result[2] += coeff * cutout[sourceIndex];     //dux/dz
-                point.result[5] += coeff * cutout[sourceIndex + 1]; //duy/dz
-                point.result[8] += coeff * cutout[sourceIndex + 2]; //duz/dz
-                point.numPointsProcessed++;
-            }
-        }
-
-        protected virtual void GetResultUsingCutout(ref SQLUtility.PartialResult point, BigArray<float> cutout, int x, int y, int z, int startx, int starty, int startz, int endx, int endy, int endz,
+        protected virtual void GetResultUsingCutout(ref SQLUtility.PartialResult point, int x, int y, int z, int startx, int starty, int startz, int endx, int endy, int endz,
             int[] cutout_coordinates, int[] cutout_dimensions, int offset_y)
         {
             for (int x_i = startx; x_i <= endx; x_i++)
@@ -781,9 +670,9 @@ namespace Turbulence.SQLInterface.workers
                 ulong sourceIndex = (((ulong)z - (ulong)cutout_coordinates[2]) * (ulong)cutout_dimensions[2] * (ulong)cutout_dimensions[1] +
                     ((ulong)y - (ulong)cutout_coordinates[1]) * (ulong)cutout_dimensions[2] +
                     ((ulong)x_i - (ulong)cutout_coordinates[0])) * (ulong)setInfo.Components;
-                point.result[0] += coeff * cutout[sourceIndex];     //dux/dx
-                point.result[3] += coeff * cutout[sourceIndex + 1]; //duy/dx
-                point.result[6] += coeff * cutout[sourceIndex + 2]; //duz/dx
+                point.result[0] += coeff * GetDataItem(sourceIndex);     //dux/dx
+                point.result[3] += coeff * GetDataItem(sourceIndex + 1); //duy/dx
+                point.result[6] += coeff * GetDataItem(sourceIndex + 2); //duz/dx
                 point.numPointsProcessed++;
             }
             for (int y_i = starty; y_i <= endy; y_i++)
@@ -795,9 +684,9 @@ namespace Turbulence.SQLInterface.workers
                 ulong sourceIndex = (((ulong)z - (ulong)cutout_coordinates[2]) * (ulong)cutout_dimensions[2] * (ulong)cutout_dimensions[1] +
                     ((ulong)y_i - (ulong)cutout_coordinates[1]) * (ulong)cutout_dimensions[2] +
                     ((ulong)x - (ulong)cutout_coordinates[0])) * (ulong)setInfo.Components;
-                point.result[1] += coeff * cutout[sourceIndex];     //dux/dy
-                point.result[4] += coeff * cutout[sourceIndex + 1]; //duy/dy
-                point.result[7] += coeff * cutout[sourceIndex + 2]; //duz/dy
+                point.result[1] += coeff * GetDataItem(sourceIndex);     //dux/dy
+                point.result[4] += coeff * GetDataItem(sourceIndex + 1); //duy/dy
+                point.result[7] += coeff * GetDataItem(sourceIndex + 2); //duz/dy
                 point.numPointsProcessed++;
             }
             for (int z_i = startz; z_i <= endz; z_i++)
@@ -809,9 +698,9 @@ namespace Turbulence.SQLInterface.workers
                 ulong sourceIndex = (((ulong)z_i - (ulong)cutout_coordinates[2]) * (ulong)cutout_dimensions[2] * (ulong)cutout_dimensions[1] +
                     ((ulong)y - (ulong)cutout_coordinates[1]) * (ulong)cutout_dimensions[2] +
                     ((ulong)x - (ulong)cutout_coordinates[0])) * (ulong)setInfo.Components;
-                point.result[2] += coeff * cutout[sourceIndex];     //dux/dz
-                point.result[5] += coeff * cutout[sourceIndex + 1]; //duy/dz
-                point.result[8] += coeff * cutout[sourceIndex + 2]; //duz/dz
+                point.result[2] += coeff * GetDataItem(sourceIndex);     //dux/dz
+                point.result[5] += coeff * GetDataItem(sourceIndex + 1); //duy/dz
+                point.result[8] += coeff * GetDataItem(sourceIndex + 2); //duz/dz
                 point.numPointsProcessed++;
             }
         }
