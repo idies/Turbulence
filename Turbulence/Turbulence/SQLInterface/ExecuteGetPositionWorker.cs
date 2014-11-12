@@ -127,7 +127,7 @@ public partial class StoredProcedures
                     foreach (int point in map[thisBlob])
                     {
                         //point = input[thisBlob][i];
-                        float[] velocity;
+                        double[] velocity;
                         try
                         {
                             //if (correcting_pos == 1)
@@ -156,12 +156,12 @@ public partial class StoredProcedures
 
                         if (input[point].cubesRead == input[point].numberOfCubes && !input[point].resultSent)
                         {
-                            float[] result = getPosition_worker.GetResult(input[point],dt);
+                            double[] result = getPosition_worker.GetResult(input[point], dt);
                             record.SetInt32(0, input[point].request);
                             int r = 0;
                             for (; r < result.Length; r++)
                             {
-                                record.SetSqlSingle(r + 1, result[r]);
+                                record.SetSqlSingle(r + 1, (float)result[r]);
                             }
                             //record.SetInt32(r + 1, input[point].cubesRead);
                             SqlContext.Pipe.SendResultsRow(record);
@@ -207,8 +207,8 @@ public partial class StoredProcedures
 
             float delta = time2 - time1;
 
-            float[] result;
-            float[] velocity;
+            double[] result;
+            double[] velocity;
 
             TurbulenceBlob blob = new TurbulenceBlob(table);
             cmd = new SqlCommand(
@@ -280,7 +280,7 @@ public partial class StoredProcedures
                                 record.SetInt32(0, input[point].request);
                                 for (int r = 0; r < result.Length; r++)
                                 {
-                                    record.SetSqlSingle(r + 1, result[r]);
+                                    record.SetSqlSingle(r + 1, (float)result[r]);
                                 }
                                 SqlContext.Pipe.SendResultsRow(record);
                                 input[point].resultSent = true;

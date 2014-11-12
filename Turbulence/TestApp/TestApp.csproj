@@ -101,10 +101,10 @@
     <None Include="Web References\turbulence\turbulence.wsdl" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:13005/WebSite/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://localhost:56579/WebSite/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\turbulence\</RelPath>
-      <UpdateFromURL>http://localhost:13005/WebSite/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://localhost:56579/WebSite/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

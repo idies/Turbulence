@@ -108,11 +108,6 @@ public partial class StoredProcedures
                           contextConn);
             cmd.CommandTimeout = 3600;
 
-            //int firstLine, lastLine, firstPoint, lastPoint;
-            //int data_index, sumsx, sumsy, sumsz, sums_index0, sums_index1, data_index1;
-            //ulong sums_index, temp_sums_index = 0;
-            //double[] temp_sum = new double[table.Components];
-
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 //do
@@ -136,111 +131,6 @@ public partial class StoredProcedures
                         ((Turbulence.SQLInterface.workers.GetMHDBoxFilterSGS_SV)worker).UpdateSummedVolumes(atom, startx, starty, startz, xwidth, ywidth, zwidth);
                     else
                         throw new Exception("Invalid worker type specified! This procedure works only with a GetMHDBoxFilter3 or GetMHDBoxFilterSGS_SV worker!");
-
-                    //sums_index0 = atom.GetBaseX - startx;
-
-                    //for (int atomz = 0; atomz < atom.GetSide; atomz++)
-                    //{
-                    //    sumsz = atomz + atom.GetBaseZ - startz;
-                    //    sums_index1 = sums_index0 + sumsz * ywidth * xwidth;
-                    //    data_index1 = atomz * atom.GetSide * atom.GetSide * table.Components;
-                    //    for (int atomy = 0; atomy < atom.GetSide; atomy++)
-                    //    {
-                    //        sumsy = atomy + atom.GetBaseY - starty;
-                    //        sums_index = (ulong)((sums_index1 + sumsy * xwidth) * table.Components);
-                    //        data_index = data_index1 + atomy * atom.GetSide * table.Components;
-                    //        for (int atomx = 0; atomx < atom.GetSide; atomx++)
-                    //        {
-                    //            sumsx = atomx + sums_index0;
-                    //            //data_index = (atomz * atom.GetSide * atom.GetSide + atomy * atom.GetSide + atomx) * table.Components;
-                    //            //sums_index = (ulong)((sumsz * ywidth * xwidth + sumsy * xwidth + sumsx) * table.Components);
-                    //            for (int component = 0; component < table.Components; component++)
-                    //            {
-                    //                sums[sums_index + (ulong)component] += atom.data[data_index + component];
-                    //                temp_sum[component] = sums[sums_index + (ulong)component];
-                    //            }
-
-                    //            // We need to update point (x+1,y,z)
-                    //            // Unless x+1 is greater than or equal to xwidth
-                    //            if (sumsx + 1 < xwidth)
-                    //            {
-                    //                temp_sums_index = sums_index + (ulong)table.Components;
-                    //                for (int component = 0; component < table.Components; component++)
-                    //                {
-                    //                    sums[temp_sums_index + (ulong)component] += temp_sum[component];
-                    //                }
-                    //            }
-                    //            // We need to update point (x,y+1,z)
-                    //            // Unless y+1 is greater than or equal to ywidth
-                    //            if (sumsy + 1 < ywidth)
-                    //            {
-                    //                temp_sums_index = sums_index + (ulong)(xwidth * table.Components);
-                    //                for (int component = 0; component < table.Components; component++)
-                    //                {
-                    //                    sums[temp_sums_index + (ulong)component] += temp_sum[component];
-                    //                }
-                    //            }
-                    //            // We need to update point (x+1,y+1,z)
-                    //            // Unless x+1 is greater than or equal to xwidth
-                    //            // or y+1 is greater than or equal to ywidth
-                    //            if ((sumsx + 1 < xwidth) && (sumsy + 1 < ywidth))
-                    //            {
-                    //                temp_sums_index = sums_index + (ulong)(xwidth * table.Components + table.Components);
-                    //                for (int component = 0; component < table.Components; component++)
-                    //                {
-                    //                    sums[temp_sums_index + (ulong)component] -= temp_sum[component];
-                    //                }
-                    //            }
-                    //            // We need to update point (x,y,z+1)
-                    //            // Unless z+1 is greater than or equal to zwidth
-                    //            if (sumsz + 1 < zwidth)
-                    //            {
-                    //                temp_sums_index = sums_index + (ulong)(ywidth * xwidth * table.Components);
-                    //                for (int component = 0; component < table.Components; component++)
-                    //                {
-                    //                    sums[temp_sums_index + (ulong)component] += temp_sum[component];
-                    //                }
-                    //            }
-                    //            // We need to update point (x+1,y,z+1)
-                    //            // Unless x+1 is greater than or equal to xwidth
-                    //            // or z+1 is greater than or equal to zwidth
-                    //            if ((sumsx + 1 < xwidth) && (sumsz + 1 < zwidth))
-                    //            {
-                    //                temp_sums_index = sums_index + (ulong)(ywidth * xwidth * table.Components + table.Components);
-                    //                for (int component = 0; component < table.Components; component++)
-                    //                {
-                    //                    sums[temp_sums_index + (ulong)component] -= temp_sum[component];
-                    //                }
-                    //            }
-                    //            // We need to update point (x,y+1,z+1)
-                    //            // Unless z+1 is greater than or equal to zwidth
-                    //            // or y+1 is greater than or equal to ywidth
-                    //            if ((sumsz + 1 < zwidth) && (sumsy + 1 < ywidth))
-                    //            {
-                    //                temp_sums_index = sums_index + (ulong)(ywidth * xwidth * table.Components + xwidth * table.Components);
-                    //                for (int component = 0; component < table.Components; component++)
-                    //                {
-                    //                    sums[temp_sums_index + (ulong)component] -= temp_sum[component];
-                    //                }
-                    //            }
-                    //            // We need to update point (x+,y+1,z+1)
-                    //            // Unless x+1 is greater than or equal to xwidth
-                    //            // or y+1 is greater than or equal to ywidth
-                    //            // or z+1 is greater than or equal to zwidth
-                    //            if ((sumsx + 1 < xwidth) && (sumsy + 1 < ywidth) && (sumsz + 1 < zwidth))
-                    //            {
-                    //                temp_sums_index = sums_index + (ulong)(ywidth * xwidth * table.Components + xwidth * table.Components + table.Components);
-                    //                for (int component = 0; component < table.Components; component++)
-                    //                {
-                    //                    sums[temp_sums_index + (ulong)component] += temp_sum[component];
-                    //                }
-                    //            }
-
-                    //            sums_index += (ulong)table.Components;
-                    //            data_index += table.Components;
-                    //        }
-                    //    }
-                    //}
                 }
                 //} while (reader.NextResult());
             }

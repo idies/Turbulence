@@ -90,12 +90,12 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
             throw new NotImplementedException();
         }
 
-        public override float[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
+        public override double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input)
         {
             throw new NotImplementedException();
         }

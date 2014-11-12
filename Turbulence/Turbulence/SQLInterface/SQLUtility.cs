@@ -167,7 +167,7 @@ namespace Turbulence.SQLInterface
                 this.cell_z = 0;
                 this.lagInt = null;
 
-                this.result = new float[result_size];
+                this.result = new double[result_size];
                 for (int i = 0; i < result_size; i++)
                 {
                     result[i] = 0;
@@ -188,13 +188,10 @@ namespace Turbulence.SQLInterface
             public int cell_z;
             public double[] lagInt;
 
-            public float[] result;
+            public double[] result;
             public int numberOfCubes;
             public int cubesRead;
             public bool resultSent;
-
-            //public Point3 predictor;
-            //public Vector3 velocity;
         };
 
         public class PartialResult
