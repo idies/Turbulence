@@ -116,6 +116,7 @@
     <Compile Include="SciLib\LagInterpolation.cs" />
     <Compile Include="SciLib\Particle.cs" />
     <Compile Include="SciLib\TemporalInterpolation.cs" />
+    <Compile Include="SQLInterface\GetFilteredCutout.cs" />
     <Compile Include="SQLInterface\GetPDF.cs" />
     <Compile Include="SQLInterface\GetThreshold.cs" />
     <Compile Include="SQLInterface\FilteringJoinTableDataReader.cs" />

@@ -280,7 +280,7 @@ namespace Turbulence.SQLInterface.workers
         /// <param name="coordiantes"></param>
         /// <param name="threshold"></param>
         /// <returns></returns>
-        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(BigArray<float> cutout, int[] cutout_coordinates, int[] coordiantes, double threshold)
+        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold)
         {
             if (spatialInterp != TurbulenceOptions.SpatialInterpolation.None)
             {
@@ -315,79 +315,7 @@ namespace Turbulence.SQLInterface.workers
                         point = new SQLUtility.PartialResult(zindex, GetResultSize(), numPointsInKernel);
                         for (ulong c = 0; c < (ulong)setInfo.Components; c++)
                         {
-                            point.result[c] = cutout[sourceIndex + c];
-                        }
-
-                        // Compute the norm.
-                        double norm = 0.0f;
-                        for (int i = 0; i < GetResultSize(); i++)
-                        {
-                            norm += point.result[i] * point.result[i];
-                        }
-                        norm = Math.Sqrt(norm);
-                        point.norm = norm;
-                        if (norm > threshold)
-                        {
-                            points_above_threshold.Add(point);
-                            if (points_above_threshold.Count > MAX_NUMBER_THRESHOLD_POINTS)
-                            {
-                                throw new Exception(String.Format("The number of points above the threshold exeeds max allowed number: {0}!", MAX_NUMBER_THRESHOLD_POINTS));
-                            }
-                        }
-                    }
-                }
-            }
-
-            return points_above_threshold;
-        }
-
-        /// <summary>
-        /// Obtain the norm of the field at each point on the grid specified by the coordinates parameter from the given cutout.
-        /// Each point that has a norm higher than the given threshold is stored in the set and the set is returned.
-        /// The coordinates and the cutout_coordinates are expected to be identical.
-        /// NOTE: Values are not interpolated as the target locations are on grid nodes.
-        /// </summary>
-        /// <param name="cutout"></param>
-        /// <param name="cutout_coordiantes"></param>
-        /// <param name="coordiantes"></param>
-        /// <param name="threshold"></param>
-        /// <returns></returns>
-        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(float[] cutout, int[] cutout_coordinates, int[] coordiantes, double threshold)
-        {
-            if (spatialInterp != TurbulenceOptions.SpatialInterpolation.None)
-            {
-                throw new Exception("Invalid interpolation option specified!");
-            }
-            for (int i = 0; i < cutout_coordinates.Length; i++)
-            {
-                if (cutout_coordinates[i] != coordiantes[i])
-                {
-                    throw new Exception("Specified coordinates and cutout coordinates are not identical!");
-                }
-            }
-
-            int[] cutout_dimensions = new int[] { cutout_coordinates[5] - cutout_coordinates[2],
-                                                  cutout_coordinates[4] - cutout_coordinates[1],
-                                                  cutout_coordinates[3] - cutout_coordinates[0] };
-
-            HashSet<SQLUtility.PartialResult> points_above_threshold = new HashSet<SQLUtility.PartialResult>();
-            SQLUtility.PartialResult point;
-            long zindex = 0;
-            for (int z = coordiantes[2]; z < coordiantes[5]; z++)
-            {
-                for (int y = coordiantes[1]; y < coordiantes[4]; y++)
-                {
-                    for (int x = coordiantes[0]; x < coordiantes[3]; x++)
-                    {
-                        zindex = new Morton3D(z, y, x);
-                        ulong sourceIndex = (((ulong)z - (ulong)cutout_coordinates[2]) * (ulong)cutout_dimensions[2] * (ulong)cutout_dimensions[1] +
-                            ((ulong)y - (ulong)cutout_coordinates[1]) * (ulong)cutout_dimensions[2] +
-                            ((ulong)x - (ulong)cutout_coordinates[0])) * (ulong)setInfo.Components;
-
-                        point = new SQLUtility.PartialResult(zindex, GetResultSize(), numPointsInKernel);
-                        for (ulong c = 0; c < (ulong)setInfo.Components; c++)
-                        {
-                            point.result[c] = cutout[sourceIndex + c];
+                            point.result[c] = GetDataItem(sourceIndex + c);
                         }
 
                         // Compute the norm.
