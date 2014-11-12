@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="monitor.aspx.cs" Inherits="status_monitor" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" Inherits="Website.status_monitor" Codebehind="monitor.aspx.cs" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 

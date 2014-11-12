@@ -1,1 +1,1 @@
-<%@ WebService Language="C#" CodeBehind="~/App_Code/WebService.cs" Class="TurbulenceService.TurbulenceService" %>
+<%@ WebService Language="C#" CodeBehind="WebService.cs" Class="TurbulenceService.TurbulenceService" %>

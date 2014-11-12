@@ -1,4 +1,4 @@
- <%@ Page Language="C#" AutoEventWireup="true" CodeFile="cutout.aspx.cs" Inherits="cutout" %>
+ <%@ Page Language="C#" AutoEventWireup="true" Inherits="Website.cutout" Codebehind="cutout.aspx.cs" %>
 <html xmlns="http://www.w3.org/1999/xhtml" >
 
 <head id="Head1" runat="server"><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
@@ -30,7 +30,7 @@
       
       <h2 class="titletext">JHTDB Cutout Service</h2>
      
-    <form id="cutout_query" runat="server">
+    <form id="cutout" runat="server">
     <div>
         <hr />
  
