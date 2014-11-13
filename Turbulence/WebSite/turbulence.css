@@ -1,8 +1,8 @@
 .red { color: #ff0000; }
 
-.code { background-color: #fff0f5;
+.code { background-color: #f0f0f5;
 	border: 2px solid black; }
-.note { background-color: #fff0f5; }
+.note { background-color: #f0f0f5; }
 
 .titletext
 {
@@ -59,7 +59,7 @@
 /* Added by Stephen Hamilton */
 body
 {
-    background-image: url("images/turb-background.jpg");
+    /* Removed: background-image: url("images/turb-background.jpg");*/
     height: 100%;
 }
 
@@ -67,12 +67,11 @@ body
 #pagewrapper 
 { 
     /* background: #ccccff;*/
-    width:960px;
+    width:100%;
     margin:0 auto;
     min-height: 100%;
     text-align:left;
     background-color: #ffffff;
-    border-radius: 10px; 
     position: relative;
 }
 
@@ -84,33 +83,21 @@ body
 #main 
 {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 0px;
 }
-#main .transparency
-{
-    opacity: .4;
-    filter:alpha(opacity=100);
-  
-    width:950px;  
-    height:100px;  
-    position:absolute;  
-    top:0px;  
-    left:0px;  
-    z-index:-1;
- 
-}
+
 #title 
-{ 
-    border-radius: 10px;
+{
     background-repeat: no-repeat;
     background-position: center top; 
-    margin-top: 7px;
+    background-image: url("images/turb-background.jpg");
+    margin-top: 0px;
     text-align: center;
-    color: #000055;
+    color: #ffffff;
     font: normal normal 25px Arial, Tahoma, Helvetica, sans-serif;
     height: 95px;
     padding-top: 5px;
-    background: #f4f4f4;
+   
 }
 
 #leftcolumn
