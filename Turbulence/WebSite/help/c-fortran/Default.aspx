@@ -21,21 +21,21 @@
 
 <div class="content">
 <div id="main">
-<div class="transparency"></div>
+
 <div id="title"><br />
 <p >Johns Hopkins Turbulence Databases</p>
 
 </div>
 <!--#include file="../../navbar.htm" -->
 <div id="leftcolumn">
-   <p><img src="../../images/fig4-1.jpg" width="205" height="365" /></p>
-      <p><img src="../../images/fig2.jpg" width="205" height="163" /></p>
+   <p><img src="../../images/fig4-1.jpg" width="205" /></p>
+      
 </div>
 <div id="centercolumn">
       
       
     <h2 align="center"><span class="style22"><font size="+2">Using JHTDB with C &amp; Fortran</font></span></h2>
-    <br />
+
    
     <font face="Arial, Helvetica, sans-serif">
     <h3>Download</h3>
@@ -482,7 +482,7 @@
     integer count, real(3,count) input, real(6,count) output)</code><br />
   <br />
   <em>Example</em><br />
-  <code>
+  
   write(*, *) 'Velocity hessian at 10 particle locations'<br />
   CALL getpressurehessian(authkey, dataset,  time, FD4Lag4, NoTInt, 10, points, dataout6)<br />
   do i = 1, 10, 1<br />

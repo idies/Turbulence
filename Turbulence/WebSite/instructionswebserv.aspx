@@ -21,8 +21,8 @@
 </div>
 <!--#include file="navbar.htm" -->
 <div id="leftcolumn">
-   <p><img src="images/fig4-1.jpg" width="205" height="365" /></p>
-      <p><img src="images/fig2.jpg" width="205" height="163" /></p>
+   <p><img src="images/fig4-1.jpg" width="205" /></p>
+      
 </div>
 <div id="centercolumn">
       
@@ -54,7 +54,7 @@
     <code><a href="http://turbulence.pha.jhu.edu/service/turbulence.asmx?WSDL">http://turbulence.pha.jhu.edu/service/turbulence.asmx</a></code><br />
     <font face="Arial, Helvetica, sans-serif">Example XML requests and responses can be found <a href="http://turbulence.pha.jhu.edu/service/turbulence.asmx">here</a>.
     </font> </p>
-    
+    <p><a href="images/fig2.jpg"><img src="images/fig2.jpg" width="700"  /></a></p>
 
     <p align="left"><font face="Arial, Helvetica, sans-serif"><i>Please take
           a look at our current <a href="privacy.aspx">privacy policy</a> before
