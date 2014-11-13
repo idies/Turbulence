@@ -30,6 +30,17 @@ namespace Turbulence.SQLInterface.workers
             this.resultSize = setInfo.Components;
         }
 
+        public GetMHDBoxFilterSV(TurbDataTable setInfo,
+            int filterwidth)
+        {
+            this.setInfo = setInfo;
+            this.spatialInterp = spatialInterp;
+            this.filter_width = filterwidth;
+            this.kernelSize = filterwidth;
+            // We return 8 sums per component
+            this.resultSize = setInfo.Components;
+        }
+
         public override SqlMetaData[] GetRecordMetaData()
         {
             SqlMetaData[] recordMetaData = new SqlMetaData[1 + setInfo.Components];
@@ -346,10 +357,250 @@ namespace Turbulence.SQLInterface.workers
             return up;
         }
 
+        /// <summary>
+        /// Produces a flattened 3d array, where each element in the array is the filtered value for the field.
+        /// Elements in the array are offset by the filter width.
+        /// </summary>
+        /// <param name="coordinates">Coordinates, at which the filtered cutout is to be generated.
+        /// Given in the format [x,y,z,xwidth,ywidth,zwidth], where x,y,z are the bottom left corner
+        /// and xwidth, ywidth, zwidth is top right corner.</param>
+        /// <returns>float[]</returns>
+        public float[] GetResult(int[] coordinates)
+        {
+            double c = Filtering.FilteringCoefficients(KernelSize);
+
+            // These are the widths of the summed volumes array.
+            int xwidth, ywidth, zwidth;
+            xwidth = cutout_coordinates[3] - cutout_coordinates[0];
+            ywidth = cutout_coordinates[4] - cutout_coordinates[1];
+            zwidth = cutout_coordinates[5] - cutout_coordinates[2];
+            int result_x_width, result_y_width, result_z_width;
+            result_x_width = (coordinates[3] - 1 - coordinates[0]) / filter_width + 1;
+            result_y_width = (coordinates[4] - 1 - coordinates[1]) / filter_width + 1;
+            result_z_width = (coordinates[5] - 1 - coordinates[2]) / filter_width + 1;
+            int result_size = setInfo.Components * result_x_width * result_y_width * result_z_width;
+            ulong off0;
+            int dest = 0;
+            
+            float[] result = new float[result_size];
+            double[] temp_result = new double[setInfo.Components];
+
+            for (int z = coordinates[2]; z < coordinates[5]; z += filter_width)
+            {
+                for (int y = coordinates[1]; y < coordinates[4]; y += filter_width)
+                {
+                    for (int x = coordinates[0]; x < coordinates[3]; x += filter_width)
+                    {
+                        int lowz = z - KernelSize / 2 - 1, lowy = y - KernelSize / 2 - 1, lowx = x - KernelSize / 2 - 1;
+                        int highz = z + KernelSize / 2, highy = y + KernelSize / 2, highx = x + KernelSize / 2;
+
+                        // The sum at the top right corner should always be within bounds.
+                        off0 = ((ulong)(highz - cutout_coordinates[2]) * (ulong)ywidth * (ulong)xwidth +
+                            (ulong)(highy - cutout_coordinates[1]) * (ulong)xwidth +
+                            (ulong)highx - (ulong)cutout_coordinates[0]) * (ulong)setInfo.Components;
+                        for (int component = 0; component < setInfo.Components; component++)
+                        {
+                            temp_result[component] = sums[off0 + (ulong)component];
+                        }
+
+                        // The rest may not be within bounds, meaning that the sums at those locations are 0.
+                        if (lowz >= cutout_coordinates[2] && lowz < cutout_coordinates[5] &&
+                            lowy >= cutout_coordinates[1] && lowy < cutout_coordinates[4] &&
+                            lowx >= cutout_coordinates[0] && lowx < cutout_coordinates[3])
+                        {
+                            off0 = ((ulong)(lowz - cutout_coordinates[2]) * (ulong)ywidth * (ulong)xwidth +
+                                (ulong)(lowy - cutout_coordinates[1]) * (ulong)xwidth + 
+                                (ulong)lowx - (ulong)cutout_coordinates[0]) * (ulong)setInfo.Components;
+                            for (int component = 0; component < setInfo.Components; component++)
+                            {
+                                temp_result[component] -= sums[off0 + (ulong)component];
+                            }
+                        }
+                        if (lowz >= cutout_coordinates[2] && lowz < cutout_coordinates[5] &&
+                            lowy >= cutout_coordinates[1] && lowy < cutout_coordinates[4] &&
+                            highx >= cutout_coordinates[0] && highx < cutout_coordinates[3])
+                        {
+                            off0 = ((ulong)(lowz - cutout_coordinates[2]) * (ulong)ywidth * (ulong)xwidth +
+                                (ulong)(lowy - cutout_coordinates[1]) * (ulong)xwidth +
+                                (ulong)highx - (ulong)cutout_coordinates[0]) * (ulong)setInfo.Components;
+                            for (int component = 0; component < setInfo.Components; component++)
+                            {
+                                temp_result[component] += sums[off0 + (ulong)component];
+                            }
+                        }
+                        if (lowz >= cutout_coordinates[2] && lowz < cutout_coordinates[5] &&
+                            highy >= cutout_coordinates[1] && highy < cutout_coordinates[4] &&
+                            lowx >= cutout_coordinates[0] && lowx < cutout_coordinates[3])
+                        {
+                            off0 = ((ulong)(lowz - cutout_coordinates[2]) * (ulong)ywidth * (ulong)xwidth +
+                                (ulong)(highy - cutout_coordinates[1]) * (ulong)xwidth +
+                                (ulong)lowx - (ulong)cutout_coordinates[0]) * (ulong)setInfo.Components;
+                            for (int component = 0; component < setInfo.Components; component++)
+                            {
+                                temp_result[component] += sums[off0 + (ulong)component];
+                            }
+                        }
+                        if (lowz >= cutout_coordinates[2] && lowz < cutout_coordinates[5] &&
+                            highy >= cutout_coordinates[1] && highy < cutout_coordinates[4] &&
+                            highx >= cutout_coordinates[0] && highx < cutout_coordinates[3])
+                        {
+                            off0 = ((ulong)(lowz - cutout_coordinates[2]) * (ulong)ywidth * (ulong)xwidth +
+                                (ulong)(highy - cutout_coordinates[1]) * (ulong)xwidth + 
+                                (ulong)highx - (ulong)cutout_coordinates[0]) * (ulong)setInfo.Components;
+                            for (int component = 0; component < setInfo.Components; component++)
+                            {
+                                temp_result[component] -= sums[off0 + (ulong)component];
+                            }
+                        }
+                        if (highz >= cutout_coordinates[2] && highz < cutout_coordinates[5] &&
+                            lowy >= cutout_coordinates[1] && lowy < cutout_coordinates[4] &&
+                            lowx >= cutout_coordinates[0] && lowx < cutout_coordinates[3])
+                        {
+                            off0 = ((ulong)(highz - cutout_coordinates[2]) * (ulong)ywidth * (ulong)xwidth +
+                                (ulong)(lowy - cutout_coordinates[1]) * (ulong)xwidth + 
+                                (ulong)lowx - (ulong)cutout_coordinates[0]) * (ulong)setInfo.Components;
+                            for (int component = 0; component < setInfo.Components; component++)
+                            {
+                                temp_result[component] += sums[off0 + (ulong)component];
+                            }
+                        }
+                        if (highz >= cutout_coordinates[2] && highz < cutout_coordinates[5] &&
+                            lowy >= cutout_coordinates[1] && lowy < cutout_coordinates[4] &&
+                            highx >= cutout_coordinates[0] && highx < cutout_coordinates[3])
+                        {
+                            off0 = ((ulong)(highz - cutout_coordinates[2]) * (ulong)ywidth * (ulong)xwidth +
+                                (ulong)(lowy - cutout_coordinates[1]) * (ulong)xwidth + 
+                                (ulong)highx - (ulong)cutout_coordinates[0]) * (ulong)setInfo.Components;
+                            for (int component = 0; component < setInfo.Components; component++)
+                            {
+                                temp_result[component] -= sums[off0 + (ulong)component];
+                            }
+                        }
+                        if (highz >= cutout_coordinates[2] && highz < cutout_coordinates[5] &&
+                            highy >= cutout_coordinates[1] && highy < cutout_coordinates[4] &&
+                            lowx >= cutout_coordinates[0] && lowx < cutout_coordinates[3])
+                        {
+                            off0 = ((ulong)(highz - cutout_coordinates[2]) * (ulong)ywidth * (ulong)xwidth +
+                                (ulong)(highy - cutout_coordinates[1]) * (ulong)xwidth + 
+                                (ulong)lowx - (ulong)cutout_coordinates[0]) * (ulong)setInfo.Components;
+                            for (int component = 0; component < setInfo.Components; component++)
+                            {
+                                temp_result[component] -= sums[off0 + (ulong)component];
+                            }
+                        }
+
+                        for (int i = 0; i < setInfo.Components; i++)
+                        {
+                            result[dest + i] = (float)(temp_result[i] * c);
+                        }
+                        dest += setInfo.Components;
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public override int GetResultSize()
         {
             return resultSize;
         }
 
+        public override void GetData(short datasetID, string turbinfodb, int timestep, int[] coordinates)
+        {
+            cutout_coordinates = GetCutoutCoordinates(coordinates);
+            int x_width, y_width, z_width;
+            x_width = cutout_coordinates[3] - cutout_coordinates[0];
+            y_width = cutout_coordinates[4] - cutout_coordinates[1];
+            z_width = cutout_coordinates[5] - cutout_coordinates[2];
+            ulong cutout_size = (ulong)setInfo.Components * (ulong)x_width * (ulong)y_width * (ulong)z_width;
+            if (cutout_size > int.MaxValue / sizeof(float))
+            {
+                //big_cutout = new BigArray<float>(cutout_size);
+                //using_big_cutout = true;
+                throw new Exception("Cutout size is too big!");
+            }
+            else
+            {
+                //cutout = new float[cutout_size];
+            }
+
+            InitializeSummedVolumes(x_width, y_width, z_width);
+
+            GetCutout(datasetID, turbinfodb, timestep);
+        }
+
+        public override int[] GetCutoutCoordinates(int[] coordinates)
+        {
+            int startx = coordinates[0] - KernelSize / 2;
+            startx = startx - startx % setInfo.atomDim;
+            int starty = coordinates[1] - KernelSize / 2;
+            starty = starty - starty % setInfo.atomDim;
+            int startz = coordinates[2] - KernelSize / 2;
+            startz = startz - startz % setInfo.atomDim;
+            int endx = coordinates[3] + KernelSize / 2;
+            endx = endx - endx % setInfo.atomDim + setInfo.atomDim;
+            int endy = coordinates[4] + KernelSize / 2;
+            endy = endy - endy % setInfo.atomDim + setInfo.atomDim;
+            int endz = coordinates[5] + KernelSize / 2;
+            endz = endz - endz % setInfo.atomDim + setInfo.atomDim;
+            return new int[] { startx, starty, startz, endx, endy, endz };
+        }
+        
+        protected override void GetLocalCutout(TurbDataTable table, string dbname, int timestep,
+            int[] local_coordinates,
+            SqlConnection connection)
+        {
+            int x_width, y_width, z_width;
+            x_width = cutout_coordinates[3] - cutout_coordinates[0];
+            y_width = cutout_coordinates[4] - cutout_coordinates[1];
+            z_width = cutout_coordinates[5] - cutout_coordinates[2];
+
+            byte[] rawdata = new byte[table.BlobByteSize];
+
+            string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
+            int atomWidth = table.atomDim;
+
+            string queryString = GetQueryString(local_coordinates, tableName, dbname, timestep);
+                        
+            TurbulenceBlob atom = new TurbulenceBlob(table);
+
+            SqlCommand command = new SqlCommand(
+                queryString, connection);
+            command.CommandTimeout = 600;
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    // read in the current blob
+                    long thisBlob = reader.GetSqlInt64(0).Value;
+                    int bytesread = 0;
+                    while (bytesread < table.BlobByteSize)
+                    {
+                        int bytes = (int)reader.GetBytes(1, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
+                        bytesread += bytes;
+                    }
+
+                    atom.Setup(timestep, new Morton3D(thisBlob), rawdata);
+
+                    UpdateSummedVolumes(atom, cutout_coordinates[0], cutout_coordinates[1], cutout_coordinates[2], x_width, y_width, z_width);
+                }
+            }
+        }
+
+        protected override string GetQueryString(int startx, int starty, int startz, int endx, int endy, int endz, string tableName, string dbname, int timestep)
+        {
+            return String.Format(
+                   "select t.zindex, t.data " +
+                   "from {7} as t inner join " +
+                   "(select zindex from {8}..zindex where " +
+                       "X >= {0} & -{6} and X < {3} and Y >= {1} & -{6} and Y < {4} and Z >= {2} & -{6} and z < {5}) " +
+                   "as c " +
+                   "on t.zindex = c.zindex " +
+                   "and t.timestep = {9}",
+                   startx, starty, startz,
+                   endx, endy, endz,
+                   setInfo.atomDim, tableName, dbname, timestep);
+        }
     }
 }
