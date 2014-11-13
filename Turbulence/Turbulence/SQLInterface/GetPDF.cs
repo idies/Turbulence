@@ -70,7 +70,6 @@ public partial class StoredProcedures
         int[] coordinates,
         int[] bins)
     {
-        float[] cutout = null;
         try
         {
             SqlConnection contextConn;
@@ -85,36 +84,12 @@ public partial class StoredProcedures
                 new Turbulence.SQLInterface.workers.GetCurl(table, (TurbulenceOptions.SpatialInterpolation)spatialInterp);
             contextConn.Close();
 
-            int[] cutout_coordinates;
-            cutout_coordinates = worker.GetCutoutCoordinates(coordinates);
-            int x_width, y_width, z_width;
-            x_width = cutout_coordinates[3] - cutout_coordinates[0];
-            y_width = cutout_coordinates[4] - cutout_coordinates[1];
-            z_width = cutout_coordinates[5] - cutout_coordinates[2];
-            //cutout = new byte[table.Components * sizeof(float) * x_width * y_width * z_width];
-            ulong cutout_size = (ulong)table.Components * (ulong)x_width * (ulong)y_width * (ulong)z_width;
-            if (cutout_size > int.MaxValue / sizeof(float))
-            {
-                throw new Exception("Cutout size too big! Consider using more threads!");
-            }
-            else
-            {
-                cutout = new float[cutout_size];
-            }
+            worker.GetData(datasetID, turbinfodb, timestep, coordinates);
 
-            BigArray<float> big_cutout = null;
-            GetCutoutForWorker(worker, table, datasetID, turbinfodb, timestep, coordinates, cutout_coordinates, false, ref big_cutout, ref cutout);
-
-            worker.GetPDFUsingCutout(cutout, cutout_coordinates, coordinates, bins, binSize);
-
-            cutout = null;
+            worker.GetPDFUsingCutout(coordinates, bins, binSize);
         }
         catch (Exception ex)
         {
-            if (cutout != null)
-            {
-                cutout = null;
-            }
             throw ex;
         }
     }

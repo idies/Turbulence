@@ -511,8 +511,6 @@ public partial class StoredProcedures
         int[] coordinates,
         out HashSet<SQLUtility.PartialResult> points_above_threshold)
     {
-        float[] cutout = null;
-        BigArray<float> big_cutout = null;
         try
         {
             SqlConnection contextConn;
@@ -525,149 +523,21 @@ public partial class StoredProcedures
             Worker worker = Worker.GetWorker(table, workerType, spatialInterp, arg, contextConn);
             contextConn.Close();
 
-            int[] cutout_coordinates;
-            cutout_coordinates = worker.GetCutoutCoordinates(coordinates);
-            int x_width, y_width, z_width;
-            x_width = cutout_coordinates[3] - cutout_coordinates[0];
-            y_width = cutout_coordinates[4] - cutout_coordinates[1];
-            z_width = cutout_coordinates[5] - cutout_coordinates[2];
-            //cutout = new byte[table.Components * sizeof(float) * x_width * y_width * z_width];
-            ulong cutout_size = (ulong)table.Components * (ulong)x_width * (ulong)y_width * (ulong)z_width;
-            bool using_big_cutout = false;
-            if (cutout_size > int.MaxValue / sizeof(float))
-            {
-                big_cutout = new BigArray<float>(cutout_size);
-                using_big_cutout = true;
-            }
-            else
-            {
-                cutout = new float[cutout_size];
-            }
-
-            GetCutoutForWorker(worker, table, datasetID, turbinfodb, timestep, coordinates, cutout_coordinates, using_big_cutout, ref big_cutout, ref cutout);
+            worker.GetData(datasetID, turbinfodb, timestep, coordinates);
             
             //endTime = DateTime.Now;
             //IOTime = endTime - startTime;
             //startTime = endTime;
 
-            if (using_big_cutout)
-            {
-                points_above_threshold = worker.GetThresholdUsingCutout(big_cutout, cutout_coordinates, coordinates, threshold);
-            }
-            else
-            {
-                points_above_threshold = worker.GetThresholdUsingCutout(cutout, cutout_coordinates, coordinates, threshold);
-            }
-            cutout = null;
+            points_above_threshold = worker.GetThresholdUsingCutout(coordinates, threshold);
 
             //endTime = DateTime.Now;
             //computeTime = endTime - startTime;
         }
         catch (Exception ex)
         {
-            if (cutout != null)
-            {
-                cutout = null;
-            }
             throw ex;
         }
-    }
-
-    private static void GetCutoutForWorker(Worker worker, TurbDataTable table, short datasetID, string turbinfodb, int timestep,
-        int[] coordinates, int[] cutout_coordinates, bool using_big_cutout,
-        ref BigArray<float> big_cutout, ref float[] cutout)
-    {
-        SqlConnection turbInfoConn = new SqlConnection("Server=gw01;Database=turbinfo;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;");
-        turbInfoConn.Open();
-        SqlConnection sqlConn;
-
-        try
-        {
-            int[] local_coordinates,
-                local_start_coordinates_x, local_end_coordinates_x,
-                local_start_coordinates_y, local_end_coordinates_y,
-                local_start_coordinates_z, local_end_coordinates_z;
-            GetLocalCoordiantes(cutout_coordinates[0], cutout_coordinates[3], table.StartX, table.EndX,
-                //table.GridResolutionX,
-                out local_start_coordinates_x, out local_end_coordinates_x);
-            GetLocalCoordiantes(cutout_coordinates[1], cutout_coordinates[4], table.StartY, table.EndY,
-                //table.GridResolutionY,
-                out local_start_coordinates_y, out local_end_coordinates_y);
-            GetLocalCoordiantes(cutout_coordinates[2], cutout_coordinates[5], table.StartZ, table.EndZ,
-                //table.GridResolutionZ,
-                out local_start_coordinates_z, out local_end_coordinates_z);
-
-            local_coordinates = new int[6];
-            for (int k = 0; k < local_start_coordinates_z.Length; k++)
-            {
-                for (int j = 0; j < local_start_coordinates_y.Length; j++)
-                {
-                    for (int i = 0; i < local_start_coordinates_x.Length; i++)
-                    {
-                        local_coordinates[0] = local_start_coordinates_x[i];
-                        local_coordinates[1] = local_start_coordinates_y[j];
-                        local_coordinates[2] = local_start_coordinates_z[k];
-                        local_coordinates[3] = local_end_coordinates_x[i];
-                        local_coordinates[4] = local_end_coordinates_y[j];
-                        local_coordinates[5] = local_end_coordinates_z[k];
-
-                        int wrapped_local_z = ((local_coordinates[2] % table.GridResolutionZ) + table.GridResolutionZ) % table.GridResolutionZ;
-                        int wrapped_local_y = ((local_coordinates[1] % table.GridResolutionY) + table.GridResolutionY) % table.GridResolutionY;
-                        int wrapped_local_x = ((local_coordinates[0] % table.GridResolutionX) + table.GridResolutionX) % table.GridResolutionX;
-
-                        long zindex = new Morton3D(wrapped_local_z, wrapped_local_y, wrapped_local_x);
-                        SqlCommand cmd = turbInfoConn.CreateCommand();
-                        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-                            "from {0}..DatabaseMap where DatasetID = @datasetID " +
-                            "and minLim <= @zindex and maxLim >= @zindex", turbinfodb);
-                        cmd.Parameters.AddWithValue("@datasetID", datasetID);
-                        cmd.Parameters.AddWithValue("@zindex", zindex);
-                        cmd.CommandTimeout = 600;
-                        SqlDataReader reader = cmd.ExecuteReader();
-                        if (!reader.HasRows)
-                        {
-                            throw new Exception(
-                                String.Format("The DatabaseMap table does not contain information about this dataset, zindex combination: {0}, {1}",
-                                datasetID, zindex));
-                        }
-                        reader.Read();
-                        string serverName = reader.GetString(0);
-                        string dbname = reader.GetString(1);
-                        string codedb = reader.GetString(2);
-                        reader.Close();
-                        reader.Dispose();
-
-                        sqlConn = new SqlConnection(
-                            String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;Connect Timeout = 600;",
-                            serverName, codedb));
-                        sqlConn.Open();
-
-                        if (using_big_cutout)
-                        {
-                            GetCutout(table, dbname, timestep, cutout_coordinates, local_coordinates, sqlConn, ref big_cutout);
-                        }
-                        else
-                        {
-                            GetCutout(table, dbname, timestep, cutout_coordinates, local_coordinates, sqlConn, ref cutout);
-                        }
-                        sqlConn.Close();
-                    }
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            if (cutout != null)
-            {
-                cutout = null;
-            }
-            if (turbInfoConn.State == ConnectionState.Open)
-            {
-                turbInfoConn.Close();
-            }
-            throw ex;
-        }
-        turbInfoConn.Close();
     }
 
 };

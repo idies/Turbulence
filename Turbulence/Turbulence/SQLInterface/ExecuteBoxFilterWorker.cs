@@ -34,8 +34,8 @@ public partial class StoredProcedures
         SqlConnection standardConn;
         SqlConnection contextConn;
         string connString;
-        if (serverName.Length > 4)
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(4), codedb);
+        if (serverName.Contains("_"))
+            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), codedb);
         else
             connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
         standardConn = new SqlConnection(connString);
