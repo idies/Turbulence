@@ -49,7 +49,7 @@ public partial class StoredProcedures
             int cutout_byte_length = Buffer.ByteLength(cutout);
             result = new byte[cutout_byte_length];
             Buffer.BlockCopy(cutout, 0, result, 0, cutout_byte_length);
-            record.SetBytes(0, 0, result, 0, cutout.Length);
+            record.SetBytes(0, 0, result, 0, cutout_byte_length);
             // Send the record to the client.
             SqlContext.Pipe.Send(record);
             result = null;
