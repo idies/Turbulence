@@ -50,28 +50,28 @@ namespace TurbulenceService
             switch (dataSet)
             {
                 case DataSets.isotropic1024fine:
-                    if (field.Equals("v") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.isotropic1024fine_vel;
                     else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
                         return TableNames.isotropic1024fine_pr;
                     else
                         throw new Exception("Invalid field specified!");
                 case DataSets.isotropic1024coarse:
-                    if (field.Equals("v") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.vel;
                     else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
                         return TableNames.pr;
                     else
                         throw new Exception("Invalid field specified!");
                 case DataSets.channel:
-                    if (field.Equals("v") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.vel;
                     else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
                         return TableNames.pr;
                     else
                         throw new Exception("Invalid field specified!");
                 case DataSets.mhd1024:
-                    if (field.Equals("v") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.velocity08;
                     else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
                         return TableNames.magnetic08;
@@ -82,7 +82,7 @@ namespace TurbulenceService
                     else
                         throw new Exception("Invalid field specified!");
                 case DataSets.mixing:
-                    if (field.Equals("v") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.vel;
                     else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
                         return TableNames.pr;
@@ -92,7 +92,6 @@ namespace TurbulenceService
                         throw new Exception("Invalid field specified!");
                 default:
                     throw new Exception("Invalid data set specified!");
-
             }
         }
 
