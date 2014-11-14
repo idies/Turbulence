@@ -608,6 +608,7 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.None_Fd4:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd8:
+                    return gridPointsY.GetCellIndex(value, 0.0);
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -632,7 +633,7 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.M4Q10:
                 case TurbulenceOptions.SpatialInterpolation.M4Q12:
                 case TurbulenceOptions.SpatialInterpolation.M4Q14:
-                    return gridPointsY.GetCellIndex(value, 0.0);
+                    return gridPointsY.GetCellIndex(value);
                 case TurbulenceOptions.SpatialInterpolation.None:
                     return gridPointsY.GetCellIndexRound(value);
                 default:
