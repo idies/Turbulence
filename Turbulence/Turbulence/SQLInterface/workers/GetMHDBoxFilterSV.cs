@@ -533,11 +533,21 @@ namespace Turbulence.SQLInterface.workers
         public override int[] GetCutoutCoordinates(int[] coordinates)
         {
             int startx = coordinates[0] - KernelSize / 2;
-            startx = startx - startx % setInfo.atomDim;
+            if (startx < 0)
+                startx = startx - startx % setInfo.atomDim - setInfo.atomDim;
+            else
+                startx = startx - startx % setInfo.atomDim;
             int starty = coordinates[1] - KernelSize / 2;
-            starty = starty - starty % setInfo.atomDim;
+            if (starty < 0)
+                starty = starty - starty % setInfo.atomDim - setInfo.atomDim;
+            else
+                starty = starty - starty % setInfo.atomDim;
             int startz = coordinates[2] - KernelSize / 2;
-            startz = startz - startz % setInfo.atomDim;
+            if (startz < 0)
+                startz = startz - startz % setInfo.atomDim - setInfo.atomDim;
+            else
+                startz = startz - startz % setInfo.atomDim;
+            // The end coordinates should never really be less than 0.
             int endx = coordinates[3] + KernelSize / 2;
             endx = endx - endx % setInfo.atomDim + setInfo.atomDim;
             int endy = coordinates[4] + KernelSize / 2;
@@ -551,7 +561,7 @@ namespace Turbulence.SQLInterface.workers
             int[] local_coordinates,
             SqlConnection connection)
         {
-            int x_width, y_width, z_width;
+            int startx, starty, startz, x_width, y_width, z_width;
             x_width = cutout_coordinates[3] - cutout_coordinates[0];
             y_width = cutout_coordinates[4] - cutout_coordinates[1];
             z_width = cutout_coordinates[5] - cutout_coordinates[2];
@@ -583,7 +593,26 @@ namespace Turbulence.SQLInterface.workers
 
                     atom.Setup(timestep, new Morton3D(thisBlob), rawdata);
 
-                    UpdateSummedVolumes(atom, cutout_coordinates[0], cutout_coordinates[1], cutout_coordinates[2], x_width, y_width, z_width);
+                    // Check for wrap around: (maybe this can be figured out from the local_coordinates?)
+                    startx = cutout_coordinates[0];
+                    if (atom.GetBaseX > cutout_coordinates[3])
+                        startx += setInfo.GridResolutionX;
+                    else if (atom.GetBaseX + atom.GetSide < startx)
+                        startx -= setInfo.GridResolutionX;
+
+                    starty = cutout_coordinates[1];
+                    if (atom.GetBaseY > cutout_coordinates[4])
+                        starty += setInfo.GridResolutionY;
+                    else if (atom.GetBaseY + atom.GetSide < starty)
+                        starty -= setInfo.GridResolutionY;
+
+                    startz = cutout_coordinates[2];
+                    if (atom.GetBaseZ > cutout_coordinates[5])
+                        startz += setInfo.GridResolutionZ;
+                    else if (atom.GetBaseZ + atom.GetSide < startz)
+                        startz -= setInfo.GridResolutionZ;
+
+                    UpdateSummedVolumes(atom, startx, starty, startz, x_width, y_width, z_width);
                 }
             }
         }
