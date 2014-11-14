@@ -70,37 +70,45 @@
 
         <table>         
         <tr>
-            <td class="style7" colspan="2">Starting coordinate index for cutout: [<a href="/datasets.aspx" class="note">?</a>]</td>
-            <td class="style8" colspan="2">Size of cutout: [<a href="/datasets.aspx" class="note">?</a>] <br /><span class="style1">(end index minus start index + 1)</span></td>            
-            <td class="style8">&nbsp;</td>            
+            <td class="style7" valign="top" colspan="2">Starting coordinate index for cutout: [<a href="/datasets.aspx" class="note">?</a>] </td>
+            <td class="style7" valign="top" colspan="2"> &nbsp;Size of cutout: [<a href="/datasets.aspx" class="note">?</a>] <br />
+                <span class="style1"> &nbsp;(end index minus start index + 1)</span> </td>            
+            <td class="style7" valign="top">
+                <span title="Optionally select a step size. If omitted every point in the range will be returned."> &nbsp;Step (optional)
+                <asp:CheckBox ID="step_checkbox" runat="server" AutoPostBack="True"
+                    oncheckedchanged="step_checkbox_CheckedChanged" />
+                : </span> </td>            
+            <td class="style9" runat="server" id="step_cell" visible="false" valign="top">  &nbsp;<asp:TextBox  ID="stepSize" runat="server" Width="40px">1</asp:TextBox><br /> </td>          
         </tr>        
         <tr>
             <td class="style6">m<sub>t</sub> <asp:Literal ID="timestart_range" runat="server" Visible="true"></asp:Literal>: </td>
             <td class="style5"> <asp:TextBox ID="timestart" runat="server" Width="40px">0</asp:TextBox><br /> </td>
-            <td class="style6"> M<sub>t</sub> <asp:Literal ID="timeend_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style6"> &nbsp;M<sub>t</sub> <asp:Literal ID="timeend_range" runat="server" Visible="true"></asp:Literal>: </td>
             <td class="style5"> <asp:TextBox ID="timeend" runat="server" Width="40px">0</asp:TextBox><br /> </td>
             <td class="style9"> &nbsp;</td>
+            <td class="style8" rowspan="4" Width="300px">  
+                <asp:Literal ID="channel_grid_note" runat="server" Visible="false"></asp:Literal> </td>
          </tr>
          <tr>
             <td class="style6"> i<sub>x</sub> <asp:Literal ID="x_range" runat="server" Visible="true"></asp:Literal>:  </td>
             <td class="style5"> <asp:TextBox ID="x" runat="server" Width="40px">0</asp:TextBox><br /> </td>
-            <td class="style6"> N<sub>x</sub> <asp:Literal ID="xend_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style6"> &nbsp;N<sub>x</sub> <asp:Literal ID="xend_range" runat="server" Visible="true"></asp:Literal>:  </td>
             <td class="style5"> <asp:TextBox ID="xEnd" runat="server" Width="40px">0</asp:TextBox> 
                 <br /> </td>
             <td class="style9">  
-                <asp:Literal ID="channel_grid_note" runat="server" Visible="false"></asp:Literal> </td>
+                &nbsp;</td>
          </tr>
          <tr>
             <td class="style6"> j<sub>y</sub> <asp:Literal ID="y_range" runat="server" Visible="true"></asp:Literal>:  </td>
             <td class="style5"> <asp:TextBox ID="y" runat="server" Width="40px">0</asp:TextBox><br /> </td>
-            <td class="style6"> N<sub>y</sub> <asp:Literal ID="yend_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style6"> &nbsp;N<sub>y</sub> <asp:Literal ID="yend_range" runat="server" Visible="true"></asp:Literal>:  </td>
             <td class="style5"> <asp:TextBox ID="yEnd" runat="server" Width="40px">0</asp:TextBox><br /> </td>
             <td class="style9"> &nbsp;</td>
          </tr>
          <tr>
             <td class="style6"> k<sub>z</sub> <asp:Literal ID="z_range" runat="server" Visible="true"></asp:Literal>:  </td>
             <td class="style5"> <asp:TextBox ID="z" runat="server" Width="40px">0</asp:TextBox> </td>
-            <td class="style6"> N<sub>z</sub> <asp:Literal ID="zend_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style6"> &nbsp;N<sub>z</sub> <asp:Literal ID="zend_range" runat="server" Visible="true"></asp:Literal>:  </td>
             <td class="style5"> <asp:TextBox ID="zEnd" runat="server" Width="40px">0</asp:TextBox> </td>
             <td class="style9"> &nbsp;</td>
          </tr>

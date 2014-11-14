@@ -12,8 +12,6 @@ namespace Turbulence.SQLInterface.workers
 {
     public class GetMHDBoxFilterSV : Worker
     {
-        int filter_width;
-
         private int resultSize;
         BigArray<double> sums;
 
@@ -23,8 +21,7 @@ namespace Turbulence.SQLInterface.workers
         {
             this.setInfo = setInfo;
             this.spatialInterp = spatialInterp;
-            int fw = (int)Math.Round(filterwidth / setInfo.Dx);
-            this.filter_width = fw;
+            int filter_width = (int)Math.Round(filterwidth / setInfo.Dx);
             this.kernelSize = filter_width;
             // We return 8 sums per component
             this.resultSize = setInfo.Components;
@@ -35,7 +32,6 @@ namespace Turbulence.SQLInterface.workers
         {
             this.setInfo = setInfo;
             this.spatialInterp = spatialInterp;
-            this.filter_width = filterwidth;
             this.kernelSize = filterwidth;
             // We return 8 sums per component
             this.resultSize = setInfo.Components;
@@ -61,8 +57,8 @@ namespace Turbulence.SQLInterface.workers
             Y = LagInterpolation.CalcNodeWithRound(request.y, setInfo.Dx);
             Z = LagInterpolation.CalcNodeWithRound(request.z, setInfo.Dx);
 
-            int startz = Z - filter_width / 2, starty = Y - filter_width / 2, startx = X - filter_width / 2;
-            int endz = Z + filter_width / 2, endy = Y + filter_width / 2, endx = X + filter_width / 2;
+            int startz = Z - KernelSize / 2, starty = Y - KernelSize / 2, startx = X - KernelSize / 2;
+            int endz = Z + KernelSize / 2, endy = Y + KernelSize / 2, endx = X + KernelSize / 2;
 
             // we do not want a request to appear more than once in the list for an atom
             // with the below logic we are going to check distinct atoms only
@@ -359,13 +355,14 @@ namespace Turbulence.SQLInterface.workers
 
         /// <summary>
         /// Produces a flattened 3d array, where each element in the array is the filtered value for the field.
-        /// Elements in the array are offset by the filter width.
+        /// Elements in the array are offset by step.
         /// </summary>
         /// <param name="coordinates">Coordinates, at which the filtered cutout is to be generated.
         /// Given in the format [x,y,z,xwidth,ywidth,zwidth], where x,y,z are the bottom left corner
         /// and xwidth, ywidth, zwidth is top right corner.</param>
+        /// <param name="step">The step size for the result.</param>
         /// <returns>float[]</returns>
-        public float[] GetResult(int[] coordinates)
+        public float[] GetResult(int[] coordinates, int step)
         {
             double c = Filtering.FilteringCoefficients(KernelSize);
 
@@ -375,9 +372,9 @@ namespace Turbulence.SQLInterface.workers
             ywidth = cutout_coordinates[4] - cutout_coordinates[1];
             zwidth = cutout_coordinates[5] - cutout_coordinates[2];
             int result_x_width, result_y_width, result_z_width;
-            result_x_width = (coordinates[3] - 1 - coordinates[0]) / filter_width + 1;
-            result_y_width = (coordinates[4] - 1 - coordinates[1]) / filter_width + 1;
-            result_z_width = (coordinates[5] - 1 - coordinates[2]) / filter_width + 1;
+            result_x_width = (coordinates[3] - 1 - coordinates[0]) / step + 1;
+            result_y_width = (coordinates[4] - 1 - coordinates[1]) / step + 1;
+            result_z_width = (coordinates[5] - 1 - coordinates[2]) / step + 1;
             int result_size = setInfo.Components * result_x_width * result_y_width * result_z_width;
             ulong off0;
             int dest = 0;
@@ -385,11 +382,11 @@ namespace Turbulence.SQLInterface.workers
             float[] result = new float[result_size];
             double[] temp_result = new double[setInfo.Components];
 
-            for (int z = coordinates[2]; z < coordinates[5]; z += filter_width)
+            for (int z = coordinates[2]; z < coordinates[5]; z += step)
             {
-                for (int y = coordinates[1]; y < coordinates[4]; y += filter_width)
+                for (int y = coordinates[1]; y < coordinates[4]; y += step)
                 {
-                    for (int x = coordinates[0]; x < coordinates[3]; x += filter_width)
+                    for (int x = coordinates[0]; x < coordinates[3]; x += step)
                     {
                         int lowz = z - KernelSize / 2 - 1, lowy = y - KernelSize / 2 - 1, lowx = x - KernelSize / 2 - 1;
                         int highz = z + KernelSize / 2, highy = y + KernelSize / 2, highx = x + KernelSize / 2;

@@ -20,6 +20,7 @@ public partial class StoredProcedures
         int blobDim, 
         int timestep,
         int filter_width,
+        int step,
         string QueryBox)
     {
         byte[] result = null;
@@ -34,7 +35,6 @@ public partial class StoredProcedures
             TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
             string DBtableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
-            //Worker worker = Worker.GetWorker(table, (int)Worker.Workers.GetMHDBoxFilterSV, 0, 0.0f, contextConn);
             GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
             contextConn.Close();
 
@@ -43,7 +43,7 @@ public partial class StoredProcedures
 
             worker.GetData(datasetID, turbinfodb, timestep, coordinates);
 
-            cutout = worker.GetResult(coordinates);
+            cutout = worker.GetResult(coordinates, step);
 
             // Populate the record
             int cutout_byte_length = Buffer.ByteLength(cutout);

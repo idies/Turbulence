@@ -9,6 +9,7 @@ DROP PROCEDURE [dbo].[ExecuteMHDWorker]
 DROP PROCEDURE [dbo].[ExecuteBoxFilterWorker]
 DROP PROCEDURE [dbo].[GetDataCutout]
 DROP PROCEDURE [dbo].[GetThreshold]
+DROP PROCEDURE [dbo].[GetFilteredCutout]
 DROP ASSEMBLY Turbulence 
 CREATE ASSEMBLY Turbulence FROM @DLL_Turbulence WITH PERMISSION_SET = UNSAFE 
 GO
@@ -107,6 +108,22 @@ CREATE PROCEDURE [dbo].[GetThreshold] (
 ) AS EXTERNAL NAME Turbulence.StoredProcedures.GetThreshold
 GO
 GRANT EXECUTE ON [dbo].[GetThreshold] TO [turbquery]
+GO
+CREATE PROCEDURE [dbo].[GetFilteredCutout] (
+	@serverName nvarchar(4000),
+	@dbname nvarchar(4000),
+	@codedb nvarchar(4000),
+	@turbinfodb nvarchar(4000),
+	@datasetID smallint,
+	@field nvarchar(4000),
+	@blobDim int,
+	@timestep int,
+	@filter_width int,
+	@step int,
+	@QueryBox nvarchar(4000)
+) AS EXTERNAL NAME Turbulence.StoredProcedures.GetFilteredCutout
+GO
+GRANT EXECUTE ON [dbo].[GetFilteredCutout] TO [turbquery]
 GO
 CREATE FUNCTION dbo.CreateMortonIndex (
 	@z int,
