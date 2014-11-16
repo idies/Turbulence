@@ -590,23 +590,23 @@ namespace Turbulence.SQLInterface.workers
 
                     atom.Setup(timestep, new Morton3D(thisBlob), rawdata);
 
-                    // Check for wrap around: (maybe this can be figured out from the local_coordinates?)
+                    // Check for wrap around:
                     startx = cutout_coordinates[0];
-                    if (atom.GetBaseX > cutout_coordinates[3])
+                    if (atom.GetBaseX > local_coordinates[3])
                         startx += setInfo.GridResolutionX;
-                    else if (atom.GetBaseX + atom.GetSide < startx)
+                    else if (atom.GetBaseX + atom.GetSide < local_coordinates[0])
                         startx -= setInfo.GridResolutionX;
 
                     starty = cutout_coordinates[1];
-                    if (atom.GetBaseY > cutout_coordinates[4])
+                    if (atom.GetBaseY > local_coordinates[4])
                         starty += setInfo.GridResolutionY;
-                    else if (atom.GetBaseY + atom.GetSide < starty)
+                    else if (atom.GetBaseY + atom.GetSide < local_coordinates[1])
                         starty -= setInfo.GridResolutionY;
 
                     startz = cutout_coordinates[2];
-                    if (atom.GetBaseZ > cutout_coordinates[5])
+                    if (atom.GetBaseZ > local_coordinates[5])
                         startz += setInfo.GridResolutionZ;
-                    else if (atom.GetBaseZ + atom.GetSide < startz)
+                    else if (atom.GetBaseZ + atom.GetSide < local_coordinates[2])
                         startz -= setInfo.GridResolutionZ;
 
                     UpdateSummedVolumes(atom, startx, starty, startz, x_width, y_width, z_width);
