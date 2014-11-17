@@ -103,15 +103,6 @@ namespace Website {
         protected global::System.Web.UI.WebControls.CheckBox step_checkbox;
         
         /// <summary>
-        /// step_cell control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableCell step_cell;
-        
-        /// <summary>
         /// stepSize control.
         /// </summary>
         /// <remarks>

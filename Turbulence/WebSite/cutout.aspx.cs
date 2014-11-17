@@ -210,11 +210,11 @@ namespace Website
         {
             if (step_checkbox.Checked == true)
             {
-                step_cell.Visible = true;
+                stepSize.Visible = true;
             }
             else
             {
-                step_cell.Visible = false;
+                stepSize.Visible = false;
                 stepSize.Text = "1";
                 update();
             }
