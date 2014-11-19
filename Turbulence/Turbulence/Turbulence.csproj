@@ -116,6 +116,8 @@
     <Compile Include="SciLib\LagInterpolation.cs" />
     <Compile Include="SciLib\Particle.cs" />
     <Compile Include="SciLib\TemporalInterpolation.cs" />
+    <Compile Include="SQLInterface\Database.cs" />
+    <Compile Include="SQLInterface\StoreFilteredCutout.cs" />
     <Compile Include="SQLInterface\GetFilteredCutout.cs" />
     <Compile Include="SQLInterface\GetPDF.cs" />
     <Compile Include="SQLInterface\GetThreshold.cs" />
@@ -128,6 +130,7 @@
     <Compile Include="SQLInterface\ExecuteTurbulenceWorker.cs" />
     <Compile Include="SQLInterface\ExecuteMHDWorker.cs" />
     <Compile Include="SQLInterface\JoinTableDataReader.cs" />
+    <Compile Include="SQLInterface\TestExecuteBoxFilterWorker.cs" />
     <Compile Include="SQLInterface\TrackingJoinTableDataReader.cs" />
     <Compile Include="SQLInterface\workers\GetChannelSplinesWorker.cs" />
     <Compile Include="SQLInterface\workers\GetChannelQ.cs" />
