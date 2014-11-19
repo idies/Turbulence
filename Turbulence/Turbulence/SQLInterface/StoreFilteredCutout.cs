@@ -59,8 +59,7 @@ using System.Collections.Generic;
                 // Send the record to the client.
                 //SqlContext.Pipe.Send(record);
                 //Send the record to the database
-           
-                
+
                 SqlBulkCopy bulkCopy = new SqlBulkCopy(standardConn, SqlBulkCopyOptions.Default, null);
                 bulkCopy.DestinationTableName = "vel";
                 bulkCopy.BulkCopyTimeout = 0;
