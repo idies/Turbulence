@@ -83,6 +83,40 @@ namespace Turbulence.TurbLib
             }
         }
 
+        public int GetCellIndex(double value)
+        {
+            int i = grid_points.BinarySearch(new KeyValuePair<int, double>(-1, value), new GridPointsComparer());
+            if (i >= 0)
+            {
+                // The given y value matches the value of a grid cell
+                return i;
+            }
+            else
+            {
+                // There is no match, so the index returned is the complement of the nearest index in the gird
+                int indexOfNearest = ~i;
+
+                if (indexOfNearest == grid_points.Count)
+                {
+                    throw new Exception(String.Format("The given y value is greater than the largest allowed grid value for the y dimension: {0}",
+                        value));
+                }
+                else if (indexOfNearest == 0)
+                {
+                    throw new Exception(String.Format("The given y value is smaller than the smallest allowed grid value for the y dimension: {0}",
+                        value));
+                }
+                else
+                {
+                    // The given value is between (indexOfNearest - 1) and indexOfNearest
+
+                    // When the center line is not specified we always use:
+                    // y_n <= value < y_(n+1)
+                    return indexOfNearest - 1;
+                }
+            }
+        }
+
         public int GetCellIndexRound(double value)
         {
             int i = grid_points.BinarySearch(new KeyValuePair<int, double>(-1, value), new GridPointsComparer());
