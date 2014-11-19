@@ -16,6 +16,7 @@ namespace Website
         {
             update();
         }
+
         protected void update()
         {
             //Update dt
@@ -120,17 +121,24 @@ namespace Website
             if (potential.Checked) comps += 3;
             if (density.Checked) comps += 1;
 
-            long xw = long.Parse(xEnd.Text),
-                yw = long.Parse(yEnd.Text),
-                zw = long.Parse(zEnd.Text),
-                tw = long.Parse(timeend.Text);
+            long xw, yw, zw, tw, xl, yl, zl, tl, step;
 
-            long xl = long.Parse(x.Text),
-                yl = long.Parse(y.Text),
-                zl = long.Parse(z.Text),
-                tl = long.Parse(timestart.Text);
+            if (!long.TryParse(xEnd.Text, out xw) ||
+                !long.TryParse(yEnd.Text, out yw) ||
+                !long.TryParse(zEnd.Text, out zw) ||
+                !long.TryParse(x.Text, out xl) ||
+                !long.TryParse(y.Text, out yl) ||
+                !long.TryParse(z.Text, out zl) ||
+                !long.TryParse(timeend.Text, out tw) ||
+                !long.TryParse(timestart.Text, out tl) ||
+                !long.TryParse(stepSize.Text, out step))
+            {
+                dlsize.Text = "<b><font color=red>Please use numbers only for the cutout coordiantes, size and step size.</font></b>";
+                return;
+            }
 
-            long size = comps * 4 * (xw) * (yw) * (zw) * (tw);
+
+            long size = comps * 4 * (xw) * (yw) * (zw) * (tw) / step / step / step;
 
             String fields = String.Format("{0}{1}{2}{3}{4}",
                 velocity.Checked ? "u" : "",
@@ -170,15 +178,23 @@ namespace Website
                 else
                 {
                     string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
-
-                    String dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/",
-                        Server.UrlEncode(authToken), dataset.SelectedValue, fields, timestart.Text, timeend.Text, x.Text, xEnd.Text, y.Text, yEnd.Text, z.Text, zEnd.Text);
+                    String dlurl;
+                    if (step > 1)
+                    {
+                        dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/{11}",
+                            Server.UrlEncode(authToken), dataset.SelectedValue, fields, tl, tw, xl, xw, yl, yw, zl, zw, step);
+                    }
+                    else
+                    {
+                        dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}",
+                            Server.UrlEncode(authToken), dataset.SelectedValue, fields, tl, tw, xl, xw, yl, yw, zl, zw);
+                    }
 
                     dllink.Text = String.Format("Download link (click to begin download): " + "<a href='{0}' onclick=\"wait_message()\">{0}</a>", dlurl);
                 }
             }
-
         }
+
 
         public String FormatSize(long size)
         {
@@ -188,6 +204,20 @@ namespace Website
             else if (size >= 10L * 1024L) Text = (size / 1024).ToString() + "KB";
             else Text = (size).ToString() + "B";
             return Text;
+        }
+
+        protected void step_checkbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (step_checkbox.Checked == true)
+            {
+                stepSize.Visible = true;
+            }
+            else
+            {
+                stepSize.Visible = false;
+                stepSize.Text = "1";
+                update();
+            }
         }
     }
 }

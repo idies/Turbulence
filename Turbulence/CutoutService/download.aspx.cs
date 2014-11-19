@@ -63,10 +63,10 @@ namespace CutoutService
 
             //Test validity of parameters given
             if (!System.Text.RegularExpressions.Regex.IsMatch(args_,
-                "^/[a-zA-Z0-9_]+([-.][a-zA-Z0-9_]+)*/(isotropic1024fine|isotropic1024coarse|mhd1024|channel|mixing)/[upbad]{1,4}/\\d+,\\d+/\\d+,\\d+/\\d+,\\d+/\\d+,\\d+/?$"))
+                "^/[a-zA-Z0-9_]+([-.][a-zA-Z0-9_]+)*/(isotropic1024fine|isotropic1024coarse|mhd1024|channel|mixing)/[upbad]{1,4}/\\d+,\\d+/\\d+,\\d+/\\d+,\\d+/\\d+,\\d+(/\\d+)?/?$"))
             {
                 Response.StatusCode = 400;
-                Response.Write("Error: Bad request. URL should be in the format of /authToken/dataset/fields/time,timesteps/xlow,xwidth/ylow,ywidth/zlow,zwidth");
+                Response.Write("Error: Bad request. URL should be in the format of /authToken/dataset/fields/time,timesteps/xlow,xwidth/ylow,ywidth/zlow,zwidth/[step/]");
                 Response.End();
             }
 
@@ -80,21 +80,32 @@ namespace CutoutService
                 yrange = args[6],
                 zrange = args[7];
 
+            int step = 1;
+            if (args.Length >= 9 && !args[8].Equals(""))
+            {
+                int.TryParse(args[8], out step);
+            }
+
             String[] t_ = trange.Split(','),
                 x_ = xrange.Split(','),
                 y_ = yrange.Split(','),
                 z_ = zrange.Split(',');
 
             int tlow = int.Parse(t_[0]), tsize = int.Parse(t_[1]),
-                xlow = int.Parse(x_[0]), xsize = int.Parse(x_[1]),
-                ylow = int.Parse(y_[0]), ysize = int.Parse(y_[1]),
-                zlow = int.Parse(z_[0]), zsize = int.Parse(z_[1]);
+                xlow = int.Parse(x_[0]), xwidth = int.Parse(x_[1]),
+                ylow = int.Parse(y_[0]), ywidth = int.Parse(y_[1]),
+                zlow = int.Parse(z_[0]), zwidth = int.Parse(z_[1]);
 
             int thigh = tlow + tsize - 1,
-                xhigh = xlow + xsize - 1,
-                yhigh = ylow + ysize - 1,
-                zhigh = zlow + zsize - 1;
+                xhigh = xlow + xwidth - 1,
+                yhigh = ylow + ywidth - 1,
+                zhigh = zlow + zwidth - 1;
 
+            // Number of points in the result set is a function of the step size.
+            int xsize = (xwidth + step - 1) / step,
+                ysize = (ywidth + step - 1) / step,
+                zsize = (zwidth + step - 1) / step;
+            
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
 
@@ -165,6 +176,10 @@ namespace CutoutService
                 H5DataTypeId dataType = H5T.copy(H5T.H5Type.NATIVE_FLOAT);
                 H5DataSpaceId dataspace = H5S.create_simple(4, datasize, datasize);
 
+                AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, xwidth * ywidth * zwidth);
+                int num_virtual_servers = 1;
+                database.Initialize(dataset_enum, num_virtual_servers);
+
                 int pieces = 1, dz = (int)datasize[0];
 
                 //If a single buffer exceeds 2gb, then split into multiple pieces
@@ -181,17 +196,10 @@ namespace CutoutService
                     pieces |= pieces >> 8;
                     pieces |= pieces >> 16;
                     pieces++;
-                    dz = (int)Math.Ceiling((float)zsize / pieces / 8) * 8;
+                    dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
                 }
-                H5DataSpaceId H5S_ALL = new H5DataSpaceId(H5S.H5SType.ALL);
 
-                //To be removed:
-                H5PropertyListId H5P_DEFAULT = new H5PropertyListId(H5P.Template.DEFAULT);
-
-                AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, xsize * ysize * zsize);
                 DataInfo.TableNames tableName;
-                int num_virtual_servers = 1;
-                database.Initialize(dataset_enum, num_virtual_servers);
                 int components;
                 string field;
 
@@ -200,32 +208,22 @@ namespace CutoutService
                     components = 3;
                     field = "u";
 
-                    switch (dataset_enum)
-                    {
-                        case DataInfo.DataSets.isotropic1024fine:
-                            tableName = DataInfo.TableNames.isotropic1024fine_vel;
-                            break;
-                        case DataInfo.DataSets.isotropic1024coarse:
-                        case DataInfo.DataSets.mixing:
-                            tableName = DataInfo.TableNames.vel;
-                            break;
-                        case DataInfo.DataSets.mhd1024:
-                            tableName = DataInfo.TableNames.velocity08;
-                            break;
-                        case DataInfo.DataSets.channel:
-                            tableName = DataInfo.TableNames.vel;
-                            break;
-                        default:
-                            throw new Exception(String.Format("Invalid dataset specified!"));
-                    }
+                    tableName = DataInfo.getTableName(dataset_enum, field);
                     object rowid = null;
                     rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawVelocity,
                         (int)TurbulenceOptions.SpatialInterpolation.None,
                         (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xsize * ysize * zsize, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, xsize * ysize * zsize);
+                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xsize, ysize, zsize);
+                    if (step == 1)
+                    {
+                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                    }
+                    else
+                    {
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                    }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
                     log.Reset();
@@ -235,28 +233,23 @@ namespace CutoutService
                 {
                     components = 3;
                     field = "b";
-
-                    switch (dataset_enum)
-                    {
-                        case DataInfo.DataSets.isotropic1024fine:
-                        case DataInfo.DataSets.isotropic1024coarse:
-                        case DataInfo.DataSets.channel:
-                        case DataInfo.DataSets.mixing:
-                            throw new Exception(String.Format("GetRawMagneticField is available only for MHD datasets!"));
-                        case DataInfo.DataSets.mhd1024:
-                            tableName = DataInfo.TableNames.magnetic08;
-                            break;
-                        default:
-                            throw new Exception(String.Format("Invalid dataset specified!"));
-                    }
+                    
+                    tableName = DataInfo.getTableName(dataset_enum, field);
                     object rowid = null;
                     rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawMagnetic,
                         (int)TurbulenceOptions.SpatialInterpolation.None,
                         (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xsize * ysize * zsize, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, xsize * ysize * zsize);
+                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xsize, ysize, zsize);
+                    if (step == 1)
+                    {
+                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                    }
+                    else
+                    {
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                    }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
                     log.Reset();
@@ -266,28 +259,23 @@ namespace CutoutService
                 {
                     components = 3;
                     field = "a";
-
-                    switch (dataset_enum)
-                    {
-                        case DataInfo.DataSets.isotropic1024fine:
-                        case DataInfo.DataSets.isotropic1024coarse:
-                        case DataInfo.DataSets.channel:
-                        case DataInfo.DataSets.mixing:
-                            throw new Exception(String.Format("GetRawVectorPotential is available only for MHD datasets!"));
-                        case DataInfo.DataSets.mhd1024:
-                            tableName = DataInfo.TableNames.potential08;
-                            break;
-                        default:
-                            throw new Exception(String.Format("Invalid dataset specified!"));
-                    }
+                    
+                    tableName = DataInfo.getTableName(dataset_enum, field);
                     object rowid = null;
                     rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPotential,
                         (int)TurbulenceOptions.SpatialInterpolation.None,
                         (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xsize * ysize * zsize, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, xsize * ysize * zsize);
+                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xsize, ysize, zsize);
+                    if (step == 1)
+                    {
+                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                    }
+                    else
+                    {
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                    }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
                     log.Reset();
@@ -312,7 +300,7 @@ namespace CutoutService
                     pieces |= pieces >> 8;
                     pieces |= pieces >> 16;
                     pieces++;
-                    dz = (int)Math.Ceiling((float)zsize / pieces / 8) * 8;
+                    dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
                 }
 
                 if (fields.Contains("p"))
@@ -320,32 +308,22 @@ namespace CutoutService
                     components = 1;
                     field = "p";
 
-                    switch (dataset_enum)
-                    {
-                        case DataInfo.DataSets.isotropic1024fine:
-                            tableName = DataInfo.TableNames.isotropic1024fine_pr;
-                            break;
-                        case DataInfo.DataSets.isotropic1024coarse:
-                        case DataInfo.DataSets.mixing:
-                            tableName = DataInfo.TableNames.pr;
-                            break;
-                        case DataInfo.DataSets.mhd1024:
-                            tableName = DataInfo.TableNames.pressure08;
-                            break;
-                        case DataInfo.DataSets.channel:
-                            tableName = DataInfo.TableNames.pr;
-                            break;
-                        default:
-                            throw new Exception(String.Format("Invalid dataset specified!"));
-                    }
+                    tableName = DataInfo.getTableName(dataset_enum, field);
                     object rowid = null;
                     rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPressure,
                         (int)TurbulenceOptions.SpatialInterpolation.None,
                         (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xsize * ysize * zsize, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, xsize * ysize * zsize);
+                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xsize, ysize, zsize);
+                    if (step == 1)
+                    {
+                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                    }
+                    else
+                    {
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                    }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
                     log.Reset();
@@ -356,22 +334,22 @@ namespace CutoutService
                     components = 1;
                     field = "d";
 
-                    switch (dataset_enum)
-                    {
-                        case DataInfo.DataSets.mixing:
-                            tableName = DataInfo.TableNames.density;
-                            break;
-                        default:
-                            throw new Exception(String.Format("Invalid dataset specified!"));
-                    }
+                    tableName = DataInfo.getTableName(dataset_enum, field);
                     object rowid = null;
                     rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawDensity,
                         (int)TurbulenceOptions.SpatialInterpolation.None,
                         (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xsize * ysize * zsize, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, xsize * ysize * zsize);
+                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xsize, ysize, zsize);
+                    if (step == 1)
+                    {
+                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                    }
+                    else
+                    {
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                    }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
                     log.Reset();
@@ -524,7 +502,7 @@ namespace CutoutService
                     long chunksize = (long)xsize * (long)ysize * (long)chunklen * (long)components;
                     float[] buffer_ = new float[chunksize];
                     for (int f = 0; f < chunksize; f++)
-                        buffer_[f] = BitConverter.ToSingle(buffer, f * 4);
+                        buffer_[f] = BitConverter.ToSingle(buffer, f * sizeof(float));
                     long[] start = { p * dz, 0, 0, 0 };
                     long[] count = { chunklen, ysize, xsize, components };
 
@@ -545,186 +523,47 @@ namespace CutoutService
             }
         }
 
-        #region Obsolete
-        public byte[] GetRawVelocity_(string authToken, string dataset, int time,
-        int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
+        public void GetFilteredData_(H5FileId file, H5DataTypeId dataType, H5DataSpaceId dataspace, string field,
+            DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int components, int tlow, int thigh,
+            int xlow, int ylow, int zlow, int xwidth, int ywidth, int zwidth, int step)
         {
-            AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, (float)time * database.Dt * database.TimeInc);
-            //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
-            //object rowid = null;
-            // we return a cube of data with the specified width
-            // for the 3 components of the velocity field
-            int components = 3;
-            byte[] result = null;
-            DataInfo.TableNames tableName;
+            int xsize = (xwidth + step - 1) / step,
+                ysize = (ywidth + step - 1) / step,
+                zsize = (zwidth + step - 1) / step;
 
-            switch (dataset_enum)
+            H5PropertyListId H5P_DEFAULT = new H5PropertyListId(H5P.Template.DEFAULT);
+
+            for (int t = tlow; t <= thigh; t++)
             {
-                case DataInfo.DataSets.isotropic1024fine:
-                    tableName = DataInfo.TableNames.isotropic1024fine_vel;
-                    break;
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.mixing:
-                    tableName = DataInfo.TableNames.vel;
-                    break;
-                case DataInfo.DataSets.mhd1024:
-                    tableName = DataInfo.TableNames.velocity08;
-                    break;
-                case DataInfo.DataSets.channel:
-                    tableName = DataInfo.TableNames.vel;
-                    break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
+                DataInfo.verifyTimeInRange(dataset_enum, (float)t * database.Dt * database.TimeInc);
+
+                H5DataSetId datasetId = H5D.create(file, String.Format(field + "{0:00000}", t * 10), dataType, dataspace);
+
+                byte[] buffer = database.GetFilteredData(dataset_enum, tableName, t * database.Dt * database.TimeInc, components, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+
+                long chunksize = (long)xsize * (long)ysize * (long)zsize * (long)components;
+                float[] buffer_ = new float[chunksize];
+                for (int f = 0; f < chunksize; f++)
+                    buffer_[f] = BitConverter.ToSingle(buffer, f * sizeof(float));
+                long[] start = { 0, 0, 0, 0 };
+                long[] count = { zsize, ysize, xsize, components };
+
+                H5DataSpaceId memspace = H5S.create_simple(4, count);
+
+                H5S.selectHyperslab(dataspace, H5S.SelectOperator.SET, start, count);
+
+                H5D.write<float>(datasetId, dataType, memspace, dataspace, H5P_DEFAULT, new H5Array<float>(buffer_));
+
+                //TODO: add a H5D.flush here
+
+                buffer_ = null;
+                buffer = null;
+                //GC.Collect();
+
+                // TODO: Check for open objects here and close everything
+                H5D.close(datasetId);
             }
-
-            object rowid = null;
-            rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawVelocity,
-                (int)TurbulenceOptions.SpatialInterpolation.None,
-                (int)TurbulenceOptions.TemporalInterpolation.None,
-                Xwidth * Ywidth * Zwidth, time * database.Dt * database.TimeInc, null, null);
-            log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
-            result = database.GetRawData(dataset_enum, tableName, time * database.Dt * database.TimeInc, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
-
-            log.UpdateLogRecord(rowid, database.Bitfield);
-
-            return result;
         }
-
-        public byte[] GetRawPressure_(string authToken, string dataset, float time,
-        int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
-        {
-            AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time * database.Dt * database.TimeInc);
-            //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
-            //object rowid = null;
-            // we return a cube of data with the specified width
-            // for the scalar pressure field
-            int components = 1;
-            byte[] result = null;
-            DataInfo.TableNames tableName;
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                    tableName = DataInfo.TableNames.isotropic1024fine_pr;
-                    break;
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.mixing:
-                    tableName = DataInfo.TableNames.pr;
-                    break;
-                case DataInfo.DataSets.mhd1024:
-                    tableName = DataInfo.TableNames.pressure08;
-                    break;
-                case DataInfo.DataSets.channel:
-                    tableName = DataInfo.TableNames.pr;
-                    break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
-            }
-            object rowid = null;
-            rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPressure,
-                (int)TurbulenceOptions.SpatialInterpolation.None,
-                (int)TurbulenceOptions.TemporalInterpolation.None,
-               Xwidth * Ywidth * Zwidth, time * database.Dt * database.TimeInc, null, null);
-            log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
-
-            result = database.GetRawData(dataset_enum, tableName, time * database.Dt * database.TimeInc, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
-
-            log.UpdateLogRecord(rowid, database.Bitfield);
-
-            return result;
-        }
-
-        public byte[] GetRawMagneticField_(string authToken, string dataset, float time,
-        int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
-        {
-            AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time * database.Dt * database.TimeInc);
-            //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
-            object rowid = null;
-            // we return a cube of data with the specified width
-            // for the 3 components of the magnetic field
-            int components = 3;
-            byte[] result = null;
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.channel:
-                    throw new Exception(String.Format("GetRawMagneticField is available only for MHD datasets!"));
-                case DataInfo.DataSets.mhd1024:
-                    DataInfo.TableNames tableName = DataInfo.TableNames.magnetic08;
-                    rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawMagnetic,
-                        (int)TurbulenceOptions.SpatialInterpolation.None,
-                        (int)TurbulenceOptions.TemporalInterpolation.None,
-                       Xwidth * Ywidth * Zwidth, time * database.Dt * database.TimeInc, null, null);
-                    log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
-
-                    result = database.GetRawData(dataset_enum, tableName, time * database.Dt * database.TimeInc, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
-
-                    break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
-            }
-            log.UpdateLogRecord(rowid, database.Bitfield);
-
-            return result;
-        }
-        public byte[] GetRawVectorPotential_(string authToken, string dataset, float time,
-        int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
-        {
-            AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time * database.Dt * database.TimeInc);
-            //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
-            object rowid = null;
-            // we return a cube of data with the specified width
-            // for the 3 components of the vector potential field
-            int components = 3;
-            byte[] result = null;
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.channel:
-                    throw new Exception(String.Format("GetRawVectorPotential is available only for MHD datasets!"));
-                case DataInfo.DataSets.mhd1024:
-                    DataInfo.TableNames tableName = DataInfo.TableNames.potential08;
-                    rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPotential,
-                        (int)TurbulenceOptions.SpatialInterpolation.None,
-                        (int)TurbulenceOptions.TemporalInterpolation.None,
-                       Xwidth * Ywidth * Zwidth, time * database.Dt * database.TimeInc, null, null);
-                    log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
-
-                    result = database.GetRawData(dataset_enum, tableName, time * database.Dt * database.TimeInc, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
-
-                    break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
-            }
-            log.UpdateLogRecord(rowid, database.Bitfield);
-
-            return result;
-        }
-        #endregion
 
         public String FormatSize(long size)
         {

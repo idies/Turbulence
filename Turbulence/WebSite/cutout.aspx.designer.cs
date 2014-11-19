@@ -94,6 +94,24 @@ namespace Website {
         protected global::System.Web.UI.WebControls.CheckBox density;
         
         /// <summary>
+        /// step_checkbox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox step_checkbox;
+        
+        /// <summary>
+        /// stepSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox stepSize;
+        
+        /// <summary>
         /// timestart_range control.
         /// </summary>
         /// <remarks>
@@ -130,6 +148,15 @@ namespace Website {
         protected global::System.Web.UI.WebControls.TextBox timeend;
         
         /// <summary>
+        /// channel_grid_note control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal channel_grid_note;
+        
+        /// <summary>
         /// x_range control.
         /// </summary>
         /// <remarks>
@@ -164,15 +191,6 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox xEnd;
-        
-        /// <summary>
-        /// channel_grid_note control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal channel_grid_note;
         
         /// <summary>
         /// y_range control.

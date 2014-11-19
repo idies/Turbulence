@@ -827,8 +827,6 @@ namespace TurbulenceService
         {
             for (int i = 0; i < this.serverCount; i++)
             {
-                //serverStart = new Morton3D(i * pernode);
-                //serverEnd = new Morton3D((i + 1) * pernode - atomDim * atomDim * atomDim);
                 if (X + Xwidth > serverBoundaries[i].startx && X <= serverBoundaries[i].endx)
                     if (Y + Ywidth > serverBoundaries[i].starty && Y <= serverBoundaries[i].endy)
                         if (Z + Zwidth > serverBoundaries[i].startz && Z <= serverBoundaries[i].endz)
@@ -839,7 +837,6 @@ namespace TurbulenceService
                                 string server_name = this.servers[i];
                                 if (server_name.Contains("_"))
                                     server_name = server_name.Remove(server_name.IndexOf("_"));
-                                //String cString = ConfigurationManager.ConnectionStrings[this.servers[i]].ConnectionString;
                                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
                                     server_name, databases[i], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
                                 this.connections[i] = new SqlConnection(cString);
@@ -850,18 +847,28 @@ namespace TurbulenceService
                                 serverXwidth[i] = X + Xwidth - serverX[i];
                             else
                                 serverXwidth[i] = serverBoundaries[i].endx + 1 - serverX[i];
+                            int test_start = -1, test_width = -1;
+                            GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref test_start, ref test_width);
+                            if (serverX[i] != test_start || serverXwidth[i] != test_width)
+                                throw new Exception("Values are not equal!");
 
                             serverY[i] = Y < serverBoundaries[i].starty ? serverBoundaries[i].starty : Y;
                             if (Y + Ywidth <= serverBoundaries[i].endy)
                                 serverYwidth[i] = Y + Ywidth - serverY[i];
                             else
                                 serverYwidth[i] = serverBoundaries[i].endy + 1 - serverY[i];
+                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref test_start, ref test_width);
+                            if (serverY[i] != test_start || serverYwidth[i] != test_width)
+                                throw new Exception("Values are not equal!");
 
                             serverZ[i] = Z < serverBoundaries[i].startz ? serverBoundaries[i].startz : Z;
                             if (Z + Zwidth <= serverBoundaries[i].endz)
                                 serverZwidth[i] = Z + Zwidth - serverZ[i];
                             else
                                 serverZwidth[i] = serverBoundaries[i].endz + 1 - serverZ[i];
+                            GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref test_start, ref test_width);
+                            if (serverZ[i] != test_start || serverZwidth[i] != test_width)
+                                throw new Exception("Values are not equal!");
 
                             //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
                             Morton3D access;
@@ -874,6 +881,59 @@ namespace TurbulenceService
                                     }
                         }
             }
+        }
+
+        private void GetServerParameters(int query_start, int query_width, int server_start, int server_end, ref int start, ref int width)
+        {
+            start = query_start < server_start ? server_start : query_start;
+            width = query_start + query_width <= server_end ? query_start + query_width - start : server_end + 1 - start;
+        }
+
+        public void GetServerParameters4RawData(int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
+            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth, int step)
+        {
+            for (int i = 0; i < this.serverCount; i++)
+            {
+                if (X + Xwidth > serverBoundaries[i].startx && X <= serverBoundaries[i].endx)
+                    if (Y + Ywidth > serverBoundaries[i].starty && Y <= serverBoundaries[i].endy)
+                        if (Z + Zwidth > serverBoundaries[i].startz && Z <= serverBoundaries[i].endz)
+                        {
+                            // If we have no workload for this server yet... create a connection
+                            if (this.connections[i] == null)
+                            {
+                                string server_name = this.servers[i];
+                                if (server_name.Contains("_"))
+                                    server_name = server_name.Remove(server_name.IndexOf("_"));
+                                String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
+                                    server_name, databases[i], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                                this.connections[i] = new SqlConnection(cString);
+                                this.connections[i].Open();
+                            }
+                            GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], step);
+                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endz, ref serverY[i], ref serverYwidth[i], step);
+                            GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i], step);
+
+                            //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
+                            Morton3D access;
+                            for (int x_i = serverX[i] & (-64); x_i <= serverX[i] + serverXwidth[i] - atomDim; x_i += 64)
+                                for (int y_i = serverY[i] & (-64); y_i <= serverY[i] + serverYwidth[i] - atomDim; y_i += 64)
+                                    for (int z_i = serverZ[i] & (-64); z_i <= serverZ[i] + serverZwidth[i] - atomDim; z_i += 64)
+                                    {
+                                        access = new Morton3D(z_i, y_i, x_i);
+                                        SetBit(access);
+                                    }
+                        }
+            }
+        }
+
+        private void GetServerParameters(int query_start, int query_width, int server_start, int server_end, ref int start, ref int width, int step)
+        {
+            // We want to start either at the starting position or if that is not within the server boundaries
+            // the smallest position higher than or equal to the server starting point, which is in increments of the "step".
+            start = query_start < server_start ? (server_start - query_start + step - 1) / step * step + query_start : query_start;
+            width = query_start + query_width <= server_end ? query_start + query_width - start : server_end + 1 - start;
+            // Make the width be one larger than a multiple of the step.
+            width = (width - 1) / step * step + 1;
         }
 
         /// <summary>
@@ -2012,7 +2072,9 @@ namespace TurbulenceService
                                 readLength = MAX_READ_LENGTH;
                             else
                                 readLength = size - bytesread;
-                            int bytes = (int)reader.GetBytes(0, 0, rawdata, bytesread, readLength);
+                            int bytes = (int)reader.GetBytes(0, bytesread, rawdata, bytesread, readLength);
+                            if (bytes <= 0)
+                                throw new Exception("Unexpected end of cutout!");
                             bytesread += bytes;
                         }
                     }
@@ -2392,11 +2454,9 @@ namespace TurbulenceService
             return asyncRes;
         }
 
-
         private IAsyncResult[] ExecuteGetRawData(string dataset,
             int timestep,
-            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth
-            )
+            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
         {
             // initiate reader requests
             IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
@@ -2425,10 +2485,44 @@ namespace TurbulenceService
             return asyncRes;
         }
 
+        private IAsyncResult[] ExecuteGetFilteredCutout(DataInfo.DataSets dataset_enum, string field,
+            int timestep, int filter_width, int step,
+            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
+        {
+            // initiate reader requests
+            IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null)
+                {
+                    string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
+                        serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
+                    sqlcmds[s] = connections[s].CreateCommand();
+                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @dbname, @codedb, "
+                                            + "@turbinfodb, @datasetID, @field, @blobDim, @timestep, @filter_width, @step, @QueryBox ",
+                                            codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
+                    sqlcmds[s].Parameters.AddWithValue("@field", field);
+                    sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
+                    sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
+                    sqlcmds[s].Parameters.AddWithValue("@filter_width", filter_width);
+                    sqlcmds[s].Parameters.AddWithValue("@step", step);
+                    sqlcmds[s].Parameters.AddWithValue("@QueryBox", queryBox);
+                    sqlcmds[s].CommandTimeout = 3600;
+                    asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
+                }
+            }
+
+            return asyncRes;
+        }
+
         private IAsyncResult[] ExecuteGetThreshold(DataInfo.DataSets dataset_enum, string tableName, int workerType, 
             int timestep, int spatialInterp, double threshold, 
-            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth
-            )
+            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
         {
             // initiate reader requests
             IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
@@ -3018,6 +3112,78 @@ namespace TurbulenceService
             //DateTime start = DateTime.Now;
             asyncRes = ExecuteGetRawData(tableName.ToString(),
                 timestep, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
+            GetRawResults(asyncRes, result, components, X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
+
+            //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\databaseTime.txt", true);
+            //time_log.WriteLine(DateTime.Now - start);
+            //time_log.Close();
+
+            return result;
+        }
+
+        public byte[] GetFilteredData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
+            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int step)
+        {
+            IAsyncResult[] asyncRes;
+
+            selectServers(dataset_enum);
+
+            //if (channel_grid)
+            //{
+            //    X = (int)Math.Round(X - 0.45 * time / dx);
+            //    X = ((X % GridResolutionX) + GridResolutionX) % GridResolutionX;
+            //}
+
+            int[] serverX = new int[serverCount];
+            int[] serverY = new int[serverCount];
+            int[] serverZ = new int[serverCount];
+            int[] serverXwidth = new int[serverCount];
+            int[] serverYwidth = new int[serverCount];
+            int[] serverZwidth = new int[serverCount];
+
+            float t = time / Dt;
+            int timestep = (int)Math.Round(t / timeInc) * timeInc + timeOff;
+
+            // The width in each dimension should be 1 larger than a multiple of the step.
+            // Make sure that that is the case:
+            Xwidth = (Xwidth - 1) / step * step + 1;
+            Ywidth = (Ywidth - 1) / step * step + 1;
+            Zwidth = (Zwidth - 1) / step * step + 1;
+
+            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, step);
+
+            int filter_width = step;
+            if (step % 2 == 0)
+            {
+                filter_width = step + 1;
+            }
+
+            //DateTime start = DateTime.Now;
+            asyncRes = ExecuteGetFilteredCutout(dataset_enum, tableName.ToString(),
+                timestep, filter_width, step, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
+
+            // The cutout returned from the databases will be a factor of "step" smaller.
+            X = X / step;
+            Y = Y / step;
+            Z = Z / step;
+            Xwidth = (Xwidth - 1) / step + 1;
+            Ywidth = (Ywidth - 1) / step + 1;
+            Zwidth = (Zwidth - 1) / step + 1;
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null)
+                {
+                    serverX[s] = serverX[s] / step;
+                    serverY[s] = serverY[s] / step;
+                    serverZ[s] = serverZ[s] / step;
+                    serverXwidth[s] = (serverXwidth[s] - 1) / step + 1;
+                    serverYwidth[s] = (serverYwidth[s] - 1) / step + 1;
+                    serverZwidth[s] = (serverZwidth[s] - 1) / step + 1;
+                }
+            }
+            // we return a cube of data with the specified width
+            // for each of the components of the vector or scalar field
+            byte[] result = new byte[Xwidth * Ywidth * Zwidth * components * sizeof(float)];
             GetRawResults(asyncRes, result, components, X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
 
             //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\databaseTime.txt", true);
