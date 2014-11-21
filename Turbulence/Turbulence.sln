@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TurbulenceWebServiceLibrary
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "Website\Website.csproj", "{943CE846-969A-46E3-8DA2-598CEFB9F5F5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTfulWebServices", "RESTfulWebServices\RESTfulWebServices.csproj", "{59A2EFDB-866C-4246-A059-13DFEBC08FA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
@@ -160,6 +162,22 @@ Global
 		{943CE846-969A-46E3-8DA2-598CEFB9F5F5}.Release|Win32.ActiveCfg = Release|Any CPU
 		{943CE846-969A-46E3-8DA2-598CEFB9F5F5}.Release|x64.ActiveCfg = Release|Any CPU
 		{943CE846-969A-46E3-8DA2-598CEFB9F5F5}.Release|x86.ActiveCfg = Release|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Release|.NET.ActiveCfg = Release|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Release|Win32.ActiveCfg = Release|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Release|x64.ActiveCfg = Release|Any CPU
+		{59A2EFDB-866C-4246-A059-13DFEBC08FA7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
