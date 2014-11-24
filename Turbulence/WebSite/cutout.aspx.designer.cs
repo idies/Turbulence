@@ -103,6 +103,15 @@ namespace Website {
         protected global::System.Web.UI.WebControls.CheckBox step_checkbox;
         
         /// <summary>
+        /// stepCell control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl stepCell;
+        
+        /// <summary>
         /// stepSize control.
         /// </summary>
         /// <remarks>
@@ -110,6 +119,33 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox stepSize;
+        
+        /// <summary>
+        /// filterwidth_checkbox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox filterwidth_checkbox;
+        
+        /// <summary>
+        /// filterwidth_cell control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl filterwidth_cell;
+        
+        /// <summary>
+        /// filterWidth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox filterWidth;
         
         /// <summary>
         /// timestart_range control.

@@ -38,6 +38,10 @@
         {
             width: 40px;
         }
+        .style39
+        {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -100,10 +104,24 @@
             <td class="style8" valign="top" colspan="2"> &nbsp;Size of cutout: [<a href="/datasets.aspx" class="note">?</a>] <br />
                 <span class="style1"> &nbsp;(end index minus start index + 1)</span> </td>            
             <td class="style35" valign="top">
-                <span title="Optionally select a step size. If omitted every point in the range will be returned."> &nbsp;Step (optional)
                 <asp:CheckBox ID="step_checkbox" runat="server" AutoPostBack="True"
-                    oncheckedchanged="step_checkbox_CheckedChanged" /> : </span> <asp:TextBox  ID="stepSize" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
+                    oncheckedchanged="step_checkbox_CheckedChanged" />
+                <span ID="stepCell" runat="server" title="Optionally select a step size. If omitted every point in the range will be returned."> &nbsp;
+                    <span class="style39">Step (optional) :</span>
+                </span> 
+                <asp:TextBox  ID="stepSize" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
         </tr>        
+        <tr>
+            <td class="style7" valign="top" colspan="2"> &nbsp; </td>
+            <td class="style8" valign="top" colspan="2"> &nbsp; </td>            
+            <td class="style35" valign="top">
+                <asp:CheckBox ID="filterwidth_checkbox" runat="server" AutoPostBack="True"
+                    oncheckedchanged="filterwidth_checkbox_CheckedChanged" />
+                <span ID="filterwidth_cell" runat="server" title="Optionally select a filter width (in units of grid points). If omitted no filtering will be performed and the strided data will be returned."> &nbsp;
+                    <span class="style39">Filter width (optional) :</span>
+                </span> 
+                <asp:TextBox  ID="filterWidth" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
+        </tr>
         <tr>
             <td class="style36">m<sub>t</sub> <asp:Literal ID="timestart_range" runat="server" Visible="true"></asp:Literal>: </td>
             <td class="style38"> <asp:TextBox ID="timestart" runat="server" Width="40px">0</asp:TextBox><br /> </td>
