@@ -890,7 +890,7 @@ namespace TurbulenceService
         }
 
         public void GetServerParameters4RawData(int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
-            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth, int step)
+            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth, int stride)
         {
             for (int i = 0; i < this.serverCount; i++)
             {
@@ -909,9 +909,9 @@ namespace TurbulenceService
                                 this.connections[i] = new SqlConnection(cString);
                                 this.connections[i].Open();
                             }
-                            GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], step);
-                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endz, ref serverY[i], ref serverYwidth[i], step);
-                            GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i], step);
+                            GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], stride);
+                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endz, ref serverY[i], ref serverYwidth[i], stride);
+                            GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i], stride);
 
                             //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
                             Morton3D access;
@@ -926,14 +926,14 @@ namespace TurbulenceService
             }
         }
 
-        private void GetServerParameters(int query_start, int query_width, int server_start, int server_end, ref int start, ref int width, int step)
+        private void GetServerParameters(int query_start, int query_width, int server_start, int server_end, ref int start, ref int width, int stride)
         {
             // We want to start either at the starting position or if that is not within the server boundaries
             // the smallest position higher than or equal to the server starting point, which is in increments of the "step".
-            start = query_start < server_start ? (server_start - query_start + step - 1) / step * step + query_start : query_start;
+            start = query_start < server_start ? (server_start - query_start + stride - 1) / stride * stride + query_start : query_start;
             width = query_start + query_width <= server_end ? query_start + query_width - start : server_end + 1 - start;
             // Make the width be one larger than a multiple of the step.
-            width = (width - 1) / step * step + 1;
+            width = (width - 1) / stride * stride + 1;
         }
 
         /// <summary>
@@ -2486,7 +2486,7 @@ namespace TurbulenceService
         }
 
         private IAsyncResult[] ExecuteGetFilteredCutout(DataInfo.DataSets dataset_enum, string field,
-            int timestep, int filter_width, int step,
+            int timestep, int filter_width, int stride,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
         {
             // initiate reader requests
@@ -2510,7 +2510,41 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
                     sqlcmds[s].Parameters.AddWithValue("@filter_width", filter_width);
-                    sqlcmds[s].Parameters.AddWithValue("@step", step);
+                    sqlcmds[s].Parameters.AddWithValue("@step", stride);
+                    sqlcmds[s].Parameters.AddWithValue("@QueryBox", queryBox);
+                    sqlcmds[s].CommandTimeout = 3600;
+                    asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
+                }
+            }
+
+            return asyncRes;
+        }
+
+        private IAsyncResult[] ExecuteGetStridedDataCutout(DataInfo.DataSets dataset_enum, string field,
+            int timestep, int stride,
+            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
+        {
+            // initiate reader requests
+            IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null)
+                {
+                    string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
+                        serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
+                    sqlcmds[s] = connections[s].CreateCommand();
+                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedDataCutout] @serverName, @dbname, @codedb, "
+                                            + "@turbinfodb, @datasetID, @field, @blobDim, @timestep, @stride, @QueryBox ",
+                                            codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
+                    sqlcmds[s].Parameters.AddWithValue("@field", field);
+                    sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
+                    sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
+                    sqlcmds[s].Parameters.AddWithValue("@stride", stride);
                     sqlcmds[s].Parameters.AddWithValue("@QueryBox", queryBox);
                     sqlcmds[s].CommandTimeout = 3600;
                     asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
@@ -3122,7 +3156,7 @@ namespace TurbulenceService
         }
 
         public byte[] GetFilteredData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int step)
+            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int stride, int filter_width)
         {
             IAsyncResult[] asyncRes;
 
@@ -3146,39 +3180,45 @@ namespace TurbulenceService
 
             // The width in each dimension should be 1 larger than a multiple of the step.
             // Make sure that that is the case:
-            Xwidth = (Xwidth - 1) / step * step + 1;
-            Ywidth = (Ywidth - 1) / step * step + 1;
-            Zwidth = (Zwidth - 1) / step * step + 1;
+            Xwidth = (Xwidth - 1) / stride * stride + 1;
+            Ywidth = (Ywidth - 1) / stride * stride + 1;
+            Zwidth = (Zwidth - 1) / stride * stride + 1;
 
-            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, step);
+            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, stride);
 
-            int filter_width = step;
-            if (step % 2 == 0)
+            if (filter_width == 1)
             {
-                filter_width = step + 1;
+                //DateTime start = DateTime.Now;
+                asyncRes = ExecuteGetStridedDataCutout(dataset_enum, tableName.ToString(),
+                    timestep, stride, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
+            }
+            else
+            {
+                if (filter_width % 2 == 0)
+                {
+                    filter_width = filter_width + 1;
+                }
+                asyncRes = ExecuteGetFilteredCutout(dataset_enum, tableName.ToString(),
+                    timestep, filter_width, stride, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
             }
 
-            //DateTime start = DateTime.Now;
-            asyncRes = ExecuteGetFilteredCutout(dataset_enum, tableName.ToString(),
-                timestep, filter_width, step, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
-
             // The cutout returned from the databases will be a factor of "step" smaller.
-            X = X / step;
-            Y = Y / step;
-            Z = Z / step;
-            Xwidth = (Xwidth - 1) / step + 1;
-            Ywidth = (Ywidth - 1) / step + 1;
-            Zwidth = (Zwidth - 1) / step + 1;
+            X = X / stride;
+            Y = Y / stride;
+            Z = Z / stride;
+            Xwidth = (Xwidth - 1) / stride + 1;
+            Ywidth = (Ywidth - 1) / stride + 1;
+            Zwidth = (Zwidth - 1) / stride + 1;
             for (int s = 0; s < serverCount; s++)
             {
                 if (connections[s] != null)
                 {
-                    serverX[s] = serverX[s] / step;
-                    serverY[s] = serverY[s] / step;
-                    serverZ[s] = serverZ[s] / step;
-                    serverXwidth[s] = (serverXwidth[s] - 1) / step + 1;
-                    serverYwidth[s] = (serverYwidth[s] - 1) / step + 1;
-                    serverZwidth[s] = (serverZwidth[s] - 1) / step + 1;
+                    serverX[s] = serverX[s] / stride;
+                    serverY[s] = serverY[s] / stride;
+                    serverZ[s] = serverZ[s] / stride;
+                    serverXwidth[s] = (serverXwidth[s] - 1) / stride + 1;
+                    serverYwidth[s] = (serverYwidth[s] - 1) / stride + 1;
+                    serverZwidth[s] = (serverZwidth[s] - 1) / stride + 1;
                 }
             }
             // we return a cube of data with the specified width

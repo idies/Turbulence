@@ -63,10 +63,10 @@ namespace CutoutService
 
             //Test validity of parameters given
             if (!System.Text.RegularExpressions.Regex.IsMatch(args_,
-                "^/[a-zA-Z0-9_]+([-.][a-zA-Z0-9_]+)*/(isotropic1024fine|isotropic1024coarse|mhd1024|channel|mixing)/[upbad]{1,4}/\\d+,\\d+/\\d+,\\d+/\\d+,\\d+/\\d+,\\d+(/\\d+)?/?$"))
+                @"^/[a-zA-Z0-9_]+([-.][a-zA-Z0-9_]+)*/(isotropic1024fine|isotropic1024coarse|mhd1024|channel|mixing)/[upbad]{1,4}/\d+,\d+/\d+,\d+/\d+,\d+/\d+,\d+(/\d+(/\d+)?)?/?$"))
             {
                 Response.StatusCode = 400;
-                Response.Write("Error: Bad request. URL should be in the format of /authToken/dataset/fields/time,timesteps/xlow,xwidth/ylow,ywidth/zlow,zwidth/[step/]");
+                Response.Write("Error: Bad request. URL should be in the format of /authToken/dataset/fields/time,timesteps/xlow,xwidth/ylow,ywidth/zlow,zwidth[/step/filterwidth]");
                 Response.End();
             }
 
@@ -84,6 +84,11 @@ namespace CutoutService
             if (args.Length >= 9 && !args[8].Equals(""))
             {
                 int.TryParse(args[8], out step);
+            }
+            int filter_width = 1;
+            if (args.Length >= 10 && !args[9].Equals(""))
+            {
+                int.TryParse(args[9], out filter_width);
             }
 
             String[] t_ = trange.Split(','),
@@ -216,13 +221,13 @@ namespace CutoutService
                        xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
                     log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    if (step == 1)
+                    if (step == 1 && filter_width == 1)
                     {
                         GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
                     }
                     else
                     {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step, filter_width);
                     }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
@@ -242,13 +247,13 @@ namespace CutoutService
                        xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
                     log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    if (step == 1)
+                    if (step == 1 && filter_width == 1)
                     {
                         GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
                     }
                     else
                     {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step, filter_width);
                     }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
@@ -268,13 +273,13 @@ namespace CutoutService
                        xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
                     log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    if (step == 1)
+                    if (step == 1 && filter_width == 1)
                     {
                         GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
                     }
                     else
                     {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step, filter_width);
                     }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
@@ -316,13 +321,13 @@ namespace CutoutService
                        xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
                     log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    if (step == 1)
+                    if (step == 1 && filter_width == 1)
                     {
                         GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
                     }
                     else
                     {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step, filter_width);
                     }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
@@ -342,13 +347,13 @@ namespace CutoutService
                        xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
                     log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
 
-                    if (step == 1)
+                    if (step == 1 && filter_width == 1)
                     {
                         GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
                     }
                     else
                     {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, step, filter_width);
                     }
 
                     log.UpdateLogRecord(rowid, database.Bitfield);
@@ -525,7 +530,7 @@ namespace CutoutService
 
         public void GetFilteredData_(H5FileId file, H5DataTypeId dataType, H5DataSpaceId dataspace, string field,
             DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int components, int tlow, int thigh,
-            int xlow, int ylow, int zlow, int xwidth, int ywidth, int zwidth, int step)
+            int xlow, int ylow, int zlow, int xwidth, int ywidth, int zwidth, int step, int filter_width)
         {
             int xsize = (xwidth + step - 1) / step,
                 ysize = (ywidth + step - 1) / step,
@@ -539,7 +544,7 @@ namespace CutoutService
 
                 H5DataSetId datasetId = H5D.create(file, String.Format(field + "{0:00000}", t * 10), dataType, dataspace);
 
-                byte[] buffer = database.GetFilteredData(dataset_enum, tableName, t * database.Dt * database.TimeInc, components, xlow, ylow, zlow, xwidth, ywidth, zwidth, step);
+                byte[] buffer = database.GetFilteredData(dataset_enum, tableName, t * database.Dt * database.TimeInc, components, xlow, ylow, zlow, xwidth, ywidth, zwidth, step, filter_width);
 
                 long chunksize = (long)xsize * (long)ysize * (long)zsize * (long)components;
                 float[] buffer_ = new float[chunksize];
