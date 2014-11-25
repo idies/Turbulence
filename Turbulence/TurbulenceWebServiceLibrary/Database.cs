@@ -910,7 +910,7 @@ namespace TurbulenceService
                                 this.connections[i].Open();
                             }
                             GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], stride);
-                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endz, ref serverY[i], ref serverYwidth[i], stride);
+                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref serverY[i], ref serverYwidth[i], stride);
                             GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i], stride);
 
                             //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
