@@ -3066,7 +3066,7 @@ namespace TurbulenceService
                                     //The point was assigned to multiple servers. 
                                     //Each server has performed the evaluation and has updated the compute_predictor flag. 
                                     //However, we need to add the velocity increments from the different servers either to the predictor or the corrector. 
-                                    //Thus, if the compute_predictor flag is set to true it means the correct was computed 
+                                    //Thus, if the compute_predictor flag is set to true it means the corrector was computed 
                                     //and the velocity increment should be added to the corrector 
                                     //and vice versa if the compute_predictor flag is set to false it means the predictor was computed 
                                     //and the velocity increment should be added to the predictor.

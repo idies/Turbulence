@@ -114,7 +114,7 @@ namespace TestApp
                 int num_disks_per_server = 4;
                 int server_size = 268435456;
                 int partition_size = 16777216;
-                string authToken = "edu.jhu.cs.kalin-cf747456";
+                string authToken = "edu.jhu.pha.turbulence.testing-201406";
                 for (int i = 0; i < num_servers; i++)
                 {
                     for (int j = 0; j < num_disks_per_server; j++)
@@ -239,7 +239,7 @@ namespace TestApp
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
             turbulence.ThresholdInfo[] result;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             service.Timeout = -1;
             Console.WriteLine("Calling service");
@@ -372,7 +372,7 @@ namespace TestApp
             int pointsize = 10;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             service.Timeout = -1;
             Console.WriteLine("Calling service"); 
@@ -404,7 +404,7 @@ namespace TestApp
             int pointsize = 1;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -449,7 +449,7 @@ namespace TestApp
             int pointsize = 1;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -483,7 +483,7 @@ namespace TestApp
             int pointsize = 1;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -524,7 +524,7 @@ namespace TestApp
             float zoff = (float)(random.NextDouble() * 2.0 * 3.14);
             float spacing = 2.0f * (float)Math.PI / 1023.0f;
             float dx = 2.0f * (float)Math.PI / 1024;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             for (int i = 0; i < nx; i++)
             {
@@ -556,7 +556,7 @@ namespace TestApp
             int pointsize = 1;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             float x = 2.1f, y = 0.1f, z = (float)Math.PI / 2;
             int nOrder = 4;
@@ -659,7 +659,7 @@ namespace TestApp
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
             byte[] data = null;
 
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
             DateTime startTime, stopTime;
             startTime = DateTime.Now;
             data = service.GetRawVelocity(authToken, "mhd1024", 0.35f, 0, 0, 510, 1, 1, 2);
@@ -686,7 +686,7 @@ namespace TestApp
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
             turbulence.VelocityHessian[] hessian_result;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -799,6 +799,10 @@ namespace TestApp
                 turbulence.SpatialInterpolation.M4Q14, turbulence.TemporalInterpolation.None, points);
             Console.WriteLine("X={0} Y={1} Z={2}", result[0].x, result[0].y, result[0].z);
 
+            points[0].y = 0.0f;
+            result = service.GetVelocity(authToken, "channel", 0.0002f,
+                turbulence.SpatialInterpolation.M1Q4, turbulence.TemporalInterpolation.None, points);
+
             Console.WriteLine("Press any key to continue.");
             Console.ReadLine();
         }
@@ -811,7 +815,7 @@ namespace TestApp
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
             turbulence.Pressure[] resultP;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -861,7 +865,7 @@ namespace TestApp
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Point3[] positions = new turbulence.Point3[pointsize];
             turbulence.Point3[] positions2 = new turbulence.Point3[pointsize];
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -1067,7 +1071,7 @@ namespace TestApp
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
             int cube_width = 4;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             DateTime startTime, stopTime;
             startTime = DateTime.Now;
@@ -1190,7 +1194,7 @@ namespace TestApp
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
             int cube_width = 4;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             DateTime startTime, stopTime;
             startTime = DateTime.Now;
@@ -1500,7 +1504,7 @@ namespace TestApp
             float filterwidth = 7.0f * dx;
             float spacing = 4.0f * dx;
             turbulence.PressureHessian expected_d_hessian = new turbulence.PressureHessian();
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             DateTime startTime, stopTime;
             expected_d_hessian.d2pdxdx = 14.48022f;
@@ -1549,11 +1553,11 @@ namespace TestApp
             service.Timeout = -1;
             if (field == "density")
             {
-                rawdata = service.GetRawDensity("edu.jhu.cs.kalin-cf747456", "mixing", time, base_coordinates[2], base_coordinates[1], base_coordinates[0], 16, 16, 16);
+                rawdata = service.GetRawDensity("edu.jhu.pha.turbulence.testing-201406", "mixing", time, base_coordinates[2], base_coordinates[1], base_coordinates[0], 16, 16, 16);
             }
             else if (field.Contains("pr"))
             {
-                rawdata = service.GetRawPressure("edu.jhu.cs.kalin-cf747456", "mixing", time, base_coordinates[2], base_coordinates[1], base_coordinates[0], 16, 16, 16);
+                rawdata = service.GetRawPressure("edu.jhu.pha.turbulence.testing-201406", "mixing", time, base_coordinates[2], base_coordinates[1], base_coordinates[0], 16, 16, 16);
             }
             else
             {
@@ -1672,7 +1676,7 @@ namespace TestApp
             turbulence.PressureHessian expected_p_hessian = new turbulence.PressureHessian();
             float expected_pressure, raw_pressure, expected_norm;
             byte[] data;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             DateTime startTime, stopTime;
 
@@ -2384,7 +2388,7 @@ namespace TestApp
             turbulence.PressureHessian expected_p_hessian = new turbulence.PressureHessian();
             float expected_pressure, raw_pressure, expected_norm;
             byte[] data;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             DateTime startTime, stopTime;
 
@@ -3025,7 +3029,7 @@ namespace TestApp
             turbulence.PressureHessian expected_p_hessian = new turbulence.PressureHessian();
             float expected_pressure, raw_pressure, expected_norm;
             byte[] data;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             DateTime startTime, stopTime;
 
@@ -3588,7 +3592,7 @@ namespace TestApp
             turbulence.PressureHessian expected_d_hessian = new turbulence.PressureHessian();
             byte[] data;
             float expected_pressure, expected_density, raw_density, raw_pressure, expected_norm;
-            string authToken = "edu.jhu.cs.kalin-cf747456";
+            string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             DateTime startTime, stopTime;
             

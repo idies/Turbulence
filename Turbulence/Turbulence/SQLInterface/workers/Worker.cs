@@ -445,7 +445,7 @@ namespace Turbulence.SQLInterface
             GetVelocityOld = 888,
             GetVelocityWithPressureOld = 889,
 
-            GetMHDVelocity = 56,
+            GetMHDVelocity = 56, //NOTE: At some point there was a separate splines worker with id 130 
             GetMHDPressure = 57,
             GetMHDMagnetic = 58,
             GetMHDPotential = 59,
@@ -453,19 +453,19 @@ namespace Turbulence.SQLInterface
             GetRawPressure = 61,
             GetRawMagnetic = 62,
             GetRawPotential = 63,
-            GetMHDVelocityGradient = 64,
+            GetMHDVelocityGradient = 64, //NOTE: At some point there was a separate splines worker with id 133
             GetMHDMagneticGradient = 65,
             GetMHDPotentialGradient = 66,
             GetMHDPressureGradient = 67,
             GetMHDVelocityLaplacian = 68,
             GetMHDMagneticLaplacian = 69,
             GetMHDPotentialLaplacian = 70,
-            GetMHDVelocityHessian = 71,
+            GetMHDVelocityHessian = 71, //NOTE: At some point there was a separate splines worker with id 134
             GetMHDMagneticHessian = 72,
             GetMHDPotentialHessian = 73,
             GetMHDPressureHessian = 74,
 
-            GetMHDBoxFilter = 75,
+            GetMHDBoxFilter = 75, //NOTE: At some point there was another box filter worker with id 76 
             GetMHDBoxFilterSV = 77,
             GetMHDBoxFilterSGS = 78,
             GetMHDBoxFilterSGS_SV = 79,
@@ -492,10 +492,10 @@ namespace Turbulence.SQLInterface
             GetChannelVelocityHessian = 125,
             GetChannelPressureHessian = 126,
             
-            GetDensity = 150,
-            GetDensityGradient = 151,
-            GetDensityHessian = 152,
-            GetRawDensity = 153,
+            GetDensity = 150, //NOTE: used to be 140
+            GetDensityGradient = 151, //NOTE: used to be 141
+            GetDensityHessian = 152, //NOTE: used to be 142
+            GetRawDensity = 153, //NOTE: used to be 143
 
             GetVelocityWorkerDirectOpt = 556,
             GetVelocityWorkerDirectWorst = 557

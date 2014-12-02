@@ -17,6 +17,12 @@ INSERT INTO [turbinfo].[dbo].[particlecount]
     VALUES
           ( @ID, 0)
 
+INSERT INTO [turbinfo].[dbo].[userinfo]
+          ([uid]
+          ,[contact])
+    VALUES
+          ( @ID, 'user@domain')
+
 IF @@error <> 0
 BEGIN
 	ROLLBACK TRANSACTION
