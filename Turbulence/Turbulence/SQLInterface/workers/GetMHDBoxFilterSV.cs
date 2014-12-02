@@ -510,17 +510,6 @@ namespace Turbulence.SQLInterface.workers
             x_width = cutout_coordinates[3] - cutout_coordinates[0];
             y_width = cutout_coordinates[4] - cutout_coordinates[1];
             z_width = cutout_coordinates[5] - cutout_coordinates[2];
-            ulong cutout_size = (ulong)setInfo.Components * (ulong)x_width * (ulong)y_width * (ulong)z_width;
-            if (cutout_size > int.MaxValue / sizeof(float))
-            {
-                //big_cutout = new BigArray<float>(cutout_size);
-                //using_big_cutout = true;
-                throw new Exception("Cutout size is too big!");
-            }
-            else
-            {
-                //cutout = new float[cutout_size];
-            }
 
             InitializeSummedVolumes(x_width, y_width, z_width);
 
