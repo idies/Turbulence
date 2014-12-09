@@ -20,7 +20,9 @@ public partial class StoredProcedures
         int blobDim, 
         int timestep,
         int filter_width,
-        int step,
+        int x_stride,
+        int y_stride,
+        int z_stride,
         string QueryBox)
     {
         byte[] result = null;
@@ -41,7 +43,7 @@ public partial class StoredProcedures
 
             GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
             worker.GetData(datasetID, turbinfodb, timestep, coordinates);
-            cutout = worker.GetResult(coordinates, step);
+            cutout = worker.GetResult(coordinates, x_stride, y_stride, z_stride);
 
             // Populate the record
             int cutout_byte_length = Buffer.ByteLength(cutout);

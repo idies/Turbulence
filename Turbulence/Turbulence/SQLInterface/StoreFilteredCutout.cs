@@ -21,7 +21,9 @@ using System.Collections.Generic;
             int blobDim,
             int timestep,
             int filter_width,
-            int step,
+            int x_stride,
+            int y_stride,
+            int z_stride,
             string QueryBox)
         {
             byte[] result = null;
@@ -49,7 +51,7 @@ using System.Collections.Generic;
 
                 worker.GetData(datasetID, turbinfodb, timestep, coordinates);
 
-                cutout = worker.GetResult(coordinates, step);
+                cutout = worker.GetResult(coordinates, x_stride, y_stride, z_stride);
 
                 // Populate the record
                 int cutout_byte_length = Buffer.ByteLength(cutout);

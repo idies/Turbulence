@@ -120,7 +120,9 @@ CREATE PROCEDURE [dbo].[GetFilteredCutout] (
 	@blobDim int,
 	@timestep int,
 	@filter_width int,
-	@step int,
+	@x_stride int,
+	@y_stride int,
+	@z_stride int,
 	@QueryBox nvarchar(4000)
 ) AS EXTERNAL NAME Turbulence.StoredProcedures.GetFilteredCutout
 GO
@@ -135,7 +137,9 @@ CREATE PROCEDURE [dbo].[GetStridedDataCutout] (
 	@field nvarchar(4000),
 	@blobDim int,
 	@timestep int,
-	@stride int,
+	@x_stride int,
+	@y_stride int,
+	@z_stride int,
 	@QueryBox nvarchar(4000)
 ) AS EXTERNAL NAME Turbulence.StoredProcedures.GetStridedDataCutout
 GO

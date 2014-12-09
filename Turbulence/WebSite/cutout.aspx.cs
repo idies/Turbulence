@@ -34,7 +34,14 @@ namespace Website
             step_checkbox.Visible = true;
             if (step_checkbox.Checked)
             {
-                stepSize.Visible = true;
+                timeStepSize.Visible = true;
+                xStepSize.Visible = true;
+                yStepSize.Visible = true;
+                zStepSize.Visible = true;
+                timeStepLabel.Visible = true;
+                xStepLabel.Visible = true;
+                yStepLabel.Visible = true;
+                zStepLabel.Visible = true;
 
                 filterwidth_cell.Visible = true;
                 filterwidth_checkbox.Visible = true;
@@ -149,7 +156,7 @@ namespace Website
             if (potential.Checked) comps += 3;
             if (density.Checked) comps += 1;
 
-            long xw, yw, zw, tw, xl, yl, zl, tl, step, filterwidth;
+            long xw, yw, zw, tw, xl, yl, zl, tl, time_step, x_step, y_step, z_step, filterwidth;
 
             if (!long.TryParse(xEnd.Text, out xw) ||
                 !long.TryParse(yEnd.Text, out yw) ||
@@ -159,7 +166,10 @@ namespace Website
                 !long.TryParse(z.Text, out zl) ||
                 !long.TryParse(timeend.Text, out tw) ||
                 !long.TryParse(timestart.Text, out tl) ||
-                !long.TryParse(stepSize.Text, out step) ||
+                !long.TryParse(timeStepSize.Text, out time_step) ||
+                !long.TryParse(xStepSize.Text, out x_step) ||
+                !long.TryParse(yStepSize.Text, out y_step) ||
+                !long.TryParse(zStepSize.Text, out z_step) ||
                 !long.TryParse(filterWidth.Text, out filterwidth))
             {
                 dlsize.Text = "<b><font color=red>Please use numbers only for the cutout coordiantes, size, step size and filter width.</font></b>";
@@ -167,7 +177,7 @@ namespace Website
             }
 
 
-            long size = comps * 4 * (xw) * (yw) * (zw) * (tw) / step / step / step;
+            long size = comps * 4 * (xw) * (yw) * (zw) * (tw) / time_step / x_step / y_step / z_step;
 
             String fields = String.Format("{0}{1}{2}{3}{4}",
                 velocity.Checked ? "u" : "",
@@ -208,17 +218,17 @@ namespace Website
                 {
                     string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/";
                     String dlurl;
-                    if (step > 1)
+                    if (time_step > 1 || x_step > 1 || y_step > 1 || z_step > 1)
                     {
                         if (filterwidth > 1)
                         {
-                            dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/{11}/{12}",
-                                Server.UrlEncode(authToken), dataset.SelectedValue, fields, tl, tw, xl, xw, yl, yw, zl, zw, step, filterwidth);
+                            dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/{11},{12},{13},{14}/{15}",
+                                Server.UrlEncode(authToken), dataset.SelectedValue, fields, tl, tw, xl, xw, yl, yw, zl, zw, time_step, x_step, y_step, z_step, filterwidth);
                         }
                         else
                         {
-                            dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/{11}",
-                                Server.UrlEncode(authToken), dataset.SelectedValue, fields, tl, tw, xl, xw, yl, yw, zl, zw, step);
+                            dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/{11},{12},{13},{14}",
+                                Server.UrlEncode(authToken), dataset.SelectedValue, fields, tl, tw, xl, xw, yl, yw, zl, zw, time_step, x_step, y_step, z_step);
                         }
                     }
                     else
@@ -226,8 +236,8 @@ namespace Website
                         if (filterwidth > 1)
                         {
                             // Set a step size of 1.
-                            dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/{11}/{12}",
-                                Server.UrlEncode(authToken), dataset.SelectedValue, fields, tl, tw, xl, xw, yl, yw, zl, zw, 1, filterwidth);
+                            dlurl = String.Format(baseUrl + "cutout/download.aspx/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/{11},{12},{13},{14}/{15}",
+                                Server.UrlEncode(authToken), dataset.SelectedValue, fields, tl, tw, xl, xw, yl, yw, zl, zw, 1, 1, 1, 1, filterwidth);
                         }
                         else
                         {
@@ -256,7 +266,14 @@ namespace Website
         {
             if (step_checkbox.Checked == true)
             {
-                stepSize.Visible = true;
+                timeStepSize.Visible = true;
+                xStepSize.Visible = true;
+                yStepSize.Visible = true;
+                zStepSize.Visible = true;
+                timeStepLabel.Visible = true;
+                xStepLabel.Visible = true;
+                yStepLabel.Visible = true;
+                zStepLabel.Visible = true;
 
                 if (!dataset.SelectedValue.Equals("channel"))
                 {
@@ -271,8 +288,18 @@ namespace Website
                 filterwidth_checkbox.Visible = false;
                 filterWidth.Visible = false;
                 filterWidth.Text = "1";
-                stepSize.Visible = false;
-                stepSize.Text = "1";
+                timeStepSize.Visible = false;
+                timeStepLabel.Visible = false;
+                timeStepSize.Text = "1";
+                xStepSize.Visible = false;
+                xStepLabel.Visible = false;
+                xStepSize.Text = "1";
+                yStepSize.Visible = false;
+                yStepLabel.Visible = false;
+                yStepSize.Text = "1";
+                zStepSize.Visible = false;
+                zStepLabel.Visible = false;
+                zStepSize.Text = "1";
                 update();
             }
         }
