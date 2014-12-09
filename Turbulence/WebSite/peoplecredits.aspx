@@ -44,11 +44,7 @@
         <li><a href="http://me.jhu.edu/faculty/tamer-zaki/">Tamer Zaki</a> (Mechanical Engineering)</li>
       </ul>      
 
-      <p class="style23">Associated Faculty:</p>
-      <ul class="style24">
-        <li><a href="http://folio.jhu.edu/faculty/Shiyi_Chen">Shiyi Chen</a> (Beijing University, China)</li>
-        <li><a href="http://www.physics.mcmaster.ca/?page=Minibio_new.php?ID=86#page=Profile">Ethan Vishniac</a> (McMaster University, Canada)</li>
-      </ul>      
+          
 
       <p class="style23">Graduate students:</p>
       <ul class="style24">
@@ -60,9 +56,22 @@
       <p class="style23">Postdocs and senior research associates:</p>
       <ul class="style24">
 	    <li><a href="http://www.ams.jhu.edu/~clalesc1/">Cristian Constantin Lalescu</a> (Applied Math and Statistics)</li>
-        
+        <li>Jin Lee</li>
 	    
       </ul>      
+      <p class="style23">External collaborators:</p>
+      <ul class="style24">
+
+       <li><a href="http://folio.jhu.edu/faculty/Shiyi_Chen">Shiyi Chen</a> (Beijing University, China)</li>
+        
+        <li>MyoungKyu Lee</li>  
+        <li><a href="https://www.ices.utexas.edu/people/597/">Nicholas Malaya</a></li>
+        <li><a href="https://www.ices.utexas.edu/people/344/">Robert D. Moser</a></li>
+        <li>Jesus Pulido</li>
+        <li><a href="http://public.lanl.gov/livescu/">Daniel Livescu</a></li>
+        <li><a href="http://www.physics.mcmaster.ca/?page=Minibio_new.php?ID=86#page=Profile">Ethan Vishniac</a> (McMaster University, Canada)</li>
+
+      </ul> 
 
       <p class="style23">Vistors:</p>
       <ul class="style24">
@@ -70,7 +79,7 @@
 	<li>Kai Buerger (Technical Univ. Muenchen, visiting student, summer 2011)</li>
       </ul>
 
-      <p class="style23">Others:</p>
+      <p class="style23">Technical Staff:</p>
       <ul class="style24">
       <li>Victor Paul</li>
 	  <li>Jan vandenBerg</li>	
@@ -95,14 +104,7 @@
 	    <li><a href="http://www.engr.iupui.edu/main/people/detail.php?id=whyu">Huidan Yu</a></li>
       </ul>
       
-      <p class="style23">External collaborators:</p>
-      <ul class="style24">
-        <li>MyoungKyu Lee</li>  
-        <li><a href="https://www.ices.utexas.edu/people/597/">Nicholas Malaya</a></li>
-        <li><a href="https://www.ices.utexas.edu/people/344/">Robert D. Moser</a></li>
-        <li>Jesus Pulido</li>
-        <li><a href="http://public.lanl.gov/livescu/">Daniel Livescu</a></li>
-      </ul>      
+           
     
 
       <p class="style22">&nbsp; </p> 

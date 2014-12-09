@@ -27,9 +27,9 @@
 
 </div>
 <!--#include file="../../navbar.htm" -->
-<div id="leftcolumn">
+<div id="leftcolumn"><div id="custom" style="margin-top: 120px">
    <p><img src="../../images/fig4-1.jpg" width="205" /></p>
-      
+      </div>
 </div>
 <div id="centercolumn">
       
@@ -39,7 +39,7 @@
    
     <font face="Arial, Helvetica, sans-serif">
     <h3>Download</h3>
-    <strong>C and Fortran Code: </strong> turblib-20141017 (<a href="/download/turblib-20141017.tar.gz">tar.gz</a>) (<a href="/download/turblib-20141017.zip">zip</a>)<br />
+    <strong>C and Fortran Code: </strong> turblib-20141017 (<a href="/download/turblib-20141017.tar.gz">Download tar.gz here</a>) (<a href="/download/turblib-20141017.zip">Download zip here</a>)<br />
     <p>
       This downloads a directory with sample Fortran (<tt>turbf.f90, mhdf.f90, channelf.f90, mixingf.f90</tt>) and C (<tt>turbc.c, 
         mhdc.c, channelc.c, mixingc.c</tt>) code,

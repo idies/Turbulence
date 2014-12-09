@@ -40,7 +40,7 @@
       <li>
 H.&nbsp;Yu, K.&nbsp;Kanov, E.&nbsp;Perlman, J.&nbsp;Graham, E.&nbsp;Frederix, R.&nbsp;Burns, A.&nbsp;Szalay,
   G.&nbsp;Eyink, and C.&nbsp;Meneveau.
- <a href="http://meeting.aps.org/Meeting/DFD11/Session/D12.5">Studying lagrangian dynamics of turbulence using on-demand fluid
+ <a href="http://meeting.aps.org/Meeting/DFD11/Session/D12.5"  target="_blank">Studying lagrangian dynamics of turbulence using on-demand fluid
   particle tracking in a public turbulence database.</a>
  <em>Journal of Turbulence</em>, 13(12), 2012.
 
@@ -53,7 +53,7 @@ H.&nbsp;Yu, K.&nbsp;Kanov, E.&nbsp;Perlman, J.&nbsp;Graham, E.&nbsp;Frederix, R.
 <li>
 J.&nbsp;Graham, K.&nbsp;Kanov, E.&nbsp;Givelberg, R.&nbsp;Burns, G.&nbsp;Eyink, A.&nbsp;Szalay, C.&nbsp;Meneveau,
   M.K. Lee, N.&nbsp;Malaya, and R.D. Moser.
- <a href="http://meetings.aps.org/Meeting/DFD13/Event/202909">A web-services accessible database for channel flow turbulence at
+ <a href="http://meetings.aps.org/Meeting/DFD13/Event/202909"  target="_blank">A web-services accessible database for channel flow turbulence at
   Re-tau= 1000.</a>
  <em>Bulletin of the American Physical Society</em>, 58, 2013.
 
@@ -62,7 +62,7 @@ J.&nbsp;Graham, K.&nbsp;Kanov, E.&nbsp;Givelberg, R.&nbsp;Burns, G.&nbsp;Eyink, 
 <font face="Arial, Helvetica, sans-serif">X. Wang, E. Perlman, R. Burns, T. Malik, T. Budav&aacute;ri, 
 C. Meneveau, &amp; A. Szalay. <a href="papers/wang_sc10.pdf" target="_blank">JAWS: Job-Aware Workload Scheduling for the Exploration of Turbulence Simulations. </a>
 International Conference for High Performance Computing, Networking, Storage and Analysis (SC), IEEE, 2010.
-(<a href="http://sc10.supercomputing.org/schedule/event_detail.php?evid=pap210">abstract</a>), <a href="papers/wang_sc10.ppt" target="_blank">slides</a>]</font>
+(<a href="http://sc10.supercomputing.org/schedule/event_detail.php?evid=pap210"  target="_blank">abstract</a>), <a href="papers/wang_sc10.ppt" target="_blank">slides</a>]</font>
 </li> 
         
 <li>        
@@ -96,7 +96,7 @@ International Conference for High Performance Computing, Networking, Storage and
 <li>
 H.&nbsp;Xu, A.&nbsp;Pumir, G.&nbsp;Falkovich, E.&nbsp;Bodenschatz, M.&nbsp;Shats, H.&nbsp;Xia, N.&nbsp;Francois,
   and G.&nbsp;Boffetta.
- <a href="http://www.pnas.org/content/111/21/7558">Flight-crash events in turbulence.</a>
+ <a href="http://www.pnas.org/content/111/21/7558"  target="_blank">Flight-crash events in turbulence.</a>
  <em>Proceedings of the National Academy of Sciences</em>,
   111(21):7558-7563, 2014.
 
@@ -104,7 +104,7 @@ H.&nbsp;Xu, A.&nbsp;Pumir, G.&nbsp;Falkovich, E.&nbsp;Bodenschatz, M.&nbsp;Shats
 
 <li>
 J.&nbsp;Jucha, H.&nbsp;Xu, A.&nbsp;Pumir, and E.&nbsp;Bodenschatz.
- <a href="http://dx.doi.org/10.1103/PhysRevLett.113.054501">Time-reversal-symmetry breaking in turbulence.</a>
+ <a href="http://dx.doi.org/10.1103/PhysRevLett.113.054501"  target="_blank">Time-reversal-symmetry breaking in turbulence.</a>
  <em>Phys. Rev. Lett.</em>, 113:054501, 2014.
 
 
@@ -112,7 +112,7 @@ J.&nbsp;Jucha, H.&nbsp;Xu, A.&nbsp;Pumir, and E.&nbsp;Bodenschatz.
 
 <li>
 K.&nbsp;Gustavsson, J.&nbsp;Einarsson, and B.&nbsp;Mehlig.
- <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.112.014501">Tumbling of small axisymmetric particles in random and turbulent
+ <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.112.014501"  target="_blank">Tumbling of small axisymmetric particles in random and turbulent
   flows.</a>
  <em>Physical Review Letters</em>, 112(1):014501, 2014.
 
@@ -120,7 +120,7 @@ K.&nbsp;Gustavsson, J.&nbsp;Einarsson, and B.&nbsp;Mehlig.
 
 <li>
 D.&nbsp;Fiscaletti, J.&nbsp;Westerweel, and G.E. Elsinga.
- <a href="http://repository.tudelft.nl/assets/uuid:c23e8332-c2d5-41ee-8546-b6a49de2df38/307994.pdf">Long-range &mu;PIV to resolve the small scales in a jet at high
+ <a href="http://repository.tudelft.nl/assets/uuid:c23e8332-c2d5-41ee-8546-b6a49de2df38/307994.pdf"  target="_blank">Long-range &mu;PIV to resolve the small scales in a jet at high
   Reynolds number.</a>
  <em>Experiments in Fluids</em>, 55(9):1-15, 2014.
 
@@ -128,7 +128,7 @@ D.&nbsp;Fiscaletti, J.&nbsp;Westerweel, and G.E. Elsinga.
 
 <li>
 D.&nbsp;Benveniste and T.D. Drivas.
- <a href="http://journals.aps.org/pre/abstract/10.1103/PhysRevE.89.041003">Asymptotic results for backwards two-particle dispersion in a
+ <a href="http://journals.aps.org/pre/abstract/10.1103/PhysRevE.89.041003"  target="_blank">Asymptotic results for backwards two-particle dispersion in a
   turbulent flow.</a>
  <em>Physical Review E</em>, 89(4):041003, 2014.
 
@@ -136,7 +136,7 @@ D.&nbsp;Benveniste and T.D. Drivas.
 
 <li>
 M.&nbsp;Mishra, X.&nbsp;Liu, M.&nbsp;Skote, and C.-W. Fu.
- <a href="http://scitation.aip.org/content/aip/journal/pof2/26/5/10.1063/1.4871106">Kolmogorov spectrum consistent optimization for multi-scale flow
+ <a href="http://scitation.aip.org/content/aip/journal/pof2/26/5/10.1063/1.4871106"  target="_blank">Kolmogorov spectrum consistent optimization for multi-scale flow
   decomposition.</a>
  <em>Physics of Fluids</em>, 26(5):055106, 2014.
 
@@ -145,7 +145,7 @@ M.&nbsp;Mishra, X.&nbsp;Liu, M.&nbsp;Skote, and C.-W. Fu.
 <li>
 T.&nbsp;Chang, C.C. Wu, M.&nbsp;Echim, H.&nbsp;Lamy, M.&nbsp;Vogelsberger, L.&nbsp;Hernquist, and
   D.&nbsp;Sijacki.
- <a href="http://arxiv.org/abs/1402.6398">Complexity phenomena and ROMA of the earth's magnetospheric cusp,
+ <a href="http://arxiv.org/abs/1402.6398"  target="_blank">Complexity phenomena and ROMA of the earth's magnetospheric cusp,
   hydrodynamic turbulence, and the cosmic web.</a>
  <em>Pure and Applied Geophysics</em>, pages 1-19, 2014.
 
@@ -153,14 +153,14 @@ T.&nbsp;Chang, C.C. Wu, M.&nbsp;Echim, H.&nbsp;Lamy, M.&nbsp;Vogelsberger, L.&nb
 
 <li>
 A.&nbsp;Pumir, H.&nbsp;Xu, G.&nbsp;Boffetta, G.&nbsp;Falkovich, and E.&nbsp;Bodenschatz.
- <a href="http://journals.aps.org/prx/abstract/10.1103/PhysRevX.4.041006">Redistribution of kinetic energy in turbulent flows.</a>
+ <a href="http://journals.aps.org/prx/abstract/10.1103/PhysRevX.4.041006"  target="_blank">Redistribution of kinetic energy in turbulent flows.</a>
  <em>Physical Review X</em>, 4(4):041006, 2014.
 
 </li>
 
 <li>
 D.&nbsp;Xu and J.&nbsp;Chen.
- <a href="http://www.sciencedirect.com/science/article/pii/S0894177712002464#">Accurate estimate of turbulent dissipation rate using PIV data.</a>
+ <a href="http://www.sciencedirect.com/science/article/pii/S0894177712002464#"  target="_blank">Accurate estimate of turbulent dissipation rate using PIV data.</a>
  <em>Experimental Thermal and Fluid Science</em>, 44:662-672, 2013.
 
 </li>
@@ -168,7 +168,7 @@ D.&nbsp;Xu and J.&nbsp;Chen.
 <li>
 G.&nbsp;Eyink, E.&nbsp;Vishniac, C.&nbsp;Lalescu, K.&nbsp;Aluie, H.and&nbsp;Kanov, K.&nbsp;B&uuml;rger,
   R.&nbsp;Burns, C.&nbsp;Meneveau, and A.&nbsp;Szalay.
- <a href="http://www.nature.com/nature/journal/v497/n7450/full/nature12128.html">Flux-freezing breakdown in high-conductivity magnetohydrodynamic
+ <a href="http://www.nature.com/nature/journal/v497/n7450/full/nature12128.html"  target="_blank">Flux-freezing breakdown in high-conductivity magnetohydrodynamic
   turbulence.</a>
  <em>Nature</em>, 497(7450):466-469, 2013.
 
@@ -176,7 +176,7 @@ G.&nbsp;Eyink, E.&nbsp;Vishniac, C.&nbsp;Lalescu, K.&nbsp;Aluie, H.and&nbsp;Kano
 
 <li>
 J.I. Cardesa, D.&nbsp;Mistry, L.&nbsp;Gan, and J.R. Dawson.
- <a href="http://journals.cambridge.org/download.php?file=%2FFLM%2FFLM716%2FS0022112012005587a.pdf&code=5cfe963798a09697d563057d88374391">Invariants of the reduced velocity gradient tensor in turbulent
+ <a href="http://journals.cambridge.org/download.php?file=%2FFLM%2FFLM716%2FS0022112012005587a.pdf&code=5cfe963798a09697d563057d88374391"  target="_blank">Invariants of the reduced velocity gradient tensor in turbulent
   flows.</a>
  <em>Journal of Fluid Mechanics</em>, 716:597-615, 2013.
 
@@ -184,7 +184,7 @@ J.I. Cardesa, D.&nbsp;Mistry, L.&nbsp;Gan, and J.R. Dawson.
 
 <li>
 P.&nbsp;Bhat and K.&nbsp;Subramanian.
- <a href="http://arxiv.org/abs/1210.3243">Fluctuation dynamos and their Faraday rotation signatures.</a>
+ <a href="http://arxiv.org/abs/1210.3243"  target="_blank">Fluctuation dynamos and their Faraday rotation signatures.</a>
  <em>Monthly Notices of the Royal Astronomical Society</em>,
   429(3):2469-2481, 2013.
 
@@ -192,14 +192,14 @@ P.&nbsp;Bhat and K.&nbsp;Subramanian.
 
 <li>
 Gregory&nbsp;L Eyink and Damien Benveniste.
- <a href="http://arxiv.org/abs/1306.6388">Diffusion approximation in turbulent two-particle dispersion.</a>
+ <a href="http://arxiv.org/abs/1306.6388"  target="_blank">Diffusion approximation in turbulent two-particle dispersion.</a>
  <em>Physical Review E</em>, 88(4):041001, 2013.
 
 </li>
 
 <li>
 X.&nbsp;Liu and J.&nbsp;Katz.
- <a href="http://www.me.jhu.edu/lefd/PPIV/PPIVpublication/LiuKatz_JFM2013.pdf"></a>Vortex-corner interactions in a cavity shear layer elucidated by
+ <a href="http://www.me.jhu.edu/lefd/PPIV/PPIVpublication/LiuKatz_JFM2013.pdf"  target="_blank"></a>Vortex-corner interactions in a cavity shear layer elucidated by
   time-resolved measurements of the pressure field.
  <em>Journal of Fluid Mechanics</em>, 728:417-457, 2013.
 
@@ -207,14 +207,14 @@ X.&nbsp;Liu and J.&nbsp;Katz.
 
 <li>
 L.&nbsp;Moriconi and R.M. Pereira.
- <a href="http://arxiv.org/abs/1204.5150">Vorticity statistics and the time scales of turbulent strain.</a>
+ <a href="http://arxiv.org/abs/1204.5150"  target="_blank">Vorticity statistics and the time scales of turbulent strain.</a>
  <em>Physical Review E</em>, 88(1):013005, 2013.
 
 </li>
 
 <li>
 N.A. Buchmann, C.E. Willert, and J&nbsp;Soria.
- <a href="http://elib.dlr.de/67230/1/2010-AFMC17-310-Buchmann-Willert-Soria.pdf">Pulsed, high-power LED illumination for tomographic particle image
+ <a href="http://elib.dlr.de/67230/1/2010-AFMC17-310-Buchmann-Willert-Soria.pdf"  target="_blank">Pulsed, high-power LED illumination for tomographic particle image
   velocimetry.</a>
  <em>Experiments in fluids</em>, 53(5):1545-1560, 2012.
 
@@ -222,7 +222,7 @@ N.A. Buchmann, C.E. Willert, and J&nbsp;Soria.
 
 <li>
 W.&nbsp;Liu and E.&nbsp;Ribeiro.
- <a href="http://cs.fit.edu/~eribeiro/papers/pr2012.pdf">Detecting singular patterns in 2D vector fields using weighted
+ <a href="http://cs.fit.edu/~eribeiro/papers/pr2012.pdf"  target="_blank">Detecting singular patterns in 2D vector fields using weighted
   Laurent polynomial.</a>
  <em>Pattern Recognition</em>, 45(11):3912-3925, 2012.
 
@@ -232,7 +232,7 @@ W.&nbsp;Liu and E.&nbsp;Ribeiro.
 
 <li>
 M.&nbsp;Treib, K.&nbsp;Burger, F.&nbsp;Reichl, C.&nbsp;Meneveau, A.&nbsp;Szalay, and R.&nbsp;Westermann.
- <a href="http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=6327475">Turbulence visualization at the Terascale on desktop PCs.</a>
+ <a href="http://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=6327475"  target="_blank">Turbulence visualization at the Terascale on desktop PCs.</a>
  <em>Visualization and Computer Graphics, IEEE Transactions on</em>,
   18(12):2169-2177, 2012.
 
@@ -240,7 +240,7 @@ M.&nbsp;Treib, K.&nbsp;Burger, F.&nbsp;Reichl, C.&nbsp;Meneveau, A.&nbsp;Szalay,
 
 <li>
 C.J. Keylock, K.&nbsp;Nishimura, and J.&nbsp;Peinke.
- <a href="http://onlinelibrary.wiley.com/doi/10.1029/2011JF002127/pdf">A classification scheme for turbulence based on the
+ <a href="http://onlinelibrary.wiley.com/doi/10.1029/2011JF002127/pdf" target="_blank">A classification scheme for turbulence based on the
   velocity-intermittency structure with an application to near-wall flow and
   with implications for bed load transport.</a>
  <em>Journal of Geophysical Research: Earth Surface (2003-2012)</em>,
@@ -250,14 +250,14 @@ C.J. Keylock, K.&nbsp;Nishimura, and J.&nbsp;Peinke.
 
 <li>
 F.F. Grinstein, A.A. Gowardhan, J.R. Ristorcelli, and A.J. Wachtor.
- <a href="http://iopscience.iop.org/1402-4896/86/5/058203">On coarse-grained simulations of turbulent material mixing.</a>
+ <a href="http://iopscience.iop.org/1402-4896/86/5/058203" target="_blank">On coarse-grained simulations of turbulent material mixing.</a>
  <em>Physica Scripta</em>, 86(5):058203, 2012.
 
 </li>
 
 <li>
 F.F. Grinstein, A.A. Gowardhan, and A.J. Wachtor.
- <a href="http://scitation.aip.org/content/aip/journal/pof2/23/3/10.1063/1.3555635">Simulations of Richtmyer-Meshkov instabilities in planar
+ <a href="http://scitation.aip.org/content/aip/journal/pof2/23/3/10.1063/1.3555635" target="_blank">Simulations of Richtmyer-Meshkov instabilities in planar
   shock-tube experiments.</a>
  <em>Physics of Fluids</em>, 23(3):034106, 2011.
 
@@ -265,7 +265,7 @@ F.F. Grinstein, A.A. Gowardhan, and A.J. Wachtor.
 
 <li>
 C.J. Keylock, T.E. Tokyay, and G.&nbsp;Constantinescu.
- <a href="http://www.tandfonline.com/doi/abs/10.1080/14685248.2011.636047#.VFfRlvldVAc">A method for characterising the sensitivity of turbulent flow fields
+ <a href="http://www.tandfonline.com/doi/abs/10.1080/14685248.2011.636047#.VFfRlvldVAc" target="_blank">A method for characterising the sensitivity of turbulent flow fields
   to the structure of inlet turbulence.</a>
  <em>Journal of Turbulence</em>, 12(45), 2011.
 
@@ -273,7 +273,7 @@ C.J. Keylock, T.E. Tokyay, and G.&nbsp;Constantinescu.
 
 <li>
 C.C. Wu and T.&nbsp;Chang.
- <a href="http://www.nonlin-processes-geophys.net/18/261/2011/npg-18-261-2011.html">Rank-ordered multifractal analysis (ROMA) of probability
+ <a href="http://www.nonlin-processes-geophys.net/18/261/2011/npg-18-261-2011.html" target="_blank">Rank-ordered multifractal analysis (ROMA) of probability
   distributions in fluid turbulence.</a>
  <em>Nonlinear Processes in Geophysics</em>, 18(2):261-268, 2011.
 
@@ -281,7 +281,7 @@ C.C. Wu and T.&nbsp;Chang.
 
 <li>
 H.&nbsp;Lu.
- <a href="http://scitation.aip.org/content/cstam/journal/taml/1/4/10.1063/2.1104104">Assessment of the modulated gradient model in decaying isotropic
+ <a href="http://scitation.aip.org/content/cstam/journal/taml/1/4/10.1063/2.1104104" target="_blank">Assessment of the modulated gradient model in decaying isotropic
   turbulence.</a>
  <em>Theoretical and Applied Mechanics Letters</em>, 1(4):041004, 2011.
 
@@ -289,14 +289,14 @@ H.&nbsp;Lu.
 
 <li>
 Gregory&nbsp;L Eyink.
- <a href="http://arxiv.org/abs/1008.4959">Stochastic flux freezing and magnetic dynamo.</a>
+ <a href="http://arxiv.org/abs/1008.4959" target="_blank">Stochastic flux freezing and magnetic dynamo.</a>
  <em>Physical Review E</em>, 83(5):056405, 2011.
 
 </li>
 
 <li>
 H.&nbsp;Yu and C.&nbsp;Meneveau.
- <a href="http://arxiv.org/abs/0912.3493">Scaling of conditional Lagrangian time correlation functions of
+ <a href="http://arxiv.org/abs/0912.3493" target="_blank">Scaling of conditional Lagrangian time correlation functions of
   velocity and pressure gradient magnitudes in isotropic turbulence.</a>
  <em>Flow, turbulence and combustion</em>, 85(3-4):457-472, 2010.
 
@@ -304,7 +304,7 @@ H.&nbsp;Yu and C.&nbsp;Meneveau.
 
 <li>
 W.&nbsp;Liu and E.&nbsp;Ribeiro.
- <a href="http://turbulence.pha.jhu.edu/papers/liu_ribeiro_sspr2010.pdf">Scale and rotation invariant detection of singular patterns in vector
+ <a href="http://turbulence.pha.jhu.edu/papers/liu_ribeiro_sspr2010.pdf" target="_blank">Scale and rotation invariant detection of singular patterns in vector
   flow fields.</a>
  In <em>Structural, Syntactic, and Statistical Pattern Recognition</em>,
   pages 522-531. Springer, 2010.
@@ -314,7 +314,7 @@ W.&nbsp;Liu and E.&nbsp;Ribeiro.
 <li>
 M.&nbsp;Holzner, M.&nbsp;Guala, B.&nbsp;L&uuml;thi, A.&nbsp;Liberzon, N.&nbsp;Nikitin, W.&nbsp;Kinzelbach, and
   A.&nbsp;Tsinober.
- <a href="http://arxiv.org/abs/1002.1724">Viscous tilting and production of vorticity in homogeneous
+ <a href="http://arxiv.org/abs/1002.1724" target="_blank">Viscous tilting and production of vorticity in homogeneous
   turbulence.</a>
  <em>Physics of Fluids</em>, 22(6):061701, 2010.
 
@@ -322,7 +322,7 @@ M.&nbsp;Holzner, M.&nbsp;Guala, B.&nbsp;L&uuml;thi, A.&nbsp;Liberzon, N.&nbsp;Ni
 
 <li>
 Yi&nbsp;Li, Laurent Chevillard, Gregory Eyink, and Charles Meneveau.
- <a href="http://arxiv.org/abs/0704.3781">Matrix exponential-based closures for the turbulent subgrid-scale
+ <a href="http://arxiv.org/abs/0704.3781" target="_blank">Matrix exponential-based closures for the turbulent subgrid-scale
   stress tensor.</a>
  <em>Physical Review E</em>, 79(1):016305, 2009.
 </li>
