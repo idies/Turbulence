@@ -20,7 +20,7 @@
         }
         .style8
         {
-            width: 300px;
+            width: 330px;
         }
         .style9
         {
@@ -28,7 +28,7 @@
         }
         .style35
         {
-            width: 120px;
+            width: 180px;
         }
         .style36
         {
@@ -41,6 +41,10 @@
         .style39
         {
             text-decoration: underline;
+        }
+        .style40
+        {
+            width: 10px;
         }
     </style>
 </head>
@@ -100,21 +104,65 @@
 
         <table>         
         <tr>
+            <td colspan="6"> Specify the cutout parameters below. Select the starting index for the cutout and the size in each dimension. Optionally, 
+                a step or stride can be specified to obtain every "other" data point. If a step size is specified the data can olso optionally be filtered
+                using a box filter (except in the case of the channel flow dataset). To get a filtered cutout specify the filter width for the box filter
+                in units of grid points. <br /></td>
+        </tr>
+        <tr>
+            <td ><br /></td>
+        </tr>
+        <tr>
             <td class="style7" valign="top" colspan="2">Starting coordinate <br /> index for cutout: [<a href="/datasets.aspx" class="note">?</a>] </td>
             <td class="style8" valign="top" colspan="2"> &nbsp;Size of cutout: [<a href="/datasets.aspx" class="note">?</a>] <br />
                 <span class="style1"> &nbsp;(end index minus start index + 1)</span> </td>            
-            <td class="style35" valign="top">
+            <td class="style35" valign="top" colspan="2">
                 <asp:CheckBox ID="step_checkbox" runat="server" AutoPostBack="True"
                     oncheckedchanged="step_checkbox_CheckedChanged" />
                 <span ID="stepCell" runat="server" title="Optionally select a step size. If omitted every point in the range will be returned."> &nbsp;
                     <span class="style39">Step (optional) :</span>
                 </span> 
-                <asp:TextBox  ID="stepSize" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
-        </tr>        
+            </td>
+        </tr>
         <tr>
-            <td class="style7" valign="top" colspan="2"> &nbsp; </td>
-            <td class="style8" valign="top" colspan="2"> &nbsp; </td>            
-            <td class="style35" valign="top">
+            <td class="style36">m<sub>t</sub> <asp:Literal ID="timestart_range" runat="server" Visible="true"></asp:Literal>: </td>
+            <td class="style38"> <asp:TextBox ID="timestart" runat="server" Width="40px">0</asp:TextBox><br /> </td>
+            <td class="style36"> &nbsp;M<sub>t</sub> <asp:Literal ID="timeend_range" runat="server" Visible="true"></asp:Literal>: </td>
+            <td class="style38"> <asp:TextBox ID="timeend" runat="server" Width="40px">0</asp:TextBox><br /> </td>
+            <td class="style40"> <asp:Label ID="timeStepLabel" runat="server" Visible="false"> s<sub>t</sub>: </asp:Label> </td>
+            <td class="style38"> <asp:TextBox ID="timeStepSize" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
+            <td class="style9" rowspan="4">  
+                <asp:Literal ID="channel_grid_note" runat="server" Visible="false"></asp:Literal> </td>
+         </tr>
+         <tr>
+            <td class="style36"> i<sub>x</sub> <asp:Literal ID="x_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style38"> <asp:TextBox ID="x" runat="server" Width="40px">0</asp:TextBox><br /> </td>
+            <td class="style36"> &nbsp;N<sub>x</sub> <asp:Literal ID="xend_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style38"> <asp:TextBox ID="xEnd" runat="server" Width="40px">0</asp:TextBox> <br /> </td>
+            <td class="style40"> <asp:Label ID="xStepLabel" runat="server" Visible="false"> s<sub>x</sub>: </asp:Label> </td>
+            <td class="style38"> <asp:TextBox  ID="xStepSize" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
+         </tr>
+         <tr>
+            <td class="style36"> j<sub>y</sub> <asp:Literal ID="y_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style38"> <asp:TextBox ID="y" runat="server" Width="40px">0</asp:TextBox><br /> </td>
+            <td class="style36"> &nbsp;N<sub>y</sub> <asp:Literal ID="yend_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style38"> <asp:TextBox ID="yEnd" runat="server" Width="40px">0</asp:TextBox><br /> </td>
+            <td class="style40"> <asp:Label ID="yStepLabel" runat="server" Visible="false"> s<sub>y</sub>: </asp:Label> </td>
+            <td class="style38"> <asp:TextBox  ID="yStepSize" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
+         </tr>
+         <tr>
+            <td class="style36"> k<sub>z</sub> <asp:Literal ID="z_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style38"> <asp:TextBox ID="z" runat="server" Width="40px">0</asp:TextBox> </td>
+            <td class="style36"> &nbsp;N<sub>z</sub> <asp:Literal ID="zend_range" runat="server" Visible="true"></asp:Literal>:  </td>
+            <td class="style38"> <asp:TextBox ID="zEnd" runat="server" Width="40px">0</asp:TextBox> </td>
+            <td class="style40"> <asp:Label ID="zStepLabel" runat="server" Visible="false"> s<sub>z</sub>: </asp:Label> </td>
+            <td class="style38"> <asp:TextBox  ID="zStepSize" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
+         </tr>     
+        <tr>
+            <td> <br /> </td>
+        </tr>   
+        <tr>
+            <td class="style35" valign="top" colspan="5">
                 <asp:CheckBox ID="filterwidth_checkbox" runat="server" AutoPostBack="True"
                     oncheckedchanged="filterwidth_checkbox_CheckedChanged" />
                 <span ID="filterwidth_cell" runat="server" title="Optionally select a filter width (in units of grid points). If omitted no filtering will be performed and the strided data will be returned."> &nbsp;
@@ -123,31 +171,8 @@
                 <asp:TextBox  ID="filterWidth" runat="server" Width="40px" Visible="false">1</asp:TextBox> </td>
         </tr>
         <tr>
-            <td class="style36">m<sub>t</sub> <asp:Literal ID="timestart_range" runat="server" Visible="true"></asp:Literal>: </td>
-            <td class="style38"> <asp:TextBox ID="timestart" runat="server" Width="40px">0</asp:TextBox><br /> </td>
-            <td class="style36"> &nbsp;M<sub>t</sub> <asp:Literal ID="timeend_range" runat="server" Visible="true"></asp:Literal>: </td>
-            <td class="style38"> <asp:TextBox ID="timeend" runat="server" Width="40px">0</asp:TextBox><br /> </td>
-            <td class="style9" colspan="2" rowspan="4">  
-                <asp:Literal ID="channel_grid_note" runat="server" Visible="false"></asp:Literal> </td>
-         </tr>
-         <tr>
-            <td class="style36"> i<sub>x</sub> <asp:Literal ID="x_range" runat="server" Visible="true"></asp:Literal>:  </td>
-            <td class="style38"> <asp:TextBox ID="x" runat="server" Width="40px">0</asp:TextBox><br /> </td>
-            <td class="style36"> &nbsp;N<sub>x</sub> <asp:Literal ID="xend_range" runat="server" Visible="true"></asp:Literal>:  </td>
-            <td class="style38"> <asp:TextBox ID="xEnd" runat="server" Width="40px">0</asp:TextBox> <br /> </td>
-         </tr>
-         <tr>
-            <td class="style36"> j<sub>y</sub> <asp:Literal ID="y_range" runat="server" Visible="true"></asp:Literal>:  </td>
-            <td class="style38"> <asp:TextBox ID="y" runat="server" Width="40px">0</asp:TextBox><br /> </td>
-            <td class="style36"> &nbsp;N<sub>y</sub> <asp:Literal ID="yend_range" runat="server" Visible="true"></asp:Literal>:  </td>
-            <td class="style38"> <asp:TextBox ID="yEnd" runat="server" Width="40px">0</asp:TextBox><br /> </td>
-         </tr>
-         <tr>
-            <td class="style36"> k<sub>z</sub> <asp:Literal ID="z_range" runat="server" Visible="true"></asp:Literal>:  </td>
-            <td class="style38"> <asp:TextBox ID="z" runat="server" Width="40px">0</asp:TextBox> </td>
-            <td class="style36"> &nbsp;N<sub>z</sub> <asp:Literal ID="zend_range" runat="server" Visible="true"></asp:Literal>:  </td>
-            <td class="style38"> <asp:TextBox ID="zEnd" runat="server" Width="40px">0</asp:TextBox> </td>
-         </tr>
+            <td> <br /> </td>
+        </tr>
         <tr>
             <td class="style36">
                 <asp:Button ID="Button1" runat="server" Text="Submit" />
