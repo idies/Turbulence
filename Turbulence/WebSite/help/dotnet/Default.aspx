@@ -27,8 +27,8 @@
 
 </div>
 <!--#include file="../../navbar.htm" -->
-<div id="leftcolumn">
-   <p><img src="../../images/fig4-1.jpg" width="205" /></p>
+<div id="leftcolumn"><div id="custom" style="margin-top: 120px">
+   <p><img src="../../images/fig4-1.jpg" width="205" /></p></div>
 
 </div>
 <div id="centercolumn">

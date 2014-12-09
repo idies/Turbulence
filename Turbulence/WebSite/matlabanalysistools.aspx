@@ -21,8 +21,10 @@
 </div>
 <!--#include file="navbar.htm" -->
 <div id="leftcolumn">
-   <p><img src="images/fig4-1.jpg" width="205" height="365" /></p>
-      <p><img src="images/fig2.jpg" width="205" height="163" /></p>
+<div id="custom" style="margin-top: 120px">
+   <p><img src="images/fig4-1.jpg" width="205"  /></p>
+   </div>
+      
 </div>
 <div id="centercolumn">
  <h2 align="center"><span class="style22"><font size="+2">Using the JHU Turbulence Database Matlab Analysis Tools</font></span></h2>
@@ -31,7 +33,7 @@
     <font face="Arial, Helvetica, sans-serif">
     <h3>Download</h3>  
     <strong>Matlab Code: </strong> Turbmat-Tools-0.3.2
-    (<a href="/download/Turbmat-Tools-0.3.2.tar.gz">tar.gz</a>) (<a href="/download/Turbmat-Tools-0.3.2.zip">zip</a>)<br />
+    (<a href="/download/Turbmat-Tools-0.3.2.tar.gz">Download tar.gz here</a>) (<a href="/download/Turbmat-Tools-0.3.2.zip">Download zip here</a>)<br />
     <p>
 
       This downloads a directory which contains a set of Matlab analysis
