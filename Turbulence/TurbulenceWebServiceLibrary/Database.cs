@@ -51,8 +51,8 @@ namespace TurbulenceService
         const double DENSITY_CONSTANT = 80.0;
 
         // zindex ranges stored on each server for the channel flow DB
-        long[] range_start;
-        long[] range_end;
+        //long[] range_start;
+        //long[] range_end;
 
         public int TimeInc { get { return timeInc; } }
         public int TimeOff { get { return timeOff; } }
