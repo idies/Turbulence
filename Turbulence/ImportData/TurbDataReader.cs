@@ -385,7 +385,7 @@ namespace ImportData
                 }
                 else
                 {
-                    step++; ;
+                    step++;
                 }
                 if (step < steps)
                 {
