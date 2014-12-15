@@ -74,7 +74,9 @@
     <Compile Include="ImportData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerSelection.cs" />
-    <Compile Include="TurbDataReader.cs" />
+    <Compile Include="TurbDataReader.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Turbulence\Turbulence.csproj">
