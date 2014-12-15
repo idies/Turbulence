@@ -59,7 +59,7 @@ namespace TestApp
                 //TestGetThreshold();
                 return;
 
-                turbulence.TurbulenceService service = new turbulence.TurbulenceService();
+                //turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
                 int pointsize = 1;
                 turbulence.Point3[] points = new turbulence.Point3[pointsize];
