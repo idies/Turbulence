@@ -30,7 +30,7 @@ using System.Collections.Generic;
         {
             byte[] result = null;
             float[] cutout = null;
-            int atomSize = 4; /*Is this number correct?  Re-used from importdata*/
+            int atomSize = 8; /*Is this number correct?  Re-used from importdata*/
             try
             {
                 SqlDataRecord record = new SqlDataRecord(new SqlMetaData("data", SqlDbType.VarBinary, -1));
@@ -82,7 +82,7 @@ using System.Collections.Generic;
                 long[] lastBoxes = new long[partitions];
                 firstBoxes[p] = new Morton3D(coordinates[0], coordinates[1], coordinates[2]);
                 /*Adjust query box based on filter */
-                lastBoxes[p] = new Morton3D(coordinates[3]/filter_width - atomSize + 1, coordinates[4]/filter_width- atomSize + 1, coordinates[5]/filter_width - atomSize + 1);
+                lastBoxes[p] = new Morton3D(coordinates[3]/x_stride - atomSize , coordinates[4]/y_stride- atomSize , coordinates[5]/z_stride- atomSize );
                 
                 CutoutDataReader.ExportDataFormat df = new CutoutDataReader.ExportDataFormat(
                         firstBoxes[p],

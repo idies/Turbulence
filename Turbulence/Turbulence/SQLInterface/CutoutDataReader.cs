@@ -105,9 +105,9 @@ using System.IO;
             step = -1;
             GenerateSqlArrayHeader();
             data = new byte[SqlArrayHeaderSize +
-                (dataFormat.length  * 2)
-                * (dataFormat.length * 2)
-                * (dataFormat.length * 2) * components * pointDataSize];
+                (dataFormat.length  ) /*Was multiplied by 2 here. Not sure why. */
+                * (dataFormat.length )
+                * (dataFormat.length ) * components * pointDataSize];
             for (int i = 0; i < data.Length; i++)
             {
                 data[i] = 0;
@@ -318,16 +318,15 @@ using System.IO;
                             //       and data are needed from the wrapped around starting position of the volume
                             //cache.CopyData(fileoff, data, bufferOffset, pointDataSize, i);
                             //cache.CopyDataFromByteArray(zadj, yadj, xadj, data, bufferOffset, pointDataSize, i);
-                        
-                            long sourceIndex = (z * cutout_dimensions[2] * cutout_dimensions[1] + y * cutout_dimensions[2] + x) * pointDataSize;
+                       
+                            long sourceIndex = (z * cutout_dimensions[2] * cutout_dimensions[1] + y * cutout_dimensions[2] + x) * pointDataSize*components;
                             /*Instead of going through each x, just copy the entire length of components into data.*/
-                            Array.Copy(cutout, sourceIndex, data, bufferOffset, components);
-
+                            Array.Copy(cutout, sourceIndex, data, bufferOffset, components*pointDataSize);
                             //if (BitConverter.IsLittleEndian != dataFormat.isDataLittleEndian)
                              //   Array.Reverse(data, bufferOffset, pointDataSize);
                             //Console.WriteLine("value = {0}", System.BitConverter.ToSingle(data, bufferOffset));
-                            dataread += pointDataSize;
-                            bufferOffset += pointDataSize;
+                            dataread += pointDataSize*components;
+                            bufferOffset += pointDataSize*components;
                         //}
                     }
                 }
