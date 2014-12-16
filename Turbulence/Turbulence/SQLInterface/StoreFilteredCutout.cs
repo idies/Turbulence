@@ -30,7 +30,7 @@ using System.Collections.Generic;
         {
             byte[] result = null;
             float[] cutout = null;
-            int atomSize = 8; /*Is this number correct?  Re-used from importdata*/
+            int atomSize = 4; /*Is this number correct?  Re-used from importdata*/
             try
             {
                 SqlDataRecord record = new SqlDataRecord(new SqlMetaData("data", SqlDbType.VarBinary, -1));
@@ -57,6 +57,8 @@ using System.Collections.Generic;
                 int[] resolution = { coordinates[3], coordinates[4], coordinates[5]};
                 GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
                 worker.GetData(datasetID, turbinfodb, timestep, coordinates);
+                
+
 
                 cutout = worker.GetResult(coordinates, x_stride, y_stride, z_stride);
 
@@ -79,8 +81,8 @@ using System.Collections.Generic;
                 long[] firstBoxes = new long[partitions];
                 long[] lastBoxes = new long[partitions];
                 firstBoxes[p] = new Morton3D(coordinates[0], coordinates[1], coordinates[2]);
-                lastBoxes[p] = new Morton3D(coordinates[3] - atomSize + 1, coordinates[4]- atomSize + 1, coordinates[5] - atomSize + 1);
-                
+                /*Adjust query box based on filter */
+                lastBoxes[p] = new Morton3D(coordinates[3]/filter_width - atomSize + 1, coordinates[4]/filter_width- atomSize + 1, coordinates[5]/filter_width - atomSize + 1);
                 
                 CutoutDataReader.ExportDataFormat df = new CutoutDataReader.ExportDataFormat(
                         firstBoxes[p],

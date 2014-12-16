@@ -31,7 +31,7 @@ namespace TurbulenceService
         SqlCommand[] sqlcmds;
         DataTable[] datatables;     // Used to queue input points for a SqlBulkCopy
         string tempTableName;       // Name of table storing input
-        string[] tempTableNames;    // Name of tables storing input particles (unique for each connection)
+        string[] tempTableNames = null;    // Name of tables storing input particles (unique for each connection)
         int[] count;
         byte[] bitfield;            // keep track of data regions accessed
         bool development;
