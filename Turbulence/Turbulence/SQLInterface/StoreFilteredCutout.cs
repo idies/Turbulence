@@ -48,18 +48,12 @@ using System.Collections.Generic;
                 string DBtableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
                 //Worker worker = Worker.GetWorker(table, (int)Worker.Workers.GetMHDBoxFilterSV, 0, 0.0f, contextConn);
-                
-                
 
-                
                 int[] coordinates = new int[6];
                 ParseQueryBox(QueryBox, coordinates);
-                int[] resolution = { coordinates[3], coordinates[4], coordinates[5]};
+                int[] resolution = { coordinates[3]/x_stride, coordinates[4]/y_stride, coordinates[5]/z_stride};
                 GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
                 worker.GetData(datasetID, turbinfodb, timestep, coordinates);
-                
-
-
                 cutout = worker.GetResult(coordinates, x_stride, y_stride, z_stride);
 
                 // Populate the record

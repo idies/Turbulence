@@ -63,7 +63,7 @@ namespace CutoutService
 
             //Test validity of parameters given
             if (!System.Text.RegularExpressions.Regex.IsMatch(args_,
-                @"^/[a-zA-Z0-9_]+([-.][a-zA-Z0-9_]+)*/(isotropic1024fine|isotropic1024coarse|mhd1024|channel|mixing)/[upbad]{1,4}/\d+,\d+/\d+,\d+/\d+,\d+/\d+,\d+(/\d+,\d+,\d+,\d+(/\d+)?)?/?$"))
+                @"^/[a-zA-Z0-9_]+([-.][a-zA-Z0-9_]+)*/(isotropic1024fine|isotropic1024coarse|mhd1024|mhddev|channel|mixing)/[upbad]{1,4}/\d+,\d+/\d+,\d+/\d+,\d+/\d+,\d+(/\d+,\d+,\d+,\d+(/\d+)?)?/?$"))
             {
                 Response.StatusCode = 400;
                 Response.Write("Error: Bad request. URL should be in the format of /authToken/dataset/fields/time,timesteps/xlow,xwidth/ylow,ywidth/zlow,zwidth[/time_step,x_step,y_step,z_step/filterwidth]");
@@ -123,20 +123,21 @@ namespace CutoutService
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
 
             CheckBoundaries(dataset_enum, tlow, thigh, xlow, xhigh, ylow, yhigh, zlow, zhigh);
-
+            
             //Prevent people from trying to download the entire database
             long dlsize = DetermineSize(fields, tsize, xsize, ysize, zsize);
+            
             if (dlsize > maxsize)
             {
                 Response.Write(String.Format("Maximum file size exceeded. Size of requested data: {0}, Maximum size: {1}", FormatSize(dlsize), FormatSize(maxsize)));
                 Response.End();
             }
-
-
+            
             try
             {
+                
                 filename = System.IO.Path.GetTempFileName();//+ dataset + "_" + xrange + "_" + yrange + "_" + zrange + ".h5";
-
+                
                 H5.Open();
 
                 H5PropertyListId fapl = H5P.create(H5P.PropertyListClass.FILE_ACCESS);
@@ -211,7 +212,7 @@ namespace CutoutService
                     pieces++;
                     dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
                 }
-
+                
                 DataInfo.TableNames tableName;
                 int components;
                 string field;
@@ -458,6 +459,13 @@ namespace CutoutService
             {
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic1024fine:
+                case DataInfo.DataSets.mhddev:
+                    if (!(tlow >= 0 && thigh < 1) ||
+                       !(xlow >= 0 && xhigh < 64) ||
+                       !(ylow >= 0 && yhigh < 64) ||
+                       !(zlow >= 0 && zhigh < 64))
+                    { Response.Write("The requested region is out of bounds"); Response.End(); }
+                    break;
                 case DataInfo.DataSets.mhd1024:
                     if (!(tlow >= 0 && thigh < 1025) ||
                        !(xlow >= 0 && xhigh < 1024) ||

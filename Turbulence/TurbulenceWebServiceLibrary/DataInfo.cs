@@ -21,7 +21,8 @@ namespace TurbulenceService
             isotropic1024coarse = 4,
             isotropic1024fine = 5,
             channel = 6,
-            mixing = 7
+            mixing = 7,
+            mhddev = 8  /*Dataset used for testing*/
         }
 
         // TODO: This needs to be refactored. We probably don't want to keep track of
@@ -52,6 +53,13 @@ namespace TurbulenceService
                 case DataSets.isotropic1024fine:
                     if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.isotropic1024fine_vel;
+                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                        return TableNames.isotropic1024fine_pr;
+                    else
+                        throw new Exception("Invalid field specified!");
+                case DataSets.mhddev:
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                        return TableNames.vel;
                     else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
                         return TableNames.isotropic1024fine_pr;
                     else
@@ -103,7 +111,8 @@ namespace TurbulenceService
                                {"mhd1024coarse", "mhd1024"},
                                {"mhd1024", "mhd1024"},
                                {"channel", "channel"},
-                               {"mixing", "mixing"}};
+                               {"mixing", "mixing"},
+                               {"mhddev", "mhddev"}};
 
         public static string findDataSet(string setname)
         {

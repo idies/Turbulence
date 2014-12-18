@@ -116,6 +116,7 @@ namespace TurbulenceService
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
+                case DataInfo.DataSets.mhddev:
                 case DataInfo.DataSets.mhd1024:
                 case DataInfo.DataSets.mixing:
                     this.gridResolution = new int[] { 1024, 1024, 1024 };
@@ -162,6 +163,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mhd1024:
+                case DataInfo.DataSets.mhddev:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.mixing:
                     this.atomDim = 8;
@@ -177,6 +179,10 @@ namespace TurbulenceService
             switch (dataset)
             {
                 case DataInfo.DataSets.isotropic1024fine:
+                    this.Dt = 0.0002F;
+                    this.timeInc = 1;
+                    break;
+                case DataInfo.DataSets.mhddev:
                     this.Dt = 0.0002F;
                     this.timeInc = 1;
                     break;
@@ -221,6 +227,7 @@ namespace TurbulenceService
                 "order by minLim", infodb);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
+            
             if (reader.HasRows)
             {
                 servers.Clear();
@@ -243,7 +250,30 @@ namespace TurbulenceService
                     long maxLim = reader.GetSqlInt64(4).Value;
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
                 }
+                
             }
+            else if (dataset == "mhddev")
+            {
+                servers.Clear();
+                databases.Clear();
+                codeDatabase.Clear();
+                serverBoundaries.Clear();
+                servers.Add("gwwn1");
+                databases.Add("mhddev_hamilton");
+                codeDatabase.Add("mhddev_hamilton");
+                
+                /*Replace the following with values pulled from the min and max from mhddev_hamilton*/
+                
+                try
+                {
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(0), new Morton3D(63,63,63)));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(String.Format("Could not get server baoundries [Inner Exception: {0}]", ex.ToString()));
+                }
+            }
+
             else
             {
                 throw new Exception("Invalid dataset specified.");
@@ -312,6 +342,27 @@ namespace TurbulenceService
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
+                }
+            }
+            else if (dataset == "mhddev")
+            {
+                servers.Clear();
+                databases.Clear();
+                codeDatabase.Clear();
+                serverBoundaries.Clear();
+                servers.Add("gwwn1");
+                databases.Add("mhddev_hamilton");
+                codeDatabase.Add("mhddev_hamilton");
+
+                /*Replace the following with values pulled from the min and max from mhddev_hamilton*/
+
+                try
+                {
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(0), new Morton3D(261632)));
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(String.Format("Could not get server baoundries [Inner Exception: {0}]", ex.ToString()));
                 }
             }
             else
@@ -453,7 +504,15 @@ namespace TurbulenceService
                 databases = tempDatabases;
                 serverBoundaries = tempServerBoundaries;
             }
+            if (dataset_enum == DataInfo.DataSets.mhddev)
+                {
+                    codeDatabase.Add("mhddev_hamilton");
 
+                    servers.Add("gwwn1");
+                    databases.Add("mhddev_hamilton");
+
+                    
+                }
             //if (dataset_enum == DataInfo.DataSets.isotropic1024coarse)
             //{
             //    codeDatabase = "turblib";
@@ -3127,7 +3186,7 @@ namespace TurbulenceService
             // for each of the components of the vector or scalar field
             byte[] result = new byte[Xwidth * Ywidth * Zwidth * components * sizeof(float)];
             IAsyncResult[] asyncRes;
-
+            
             selectServers(dataset_enum);
 
             //if (channel_grid)

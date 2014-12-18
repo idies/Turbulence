@@ -105,7 +105,7 @@ using System.IO;
             step = -1;
             GenerateSqlArrayHeader();
             data = new byte[SqlArrayHeaderSize +
-                (dataFormat.length  ) /*Was multiplied by 2 here. Not sure why. */
+                (dataFormat.length  )
                 * (dataFormat.length )
                 * (dataFormat.length ) * components * pointDataSize];
             for (int i = 0; i < data.Length; i++)
@@ -310,7 +310,7 @@ using System.IO;
                     for (int x = bx; x != ex; x = (x + 1) % resolution[2])
                     {
                         // adjusted x offset based on base of file cache
-                        int xadj = (x + resolution[2]  % resolution[2]);
+                        int xadj = (x + resolution[2] % resolution[2] );
                         //long fileoff = (zadj * resolution[2] * resolution[1] + yadj * resolution[2] + xadj) * cache.PointDataSize;
                         //for (int i = 0; i < components; i++)
                         //{

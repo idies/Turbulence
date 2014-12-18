@@ -84,6 +84,7 @@
             <asp:ListItem>mhd1024</asp:ListItem>
             <asp:ListItem>channel</asp:ListItem>
             <asp:ListItem>mixing</asp:ListItem>
+            <asp:ListItem>mhddev</asp:ListItem>
         </asp:DropDownList>
         (dt: <asp:Literal ID="dt" runat="server" Visible="true"></asp:Literal>)
         </td>

@@ -76,6 +76,13 @@ namespace Website
                 this.potential.Visible = true;
                 channel_grid_note.Visible = false;
             }
+            else if (dataset.SelectedValue.Equals("mhddev"))
+            {
+                dt.Text = "0.0025";
+                this.magnetic.Visible = true;
+                this.potential.Visible = true;
+                channel_grid_note.Visible = false;
+            }
             else if (dataset.SelectedValue.Equals("isotropic1024fine"))
             {
                 dt.Text = "0.0002";
