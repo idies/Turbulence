@@ -36,7 +36,6 @@ public partial class StoredProcedures
             ParseQueryBox(QueryBox, coordinates);
 
             TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
-            string DBtableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
             GetCutout(table, dbname, timestep, coordinates, contextConn, x_stride, y_stride, z_stride, out cutout);
             

@@ -171,10 +171,10 @@ namespace Turbulence.SQLInterface.workers
                 int timestep2 = basetime + setInfo.TimeInc;
                 int timestep3 = basetime + setInfo.TimeInc * 2;
 
-                float time0 = (timestep0 - setInfo.TimeOff) * setInfo.Dt;
+                //float time0 = (timestep0 - setInfo.TimeOff) * setInfo.Dt;
                 float time1 = (timestep1 - setInfo.TimeOff) * setInfo.Dt;
                 float time2 = (timestep2 - setInfo.TimeOff) * setInfo.Dt;
-                float time3 = (timestep3 - setInfo.TimeOff) * setInfo.Dt;
+                //float time3 = (timestep3 - setInfo.TimeOff) * setInfo.Dt;
 
                 float delta = time2 - time1;
 

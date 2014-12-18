@@ -1595,12 +1595,12 @@ namespace TurbulenceService {
                         
             int worker = (int)Worker.Workers.GetMHDBoxFilter;
 
+            //database.AddBulkParticles(points, filter_width, round);
+            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker);
+
             rowid = log.CreateLog(auth.Id, dataset, worker, 0, 0,
                points.Length, time, null, null);
             log.UpdateRecordCount(auth.Id, points.Length);
-
-            //database.AddBulkParticles(points, filter_width, round);
-            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker);
 
             if (worker == (int)Worker.Workers.GetMHDBoxFilter)
             {
@@ -1630,7 +1630,7 @@ namespace TurbulenceService {
                 throw new Exception(String.Format("GetBoxFilter is not available for the channel flow datasets!"));
             }
             DataInfo.verifyTimeInRange(dataset_enum, time);
-            //database.Initialize(dataset_enum);
+
             double dx = (2.0 * Math.PI) / (double)database.GridResolutionX;
             int int_filterwidth = (int)Math.Round(filterwidth / dx);
 
@@ -1654,32 +1654,61 @@ namespace TurbulenceService {
                 num_virtual_servers = 2;
 
             database.Initialize(dataset_enum, num_virtual_servers);
-            //database.selectServers(dataset_enum, num_virtual_servers);
 
             SGSTensor[] result = new SGSTensor[points.Length];
             object rowid = null;
 
-            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field);
-            if (tableName == DataInfo.TableNames.pr || tableName == DataInfo.TableNames.pressure08 || tableName == DataInfo.TableNames.isotropic1024fine_pr)
-                throw new Exception("Subgrid stress tensor is not availalbe for pressure!");
-
             int worker = (int)Worker.Workers.GetMHDBoxFilterSGS;
+
+            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker, 0, 0,
                points.Length, time, null, null);
             log.UpdateRecordCount(auth.Id, points.Length);
 
-            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker);
-
-            if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
+            // The user can specify either 2 fields (e.g. "uu" or "ub")
+            // or a single field (e.g. "velocity", "magnetic", "potential").
+            // We determine the appropriate table name for each of these cases below.
+            DataInfo.TableNames tableName1;
+            DataInfo.TableNames tableName2;
+            if (field.Length == 2)
             {
-                database.ExecuteGetMHDData(tableName, worker, time,
-                    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                tableName1 = DataInfo.getTableName(dataset_enum, field.Substring(0, 1));
+                tableName2 = DataInfo.getTableName(dataset_enum, field.Substring(1, 1));
             }
             else
             {
-                database.ExecuteGetBoxFilter(tableName, worker, time,
-                    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                tableName1 = DataInfo.getTableName(dataset_enum, field);
+                tableName2 = tableName1;
+                if (tableName1 == DataInfo.TableNames.pr || tableName1 == DataInfo.TableNames.pressure08 || tableName1 == DataInfo.TableNames.isotropic1024fine_pr)
+                    throw new Exception("Subgrid stress tensor is not availalbe for pressure!");
+            }
+
+            if (tableName1 == tableName2)
+            {
+                if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
+                {
+                    database.ExecuteGetMHDData(tableName1, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+                else
+                {
+                    database.ExecuteGetBoxFilter(tableName1, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+            }
+            else
+            {
+                if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
+                {
+                    database.ExecuteGetMHDData(tableName1, tableName2, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+                else
+                {
+                    database.ExecuteGetBoxFilter(tableName1, tableName2, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
             }
 
             log.UpdateLogRecord(rowid, database.Bitfield);
@@ -1923,7 +1952,7 @@ namespace TurbulenceService {
             DataInfo.verifyTimeInRange(dataset_enum, EndTime);
             int worker = (int)Worker.Workers.GetPositionDBEvaluation;
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum);
+            database.Initialize(dataset_enum, num_virtual_servers);
             database.selectServers(dataset_enum, num_virtual_servers, worker);
 
             if (Math.Abs(EndTime - StartTime) - Math.Abs(dt) < -0.000001)
@@ -1977,6 +2006,7 @@ namespace TurbulenceService {
                 tInfo[i] = new TrackingInfo(points[i], new Point3(0.0f, 0.0f, 0.0f), timeStep, StartTime, EndTime, dt, true, false);
             }
 
+            int num_crossings = 0;
             bool all_done = false;
             while (!all_done)
             {
@@ -1989,10 +2019,15 @@ namespace TurbulenceService {
                     if (!tInfo[i].done)
                     {
                         all_done = false;
+                        num_crossings++;
                         //throw new Exception(String.Format("There was a point that crossed a server boundary and needs to be reassigned!"));
                         break;
                     }
             }
+
+            System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\kalin\\Documents\\output\\GetPositionDB_output.txt", true);
+            file.WriteLine("number of crossings = {0}", num_crossings);
+            file.Close();
 
             database.Close();
 
