@@ -24,6 +24,7 @@ namespace Website
         protected void Page_Load(object sender, EventArgs e)
         {
             service = new edu.jhu.pha.turbulence.TurbulenceService();
+            service.Timeout = 3600000;
             dataset_update();
             spatial_flags_update();
             table_rows_update();

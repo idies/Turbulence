@@ -38,7 +38,6 @@ public partial class StoredProcedures
             ParseQueryBox(QueryBox, coordinates);
 
             TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
-            string DBtableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
             contextConn.Close();
 
             GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);

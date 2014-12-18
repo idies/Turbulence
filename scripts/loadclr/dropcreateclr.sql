@@ -11,6 +11,8 @@ DROP PROCEDURE [dbo].[GetDataCutout]
 DROP PROCEDURE [dbo].[GetThreshold]
 DROP PROCEDURE [dbo].[GetFilteredCutout]
 DROP PROCEDURE [dbo].[GetStridedDataCutout]
+DROP PROCEDURE [dbo].[ExecuteTwoFieldsWorker]
+DROP PROCEDURE [dbo].[ExecuteTwoFieldsBoxFilterWorker]
 DROP ASSEMBLY Turbulence 
 CREATE ASSEMBLY Turbulence FROM @DLL_Turbulence WITH PERMISSION_SET = UNSAFE 
 GO
@@ -144,6 +146,42 @@ CREATE PROCEDURE [dbo].[GetStridedDataCutout] (
 ) AS EXTERNAL NAME Turbulence.StoredProcedures.GetStridedDataCutout
 GO
 GRANT EXECUTE ON [dbo].[GetStridedDataCutout] TO [turbquery]
+GO
+CREATE PROCEDURE [dbo].[ExecuteTwoFieldsWorker] (
+	@serverName nvarchar(4000),
+	@dbname nvarchar(4000),
+	@codedb nvarchar(4000),
+	@field1 nvarchar(4000),
+	@field2 nvarchar(4000),
+	@workerType int,
+	@blobDim int,
+	@time real,
+	@spatialInterp int,
+	@temporalInterp int,
+	@arg real,
+	@intpuSize int,
+	@tempTable nvarchar(4000)
+) AS EXTERNAL NAME Turbulence.StoredProcedures.ExecuteTwoFieldsWorker
+GO
+GRANT EXECUTE ON [dbo].[ExecuteTwoFieldsWorker] TO [turbquery]
+GO
+CREATE PROCEDURE [dbo].[ExecuteTwoFieldsBoxFilterWorker] (
+	@serverName nvarchar(4000),
+	@dbname nvarchar(4000),
+	@codedb nvarchar(4000),
+	@field1 nvarchar(4000),
+	@field2 nvarchar(4000),
+	@workerType int,
+	@blobDim int,
+	@time real,
+	@spatialInterp int,
+	@temporalInterp int,
+	@arg real,
+	@intpuSize int,
+	@tempTable nvarchar(4000)
+) AS EXTERNAL NAME Turbulence.StoredProcedures.ExecuteTwoFieldsBoxFilterWorker
+GO
+GRANT EXECUTE ON [dbo].[ExecuteTwoFieldsBoxFilterWorker] TO [turbquery]
 GO
 CREATE FUNCTION dbo.CreateMortonIndex (
 	@z int,

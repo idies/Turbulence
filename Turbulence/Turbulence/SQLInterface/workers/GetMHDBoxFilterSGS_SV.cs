@@ -12,6 +12,7 @@ namespace Turbulence.SQLInterface.workers
 {
     public class GetMHDBoxFilterSGS_SV : Worker
     {
+        private TurbDataTable setInfo2;
         int filter_width;
 
         private int resultSize;
@@ -26,13 +27,27 @@ namespace Turbulence.SQLInterface.workers
             int fw = (int)Math.Round(filterwidth / setInfo.Dx);
             this.filter_width = fw;
             this.kernelSize = filter_width;
-            // We return 8 sums per component
             this.resultSize = 9;
+        }
+
+        public GetMHDBoxFilterSGS_SV(TurbDataTable setInfo1, TurbDataTable setInfo2,
+            TurbulenceOptions.SpatialInterpolation spatialInterp,
+            float filterwidth)
+        {
+            this.setInfo = setInfo1;
+            this.setInfo2 = setInfo2;
+            this.spatialInterp = spatialInterp;
+            int fw = (int)Math.Round(filterwidth / setInfo.Dx);
+            this.filter_width = fw;
+            this.kernelSize = filter_width;
+            this.resultSize = 12;
         }
 
         public override SqlMetaData[] GetRecordMetaData()
         {
-            return new SqlMetaData[] {
+            if (resultSize == 9)
+            {
+                return new SqlMetaData[] {
                 new SqlMetaData("Req", SqlDbType.Int),
                 new SqlMetaData("XX", SqlDbType.Real),
                 new SqlMetaData("YY", SqlDbType.Real),
@@ -44,6 +59,25 @@ namespace Turbulence.SQLInterface.workers
                 new SqlMetaData("Y", SqlDbType.Real),
                 new SqlMetaData("Z", SqlDbType.Real),
                 new SqlMetaData("Cubes Read", SqlDbType.Int)};
+            }
+            else
+            {
+                return new SqlMetaData[] {
+                new SqlMetaData("Req", SqlDbType.Int),
+                new SqlMetaData("aXbX", SqlDbType.Real),
+                new SqlMetaData("aYbY", SqlDbType.Real),
+                new SqlMetaData("aZbZ", SqlDbType.Real),
+                new SqlMetaData("aXbY", SqlDbType.Real),
+                new SqlMetaData("aXbZ", SqlDbType.Real),
+                new SqlMetaData("aYbZ", SqlDbType.Real),
+                new SqlMetaData("aX", SqlDbType.Real),
+                new SqlMetaData("aY", SqlDbType.Real),
+                new SqlMetaData("aZ", SqlDbType.Real),
+                new SqlMetaData("bX", SqlDbType.Real),
+                new SqlMetaData("bY", SqlDbType.Real),
+                new SqlMetaData("bZ", SqlDbType.Real),
+                new SqlMetaData("Cubes Read", SqlDbType.Int)};
+            }
         }
 
         public override void GetAtomsForPoint(SQLUtility.MHDInputRequest request, long mask, int pointsPerCubeEstimate, Dictionary<long, List<int>> map, ref int total_points)
@@ -116,7 +150,7 @@ namespace Turbulence.SQLInterface.workers
         public void UpdateSummedVolumes(TurbulenceBlob atom, int startx, int starty, int startz, int xwidth, int ywidth, int zwidth)
         {
             int data_index, sumsx, sumsy, sumsz, sums_index0, sums_index1, data_index1;
-            ulong sums_index, temp_sums_index = 0;
+            ulong sums_index;
             double[] temp_sum = new double[resultSize];
             sums_index0 = atom.GetBaseX - startx;
 
@@ -152,81 +186,7 @@ namespace Turbulence.SQLInterface.workers
                         sums[sums_index + 8] += atom.data[data_index + 2];
                         temp_sum[8] = sums[sums_index + 8];
 
-                        // We need to update point (x+1,y,z)
-                        // Unless x+1 is greater than or equal to xwidth
-                        if (sumsx + 1 < xwidth)
-                        {
-                            temp_sums_index = sums_index + (ulong)resultSize;
-                            for (int component = 0; component < resultSize; component++)
-                            {
-                                sums[temp_sums_index + (ulong)component] += temp_sum[component];
-                            }
-                        }
-                        // We need to update point (x,y+1,z)
-                        // Unless y+1 is greater than or equal to ywidth
-                        if (sumsy + 1 < ywidth)
-                        {
-                            temp_sums_index = sums_index + (ulong)(xwidth * resultSize);
-                            for (int component = 0; component < resultSize; component++)
-                            {
-                                sums[temp_sums_index + (ulong)component] += temp_sum[component];
-                            }
-                        }
-                        // We need to update point (x+1,y+1,z)
-                        // Unless x+1 is greater than or equal to xwidth
-                        // or y+1 is greater than or equal to ywidth
-                        if ((sumsx + 1 < xwidth) && (sumsy + 1 < ywidth))
-                        {
-                            temp_sums_index = sums_index + (ulong)(xwidth * resultSize + resultSize);
-                            for (int component = 0; component < resultSize; component++)
-                            {
-                                sums[temp_sums_index + (ulong)component] -= temp_sum[component];
-                            }
-                        }
-                        // We need to update point (x,y,z+1)
-                        // Unless z+1 is greater than or equal to zwidth
-                        if (sumsz + 1 < zwidth)
-                        {
-                            temp_sums_index = sums_index + (ulong)(ywidth * xwidth * resultSize);
-                            for (int component = 0; component < resultSize; component++)
-                            {
-                                sums[temp_sums_index + (ulong)component] += temp_sum[component];
-                            }
-                        }
-                        // We need to update point (x+1,y,z+1)
-                        // Unless x+1 is greater than or equal to xwidth
-                        // or z+1 is greater than or equal to zwidth
-                        if ((sumsx + 1 < xwidth) && (sumsz + 1 < zwidth))
-                        {
-                            temp_sums_index = sums_index + (ulong)(ywidth * xwidth * resultSize + resultSize);
-                            for (int component = 0; component < resultSize; component++)
-                            {
-                                sums[temp_sums_index + (ulong)component] -= temp_sum[component];
-                            }
-                        }
-                        // We need to update point (x,y+1,z+1)
-                        // Unless z+1 is greater than or equal to zwidth
-                        // or y+1 is greater than or equal to ywidth
-                        if ((sumsz + 1 < zwidth) && (sumsy + 1 < ywidth))
-                        {
-                            temp_sums_index = sums_index + (ulong)(ywidth * xwidth * resultSize + xwidth * resultSize);
-                            for (int component = 0; component < resultSize; component++)
-                            {
-                                sums[temp_sums_index + (ulong)component] -= temp_sum[component];
-                            }
-                        }
-                        // We need to update point (x+,y+1,z+1)
-                        // Unless x+1 is greater than or equal to xwidth
-                        // or y+1 is greater than or equal to ywidth
-                        // or z+1 is greater than or equal to zwidth
-                        if ((sumsx + 1 < xwidth) && (sumsy + 1 < ywidth) && (sumsz + 1 < zwidth))
-                        {
-                            temp_sums_index = sums_index + (ulong)(ywidth * xwidth * resultSize + xwidth * resultSize + resultSize);
-                            for (int component = 0; component < resultSize; component++)
-                            {
-                                sums[temp_sums_index + (ulong)component] += temp_sum[component];
-                            }
-                        }
+                        UpdateNeighborLocations(sumsx, sumsy, sumsz, xwidth, ywidth, zwidth, sums_index, temp_sum);
 
                         sums_index += (ulong)resultSize;
                         data_index += setInfo.Components;
@@ -235,7 +195,145 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        //public float[] GetResult(BigArray<double> sums, SQLUtility.MHDInputRequest input, int startx, int starty, int startz, int xwidth, int ywidth, int zwidth)
+        //NOTE: We assume atom1 and atom2 have the same dimensions, but not necessarily the same number of components.
+        public void UpdateSummedVolumes(TurbulenceBlob atom1, TurbulenceBlob atom2, int startx, int starty, int startz, int xwidth, int ywidth, int zwidth)
+        {
+            int atom1_data_index, atom2_data_index, sumsx, sumsy, sumsz, sums_index0, sums_index1, atom1_data_index1, atom2_data_index1;
+            ulong sums_index;
+            double[] temp_sum = new double[resultSize];
+            sums_index0 = atom1.GetBaseX - startx;
+
+            for (int atomz = 0; atomz < atom1.GetSide; atomz++)
+            {
+                sumsz = atomz + atom1.GetBaseZ - startz;
+                sums_index1 = sums_index0 + sumsz * ywidth * xwidth;
+                atom1_data_index1 = atomz * atom1.GetSide * atom1.GetSide * setInfo.Components;
+                atom2_data_index1 = atomz * atom2.GetSide * atom2.GetSide * setInfo2.Components;
+                for (int atomy = 0; atomy < atom1.GetSide; atomy++)
+                {
+                    sumsy = atomy + atom1.GetBaseY - starty;
+                    sums_index = (ulong)((sums_index1 + sumsy * xwidth) * resultSize);
+                    atom1_data_index = atom1_data_index1 + atomy * atom1.GetSide * setInfo.Components;
+                    atom2_data_index = atom2_data_index1 + atomy * atom2.GetSide * setInfo2.Components;
+                    for (int atomx = 0; atomx < atom1.GetSide; atomx++)
+                    {
+                        sumsx = atomx + sums_index0;
+                        sums[sums_index] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index];
+                        temp_sum[0] = sums[sums_index];
+                        sums[sums_index + 1] += atom1.data[atom1_data_index + 1] * atom2.data[atom2_data_index + 1];
+                        temp_sum[1] = sums[sums_index + 1];
+                        sums[sums_index + 2] += atom1.data[atom1_data_index + 2] * atom2.data[atom2_data_index + 2];
+                        temp_sum[2] = sums[sums_index + 2];
+                        sums[sums_index + 3] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index + 1];
+                        temp_sum[3] = sums[sums_index + 3];
+                        sums[sums_index + 4] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index + 2];
+                        temp_sum[4] = sums[sums_index + 4];
+                        sums[sums_index + 5] += atom1.data[atom1_data_index + 1] * atom2.data[atom2_data_index + 2];
+                        temp_sum[5] = sums[sums_index + 5];
+                        sums[sums_index + 6] += atom1.data[atom1_data_index];
+                        temp_sum[6] = sums[sums_index + 6];
+                        sums[sums_index + 7] += atom1.data[atom1_data_index + 1];
+                        temp_sum[7] = sums[sums_index + 7];
+                        sums[sums_index + 8] += atom1.data[atom1_data_index + 2];
+                        temp_sum[8] = sums[sums_index + 8];
+                        sums[sums_index + 9] += atom2.data[atom2_data_index];
+                        temp_sum[9] = sums[sums_index + 6];
+                        sums[sums_index + 10] += atom2.data[atom2_data_index + 1];
+                        temp_sum[10] = sums[sums_index + 7];
+                        sums[sums_index + 11] += atom2.data[atom2_data_index + 2];
+                        temp_sum[11] = sums[sums_index + 8];
+
+                        UpdateNeighborLocations(sumsx, sumsy, sumsz, xwidth, ywidth, zwidth, sums_index, temp_sum);
+
+                        sums_index += (ulong)resultSize;
+                        atom1_data_index += setInfo.Components;
+                        atom2_data_index += setInfo2.Components;
+                    }
+                }
+            }
+        }
+
+        private void UpdateNeighborLocations(int sumsx, int sumsy, int sumsz, int xwidth, int ywidth, int zwidth, ulong sums_index, double[] temp_sum)
+        {
+            ulong temp_sums_index = 0;
+
+            // We need to update point (x+1,y,z)
+            // Unless x+1 is greater than or equal to xwidth
+            if (sumsx + 1 < xwidth)
+            {
+                temp_sums_index = sums_index + (ulong)resultSize;
+                for (int component = 0; component < resultSize; component++)
+                {
+                    sums[temp_sums_index + (ulong)component] += temp_sum[component];
+                }
+            }
+            // We need to update point (x,y+1,z)
+            // Unless y+1 is greater than or equal to ywidth
+            if (sumsy + 1 < ywidth)
+            {
+                temp_sums_index = sums_index + (ulong)(xwidth * resultSize);
+                for (int component = 0; component < resultSize; component++)
+                {
+                    sums[temp_sums_index + (ulong)component] += temp_sum[component];
+                }
+            }
+            // We need to update point (x+1,y+1,z)
+            // Unless x+1 is greater than or equal to xwidth
+            // or y+1 is greater than or equal to ywidth
+            if ((sumsx + 1 < xwidth) && (sumsy + 1 < ywidth))
+            {
+                temp_sums_index = sums_index + (ulong)(xwidth * resultSize + resultSize);
+                for (int component = 0; component < resultSize; component++)
+                {
+                    sums[temp_sums_index + (ulong)component] -= temp_sum[component];
+                }
+            }
+            // We need to update point (x,y,z+1)
+            // Unless z+1 is greater than or equal to zwidth
+            if (sumsz + 1 < zwidth)
+            {
+                temp_sums_index = sums_index + (ulong)(ywidth * xwidth * resultSize);
+                for (int component = 0; component < resultSize; component++)
+                {
+                    sums[temp_sums_index + (ulong)component] += temp_sum[component];
+                }
+            }
+            // We need to update point (x+1,y,z+1)
+            // Unless x+1 is greater than or equal to xwidth
+            // or z+1 is greater than or equal to zwidth
+            if ((sumsx + 1 < xwidth) && (sumsz + 1 < zwidth))
+            {
+                temp_sums_index = sums_index + (ulong)(ywidth * xwidth * resultSize + resultSize);
+                for (int component = 0; component < resultSize; component++)
+                {
+                    sums[temp_sums_index + (ulong)component] -= temp_sum[component];
+                }
+            }
+            // We need to update point (x,y+1,z+1)
+            // Unless z+1 is greater than or equal to zwidth
+            // or y+1 is greater than or equal to ywidth
+            if ((sumsz + 1 < zwidth) && (sumsy + 1 < ywidth))
+            {
+                temp_sums_index = sums_index + (ulong)(ywidth * xwidth * resultSize + xwidth * resultSize);
+                for (int component = 0; component < resultSize; component++)
+                {
+                    sums[temp_sums_index + (ulong)component] -= temp_sum[component];
+                }
+            }
+            // We need to update point (x+,y+1,z+1)
+            // Unless x+1 is greater than or equal to xwidth
+            // or y+1 is greater than or equal to ywidth
+            // or z+1 is greater than or equal to zwidth
+            if ((sumsx + 1 < xwidth) && (sumsy + 1 < ywidth) && (sumsz + 1 < zwidth))
+            {
+                temp_sums_index = sums_index + (ulong)(ywidth * xwidth * resultSize + xwidth * resultSize + resultSize);
+                for (int component = 0; component < resultSize; component++)
+                {
+                    sums[temp_sums_index + (ulong)component] += temp_sum[component];
+                }
+            }
+        }
+
         public float[] GetResult(SQLUtility.MHDInputRequest input, int startx, int starty, int startz, int xwidth, int ywidth, int zwidth)
         {
             double c = Filtering.FilteringCoefficients(KernelSize);
@@ -244,20 +342,20 @@ namespace Turbulence.SQLInterface.workers
             float[] up = new float[resultSize];
 
             int X = LagInterpolation.CalcNodeWithRound(input.x, setInfo.Dx);
-            int Y = LagInterpolation.CalcNodeWithRound(input.y, setInfo.Dx);
-            int Z = LagInterpolation.CalcNodeWithRound(input.z, setInfo.Dx);
+            int Y = LagInterpolation.CalcNodeWithRound(input.y, setInfo.Dy);
+            int Z = LagInterpolation.CalcNodeWithRound(input.z, setInfo.Dz);
             int lowz = Z - KernelSize / 2 - 1, lowy = Y - KernelSize / 2 - 1, lowx = X - KernelSize / 2 - 1;
             int highz = Z + KernelSize / 2, highy = Y + KernelSize / 2, highx = X + KernelSize / 2;
 
             // Wrap the coordinates into the grid space
-            lowz = ((lowz % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-            lowy = ((lowy % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+            lowz = ((lowz % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+            lowy = ((lowy % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
             lowx = ((lowx % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
 
-            highz = ((highz % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+            highz = ((highz % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
             if (highz < setInfo.StartZ || highz > setInfo.EndZ)
                 highz = setInfo.EndZ;
-            highy = ((highy % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+            highy = ((highy % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
             if (highy < setInfo.StartY || highy > setInfo.EndY)
                 highy = setInfo.EndY;
             highx = ((highx % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;

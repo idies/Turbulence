@@ -2160,6 +2160,71 @@ namespace TurbulenceService
             return records;
         }
 
+        private int GetTwoFieldsSGSResults(IAsyncResult[] asyncRes, SGSTensor[] result)
+        {
+            int records = 0;
+            // Now go through and fetch results...
+            // FIXME: This should be done through callbacks.
+            Vector3[] field1_filter = new Vector3[result.Length];
+            Vector3[] field2_filter = new Vector3[result.Length];
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null)
+                {
+                    SqlDataReader reader = sqlcmds[s].EndExecuteReader(asyncRes[s]);
+                    int id;
+                    while (reader.Read() && !reader.IsDBNull(0))
+                    {
+                        id = reader.GetSqlInt32(0).Value;
+                        if (result[id].Equals(null))
+                        {
+                            result[id] = new SGSTensor(reader.GetSqlSingle(1).Value,
+                                reader.GetSqlSingle(2).Value,
+                                reader.GetSqlSingle(3).Value,
+                                reader.GetSqlSingle(4).Value,
+                                reader.GetSqlSingle(5).Value,
+                                reader.GetSqlSingle(6).Value);
+                            field1_filter[id] = new Vector3(reader.GetSqlSingle(7).Value,
+                                reader.GetSqlSingle(8).Value,
+                                reader.GetSqlSingle(9).Value);
+                            field2_filter[id] = new Vector3(reader.GetSqlSingle(10).Value,
+                                reader.GetSqlSingle(11).Value,
+                                reader.GetSqlSingle(12).Value);
+                            records++;
+                        }
+                        else
+                        {
+                            result[id].xx += reader.GetSqlSingle(1).Value;
+                            result[id].yy += reader.GetSqlSingle(2).Value;
+                            result[id].zz += reader.GetSqlSingle(3).Value;
+                            result[id].xy += reader.GetSqlSingle(4).Value;
+                            result[id].xz += reader.GetSqlSingle(5).Value;
+                            result[id].yz += reader.GetSqlSingle(6).Value;
+                            field1_filter[id].x += reader.GetSqlSingle(7).Value;
+                            field1_filter[id].y += reader.GetSqlSingle(8).Value;
+                            field1_filter[id].z += reader.GetSqlSingle(9).Value;
+                            field2_filter[id].x += reader.GetSqlSingle(10).Value;
+                            field2_filter[id].y += reader.GetSqlSingle(11).Value;
+                            field2_filter[id].z += reader.GetSqlSingle(12).Value;
+                        }
+                    }
+                    reader.Close();
+                    connections[s].Close();
+                    connections[s] = null;
+                }
+            }
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i].xx -= field1_filter[i].x * field2_filter[i].x;
+                result[i].yy -= field1_filter[i].y * field2_filter[i].y;
+                result[i].zz -= field1_filter[i].z * field2_filter[i].z;
+                result[i].xy -= field1_filter[i].x * field2_filter[i].y;
+                result[i].xz -= field1_filter[i].x * field2_filter[i].z;
+                result[i].yz -= field1_filter[i].y * field2_filter[i].z;
+            }
+            return records;
+        }
+
         private int GetThresholdResults(IAsyncResult[] asyncRes, List<ThresholdInfo> result)
         {
             int records = 0;
@@ -2284,6 +2349,47 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dataset", tableName);
+                    sqlcmds[s].Parameters.AddWithValue("@workerType", worker);
+                    sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
+                    sqlcmds[s].Parameters.AddWithValue("@time", time);
+                    sqlcmds[s].Parameters.AddWithValue("@spatialInterp", spatial);
+                    sqlcmds[s].Parameters.AddWithValue("@temporalInterp", temporal);
+                    sqlcmds[s].Parameters.AddWithValue("@arg", arg);
+                    sqlcmds[s].Parameters.AddWithValue("@inputSize", count[s]);
+                    //sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableNames[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableName);
+                    sqlcmds[s].CommandTimeout = 3600;
+                    asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
+                }
+            }
+
+            return asyncRes;
+        }
+
+        private IAsyncResult[] ExecuteTwoFieldsWorker(string tableName1, string tableName2,
+            int worker,
+            float time,
+            int spatial,
+            int temporal,
+            float arg
+            )
+        {
+            // initiate reader requests
+            IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null && datatables[s].Rows.Count > 0)
+                {
+                    sqlcmds[s] = connections[s].CreateCommand();
+                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsWorker] @serverName, @dbname, @codedb, @field1, @field2, "
+                                            + " @workerType, @blobDim, @time, "
+                                            + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
+                                            codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@field1", tableName1);
+                    sqlcmds[s].Parameters.AddWithValue("@field2", tableName2);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", worker);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@time", time);
@@ -2438,6 +2544,47 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dataset", tableName);
+                    sqlcmds[s].Parameters.AddWithValue("@workerType", worker);
+                    sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
+                    sqlcmds[s].Parameters.AddWithValue("@time", time);
+                    sqlcmds[s].Parameters.AddWithValue("@spatialInterp", (int)spatial);
+                    sqlcmds[s].Parameters.AddWithValue("@temporalInterp", (int)temporal);
+                    sqlcmds[s].Parameters.AddWithValue("@arg", arg);
+                    sqlcmds[s].Parameters.AddWithValue("@inputSize", count[s]);
+                    //sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableNames[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableName);
+                    sqlcmds[s].CommandTimeout = 3600;
+                    asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
+                }
+            }
+
+            return asyncRes;
+        }
+
+        private IAsyncResult[] ExecuteBoxFilterWorker(string tableName1, string tableName2,
+            int worker,
+            float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            float arg
+            )
+        {
+            // initiate reader requests
+            IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null)
+                {
+                    sqlcmds[s] = connections[s].CreateCommand();
+                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsBoxFilterWorker] @serverName, @dbname, @codedb, @field1, @field2 "
+                                            + " @workerType, @blobDim, @time, "
+                                            + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
+                                            codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@field1", tableName1);
+                    sqlcmds[s].Parameters.AddWithValue("@field2", tableName2);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", worker);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@time", time);
@@ -2643,6 +2790,17 @@ namespace TurbulenceService
             return GetSGSResults(asyncRes, result);
         }
 
+        public int ExecuteGetMHDData(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            SGSTensor[] result, float arg)
+        {
+            IAsyncResult[] asyncRes;
+            asyncRes = ExecuteTwoFieldsWorker(tableName1.ToString(), tableName2.ToString(),
+                        worker, time, (int)spatial, (int)temporal, arg);
+            return GetTwoFieldsSGSResults(asyncRes, result);
+        }
+
         public int ExecuteGetBoxFilter(DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
@@ -2668,6 +2826,17 @@ namespace TurbulenceService
             asyncRes = ExecuteBoxFilterWorker(tableName.ToString(),
                         worker, time, spatial, temporal, arg);
             return GetSGSResults(asyncRes, result);
+        }
+
+        public int ExecuteGetBoxFilter(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            SGSTensor[] result, float arg)
+        {
+            IAsyncResult[] asyncRes;
+            asyncRes = ExecuteBoxFilterWorker(tableName1.ToString(), tableName2.ToString(),
+                        worker, time, spatial, temporal, arg);
+            return GetTwoFieldsSGSResults(asyncRes, result);
         }
 
         // customized for batching

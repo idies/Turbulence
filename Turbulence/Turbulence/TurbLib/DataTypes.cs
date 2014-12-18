@@ -314,7 +314,8 @@ namespace Turbulence.TurbLib.DataTypes
     }
 
     /// <summary>
-    /// Structure representing a server spatial boundaries
+    /// Structure representing a server spatial boundaries.
+    /// The start and end coordiantes for the data region are stored. Both are inclusive.
     /// </summary>
     public struct ServerBoundaries
     {
@@ -324,15 +325,19 @@ namespace Turbulence.TurbLib.DataTypes
         public int endy;
         public int startz;
         public int endz;
+        public long startKey;
+        public long endKey;
 
-        public ServerBoundaries(Morton3D firstBox, Morton3D lastBox)
+        public ServerBoundaries(Morton3D firstKey, Morton3D lastKey)
         {
-            this.startx = firstBox.X;
-            this.starty = firstBox.Y;
-            this.startz = firstBox.Z;
-            this.endx = lastBox.X;
-            this.endy = lastBox.Y;
-            this.endz = lastBox.Z;
+            this.startx = firstKey.X;
+            this.starty = firstKey.Y;
+            this.startz = firstKey.Z;
+            this.endx = lastKey.X;
+            this.endy = lastKey.Y;
+            this.endz = lastKey.Z;
+            this.startKey = firstKey;
+            this.endKey = lastKey;
         }
 
         public ServerBoundaries(Morton3D firstBox, Morton3D lastBox, int atomDim)
@@ -343,6 +348,8 @@ namespace Turbulence.TurbLib.DataTypes
             this.endx = lastBox.X + atomDim - 1;
             this.endy = lastBox.Y + atomDim - 1;
             this.endz = lastBox.Z + atomDim - 1;
+            this.startKey = firstBox;
+            this.endKey = new Morton3D(endz, endy, endx);
         }
 
         public ServerBoundaries(int startx, int endx, int starty, int endy, int startz, int endz)
@@ -353,6 +360,8 @@ namespace Turbulence.TurbLib.DataTypes
             this.endy = endy;
             this.startz = startz;
             this.endz = endz;
+            this.startKey = new Morton3D(startz, starty, startx);
+            this.endKey = new Morton3D(endz, endy, endx);
         }
 
         /// <summary>

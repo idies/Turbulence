@@ -49,6 +49,10 @@ namespace Turbulence.SQLInterface
 
         public abstract double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input);
         public abstract double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input);
+        public virtual double[] GetResult(TurbulenceBlob blob1, TurbulenceBlob blob2, SQLUtility.MHDInputRequest input)
+        {
+            throw new NotImplementedException();
+        }
         public virtual HashSet<SQLUtility.PartialResult> GetResult(TurbulenceBlob blob, Dictionary<long, SQLUtility.PartialResult> active_points)
         {
             throw new NotImplementedException();
@@ -680,6 +684,25 @@ namespace Turbulence.SQLInterface
                     {
                         return new workers.GetChannelHessian(setInfo, spatialInterp, sqlcon);
                     }                    
+
+                default:
+                    throw new Exception(String.Format("Unknown worker type: {0}", procedure));
+            }
+        }
+
+        public static Worker GetWorker(TurbDataTable setInfo1, TurbDataTable setInfo2, int procedure,
+            int spatialInterpOption,
+            float arg,
+            SqlConnection sqlcon)
+        {
+            TurbulenceOptions.SpatialInterpolation spatialInterp = (TurbulenceOptions.SpatialInterpolation)spatialInterpOption;
+            switch ((Workers)procedure)
+            {
+                case Workers.GetMHDBoxFilterSGS:
+                    return new workers.GetMHDBoxFilterSGS(setInfo1, setInfo2, spatialInterp, arg);
+
+                case Workers.GetMHDBoxFilterSGS_SV:
+                    return new workers.GetMHDBoxFilterSGS_SV(setInfo1, setInfo2, spatialInterp, arg);
 
                 default:
                     throw new Exception(String.Format("Unknown worker type: {0}", procedure));
