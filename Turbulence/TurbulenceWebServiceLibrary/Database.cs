@@ -2156,6 +2156,11 @@ namespace TurbulenceService
                 result[i].xy -= velocity_filter[i].x * velocity_filter[i].y;
                 result[i].xz -= velocity_filter[i].x * velocity_filter[i].z;
                 result[i].yz -= velocity_filter[i].y * velocity_filter[i].z;
+
+                // Adding the symmetric parts, which originally were not included.
+                result[i].yx = result[i].xy;
+                result[i].zx = result[i].xz;
+                result[i].zy = result[i].yz;
             }
             return records;
         }
