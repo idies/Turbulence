@@ -2183,29 +2183,35 @@ namespace TurbulenceService
                                 reader.GetSqlSingle(3).Value,
                                 reader.GetSqlSingle(4).Value,
                                 reader.GetSqlSingle(5).Value,
-                                reader.GetSqlSingle(6).Value);
-                            field1_filter[id] = new Vector3(reader.GetSqlSingle(7).Value,
+                                reader.GetSqlSingle(6).Value,
+                                reader.GetSqlSingle(7).Value,
                                 reader.GetSqlSingle(8).Value,
                                 reader.GetSqlSingle(9).Value);
-                            field2_filter[id] = new Vector3(reader.GetSqlSingle(10).Value,
+                            field1_filter[id] = new Vector3(reader.GetSqlSingle(10).Value,
                                 reader.GetSqlSingle(11).Value,
                                 reader.GetSqlSingle(12).Value);
+                            field2_filter[id] = new Vector3(reader.GetSqlSingle(13).Value,
+                                reader.GetSqlSingle(14).Value,
+                                reader.GetSqlSingle(15).Value);
                             records++;
                         }
                         else
                         {
                             result[id].xx += reader.GetSqlSingle(1).Value;
-                            result[id].yy += reader.GetSqlSingle(2).Value;
-                            result[id].zz += reader.GetSqlSingle(3).Value;
+                            result[id].yx += reader.GetSqlSingle(2).Value;
+                            result[id].zx += reader.GetSqlSingle(3).Value;
                             result[id].xy += reader.GetSqlSingle(4).Value;
-                            result[id].xz += reader.GetSqlSingle(5).Value;
-                            result[id].yz += reader.GetSqlSingle(6).Value;
-                            field1_filter[id].x += reader.GetSqlSingle(7).Value;
-                            field1_filter[id].y += reader.GetSqlSingle(8).Value;
-                            field1_filter[id].z += reader.GetSqlSingle(9).Value;
-                            field2_filter[id].x += reader.GetSqlSingle(10).Value;
-                            field2_filter[id].y += reader.GetSqlSingle(11).Value;
-                            field2_filter[id].z += reader.GetSqlSingle(12).Value;
+                            result[id].yy += reader.GetSqlSingle(5).Value;
+                            result[id].zy += reader.GetSqlSingle(6).Value;
+                            result[id].xz += reader.GetSqlSingle(7).Value;
+                            result[id].yz += reader.GetSqlSingle(8).Value;
+                            result[id].zz += reader.GetSqlSingle(9).Value;
+                            field1_filter[id].x += reader.GetSqlSingle(10).Value;
+                            field1_filter[id].y += reader.GetSqlSingle(11).Value;
+                            field1_filter[id].z += reader.GetSqlSingle(12).Value;
+                            field2_filter[id].x += reader.GetSqlSingle(13).Value;
+                            field2_filter[id].y += reader.GetSqlSingle(14).Value;
+                            field2_filter[id].z += reader.GetSqlSingle(15).Value;
                         }
                     }
                     reader.Close();
@@ -2216,11 +2222,14 @@ namespace TurbulenceService
             for (int i = 0; i < result.Length; i++)
             {
                 result[i].xx -= field1_filter[i].x * field2_filter[i].x;
-                result[i].yy -= field1_filter[i].y * field2_filter[i].y;
-                result[i].zz -= field1_filter[i].z * field2_filter[i].z;
+                result[i].yx -= field1_filter[i].y * field2_filter[i].x;
+                result[i].zx -= field1_filter[i].z * field2_filter[i].x;
                 result[i].xy -= field1_filter[i].x * field2_filter[i].y;
+                result[i].yy -= field1_filter[i].y * field2_filter[i].y;
+                result[i].zy -= field1_filter[i].z * field2_filter[i].y;
                 result[i].xz -= field1_filter[i].x * field2_filter[i].z;
                 result[i].yz -= field1_filter[i].y * field2_filter[i].z;
+                result[i].zz -= field1_filter[i].z * field2_filter[i].z;
             }
             return records;
         }

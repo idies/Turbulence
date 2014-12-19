@@ -43,8 +43,8 @@ namespace Turbulence.SQLInterface.workers
             int fw = (int)Math.Round(filterwidth / setInfo.Dx);
             this.filter_width = fw;
             this.kernelSize = filter_width;
-            this.resultSize = 12;
-            cachedAtomSum = new double[12];
+            this.resultSize = 15;
+            cachedAtomSum = new double[15];
             this.cachedAtomZindex = -1;
         }
 
@@ -70,11 +70,14 @@ namespace Turbulence.SQLInterface.workers
                 return new SqlMetaData[] {
                 new SqlMetaData("Req", SqlDbType.Int),
                 new SqlMetaData("aXbX", SqlDbType.Real),
+                new SqlMetaData("aYbX", SqlDbType.Real),
+                new SqlMetaData("aZbX", SqlDbType.Real),
+                new SqlMetaData("aYbX", SqlDbType.Real),
                 new SqlMetaData("aYbY", SqlDbType.Real),
-                new SqlMetaData("aZbZ", SqlDbType.Real),
-                new SqlMetaData("aXbY", SqlDbType.Real),
-                new SqlMetaData("aXbZ", SqlDbType.Real),
                 new SqlMetaData("aYbZ", SqlDbType.Real),
+                new SqlMetaData("aZbX", SqlDbType.Real),
+                new SqlMetaData("aZbY", SqlDbType.Real),
+                new SqlMetaData("aZbZ", SqlDbType.Real),
                 new SqlMetaData("aX", SqlDbType.Real),
                 new SqlMetaData("aY", SqlDbType.Real),
                 new SqlMetaData("aZ", SqlDbType.Real),
@@ -289,6 +292,9 @@ namespace Turbulence.SQLInterface.workers
                     up[9] = cachedAtomSum[9];
                     up[10] = cachedAtomSum[10];
                     up[11] = cachedAtomSum[11];
+                    up[12] = cachedAtomSum[12];
+                    up[13] = cachedAtomSum[13];
+                    up[14] = cachedAtomSum[14];
                     return up;
                 }
             }
@@ -314,17 +320,34 @@ namespace Turbulence.SQLInterface.workers
                             for (int ix = startx; ix <= endx; ix++)
                             {
                                 partial_sum[0] += c * fdata1[blob1_off] * fdata2[blob2_off];
-                                partial_sum[1] += c * fdata1[blob1_off + 1] * fdata2[blob2_off + 1];
-                                partial_sum[2] += c * fdata1[blob1_off + 2] * fdata2[blob2_off + 2];
-                                partial_sum[3] += c * fdata1[blob1_off] * fdata2[blob2_off + 1];
-                                partial_sum[4] += c * fdata1[blob1_off] * fdata2[blob2_off + 2];
-                                partial_sum[5] += c * fdata1[blob1_off + 1] * fdata2[blob2_off + 2];
-                                partial_sum[6] += c * fdata1[blob1_off];
-                                partial_sum[7] += c * fdata1[blob1_off + 1];
-                                partial_sum[8] += c * fdata1[blob1_off + 2];
-                                partial_sum[9] += c * fdata2[blob2_off];
-                                partial_sum[10] += c * fdata2[blob2_off + 1];
-                                partial_sum[11] += c * fdata2[blob2_off + 2];
+                                partial_sum[9] += c * fdata1[blob1_off];
+                                partial_sum[12] += c * fdata2[blob2_off];
+                                if (blob1.GetComponents == 3)
+                                {
+                                    partial_sum[1] += c * fdata1[blob1_off + 1] * fdata2[blob2_off];
+                                    partial_sum[2] += c * fdata1[blob1_off + 2] * fdata2[blob2_off];
+                                    if (blob2.GetComponents == 3)
+                                    {
+                                        partial_sum[3] += c * fdata1[blob1_off] * fdata2[blob2_off + 1];
+                                        partial_sum[4] += c * fdata1[blob1_off + 1] * fdata2[blob2_off + 1];
+                                        partial_sum[5] += c * fdata1[blob1_off + 2] * fdata2[blob2_off + 1];
+                                        partial_sum[6] += c * fdata1[blob1_off] * fdata2[blob2_off + 2];
+                                        partial_sum[7] += c * fdata1[blob1_off + 1] * fdata2[blob2_off + 2];
+                                        partial_sum[8] += c * fdata1[blob1_off + 2] * fdata2[blob2_off + 2];
+                                        partial_sum[13] += c * fdata2[blob2_off + 1];
+                                        partial_sum[14] += c * fdata2[blob2_off + 2];
+                                    }
+                                    partial_sum[10] += c * fdata1[blob1_off + 1];
+                                    partial_sum[11] += c * fdata1[blob1_off + 2];
+                                }
+                                else if (blob2.GetComponents == 3)
+                                {
+                                    partial_sum[3] += c * fdata1[blob1_off] * fdata2[blob2_off + 1];
+                                    partial_sum[6] += c * fdata1[blob1_off] * fdata2[blob2_off + 2];
+                                    partial_sum[13] += c * fdata2[blob2_off + 1];
+                                    partial_sum[14] += c * fdata2[blob2_off + 2];
+                                }
+
                                 blob1_off += blob1.GetComponents;
                                 blob2_off += blob2.GetComponents;
                             }
@@ -348,6 +371,9 @@ namespace Turbulence.SQLInterface.workers
                 cachedAtomSum[9] = partial_sum[9];
                 cachedAtomSum[10] = partial_sum[10];
                 cachedAtomSum[11] = partial_sum[11];
+                cachedAtomSum[12] = partial_sum[12];
+                cachedAtomSum[13] = partial_sum[13];
+                cachedAtomSum[14] = partial_sum[14];
             }
 
             up[0] = partial_sum[0];
@@ -362,6 +388,9 @@ namespace Turbulence.SQLInterface.workers
             up[9] = partial_sum[9];
             up[10] = partial_sum[10];
             up[11] = partial_sum[11];
+            up[12] = partial_sum[12];
+            up[13] = partial_sum[13];
+            up[14] = partial_sum[14];
 
             return up;
         }

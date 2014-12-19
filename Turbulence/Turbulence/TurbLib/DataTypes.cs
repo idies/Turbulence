@@ -184,19 +184,37 @@ namespace Turbulence.TurbLib.DataTypes
     public struct SGSTensor
     {
         public float xx;
-        public float yy;
-        public float zz;
+        public float yx;
+        public float zx;
         public float xy;
+        public float yy;
+        public float zy;
         public float xz;
         public float yz;
+        public float zz;
         public SGSTensor(float xx, float yy, float zz, float xy, float xz, float yz)
         {
             this.xx = xx;
-            this.yy = yy;
-            this.zz = zz;
+            this.yx = xy;
+            this.zx = xz;
             this.xy = xy;
+            this.yy = yy;
+            this.zy = yz;
             this.xz = xz;
             this.yz = yz;
+            this.zz = zz;
+        }
+        public SGSTensor(float xx, float yx, float zx, float xy, float yy, float zy, float xz, float yz, float zz)
+        {
+            this.xx = xx;
+            this.yx = yx;
+            this.zx = zx;
+            this.xy = xy;
+            this.yy = yy;
+            this.zy = zy;
+            this.xz = xz;
+            this.yz = yz;
+            this.zz = zz;
         }
     }
 
