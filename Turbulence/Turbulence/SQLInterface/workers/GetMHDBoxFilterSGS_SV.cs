@@ -40,7 +40,7 @@ namespace Turbulence.SQLInterface.workers
             int fw = (int)Math.Round(filterwidth / setInfo.Dx);
             this.filter_width = fw;
             this.kernelSize = filter_width;
-            this.resultSize = 12;
+            this.resultSize = 15;
         }
 
         public override SqlMetaData[] GetRecordMetaData()
@@ -65,11 +65,14 @@ namespace Turbulence.SQLInterface.workers
                 return new SqlMetaData[] {
                 new SqlMetaData("Req", SqlDbType.Int),
                 new SqlMetaData("aXbX", SqlDbType.Real),
+                new SqlMetaData("aYbX", SqlDbType.Real),
+                new SqlMetaData("aZbX", SqlDbType.Real),
+                new SqlMetaData("aYbX", SqlDbType.Real),
                 new SqlMetaData("aYbY", SqlDbType.Real),
-                new SqlMetaData("aZbZ", SqlDbType.Real),
-                new SqlMetaData("aXbY", SqlDbType.Real),
-                new SqlMetaData("aXbZ", SqlDbType.Real),
                 new SqlMetaData("aYbZ", SqlDbType.Real),
+                new SqlMetaData("aZbX", SqlDbType.Real),
+                new SqlMetaData("aZbY", SqlDbType.Real),
+                new SqlMetaData("aZbZ", SqlDbType.Real),
                 new SqlMetaData("aX", SqlDbType.Real),
                 new SqlMetaData("aY", SqlDbType.Real),
                 new SqlMetaData("aZ", SqlDbType.Real),
@@ -220,28 +223,51 @@ namespace Turbulence.SQLInterface.workers
                         sumsx = atomx + sums_index0;
                         sums[sums_index] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index];
                         temp_sum[0] = sums[sums_index];
-                        sums[sums_index + 1] += atom1.data[atom1_data_index + 1] * atom2.data[atom2_data_index + 1];
-                        temp_sum[1] = sums[sums_index + 1];
-                        sums[sums_index + 2] += atom1.data[atom1_data_index + 2] * atom2.data[atom2_data_index + 2];
-                        temp_sum[2] = sums[sums_index + 2];
-                        sums[sums_index + 3] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index + 1];
-                        temp_sum[3] = sums[sums_index + 3];
-                        sums[sums_index + 4] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index + 2];
-                        temp_sum[4] = sums[sums_index + 4];
-                        sums[sums_index + 5] += atom1.data[atom1_data_index + 1] * atom2.data[atom2_data_index + 2];
-                        temp_sum[5] = sums[sums_index + 5];
-                        sums[sums_index + 6] += atom1.data[atom1_data_index];
-                        temp_sum[6] = sums[sums_index + 6];
-                        sums[sums_index + 7] += atom1.data[atom1_data_index + 1];
-                        temp_sum[7] = sums[sums_index + 7];
-                        sums[sums_index + 8] += atom1.data[atom1_data_index + 2];
-                        temp_sum[8] = sums[sums_index + 8];
-                        sums[sums_index + 9] += atom2.data[atom2_data_index];
-                        temp_sum[9] = sums[sums_index + 6];
-                        sums[sums_index + 10] += atom2.data[atom2_data_index + 1];
-                        temp_sum[10] = sums[sums_index + 7];
-                        sums[sums_index + 11] += atom2.data[atom2_data_index + 2];
-                        temp_sum[11] = sums[sums_index + 8];
+                        sums[sums_index + 9] += atom1.data[atom1_data_index];
+                        temp_sum[9] = sums[sums_index + 9];
+                        sums[sums_index + 12] += atom2.data[atom2_data_index];
+                        temp_sum[12] = sums[sums_index + 12];
+                        if (atom1.GetComponents == 3)
+                        {
+                            sums[sums_index + 1] += atom1.data[atom1_data_index + 1] * atom2.data[atom2_data_index + 1];
+                            temp_sum[1] = sums[sums_index + 1];
+                            sums[sums_index + 2] += atom1.data[atom1_data_index + 2] * atom2.data[atom2_data_index];
+                            temp_sum[2] = sums[sums_index + 2];
+                            if (atom2.GetComponents == 3)
+                            {
+                                sums[sums_index + 3] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index + 1];
+                                temp_sum[3] = sums[sums_index + 3];
+                                sums[sums_index + 4] += atom1.data[atom1_data_index + 1] * atom2.data[atom2_data_index + 1];
+                                temp_sum[4] = sums[sums_index + 4];
+                                sums[sums_index + 5] += atom1.data[atom1_data_index + 2] * atom2.data[atom2_data_index + 1];
+                                temp_sum[5] = sums[sums_index + 5];
+                                sums[sums_index + 6] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index + 2];
+                                temp_sum[6] = sums[sums_index + 6];
+                                sums[sums_index + 7] += atom1.data[atom1_data_index + 1] * atom2.data[atom2_data_index + 2];
+                                temp_sum[7] = sums[sums_index + 7];
+                                sums[sums_index + 8] += atom1.data[atom1_data_index + 2] * atom2.data[atom2_data_index + 2];
+                                temp_sum[8] = sums[sums_index + 8];
+                                sums[sums_index + 13] += atom2.data[atom2_data_index + 1];
+                                temp_sum[13] = sums[sums_index + 13];
+                                sums[sums_index + 14] += atom2.data[atom2_data_index + 2];
+                                temp_sum[14] = sums[sums_index + 14];
+                            }
+                            sums[sums_index + 10] += atom1.data[atom1_data_index + 1];
+                            temp_sum[10] = sums[sums_index + 10];
+                            sums[sums_index + 11] += atom1.data[atom1_data_index + 2];
+                            temp_sum[11] = sums[sums_index + 11];
+                        }
+                        else if (atom2.GetComponents == 3)
+                        {
+                            sums[sums_index + 3] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index + 1];
+                            temp_sum[3] = sums[sums_index + 3];
+                            sums[sums_index + 6] += atom1.data[atom1_data_index] * atom2.data[atom2_data_index + 2];
+                            temp_sum[6] = sums[sums_index + 6];
+                            sums[sums_index + 13] += atom2.data[atom2_data_index + 1];
+                            temp_sum[13] = sums[sums_index + 13];
+                            sums[sums_index + 14] += atom2.data[atom2_data_index + 2];
+                            temp_sum[14] = sums[sums_index + 14];
+                        }
 
                         UpdateNeighborLocations(sumsx, sumsy, sumsz, xwidth, ywidth, zwidth, sums_index, temp_sum);
 
