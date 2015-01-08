@@ -38,7 +38,7 @@
     
     <font face="Arial, Helvetica, sans-serif">
     <h3>Download</h3>  
-    <strong>Matlab Code: </strong> turbmat-20141017 (<a href="/download/turbmat-20150108.tar.gz">tar.gz</a>) (<a href="/download/turbmat-20150108.zip">zip</a>) 
+    <strong>Matlab Code: </strong> turbmat-20150108 (<a href="/download/turbmat-20150108.tar.gz">tar.gz</a>) (<a href="/download/turbmat-20150108.zip">zip</a>) 
     <br />
     <p>This downloads a directory which constains the Matlab interface. Included are sample
     Matlab M-files (<tt>turbm.m, mhd.m, channelm.m, mixingm.m</tt>) that illustrate the basic functionality of the 
