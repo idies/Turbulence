@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://turbulence.pha.jhu.edu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://turbulence.pha.jhu.edu/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://turbulence.pha.jhu.edu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://turbulence.pha.jhu.edu/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://turbulence.pha.jhu.edu/">
       <s:element name="NullOp">
@@ -748,6 +748,87 @@
           <s:element minOccurs="1" maxOccurs="1" name="yz" type="s:float" />
         </s:sequence>
       </s:complexType>
+      <s:element name="GetBoxFilterSGSsymtensor">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGSsymtensorResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBoxFilterSGSsymtensorResult" type="tns:ArrayOfSGSTensor" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGStensor">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGStensorResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBoxFilterSGStensorResult" type="tns:ArrayOfVelocityGradient" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGSvector">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGSvectorResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBoxFilterSGSvectorResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGSscalar">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetBoxFilterSGSscalarResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetBoxFilterSGSscalarResult" type="tns:ArrayOfFloat" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfFloat">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="float" type="s:float" />
+        </s:sequence>
+      </s:complexType>
       <s:element name="GetBoxFilterGradient">
         <s:complexType>
           <s:sequence>
@@ -1008,6 +1089,30 @@
   <wsdl:message name="GetBoxFilterSGSSoapOut">
     <wsdl:part name="parameters" element="tns:GetBoxFilterSGSResponse" />
   </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGSsymtensorSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGSsymtensor" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGSsymtensorSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGSsymtensorResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGStensorSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGStensor" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGStensorSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGStensorResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGSvectorSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGSvector" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGSvectorSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGSvectorResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGSscalarSoapIn">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGSscalar" />
+  </wsdl:message>
+  <wsdl:message name="GetBoxFilterSGSscalarSoapOut">
+    <wsdl:part name="parameters" element="tns:GetBoxFilterSGSscalarResponse" />
+  </wsdl:message>
   <wsdl:message name="GetBoxFilterGradientSoapIn">
     <wsdl:part name="parameters" element="tns:GetBoxFilterGradient" />
   </wsdl:message>
@@ -1173,9 +1278,31 @@
       <wsdl:output message="tns:GetBoxFilterSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetBoxFilterSGS">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">SGSBoxFilter</wsdl:documentation>
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the SGS symmetric tensor for a single vector field. Also, used
+                            when two identical fields are specified (e.g. uu or bb).</wsdl:documentation>
       <wsdl:input message="tns:GetBoxFilterSGSSoapIn" />
       <wsdl:output message="tns:GetBoxFilterSGSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSsymtensor">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the SGS symmetric tensor for a single vector field. Also, used
+                            when two identical fields are specified (e.g. uu or bb).</wsdl:documentation>
+      <wsdl:input message="tns:GetBoxFilterSGSsymtensorSoapIn" />
+      <wsdl:output message="tns:GetBoxFilterSGSsymtensorSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGStensor">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the SGS tensor for a combination of two vector fields(e.g. ub or ba).</wsdl:documentation>
+      <wsdl:input message="tns:GetBoxFilterSGStensorSoapIn" />
+      <wsdl:output message="tns:GetBoxFilterSGStensorSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSvector">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the SGS vector for a combination of a vector and a scalar field(e.g. up or bp).</wsdl:documentation>
+      <wsdl:input message="tns:GetBoxFilterSGSvectorSoapIn" />
+      <wsdl:output message="tns:GetBoxFilterSGSvectorSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSscalar">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the SGS scalar for a combination of two scalar fields(e.g. pp or pd).</wsdl:documentation>
+      <wsdl:input message="tns:GetBoxFilterSGSscalarSoapIn" />
+      <wsdl:output message="tns:GetBoxFilterSGSscalarSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetBoxFilterGradient">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">GetBoxFilter of the specified field; uses workload density to decide how to evaluate.</wsdl:documentation>
@@ -1458,6 +1585,42 @@
     </wsdl:operation>
     <wsdl:operation name="GetBoxFilterSGS">
       <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSsymtensor">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGSsymtensor" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGStensor">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGStensor" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSvector">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGSvector" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSscalar">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGSscalar" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -1765,6 +1928,42 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSsymtensor">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGSsymtensor" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGStensor">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGStensor" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSvector">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGSvector" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetBoxFilterSGSscalar">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterSGSscalar" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="GetBoxFilterGradient">
       <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetBoxFilterGradient" style="document" />
       <wsdl:input>
@@ -1795,10 +1994,10 @@
   </wsdl:binding>
   <wsdl:service name="TurbulenceService">
     <wsdl:port name="TurbulenceServiceSoap" binding="tns:TurbulenceServiceSoap">
-      <soap:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
     <wsdl:port name="TurbulenceServiceSoap12" binding="tns:TurbulenceServiceSoap12">
-      <soap12:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap12:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

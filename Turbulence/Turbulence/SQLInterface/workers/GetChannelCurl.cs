@@ -65,7 +65,7 @@ namespace Turbulence.SQLInterface.workers
                 //Determine the kernel index, at which this data point is for the kernel of the above taget point.
                 int iKernelIndexY = y_i - y + kernelSize / 2 - offset_y;
 
-                double coeff = diff_matrix_y[iKernelIndexY];
+                double coeff = diff_matrix_y[y, iKernelIndexY];
                 ulong sourceIndex = (((ulong)z - (ulong)cutout_coordinates[2]) * (ulong)cutout_dimensions[2] * (ulong)cutout_dimensions[1] +
                     ((ulong)y_i - (ulong)cutout_coordinates[1]) * (ulong)cutout_dimensions[2] +
                     ((ulong)x - (ulong)cutout_coordinates[0])) * (ulong)setInfo.Components;

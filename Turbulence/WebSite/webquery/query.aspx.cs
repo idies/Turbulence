@@ -87,22 +87,83 @@ namespace Website
                 temporalRow.Visible = false;
                 fieldRow.Visible = true;
                 filterWidthRow.Visible = true;
-                if (method.SelectedValue.Equals("GetBoxFilterSGS"))
+                fieldList2.Visible = false;
+                if (method.SelectedValue.Equals("GetBoxFilterSGSsymtensor"))
                 {
+                    velocityEntry.Enabled = true;
                     pressureEntry.Enabled = false;
                     densityEntry.Enabled = false;
+                }
+                else if (method.SelectedValue.Equals("GetBoxFilterSGSscalar"))
+                {
+                    fieldList2.Visible = true;
+                    pressureEntry.Enabled = true;
+                    pressureEntry2.Enabled = true;
+                    if (dataset.SelectedValue.Equals("mixing"))
+                    {
+                        densityEntry.Enabled = true;
+                        densityEntry2.Enabled = true;
+                    }
+                    velocityEntry.Enabled = false;
+                    magneticEntry.Enabled = false;
+                    potentialEntry.Enabled = false;
+                    velocityEntry2.Enabled = false;
+                    magneticEntry2.Enabled = false;
+                    potentialEntry2.Enabled = false;
+                }
+                else if (method.SelectedValue.Equals("GetBoxFilterSGSvector"))
+                {
+                    fieldList2.Visible = true;
+                    pressureEntry.Enabled = false;
+                    pressureEntry2.Enabled = true;
+                    if (dataset.SelectedValue.Equals("mixing"))
+                    {
+                        densityEntry.Enabled = false;
+                        densityEntry2.Enabled = true;
+                    }
+                    velocityEntry.Enabled = true;
+                    velocityEntry2.Enabled = false;
+                    if (dataset.SelectedValue.Equals("mhd1024"))
+                    {
+                        magneticEntry.Enabled = true;
+                        potentialEntry.Enabled = true;
+                        magneticEntry2.Enabled = false;
+                        potentialEntry2.Enabled = false;
+                    }
+                }
+                else if (method.SelectedValue.Equals("GetBoxFilterSGStensor"))
+                {
+                    fieldList2.Visible = true;
+                    pressureEntry.Enabled = false;
+                    pressureEntry2.Enabled = false;
+                    densityEntry.Enabled = false;
+                    densityEntry2.Enabled = false;
+
+                    velocityEntry.Enabled = true;
+                    velocityEntry2.Enabled = true;
+                    if (dataset.SelectedValue.Equals("mhd1024"))
+                    {
+                        magneticEntry.Enabled = true;
+                        potentialEntry.Enabled = true;
+                        magneticEntry2.Enabled = true;
+                        potentialEntry2.Enabled = true;
+                    }
                 }
                 else
                 {
                     pressureEntry.Enabled = true;
                     if (dataset.SelectedValue.Equals("mixing"))
                         densityEntry.Enabled = true;
+                    if (dataset.SelectedValue.Equals("mhd1024"))
+                    {
+                        magneticEntry.Enabled = true;
+                        potentialEntry.Enabled = true;
+                    }
                 }
                 if (method.SelectedValue.Equals("GetBoxFilterGradient"))
                     filterSpacingRow.Visible = true;
                 else
                     filterSpacingRow.Visible = false;
-                //if (dataset.SelectedValue.Equals
             }
             else
             {
@@ -119,6 +180,8 @@ namespace Website
 
         protected void dataset_update()
         {
+            this.velocityEntry.Enabled = true;
+            this.velocityEntry2.Enabled = true;
             if (dataset.SelectedValue.Equals("isotropic1024coarse"))
             {
                 x_range.Text = "[0, 2&pi;]";
@@ -136,12 +199,18 @@ namespace Website
                 this.GetVectorPotentialLaplacian.Enabled = false;
                 this.magneticEntry.Enabled = false;
                 this.potentialEntry.Enabled = false;
+                this.magneticEntry2.Enabled = false;
+                this.potentialEntry2.Enabled = false;
                 this.GetForce.Enabled = true;
                 this.GetPosition.Enabled = true;
                 this.GetBoxFilter.Enabled = true;
-                this.GetBoxFilterSGS.Enabled = true;
+                this.GetBoxFilterSGSscalar.Enabled = true;
+                this.GetBoxFilterSGSvector.Enabled = true;
+                this.GetBoxFilterSGSsymtensor.Enabled = true;
+                this.GetBoxFilterSGStensor.Enabled = true;
                 this.GetBoxFilterGradient.Enabled = true;
                 this.densityEntry.Enabled = false;
+                this.densityEntry2.Enabled = false;
                 this.GetDensity.Enabled = false;
                 this.GetDensityGradient.Enabled = false;
                 this.GetDensityHessian.Enabled = false;
@@ -152,6 +221,10 @@ namespace Website
                 if (fieldList.SelectedValue.Contains("Density"))
                 {
                     fieldList.SelectedValue = "Velocity";
+                }
+                if (fieldList2.SelectedValue.Contains("Density"))
+                {
+                    fieldList2.SelectedValue = "Velocity";
                 }
             }
             else if (dataset.SelectedValue.Equals("mhd1024"))
@@ -171,18 +244,28 @@ namespace Website
                 this.GetVectorPotentialLaplacian.Enabled = true;
                 this.magneticEntry.Enabled = true;
                 this.potentialEntry.Enabled = true;
+                this.magneticEntry2.Enabled = true;
+                this.potentialEntry2.Enabled = true;
                 this.GetForce.Enabled = true;
                 this.GetPosition.Enabled = true;
                 this.GetBoxFilter.Enabled = true;
-                this.GetBoxFilterSGS.Enabled = true;
+                this.GetBoxFilterSGSscalar.Enabled = true;
+                this.GetBoxFilterSGSvector.Enabled = true;
+                this.GetBoxFilterSGSsymtensor.Enabled = true;
+                this.GetBoxFilterSGStensor.Enabled = true;
                 this.GetBoxFilterGradient.Enabled = true;
                 this.densityEntry.Enabled = false;
+                this.densityEntry2.Enabled = false;
                 this.GetDensity.Enabled = false;
                 this.GetDensityGradient.Enabled = false;
                 this.GetDensityHessian.Enabled = false;
                 if (fieldList.SelectedValue.Contains("Density"))
                 {
                     fieldList.SelectedValue = "Velocity";
+                }
+                if (fieldList2.SelectedValue.Contains("Density"))
+                {
+                    fieldList2.SelectedValue = "Velocity";
                 }
             }
             else if (dataset.SelectedValue.Equals("isotropic1024fine"))
@@ -202,12 +285,18 @@ namespace Website
                 this.GetVectorPotentialLaplacian.Enabled = false;
                 this.magneticEntry.Enabled = false;
                 this.potentialEntry.Enabled = false;
+                this.magneticEntry2.Enabled = false;
+                this.potentialEntry2.Enabled = false;
                 this.GetForce.Enabled = true;
                 this.GetPosition.Enabled = true;
                 this.GetBoxFilter.Enabled = true;
-                this.GetBoxFilterSGS.Enabled = true;
+                this.GetBoxFilterSGSscalar.Enabled = true;
+                this.GetBoxFilterSGSvector.Enabled = true;
+                this.GetBoxFilterSGSsymtensor.Enabled = true;
+                this.GetBoxFilterSGStensor.Enabled = true;
                 this.GetBoxFilterGradient.Enabled = true;
                 this.densityEntry.Enabled = false;
+                this.densityEntry2.Enabled = false;
                 this.GetDensity.Enabled = false;
                 this.GetDensityGradient.Enabled = false;
                 this.GetDensityHessian.Enabled = false;
@@ -219,6 +308,10 @@ namespace Website
                 {
                     fieldList.SelectedValue = "Velocity";
                 }
+                if (fieldList2.SelectedValue.Contains("Density"))
+                {
+                    fieldList2.SelectedValue = "Velocity";
+                }
             }
             else if (dataset.SelectedValue.Equals("channel"))
             {
@@ -226,7 +319,7 @@ namespace Website
                 y_range.Text = "[-1, 1]";
                 z_range.Text = "[0, 3&pi;]";
                 coord_range_details.Text = "Values outside the range are treated as mod(8&pi;), mod(3&pi;) for x and z.<br/> The values for y must be within [-1, 1].";
-                timerange.Text = "0.0 - 12.9805<br/>dt = .0065";
+                timerange.Text = "0.0 - 25.9935<br/>dt = .0065";
                 this.GetMagneticField.Enabled = false;
                 this.GetMagneticFieldGradient.Enabled = false;
                 this.GetMagneticFieldHessian.Enabled = false;
@@ -237,12 +330,18 @@ namespace Website
                 this.GetVectorPotentialLaplacian.Enabled = false;
                 this.magneticEntry.Enabled = false;
                 this.potentialEntry.Enabled = false;
+                this.magneticEntry2.Enabled = false;
+                this.potentialEntry2.Enabled = false;
                 this.GetForce.Enabled = false;
                 this.GetPosition.Enabled = false;
                 this.GetBoxFilter.Enabled = false;
-                this.GetBoxFilterSGS.Enabled = false;
+                this.GetBoxFilterSGSscalar.Enabled = false;
+                this.GetBoxFilterSGSvector.Enabled = false;
+                this.GetBoxFilterSGSsymtensor.Enabled = false;
+                this.GetBoxFilterSGStensor.Enabled = false;
                 this.GetBoxFilterGradient.Enabled = false;
                 this.densityEntry.Enabled = false;
+                this.densityEntry2.Enabled = false;
                 this.GetDensity.Enabled = false;
                 this.GetDensityGradient.Enabled = false;
                 this.GetDensityHessian.Enabled = false;
@@ -254,6 +353,10 @@ namespace Website
                 if (fieldList.SelectedValue.Contains("Density"))
                 {
                     fieldList.SelectedValue = "Velocity";
+                }
+                if (fieldList2.SelectedValue.Contains("Density"))
+                {
+                    fieldList2.SelectedValue = "Velocity";
                 }
             }
             else if (dataset.SelectedValue.Equals("mixing"))
@@ -273,12 +376,19 @@ namespace Website
                 this.GetVectorPotentialLaplacian.Enabled = false;
                 this.magneticEntry.Enabled = false;
                 this.potentialEntry.Enabled = false;
+                this.magneticEntry2.Enabled = false;
+                this.potentialEntry2.Enabled = false;
                 this.GetForce.Enabled = true;
                 this.GetPosition.Enabled = true;
                 this.GetBoxFilter.Enabled = true;
-                this.GetBoxFilterSGS.Enabled = true;
+                this.GetBoxFilterSGSscalar.Enabled = true;
+                this.GetBoxFilterSGSvector.Enabled = true;
+                this.GetBoxFilterSGSsymtensor.Enabled = true;
+                this.GetBoxFilterSGStensor.Enabled = true;
+                this.GetBoxFilterGradient.Enabled = true;
                 this.GetBoxFilterGradient.Enabled = true;
                 this.densityEntry.Enabled = true;
+                this.densityEntry2.Enabled = true;
                 this.GetDensity.Enabled = true;
                 this.GetDensityGradient.Enabled = true;
                 this.GetDensityHessian.Enabled = true;
@@ -307,7 +417,7 @@ namespace Website
                 case "GetVelocityAndPressure":
                 case "GetPosition":
                 case "GetDensity":
-                    flags = new string[] { "None", "Lag4", "Lag6", "Lag8" };
+                    flags = new string[] { "None", "Lag4", "Lag6", "Lag8", "M1Q4", "M2Q8", "M2Q14" };
                     break;
                 case "GetPressureHessian":
                 case "GetPressureGradient":
@@ -322,7 +432,7 @@ namespace Website
                 case "GetVectorPotentialLaplacian":
                 case "GetDensityHessian":
                 case "GetDensityGradient":
-                    flags = new string[] { "FD4NoInt", "FD6NoInt", "FD8NoInt", "FD4Lag4" };
+                    flags = new string[] { "FD4NoInt", "FD6NoInt", "FD8NoInt", "FD4Lag4", "M1Q4", "M2Q8", "M2Q14" };
                     break;
 
                 default:
@@ -526,6 +636,18 @@ namespace Website
                 else if (spatial.Text.Equals("FD8NoInt"))
                 {
                     spatialv = edu.jhu.pha.turbulence.SpatialInterpolation.None_Fd8;
+                }
+                else if (spatial.Text.Equals("M1Q4"))
+                {
+                    spatialv = edu.jhu.pha.turbulence.SpatialInterpolation.M1Q4;
+                }
+                else if (spatial.Text.Equals("M2Q8"))
+                {
+                    spatialv = edu.jhu.pha.turbulence.SpatialInterpolation.M2Q8;
+                }
+                else if (spatial.Text.Equals("M2Q14"))
+                {
+                    spatialv = edu.jhu.pha.turbulence.SpatialInterpolation.M2Q14;
                 }
                 else
                 {
@@ -1186,7 +1308,61 @@ namespace Website
                         }
                     }
                 }
-                else if (method.Text.Equals("GetBoxFilterSGS"))
+                else if (method.Text.Equals("GetBoxFilterSGSscalar"))
+                {
+                    float[] results;
+                    string field1 = TurbulenceService.DataInfo.GetCharFieldName(fieldList.Text.ToLower());
+                    string field2 = TurbulenceService.DataInfo.GetCharFieldName(fieldList2.Text.ToLower());
+                    string field = string.Concat(field1, field2);
+                    float fw = Convert.ToSingle(filterWidth.Text);
+
+                    results = service.GetBoxFilterSGSscalar(authToken,
+                        dataset.Text, field, timef, fw, points);
+                    if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
+                    {
+                        outputText += String.Format("a{0}\r\n", delim);
+                    }
+                    foreach (float result in results)
+                    {
+                        if (otype == OutputType.HTML)
+                        {
+                            outputText += String.Format("a={0}<br />\n", result);
+                        }
+                        else if (otype == OutputType.Tab || otype == OutputType.CSV)
+                        {
+                            outputText += String.Format("{1}\r\n", result);
+                        }
+                    }
+                }
+                else if (method.Text.Equals("GetBoxFilterSGSvector"))
+                {
+                    edu.jhu.pha.turbulence.Vector3[] results;
+                    string field1 = TurbulenceService.DataInfo.GetCharFieldName(fieldList.Text.ToLower());
+                    string field2 = TurbulenceService.DataInfo.GetCharFieldName(fieldList2.Text.ToLower());
+                    string field = string.Concat(field1, field2);
+                    float fw = Convert.ToSingle(filterWidth.Text);
+
+                    results = service.GetBoxFilterSGSvector(authToken,
+                        dataset.Text, field, timef, fw, points);
+                    if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
+                    {
+                        outputText += String.Format("ax_b{0}ay_b{0}az_b{0}\r\n", delim);
+                    }
+                    foreach (edu.jhu.pha.turbulence.Vector3 result in results)
+                    {
+                        if (otype == OutputType.HTML)
+                        {
+                            outputText += String.Format("ax_b={0},ay_b={1},az_b={2}<br />\n",
+                                result.x, result.y, result.z);
+                        }
+                        else if (otype == OutputType.Tab || otype == OutputType.CSV)
+                        {
+                            outputText += String.Format("{1}{0}{2}{0}{3}\r\n",
+                                delim, result.x, result.y, result.z);
+                        }
+                    }
+                }
+                else if (method.Text.Equals("GetBoxFilterSGSsymtensor"))
                 {
                     edu.jhu.pha.turbulence.SGSTensor[] results;
                     string field = fieldList.Text.ToLower();
@@ -1222,6 +1398,34 @@ namespace Website
                         {
                             outputText += String.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}\r\n",
                                 delim, result.xx, result.xy, result.xz, result.yy, result.yz, result.zz);
+                        }
+                    }
+                }
+                else if (method.Text.Equals("GetBoxFilterSGStensor"))
+                {
+                    edu.jhu.pha.turbulence.VelocityGradient[] results;
+                    string field1 = TurbulenceService.DataInfo.GetCharFieldName(fieldList.Text.ToLower());
+                    string field2 = TurbulenceService.DataInfo.GetCharFieldName(fieldList2.Text.ToLower());
+                    string field = string.Concat(field1, field2);
+                    float fw = Convert.ToSingle(filterWidth.Text);
+
+                    results = service.GetBoxFilterSGStensor(authToken,
+                        dataset.Text, field, timef, fw, points);
+                    if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
+                    {
+                        outputText += String.Format("ax_bx{0}ax_by{0}ax_bz{0}ay_bx{0}ay_by{0}ay_bz{0}az_bx{0}az_by{0}az_bz{0}\r\n", delim);
+                    }
+                    foreach (edu.jhu.pha.turbulence.VelocityGradient result in results)
+                    {
+                        if (otype == OutputType.HTML)
+                        {
+                            outputText += String.Format("ax_bx={0},ax_by={1},ax_bz={2},ay_bx={3},ay_by={4},ay_bz={5},az_bx={6},az_by={7},az_bz={8}<br />\n",
+                                result.duxdx, result.duxdy, result.duxdz, result.duydx, result.duydy, result.duydz, result.duzdx, result.duzdy, result.duzdz);
+                        }
+                        else if (otype == OutputType.Tab || otype == OutputType.CSV)
+                        {
+                            outputText += String.Format("{1}{0}{2}{0}{3}{0}{4}{0}{5}{0}{6}{0}{7}{0}{8}{0}{9}\r\n",
+                                delim, result.duxdx, result.duxdy, result.duxdz, result.duydx, result.duydy, result.duydz, result.duzdx, result.duzdy, result.duzdz);
                         }
                     }
                 }

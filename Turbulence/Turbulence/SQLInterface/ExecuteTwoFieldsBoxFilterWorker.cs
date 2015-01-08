@@ -113,7 +113,7 @@ public partial class StoredProcedures
                     bytesread = 0;
                     while (bytesread < table2.BlobByteSize)
                     {
-                        int bytes = (int)reader.GetBytes(1, table2.SqlArrayHeaderSize, rawdata2, bytesread, table2.BlobByteSize - bytesread);
+                        int bytes = (int)reader.GetBytes(2, table2.SqlArrayHeaderSize, rawdata2, bytesread, table2.BlobByteSize - bytesread);
                         bytesread += bytes;
                     }
 

@@ -45,6 +45,33 @@ namespace TurbulenceService
             density // Mixing DB Density table
         }
 
+        public static int getNumberComponents(TableNames tableName)
+        {
+            switch (tableName)
+            {
+                case TableNames.density:
+                    return 1;
+                case TableNames.isotropic1024fine_pr:
+                    return 1;
+                case TableNames.isotropic1024fine_vel:
+                    return 3;
+                case TableNames.magnetic08:
+                    return 3;
+                case TableNames.potential08:
+                    return 3;
+                case TableNames.pr:
+                    return 1;
+                case TableNames.pressure08:
+                    return 1;
+                case TableNames.vel:
+                    return 3;
+                case TableNames.velocity08:
+                    return 3;
+                default:
+                    throw new Exception("Invalid field specified!");
+            }
+        }
+
         public static TableNames getTableName(DataSets dataSet, string field)
         {
             switch (dataSet)
@@ -93,6 +120,22 @@ namespace TurbulenceService
                 default:
                     throw new Exception("Invalid data set specified!");
             }
+        }
+
+        public static string GetCharFieldName(string field)
+        {
+            if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                return "u";
+            else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
+                return "b";
+            else if (field.Equals("a") || field.Contains("vec") || field.Contains("pot") || field.Contains("Vec") || field.Contains("Pot"))
+                return "a";
+            else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                return "p";
+            else if (field.Equals("d") || field.Contains("density") || field.Contains("Density"))
+                return "d";
+            else
+                throw new Exception("Invalid field specified!");
         }
 
         // {"external name", "internal name"}
@@ -145,7 +188,7 @@ namespace TurbulenceService
             {
                 return false;
             }
-            else if (dataset == DataSets.channel && time > 12.9805F)
+            else if (dataset == DataSets.channel && time > 25.9935F)
             {
                 return false;
             }

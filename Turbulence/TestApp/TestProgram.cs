@@ -41,7 +41,7 @@ namespace TestApp
             {
                 //TestGetForce();
                 //TestMixingDataset();
-                AllTest();
+                //AllTest();
                 //TestGetBoxFilterGradient();
                 //TestAllDisks();
                 //TestGetRawData();
@@ -56,8 +56,8 @@ namespace TestApp
                 //ComputeSplinesHessian();
                 //TestDensityHessian();
                 //ComputeDensityHessian();
-                //TestGetThreshold();
-                return;
+                TestGetThreshold();
+                //return;
 
                 turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
@@ -80,12 +80,12 @@ namespace TestApp
                     //points[i].z = (float)(random.NextDouble() * 3.14 + Math.PI);
                 }
                 //3.1,4.6,2
-                points[0].x = 3.1f;
-                points[0].y = 4.6f;
-                points[0].z = float.NaN;
+                points[0].x = 7.1f;
+                points[0].y = 0.6f;
+                points[0].z = 3.14f;
                 service.Timeout = -1;
                 Console.WriteLine("Calling service");
-                result = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "mhd1024", 0.18f,
+                result = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "channel", 24f,
                     turbulence.SpatialInterpolation.Lag8, turbulence.TemporalInterpolation.PCHIP, points);
                 Console.WriteLine("X={0} Y={1} Z={2}", result[0].x, result[0].y, result[0].z);
                 float startTime = 0.175f;
@@ -483,6 +483,8 @@ namespace TestApp
             int pointsize = 1;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
+            turbulence.SGSTensor[] sgs_tensor;
+            turbulence.VelocityGradient[] tensor;
             string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
             for (int i = 0; i < points.Length; i++)
@@ -506,6 +508,14 @@ namespace TestApp
             stopTime = DateTime.Now;
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("X={0} Y={1} Z={2}", result[0].x, result[0].y, result[0].z);
+
+            sgs_tensor = service.GetBoxFilterSGS(authToken, "mhd1024", "uu", 0.364f, 7.0f * dx, points);
+            Console.WriteLine("tau11={0} tau12={1} tau13={2} tau22={3} tau23={4} tau33={5}", sgs_tensor[0].xx, sgs_tensor[0].xy, sgs_tensor[0].xz, sgs_tensor[0].yy, sgs_tensor[0].yz, sgs_tensor[0].zz);
+
+            tensor = service.GetBoxFilterSGStensor(authToken, "mhd1024", "ub", 0.364f, 7.0f * dx, points);
+            Console.WriteLine("tau11={0} tau21={1} tau23={2} tau12={3} tau22={4} tau23={5} tau31={6} tau32={7} tau33={8}",
+                tensor[0].duxdx, tensor[0].duxdy, tensor[0].duxdz, tensor[0].duydx, tensor[0].duydy, tensor[0].duydz, tensor[0].duzdx, tensor[0].duzdy, tensor[0].duzdz);
+
             Console.WriteLine("Press any key to continue.");
             Console.ReadLine();
         }
@@ -881,28 +891,34 @@ namespace TestApp
             service.Timeout = -1;
             Console.WriteLine("Calling service");
 
+            //for (int i = 0; i < points.Length; i++)
+            //{
+            //    points[i] = new turbulence.Point3();
+            //    points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
+            //    points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
+            //    points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
+            //    //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
+            //    //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+            //    //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+            //}
+            //startTime = (float)random.NextDouble() * (2.048f - 0.5f);
+            //endTime = startTime + 0.5f;
+
+            points[0].x = 0.00696346f;
+            points[0].y = 2.231412f;
+            points[0].z = 1.12341235f;
+            endTime = 0.00056f;
+            startTime = 0.50566f;
+
+            runningTime = DateTime.Now;
+            //positions = service.GetPositionDBEvaluation(authToken, "isotropic1024", startTime, endTime, -0.001f, turbulence.SpatialInterpolation.Lag4, points);
+            Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
+            Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
+
             runningTime = DateTime.Now;
             positions2 = service.GetPosition(authToken, "isotropic1024", startTime, endTime, 0.001f, turbulence.SpatialInterpolation.Lag4, points);
             Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
             Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions2[0].x, positions2[0].y, positions2[0].z, startTime, endTime);
-
-            for (int i = 0; i < points.Length; i++)
-            {
-                points[i] = new turbulence.Point3();
-                points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
-                points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
-                points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
-                //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
-                //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
-                //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
-            }
-            startTime = (float)random.NextDouble() * (2.048f - 0.5f);
-            endTime = startTime + 0.5f;
-
-            runningTime = DateTime.Now;
-            //positions = service.GetPositionDBEvaluation(authToken, "isotropic1024", startTime, endTime, 0.001f, turbulence.SpatialInterpolation.Lag4, points);
-            Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
-            Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
 
             //for (int i = 0; i < points.Length; i++)
             //{
@@ -1107,24 +1123,7 @@ namespace TestApp
             int iLagIntx = 0, iLagInty = 0, iLagIntz = 0;
 
             double[] a = new double[dimensions * components];
-
-            //for (int iz = startz; iz <= endz; iz++)
-            //{
-            //    int off1 = off0 + iz * cube_width * cube_width * components;
-            //    for (int iy = starty; iy <= endy; iy++)
-            //    {
-            //        int off = off1 + iy * cube_width * components;
-            //        for (int ix = startx; ix <= endx; ix++)
-            //        {
-            //            double dudx_x_coeff = GetBeta(poly_val, kernelSize, first_derivative, x_coordinate, ix);
-            //            double dudx_y_coeff = GetBeta(poly_val, kernelSize, interpolant, y_coordinate, iy);
-            //            double dudx_z_coeff = GetBeta(poly_val, kernelSize, interpolant, z_coordinate, iz);
-            //            a[0] += dudx_x_coeff * dudx_y_coeff * dudx_z_coeff * BitConverter.ToSingle(data, sizeof(float) * (off));
-            //            off += components;
-            //        }
-            //    }
-            //}
-
+            
             for (int iz = startz; iz <= endz; iz++)
             {
                 double[] b = new double[dimensions * components];

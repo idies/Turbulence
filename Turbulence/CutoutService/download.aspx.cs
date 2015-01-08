@@ -28,7 +28,7 @@ namespace CutoutService
         [DllImport("msvcrt.dll")]
         public static extern unsafe void memcpy(void* dest, void* src, ulong count);
 
-        Database database = new Database("turbinfo", false);
+        Database database = new Database("turbinfo", true);
         AuthInfo authInfo = new AuthInfo("turbinfo", false);
         Log log = new Log("turbinfo", false);
 

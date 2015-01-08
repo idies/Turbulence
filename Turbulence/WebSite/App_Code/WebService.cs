@@ -35,7 +35,7 @@ namespace TurbulenceService {
 
         public TurbulenceService()
         {
-            database = new Database(infodb, DEVEL_MODE);
+            database = new Database(infodb, true);
             authInfo = new AuthInfo(infodb, DEVEL_MODE);
             log = new Log(infodb, DEVEL_MODE);
         }
@@ -1617,9 +1617,169 @@ namespace TurbulenceService {
             return result;
         }
 
-        [WebMethod(CacheDuration = 0, BufferResponse = true, Description = @"SGSBoxFilter")]
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetBoxFilterSGS",
+            Description = @"Retrieve the SGS symmetric tensor for a single vector field. Also, used
+                            when two identical fields are specified (e.g. uu or bb).")]
         public SGSTensor[] GetBoxFilterSGS(string authToken, string dataset, string field, float time,
             float filterwidth, Point3[] points)
+        {
+            return GetBoxFilterSGSsymtensor(authToken, dataset, field, time, filterwidth, points);
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetBoxFilterSGSsymtensor",
+            Description = @"Retrieve the SGS symmetric tensor for a single vector field. Also, used
+                            when two identical fields are specified (e.g. uu or bb).")]
+        public SGSTensor[] GetBoxFilterSGSsymtensor(string authToken, string dataset, string field, float time,
+            float filterwidth, Point3[] points)
+        {
+            SGSTensor[] result = new SGSTensor[points.Length];
+            int worker = (int)Worker.Workers.GetMHDBoxFilterSGS; ;
+            DataInfo.TableNames tableName1;
+            DataInfo.TableNames tableName2;
+            object rowid;
+
+            InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
+
+            if ((tableName1 == tableName2) && (DataInfo.getNumberComponents(tableName1) == 3))
+            {
+                if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
+                {
+                    database.ExecuteGetMHDData(tableName1, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+                else
+                {
+                    database.ExecuteGetBoxFilter(tableName1, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+            }
+            else
+            {
+                throw new Exception("The GetBoxFilterSGSsymtensor method should be called either with a single field or with two identical " +
+                                     "vector fields (e.g. \"velocity\", \"uu\" or \"bb\")");
+            }
+
+            log.UpdateLogRecord(rowid, database.Bitfield);
+            return result;
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetBoxFilterSGStensor",
+            Description = @"Retrieve the SGS tensor for a combination of two vector fields(e.g. ub or ba).")]
+        public VelocityGradient[] GetBoxFilterSGStensor(string authToken, string dataset, string field, float time,
+            float filterwidth, Point3[] points)
+        {
+            VelocityGradient[] result = new VelocityGradient[points.Length];
+            int worker = (int)Worker.Workers.GetMHDBoxFilterSGS; ;
+            DataInfo.TableNames tableName1;
+            DataInfo.TableNames tableName2;
+            object rowid;
+
+            InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
+
+            if ((tableName1 != tableName2) && (DataInfo.getNumberComponents(tableName1) == 3) && (DataInfo.getNumberComponents(tableName2) == 3))
+            {
+                if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
+                {
+                    database.ExecuteGetMHDData(tableName1, tableName2, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+                else
+                {
+                    database.ExecuteGetBoxFilter(tableName1, tableName2, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+            }
+            else
+            {
+                throw new Exception("The GetBoxFilterSGStensor method should be called with two distinct " +
+                                     "vector fields (e.g. \"ub\" or \"ba\")");
+            }
+
+            log.UpdateLogRecord(rowid, database.Bitfield);
+            return result;
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetBoxFilterSGSvector",
+            Description = @"Retrieve the SGS vector for a combination of a vector and a scalar field(e.g. up or bp).")]
+        public Vector3[] GetBoxFilterSGSvector(string authToken, string dataset, string field, float time,
+            float filterwidth, Point3[] points)
+        {
+            Vector3[] result = new Vector3[points.Length];
+            int worker = (int)Worker.Workers.GetMHDBoxFilterSGS; ;
+            DataInfo.TableNames tableName1;
+            DataInfo.TableNames tableName2;
+            object rowid;
+
+            InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
+
+            if (DataInfo.getNumberComponents(tableName1) == DataInfo.getNumberComponents(tableName2))
+            {
+                throw new Exception("The GetBoxFilterSGSvector method should be called with a vector and a scalar (e.g. \"up\" or \"bp\")");
+            }
+            else
+            {
+                // switch the table names if the first one is for a scalar field
+                if (DataInfo.getNumberComponents(tableName1) == 1)
+                {
+                    DataInfo.TableNames temp = tableName1;
+                    tableName1 = tableName2;
+                    tableName2 = temp;
+                }
+                if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
+                {
+                    database.ExecuteGetMHDData(tableName1, tableName2, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+                else
+                {
+                    database.ExecuteGetBoxFilter(tableName1, tableName2, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+            }
+
+            log.UpdateLogRecord(rowid, database.Bitfield);
+            return result;
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetBoxFilterSGSscalar",
+            Description = @"Retrieve the SGS scalar for a combination of two scalar fields(e.g. pp or pd).")]
+        public float[] GetBoxFilterSGSscalar(string authToken, string dataset, string field, float time,
+            float filterwidth, Point3[] points)
+        {
+            float[] result = new float[points.Length];
+            int worker = (int)Worker.Workers.GetMHDBoxFilterSGS; ;
+            DataInfo.TableNames tableName1;
+            DataInfo.TableNames tableName2;
+            object rowid;
+
+            InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
+
+            if ((DataInfo.getNumberComponents(tableName1) == DataInfo.getNumberComponents(tableName2)) && (DataInfo.getNumberComponents(tableName1) == 1))
+            {
+                if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
+                {
+                    database.ExecuteGetMHDData(tableName1, tableName2, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+                else
+                {
+                    database.ExecuteGetBoxFilter(tableName1, tableName2, worker, time,
+                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
+                }
+            }
+            else
+            {
+                throw new Exception("The GetBoxFilterSGSscalar method should be called with two scalar fields (e.g. \"pp\" or \"pd\")");
+            }
+
+            log.UpdateLogRecord(rowid, database.Bitfield);
+            return result;
+        }
+
+        private void InitializeSGSMethod(string authToken, float time, Point3[] points, string field, 
+            ref int worker,
+            ref string dataset, ref float filterwidth, out DataInfo.TableNames tableName1, out DataInfo.TableNames tableName2,
+            out object rowid)
         {
             int num_virtual_servers = 4;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
@@ -1627,7 +1787,7 @@ namespace TurbulenceService {
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             if (dataset_enum == DataInfo.DataSets.channel)
             {
-                throw new Exception(String.Format("GetBoxFilter is not available for the channel flow datasets!"));
+                throw new Exception(String.Format("Box filter methods are not available for the channel flow datasets!"));
             }
             DataInfo.verifyTimeInRange(dataset_enum, time);
 
@@ -1646,7 +1806,6 @@ namespace TurbulenceService {
                     int_filterwidth++;
                     filterwidth = (float)dx * int_filterwidth;
                 }
-                //throw new Exception("Only filter widths that are an uneven multiple of the grid resolution are supported!");
             }
 
             bool round = true;
@@ -1654,12 +1813,7 @@ namespace TurbulenceService {
                 num_virtual_servers = 2;
 
             database.Initialize(dataset_enum, num_virtual_servers);
-
-            SGSTensor[] result = new SGSTensor[points.Length];
-            object rowid = null;
-
-            int worker = (int)Worker.Workers.GetMHDBoxFilterSGS;
-
+            
             worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker, 0, 0,
@@ -1669,8 +1823,6 @@ namespace TurbulenceService {
             // The user can specify either 2 fields (e.g. "uu" or "ub")
             // or a single field (e.g. "velocity", "magnetic", "potential").
             // We determine the appropriate table name for each of these cases below.
-            DataInfo.TableNames tableName1;
-            DataInfo.TableNames tableName2;
             if (field.Length == 2)
             {
                 tableName1 = DataInfo.getTableName(dataset_enum, field.Substring(0, 1));
@@ -1680,39 +1832,7 @@ namespace TurbulenceService {
             {
                 tableName1 = DataInfo.getTableName(dataset_enum, field);
                 tableName2 = tableName1;
-                if (tableName1 == DataInfo.TableNames.pr || tableName1 == DataInfo.TableNames.pressure08 || tableName1 == DataInfo.TableNames.isotropic1024fine_pr)
-                    throw new Exception("Subgrid stress tensor is not availalbe for pressure!");
             }
-
-            if (tableName1 == tableName2)
-            {
-                if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
-                {
-                    database.ExecuteGetMHDData(tableName1, worker, time,
-                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
-                }
-                else
-                {
-                    database.ExecuteGetBoxFilter(tableName1, worker, time,
-                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
-                }
-            }
-            else
-            {
-                if (worker == (int)Worker.Workers.GetMHDBoxFilterSGS)
-                {
-                    database.ExecuteGetMHDData(tableName1, tableName2, worker, time,
-                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
-                }
-                else
-                {
-                    database.ExecuteGetBoxFilter(tableName1, tableName2, worker, time,
-                        TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
-                }
-            }
-
-            log.UpdateLogRecord(rowid, database.Bitfield);
-            return result;
         }
 
         [WebMethod(CacheDuration = 0, BufferResponse = true,
