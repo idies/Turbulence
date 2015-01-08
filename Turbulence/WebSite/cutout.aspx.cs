@@ -93,8 +93,8 @@ namespace Website
             else if (dataset.SelectedValue.Equals("channel"))
             {
                 dt.Text = "0.0065";
-                timestart_range.Text = "(0-1996)";
-                timeend_range.Text = "(1-1997)";
+                timestart_range.Text = "(0-3999)";
+                timeend_range.Text = "(1-4000)";
                 x_range.Text = "(0-2047)";
                 y_range.Text = "(0-511)";
                 z_range.Text = "(0-1535)";

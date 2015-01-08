@@ -110,9 +110,9 @@
             (y) direction.</li>
         <li>Simulation is run and equilibrated using prescribed bulk velocity=1, then switched to imposed pressure gradient 
         (dP/dx = 0.0025) and further equilibrated.</li>
-        <li>After the simulation has reached a (nearly) statistical stationary state, 2,000 frames of data with 
+        <li>After the simulation has reached a (nearly) statistical stationary state, 4,000 frames of data with 
         3 velocity components and pressure are stored in the database. The frames are stored at every 5 time-steps of the DNS. 
-        This corresponds to about 1/2 of a channel flow-through time. Intermediate times can be queried using temporal-interpolation.</li>
+        This corresponds to about one channel flow-through time. Intermediate times can be queried using temporal-interpolation.</li>
         <li>The friction velocity is u<sub>&tau;</sub> = 0.0499.</li>
         <li>The viscosity is &nu; = 5 x 10<sup>-5</sup>.</li>
         <li>The friction velocity Reynolds number is Re<sub>&tau;</sub> ~ 1000.</li>

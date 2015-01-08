@@ -153,6 +153,7 @@ namespace Turbulence.TurbLib.DataTypes
     /// <summary>
     /// Also used for Magnetic Field and Vector Potential Gradient
     /// Also used for LaplacianOfVelocityGradient
+    /// Also used for the full SGS tensor
     /// </summary>
     public struct VelocityGradient
     {
@@ -181,43 +182,27 @@ namespace Turbulence.TurbLib.DataTypes
         }
     }
 
+    /// <summary>
+    /// Used for the symmetric SGS tensor.
+    /// </summary>
     public struct SGSTensor
     {
         public float xx;
-        public float yx;
-        public float zx;
-        public float xy;
         public float yy;
-        public float zy;
+        public float zz;
+        public float xy;
         public float xz;
         public float yz;
-        public float zz;
         public SGSTensor(float xx, float yy, float zz, float xy, float xz, float yz)
         {
             this.xx = xx;
-            this.yx = xy;
-            this.zx = xz;
-            this.xy = xy;
             this.yy = yy;
-            this.zy = yz;
+            this.zz = zz;
+            this.xy = xy;
             this.xz = xz;
             this.yz = yz;
-            this.zz = zz;
-        }
-        public SGSTensor(float xx, float yx, float zx, float xy, float yy, float zy, float xz, float yz, float zz)
-        {
-            this.xx = xx;
-            this.yx = yx;
-            this.zx = zx;
-            this.xy = xy;
-            this.yy = yy;
-            this.zy = zy;
-            this.xz = xz;
-            this.yz = yz;
-            this.zz = zz;
         }
     }
-
 
     // We can use Vector3 instead of this.
     /*

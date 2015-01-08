@@ -43,14 +43,57 @@ namespace Turbulence.SQLInterface.workers
             int fw = (int)Math.Round(filterwidth / setInfo.Dx);
             this.filter_width = fw;
             this.kernelSize = filter_width;
-            this.resultSize = 15;
+            if (setInfo1.Components == 3)
+            {
+                if (setInfo2.Components == 3)
+                {
+                    this.resultSize = 15;
+                }
+                else
+                {
+                    this.resultSize = 7;
+                }
+            }
+            else
+            {
+                if (setInfo2.Components == 3)
+                {
+                    throw new Exception("This is not allowed! The vector field should come first!");
+                }
+                else
+                {
+                    this.resultSize = 3;
+                }
+            }
             cachedAtomSum = new double[15];
             this.cachedAtomZindex = -1;
         }
 
         public override SqlMetaData[] GetRecordMetaData()
         {
-            if (resultSize == 9)
+            if (resultSize == 3)
+            {
+                return new SqlMetaData[] {
+                new SqlMetaData("Req", SqlDbType.Int),
+                new SqlMetaData("aXbX", SqlDbType.Real),
+                new SqlMetaData("aX", SqlDbType.Real),
+                new SqlMetaData("bX", SqlDbType.Real),
+                new SqlMetaData("Cubes Read", SqlDbType.Int)};
+            }
+            else if (resultSize == 7)
+            {
+                return new SqlMetaData[] {
+                new SqlMetaData("Req", SqlDbType.Int),
+                new SqlMetaData("aXbX", SqlDbType.Real),
+                new SqlMetaData("aYbX", SqlDbType.Real),
+                new SqlMetaData("aZbX", SqlDbType.Real),                
+                new SqlMetaData("aX", SqlDbType.Real),
+                new SqlMetaData("aY", SqlDbType.Real),
+                new SqlMetaData("aZ", SqlDbType.Real),
+                new SqlMetaData("bX", SqlDbType.Real),
+                new SqlMetaData("Cubes Read", SqlDbType.Int)};
+            }
+            else if (resultSize == 9)
             {
                 return new SqlMetaData[] {
                 new SqlMetaData("Req", SqlDbType.Int),
@@ -72,11 +115,11 @@ namespace Turbulence.SQLInterface.workers
                 new SqlMetaData("aXbX", SqlDbType.Real),
                 new SqlMetaData("aYbX", SqlDbType.Real),
                 new SqlMetaData("aZbX", SqlDbType.Real),
-                new SqlMetaData("aYbX", SqlDbType.Real),
+                new SqlMetaData("aXbY", SqlDbType.Real),
                 new SqlMetaData("aYbY", SqlDbType.Real),
-                new SqlMetaData("aYbZ", SqlDbType.Real),
-                new SqlMetaData("aZbX", SqlDbType.Real),
                 new SqlMetaData("aZbY", SqlDbType.Real),
+                new SqlMetaData("aXbZ", SqlDbType.Real),
+                new SqlMetaData("aYbZ", SqlDbType.Real),
                 new SqlMetaData("aZbZ", SqlDbType.Real),
                 new SqlMetaData("aX", SqlDbType.Real),
                 new SqlMetaData("aY", SqlDbType.Real),
@@ -280,21 +323,10 @@ namespace Turbulence.SQLInterface.workers
             {
                 if (cachedAtomZindex == blob1.Key)
                 {
-                    up[0] = cachedAtomSum[0];
-                    up[1] = cachedAtomSum[1];
-                    up[2] = cachedAtomSum[2];
-                    up[3] = cachedAtomSum[3];
-                    up[4] = cachedAtomSum[4];
-                    up[5] = cachedAtomSum[5];
-                    up[6] = cachedAtomSum[6];
-                    up[7] = cachedAtomSum[7];
-                    up[8] = cachedAtomSum[8];
-                    up[9] = cachedAtomSum[9];
-                    up[10] = cachedAtomSum[10];
-                    up[11] = cachedAtomSum[11];
-                    up[12] = cachedAtomSum[12];
-                    up[13] = cachedAtomSum[13];
-                    up[14] = cachedAtomSum[14];
+                    for (int i = 0; i < resultSize; i++)
+                    {
+                        up[i] = cachedAtomSum[i];
+                    }
                     return up;
                 }
             }
@@ -320,8 +352,7 @@ namespace Turbulence.SQLInterface.workers
                             for (int ix = startx; ix <= endx; ix++)
                             {
                                 partial_sum[0] += c * fdata1[blob1_off] * fdata2[blob2_off];
-                                partial_sum[9] += c * fdata1[blob1_off];
-                                partial_sum[12] += c * fdata2[blob2_off];
+
                                 if (blob1.GetComponents == 3)
                                 {
                                     partial_sum[1] += c * fdata1[blob1_off + 1] * fdata2[blob2_off];
@@ -334,18 +365,26 @@ namespace Turbulence.SQLInterface.workers
                                         partial_sum[6] += c * fdata1[blob1_off] * fdata2[blob2_off + 2];
                                         partial_sum[7] += c * fdata1[blob1_off + 1] * fdata2[blob2_off + 2];
                                         partial_sum[8] += c * fdata1[blob1_off + 2] * fdata2[blob2_off + 2];
+                                        partial_sum[9] += c * fdata1[blob1_off];
+                                        partial_sum[10] += c * fdata1[blob1_off + 1];
+                                        partial_sum[11] += c * fdata1[blob1_off + 2];
+                                        partial_sum[12] += c * fdata2[blob2_off];
                                         partial_sum[13] += c * fdata2[blob2_off + 1];
                                         partial_sum[14] += c * fdata2[blob2_off + 2];
                                     }
-                                    partial_sum[10] += c * fdata1[blob1_off + 1];
-                                    partial_sum[11] += c * fdata1[blob1_off + 2];
+                                    else
+                                    {
+                                        partial_sum[3] += c * fdata1[blob1_off];
+                                        partial_sum[4] += c * fdata1[blob1_off + 1];
+                                        partial_sum[5] += c * fdata1[blob1_off + 2];
+                                        partial_sum[6] += c * fdata2[blob2_off];
+                                    }
                                 }
-                                else if (blob2.GetComponents == 3)
+                                else
                                 {
-                                    partial_sum[3] += c * fdata1[blob1_off] * fdata2[blob2_off + 1];
-                                    partial_sum[6] += c * fdata1[blob1_off] * fdata2[blob2_off + 2];
-                                    partial_sum[13] += c * fdata2[blob2_off + 1];
-                                    partial_sum[14] += c * fdata2[blob2_off + 2];
+                                    // This should be the scalar-scalar case.
+                                    partial_sum[1] += c * fdata1[blob1_off];
+                                    partial_sum[2] += c * fdata2[blob2_off];
                                 }
 
                                 blob1_off += blob1.GetComponents;
@@ -359,38 +398,16 @@ namespace Turbulence.SQLInterface.workers
             if (startx == 0 && starty == 0 && startz == 0 && endx == blob1.GetSide - 1 && endy == blob1.GetSide - 1 && endz == blob1.GetSide - 1)
             {
                 cachedAtomZindex = blob1.Key;
-                cachedAtomSum[0] = partial_sum[0];
-                cachedAtomSum[1] = partial_sum[1];
-                cachedAtomSum[2] = partial_sum[2];
-                cachedAtomSum[3] = partial_sum[3];
-                cachedAtomSum[4] = partial_sum[4];
-                cachedAtomSum[5] = partial_sum[5];
-                cachedAtomSum[6] = partial_sum[6];
-                cachedAtomSum[7] = partial_sum[7];
-                cachedAtomSum[8] = partial_sum[8];
-                cachedAtomSum[9] = partial_sum[9];
-                cachedAtomSum[10] = partial_sum[10];
-                cachedAtomSum[11] = partial_sum[11];
-                cachedAtomSum[12] = partial_sum[12];
-                cachedAtomSum[13] = partial_sum[13];
-                cachedAtomSum[14] = partial_sum[14];
+                for (int i = 0; i < resultSize; i++)
+                {
+                    cachedAtomSum[i] = partial_sum[i];
+                }
             }
-
-            up[0] = partial_sum[0];
-            up[1] = partial_sum[1];
-            up[2] = partial_sum[2];
-            up[3] = partial_sum[3];
-            up[4] = partial_sum[4];
-            up[5] = partial_sum[5];
-            up[6] = partial_sum[6];
-            up[7] = partial_sum[7];
-            up[8] = partial_sum[8];
-            up[9] = partial_sum[9];
-            up[10] = partial_sum[10];
-            up[11] = partial_sum[11];
-            up[12] = partial_sum[12];
-            up[13] = partial_sum[13];
-            up[14] = partial_sum[14];
+            
+            for (int i = 0; i < resultSize; i++)
+            {
+                up[i] = partial_sum[i];
+            }
 
             return up;
         }

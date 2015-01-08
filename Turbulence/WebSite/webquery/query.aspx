@@ -88,7 +88,10 @@
             <asp:ListItem ID="GetForce" runat="server">GetForce</asp:ListItem>
             <asp:ListItem ID="GetPosition" runat="server">GetPosition</asp:ListItem>
             <asp:ListItem ID="GetBoxFilter" runat="server">GetBoxFilter</asp:ListItem>
-            <asp:ListItem ID="GetBoxFilterSGS" runat="server">GetBoxFilterSGS</asp:ListItem>
+            <asp:ListItem ID="GetBoxFilterSGSscalar" runat="server">GetBoxFilterSGSscalar</asp:ListItem>
+            <asp:ListItem ID="GetBoxFilterSGSvector" runat="server">GetBoxFilterSGSvector</asp:ListItem>
+            <asp:ListItem ID="GetBoxFilterSGSsymtensor" runat="server">GetBoxFilterSGSsymtensor</asp:ListItem>
+            <asp:ListItem ID="GetBoxFilterSGStensor" runat="server">GetBoxFilterSGStensor</asp:ListItem>
             <asp:ListItem ID="GetBoxFilterGradient" runat="server">GetBoxFilterGradient</asp:ListItem>
             <asp:ListItem>NullOp</asp:ListItem>
         </asp:DropDownList>
@@ -110,6 +113,9 @@
                     <asp:ListItem>FD8NoInt</asp:ListItem>
                     <asp:ListItem>FD6NoInt</asp:ListItem>
                     <asp:ListItem>FD4Lag4</asp:ListItem>
+                    <asp:ListItem>M1Q4</asp:ListItem>
+                    <asp:ListItem>M2Q8</asp:ListItem>
+                    <asp:ListItem>M2Q14</asp:ListItem>
                     </asp:DropDownList></td>
                 <td>
                 </td>
@@ -127,16 +133,23 @@
             </tr>
             <tr runat="server" ID="fieldRow">
                 <td>
-                    Field: [<a href="/analysisdoc.aspx" class="note">?</a>]</td>
+                    Field(s): [<a href="/analysisdoc.aspx" class="note">?</a>]</td>
                 <td>
                     <asp:DropDownList ID="fieldList" runat="server">
-                        <asp:ListItem>Velocity</asp:ListItem>
+                        <asp:ListItem ID="velocityEntry" runat="server">Velocity</asp:ListItem>
                         <asp:ListItem ID="pressureEntry" runat="server">Pressure</asp:ListItem>
                         <asp:ListItem ID="magneticEntry" runat="server">Magnetic Field</asp:ListItem>
                         <asp:ListItem ID="potentialEntry" runat="server">Vector Potential</asp:ListItem>
                         <asp:ListItem ID="densityEntry" runat="server">Density</asp:ListItem>
                     </asp:DropDownList></td>
                 <td>
+                    <asp:DropDownList ID="fieldList2" runat="server">
+                        <asp:ListItem ID="velocityEntry2" runat="server">Velocity</asp:ListItem>
+                        <asp:ListItem ID="pressureEntry2" runat="server">Pressure</asp:ListItem>
+                        <asp:ListItem ID="magneticEntry2" runat="server">Magnetic Field</asp:ListItem>
+                        <asp:ListItem ID="potentialEntry2" runat="server">Vector Potential</asp:ListItem>
+                        <asp:ListItem ID="densityEntry2" runat="server">Density</asp:ListItem>
+                    </asp:DropDownList>
                 </td>
             </tr>
             <tr runat="server" ID="filterWidthRow">

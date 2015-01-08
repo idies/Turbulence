@@ -199,7 +199,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Code\WebService.cs" />
+    <Content Include="App_Code\WebService.cs">
+      <SubType>Component</SubType>
+    </Content>
     <Compile Include="cutout.aspx.cs">
       <DependentUpon>cutout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2597,7 +2599,7 @@
     <None Include="docs\channel\readme\README-CHANNEL.bib" />
     <None Include="docs\channel\readme\README-CHANNEL.pdf" />
     <None Include="docs\channel\readme\README-CHANNEL.tex" />
-    <None Include="docs\Database-functions.pdf" />
+    <Content Include="docs\Database-functions.pdf" />
     <None Include="docs\Database-functions\1DGrid.eps" />
     <None Include="docs\Database-functions\2DGrid.eps" />
     <None Include="docs\Database-functions\Database-functions.bib" />
@@ -2608,12 +2610,12 @@
     <None Include="docs\Database-functions\PCHIP.eps" />
     <None Include="docs\hbdt\README-HBDT.bib" />
     <None Include="docs\hbdt\README-HBDT.tex" />
-    <None Include="docs\README-CHANNEL.pdf" />
-    <None Include="docs\README-HBDT.pdf" />
+    <Content Include="docs\README-CHANNEL.pdf" />
+    <Content Include="docs\README-HBDT.pdf" />
     <None Include="docs\README-isotropic.doc" />
-    <None Include="docs\README-isotropic.pdf" />
+    <Content Include="docs\README-isotropic.pdf" />
     <None Include="docs\README-MHD.doc" />
-    <None Include="docs\README-MHD.pdf" />
+    <Content Include="docs\README-MHD.pdf" />
     <None Include="download\turblib-20071108.tar.gz" />
     <None Include="download\turblib-20080215.tar.gz" />
     <None Include="download\turblib-20080312.tar.gz" />
@@ -2687,10 +2689,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://turbulence.pha.jhu.edu/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\edu.jhu.pha.turbulence\</RelPath>
-      <UpdateFromURL>http://turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://test.turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

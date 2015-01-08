@@ -56,7 +56,7 @@ where $p$ is the pressure divided by density, and $\bm{u}$ the velocity. The Neu
 \end{equation}
 where $\nu$ is the molecular kinematic viscosity and $v$ the wall-normal velocity component, is used at the top and bottom walls. This calculation is performed independently from the velocity field solution only when outputting fields.  
 
-The simulation is performed for approximately 1/2 of a flow through time (another 1/2 flow through time will be added in the near future). The 3 component velocity vector and pressure fields are stored every 5 time steps, resulting in 2000 frames of data. Information regarding the simulation setup and resulting statistical quantities are listed below. 
+The simulation is performed for approximately a single flow through time. The 3 component velocity vector and pressure fields are stored every 5 time steps, resulting in 4000 frames of data. Information regarding the simulation setup and resulting statistical quantities are listed below. 
 
 Note that the averaging operation for mean and other statistical quantities is applied in time and over $x$--$z$ planes.
 
@@ -75,26 +75,26 @@ Note that the averaging operation for mean and other statistical quantities is a
 \end{itemize}
 
 \vspace{1em}
-\noindent \textbf{Flow statistics averaged over $t=[0,12.993]$}
+\noindent \textbf{Flow statistics averaged over $t=[0,26]$}
 \begin{itemize}
 \itemsep0em
-\item[-] Bulk velocity: $U_b = 0.99992$
-\item[-] Centerline velocity: $U_c = 1.13195$
-\item[-] Friction velocity: $u_\tau = 4.99857 \times 10^{-2}$
-\item[-] Viscous length scale: $\delta_\nu = \nu/u_\tau = 1.00029 \times 10^{-3}$
-\item[-] Reynolds number based on bulk velocity and full channel height: $Re_b=\frac{U_b 2h}{\nu} = 3.99970 \times 10^{4}$
-\item[-] Centerline Reynolds number: $Re_c = U_c h / \nu= 2.26391 \times 10^{4}$
-\item[-] Friction velocity Reynolds number: $Re_\tau = u_\tau h / \nu = 9.99713 \times 10^{2}$
+\item[-] Bulk velocity: $U_b = 0.9994$
+\item[-] Centerline velocity: $U_c = 1.1312$
+\item[-] Friction velocity: $u_\tau = 4.9968 \times 10^{-2}$
+\item[-] Viscous length scale: $\delta_\nu = \nu/u_\tau = 1.0006 \times 10^{-3}$
+\item[-] Reynolds number based on bulk velocity and full channel height: $Re_b=\frac{U_b 2h}{\nu} = 3.9998 \times 10^{4}$
+\item[-] Centerline Reynolds number: $Re_c = U_c h / \nu= 2.2625 \times 10^{4}$
+\item[-] Friction velocity Reynolds number: $Re_\tau = u_\tau h / \nu = 9.9935 \times 10^{2}$
 \end{itemize}
 
 \vspace{1em}
 \noindent \textbf{Grid spacing in viscous units}
 \begin{itemize}
 \itemsep0em
-\item[-] $x$ direction: $\Delta x^+ = 12.2683$
-\item[-] $y$ direction at first point: $\Delta y_1^+ = 1.65259 \times 10^{-2}$
-\item[-] $y$ direction at center: $\Delta y_c^+ = 6.15728$
-\item[-] $z$ direction: $\Delta z^+ = 6.13416$
+\item[-] $x$ direction: $\Delta x^+ = 12.2639$
+\item[-] $y$ direction at first point: $\Delta y_1^+ = 1.65199 \times 10^{-2}$
+\item[-] $y$ direction at center: $\Delta y_c^+ = 6.15507$
+\item[-] $z$ direction: $\Delta z^+ = 6.13196$
 \end{itemize}
 
 In the following figures several quantities from the simulation are show. Shown in Figure~\ref{fig:re_tau} is the computed friction Reynolds for the time interval in the database. In Figure~\ref{fig:u} the mean velocity is show along with the standard $U^+$ profiles in the viscous sublayer and log-layer. The viscous and turblent shear stresses, Reynolds normal stresses, mean pressure, pressure variance, and velocity--pressure covariances are shown in Figures~\ref{fig:tau}--\ref{fig:velp-covar}. In the remaining plots, the power spectral densities of velocity and pressure are shown for various $y^+$ locations. Streamwise spectra are shown in Figure~\ref{fig:spectra-kx}, whereas span wise spectra are shown in Figure~\ref{fig:spectra-kz}.
@@ -140,14 +140,14 @@ S.~A. Orszag.
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=5.00in]{./figures/re_tau.pdf}
+  \includegraphics[width=5.00in]{./figures/re_tau.png}
  \caption{Friction velocity Reynolds number during the channel flow simulation during the database time interval}
  \label{fig:re_tau}
 \end{figure}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=7.00in]{./figures/u.pdf}
+  \includegraphics[width=7.00in]{./figures/u.png}
   \caption{Mean velocity profile in viscous units. Standard values of $\kappa=0.41$ and $B=5.2$ are used in the log-law (dashed line) for reference.}
  \label{fig:u}
 \end{figure}
@@ -155,25 +155,25 @@ S.~A. Orszag.
 \begin{figure}[ht]
 \centering
 \begin{minipage}[b]{0.45\linewidth}
-  \includegraphics[width=3.37in]{./figures/tau.pdf}
+  \includegraphics[width=3.37in]{./figures/tau.png}
   \caption{Mean viscous, turbulent, and total shear stress normalized by the wall stress}
   \label{fig:tau}
 \end{minipage}
 \quad
 \begin{minipage}[b]{0.45\linewidth}
-  \includegraphics[width=3.37in]{./figures/rs.pdf}
+  \includegraphics[width=3.37in]{./figures/rs.png}
   \caption{Velocity covariances in viscous units}
   \label{fig:rs}
 \end{minipage}
 \quad
 \begin{minipage}[b]{0.45\linewidth}
-  \includegraphics[width=3.37in]{./figures/p.pdf}
+  \includegraphics[width=3.37in]{./figures/p.png}
   \caption{Mean pressure profile in viscous units}
   \label{fig:p}
 \end{minipage}
 \quad
 \begin{minipage}[b]{0.45\linewidth}
-  \includegraphics[width=3.37in]{./figures/velp-covar.pdf}
+  \includegraphics[width=3.37in]{./figures/velp-covar.png}
   \caption{Pressure variance and pressure-velocity covariance in viscous units}
   \label{fig:velp-covar}
 \end{minipage}
@@ -183,22 +183,22 @@ S.~A. Orszag.
 \begin{figure}[ht]
   \centering
   \subfigure[$y^+ = 10.11$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kx-yplus-10d11.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kx-yplus-10.11}.png}
     \label{fig:spectra-kx-1}}
 %  \quad
   \subfigure[$y^+ = 29.89$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kx-yplus-29d89.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kx-yplus-29.89}.png}
     \label{fig:spectra-kx-2}}
   \subfigure[$y^+ = 99.75$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kx-yplus-99d75.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kx-yplus-99.75}.png}
     \label{fig:spectra-kx-3}}
 %  \quad
   \subfigure[$y^+ = 371.6$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kx-yplus-371d6.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kx-yplus-371.6}.png}
     \label{fig:spectra-kx-4}}
 %  \quad
   \subfigure[$y^+ = 999.7$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kx-yplus-999d7.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kx-yplus-999.7}.png}
     \label{fig:spectra-kx-5}} %
   \caption{Streamwise power spectral densities at various $y^+$ locations as function of $k_x$}
   \label{fig:spectra-kx}
@@ -207,22 +207,22 @@ S.~A. Orszag.
 \begin{figure}[ht]
   \centering
   \subfigure[$y^+ = 10.11$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kz-yplus-10d11.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kz-yplus-10.11}.png}
     \label{fig:spectra-kz-1}}
 %  \quad
   \subfigure[$y^+ = 29.89$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kz-yplus-29d89.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kz-yplus-29.89}.png}
     \label{fig:spectra-kz-2}}
   \subfigure[$y^+ = 99.75$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kz-yplus-99d75.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kz-yplus-99.75}.png}
     \label{fig:spectra-kz-3}}
 %  \quad
   \subfigure[$y^+ = 371.6$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kz-yplus-371d6.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kz-yplus-371.6}.png}
     \label{fig:spectra-kz-4}}
 %  \quad
   \subfigure[$y^+ = 999.7$]{%
-    \includegraphics[width=2.78in]{./figures/spectra-kz-yplus-999d7.pdf}
+    \includegraphics[width=2.78in]{./figures/{spectra-kz-yplus-999.7}.png}
     \label{fig:spectra-kz-5}} %
   \caption{Spanwise power spectral densities at various $y^+$ locations as function of $k_z$}
   \label{fig:spectra-kz}

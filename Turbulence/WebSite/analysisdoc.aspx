@@ -153,7 +153,25 @@
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             </tr>
-            <tr><td class="newStyle2">GetBoxFilterSGS</td>
+            <tr><td class="newStyle2">GetBoxFilterSGSscalar</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            </tr>
+            <tr><td class="newStyle2">GetBoxFilterSGSvector</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            </tr>
+            <tr><td class="newStyle2">GetBoxFilterSGSsymtensor</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            </tr>
+            <tr><td class="newStyle2">GetBoxFilterSGStensor</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
@@ -202,32 +220,35 @@
         Differentiation Options:</font></h3>
       <p><strong><em>Options for GetVelocityGradient, GetMagneticFieldGradient, GetVectorPotentialGradient, GetPressureGradient and GetDensityGradient</em></strong></p>
 	    
-      <p><em>FD4: 4th-order centered finite differencing
-            (can be spatially interpolated)<br />
+      <p><em>FD4: 4th-order centered finite differencing (can be spatially interpolated)<br />
       </em><em>FD6: 6th-order centered finite differencing (without spatial interpolation)<br />
-      </em><em>FD8: 8th-order centered finite differencing
-        (without spatial interpolation) </em></p>
+      </em><em>FD8: 8th-order centered finite differencing (without spatial interpolation) <br />
+      </em><em>M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. <br />
+      </em><em>M2Q8: Splines with smoothness 2 (5th order) over 8 data points. <br />
+      </em><em>M2Q14: Splines with smoothness 2 (5th order) over 14 data points. </em></p>
        
       <p><strong><em>Options for GetPressureHessian, GetVelocityLaplacian, GetMagneticFieldLaplacian, GetVectorPotentialLaplacian,
             GetVelocityHessian, GetMagneticFieldHessian and GetVectorPotentialHessian</em></strong> </p>
 	      
       <p><em>FD4: 4th-order centered finite differencing (can be spatially interpolated)<br />
       </em><em>FD6: 6th-order centered finite differencing (without spatial interpolation)<br />
-      </em><em>FD8: 8th-order centered finite differencing (without spatial interpolation) </em></p>
+      </em><em>FD8: 8th-order centered finite differencing (without spatial interpolation) <br />
+      </em><em>M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. <br />
+      </em><em>M2Q8: Splines with smoothness 2 (5th order) over 8 data points. <br />
+      </em><em>M2Q14: Splines with smoothness 2 (5th order) over 14 data points.</em></p>
        
     <h3><font face="Arial, Helvetica, sans-serif">Database Spatial Interpolation
         Options:</font></h3>
     <p><strong><em>Interpolation options for GetVelocity, GetMagneticField, 
         GetVectorPotential, GetPressure, GetVelocityAndPressure, GetDensity and GetPosition</em></strong></p>
     
-      <p>NoSInt: No Space interpolation (value at the datapoint closest to each
-        coordinate value)<br />
-        Lag4: 4th-order Lagrange Polynomial
-        interpolation along each spatial direction|<br />
-        Lag6: 6th-order Lagrange Polynomial
-        interpolation along each spatial direction<br />
-        Lag8: 8th-order Lagrange
-        Polynomial interpolation along each spatial direction</p>
+      <p><em>NoSInt: No Space interpolation (value at the datapoint closest to each coordinate value)<br />
+        </em><em>Lag4: 4th-order Lagrange Polynomial interpolation along each spatial direction|<br />
+        </em><em>Lag6: 6th-order Lagrange Polynomial interpolation along each spatial direction<br />
+        </em><em>Lag8: 8th-order Lagrange Polynomial interpolation along each spatial direction <br />
+        </em><em>M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. <br />
+        </em><em>M2Q8: Splines with smoothness 2 (5th order) over 8 data points. <br />
+        </em><em>M2Q14: Splines with smoothness 2 (5th order) over 14 data points.</em></p>
           
     <p><strong><em>Interpolation options for GetVelocityGradient, 
         GetMagneticFieldGradient, GetVectorPotentialGradient, GetPressureGradient,
@@ -243,7 +264,10 @@
         FD8NoInt: No interpolation (value of the 8th order finite-difference
         evaluations at the datapoint closest to each coordinate value is returned) </em></p>
       <p><em>FD4Lag4: 4th-order Lagrange Polynomial interpolation in each direction,
-          of the 4th-order finite difference values on the grid.</em></p>
+          of the 4th-order finite difference values on the grid.<br />
+        </em><em>M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. <br />
+        </em><em>M2Q8: Splines with smoothness 2 (5th order) over 8 data points. <br />
+        </em><em>M2Q14: Splines with smoothness 2 (5th order) over 14 data points.</em></p>
 
         
     <h3><font face="Arial, Helvetica, sans-serif">Database Time Interpolation
@@ -261,9 +285,17 @@
             time derivatives (i.e. a total of four temporal points are used).</em></p>
        
     <h3><font face="Arial, Helvetica, sans-serif">Database Spatial Filtering Options:</font></h3>
-    <p><strong><em>Options for GetBoxFilter, GetBoxFilterSGS and GetBoxFilterGradient:</em></strong></p>
+    <p><strong><em>Options for GetBoxFilter, GetBoxFilterSGSscalar, GetBoxFilterSGSvector, GetBoxFilterSGSsymtensor, 
+        GetBoxFilterSGStensor and GetBoxFilterGradient:</em></strong></p>
     
-      <p><em>Field (one of velocity, magnetic, potential, pressure): The field, which should be filtered.</em></p>
+      <p><em>Field: The field or combination of fields, which should be filtered. <br />For the GetBoxFilter, GetBoxFilterGradient and
+            GetBoxFilterSGSsymtensor the valid options are --
+            "velocity" or "u", "magnetic" or "b", "potential" or "a", "pressure" or "p", density or "d". 
+            <br />For the GetBoxFilterSGSscalar, GetBoxFilterSGSvector, GetBoxFilterSGStensor two fields should be specified 
+            using single characters, such as "pd", "up" or "ub". 
+            <br />GetBoxFilterSGSscalar operates on two scalar fields, e.g. "pp" or "pd".
+            <br />GetBoxFilterSGSvector operates on a vector and a scalar field, e.g. "up" or "bp".
+            <br />GetBoxFilterSGStensor operates on two vector fields, e.g. "ub" or "ba".</em></p>
       <p><em>Filter width (odd multiple of the grid resolution): Size of the box filter to be applied along each spatial direction. 
                 NOTE: This value will be rounded to the nearest odd multiple of the grid resolution.</em></p>
      

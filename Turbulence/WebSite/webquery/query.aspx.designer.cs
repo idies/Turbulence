@@ -256,13 +256,40 @@ namespace Website {
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilter;
         
         /// <summary>
-        /// GetBoxFilterSGS control.
+        /// GetBoxFilterSGSscalar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGS;
+        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSscalar;
+        
+        /// <summary>
+        /// GetBoxFilterSGSvector control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSvector;
+        
+        /// <summary>
+        /// GetBoxFilterSGSsymtensor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSsymtensor;
+        
+        /// <summary>
+        /// GetBoxFilterSGStensor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGStensor;
         
         /// <summary>
         /// GetBoxFilterGradient control.
@@ -328,6 +355,15 @@ namespace Website {
         protected global::System.Web.UI.WebControls.DropDownList fieldList;
         
         /// <summary>
+        /// velocityEntry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem velocityEntry;
+        
+        /// <summary>
         /// pressureEntry control.
         /// </summary>
         /// <remarks>
@@ -362,6 +398,60 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem densityEntry;
+        
+        /// <summary>
+        /// fieldList2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList fieldList2;
+        
+        /// <summary>
+        /// velocityEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem velocityEntry2;
+        
+        /// <summary>
+        /// pressureEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem pressureEntry2;
+        
+        /// <summary>
+        /// magneticEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem magneticEntry2;
+        
+        /// <summary>
+        /// potentialEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem potentialEntry2;
+        
+        /// <summary>
+        /// densityEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem densityEntry2;
         
         /// <summary>
         /// filterWidthRow control.

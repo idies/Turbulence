@@ -83,38 +83,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    <None Include="Web References\turbulence\Point3.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\turbulence\Pressure.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </None>
-    <None Include="Web References\turbulence\SGSTensor.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </None>
-    <None Include="Web References\turbulence\ThresholdInfo.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </None>
-    <None Include="Web References\turbulence\turbulence.wsdl" />
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:56579/WebSite/service/turbulence.asmx">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\turbulence\</RelPath>
-      <UpdateFromURL>http://localhost:56579/WebSite/service/turbulence.asmx</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>TestApp_turbulence_TurbulenceService</CachedSettingsPropName>
-    </WebReferenceUrl>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Web References\turbulence\Point3.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\turbulence\PressureHessian.datasource">
@@ -124,10 +96,13 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Web References\turbulence\SGSStress.datasource">
+    <None Include="Web References\turbulence\SGSTensor.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\turbulence\turbulence.disco" />
+    <None Include="Web References\turbulence\ThresholdInfo.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\turbulence\turbulence.wsdl" />
     <None Include="Web References\turbulence\Vector3.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -139,6 +114,12 @@
     </None>
     <None Include="Web References\turbulence\VelocityHessian.datasource">
       <DependentUpon>Reference.map</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +154,25 @@
       <Project>{CBE305D7-8868-4A9D-8885-5E67A8507C78}</Project>
       <Name>Turbulence</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://localhost:26131/service/turbulence.asmx">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\turbulence\</RelPath>
+      <UpdateFromURL>http://localhost:26131/service/turbulence.asmx</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>TestApp_turbulence_TurbulenceService</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Web References\turbulence\turbulence.disco" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

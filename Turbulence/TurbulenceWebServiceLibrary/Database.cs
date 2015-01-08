@@ -215,10 +215,15 @@ namespace TurbulenceService
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
+            string DBMapTable = "DatabaseMap";
+            if (this.development == true)
+            {
+                DBMapTable = "DatabaseMapTest";
+            }
             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
-                "from {0}..DatabaseMap where DatasetName = @dataset " + 
+                "from {0}..{1} where DatasetName = @dataset " + 
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-                "order by minLim", infodb);
+                "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
@@ -285,10 +290,15 @@ namespace TurbulenceService
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
+            string DBMapTable = "DatabaseMap";
+            if (this.development == true)
+            {
+                DBMapTable = "DatabaseMapTest";
+            }
             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
-                "from {0}..DatabaseMap where DatasetName = @dataset " + 
+                "from {0}..{1} where DatasetName = @dataset " + 
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-                "order by minLim", infodb);
+                "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
@@ -388,10 +398,15 @@ namespace TurbulenceService
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
+            string DBMapTable = "DatabaseMap";
+            if (this.development == true)
+            {
+                DBMapTable = "DatabaseMapTest";
+            }
             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
-                "from {0}..DatabaseMap where DatasetName = @dataset " +
+                "from {0}..{1} where DatasetName = @dataset " +
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-                "order by minLim", infodb);
+                "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
@@ -2156,16 +2171,11 @@ namespace TurbulenceService
                 result[i].xy -= velocity_filter[i].x * velocity_filter[i].y;
                 result[i].xz -= velocity_filter[i].x * velocity_filter[i].z;
                 result[i].yz -= velocity_filter[i].y * velocity_filter[i].z;
-
-                // Adding the symmetric parts, which originally were not included.
-                result[i].yx = result[i].xy;
-                result[i].zx = result[i].xz;
-                result[i].zy = result[i].yz;
             }
             return records;
         }
 
-        private int GetTwoFieldsSGSResults(IAsyncResult[] asyncRes, SGSTensor[] result)
+        private int GetTwoFieldsSGSResults(IAsyncResult[] asyncRes, VelocityGradient[] result)
         {
             int records = 0;
             // Now go through and fetch results...
@@ -2183,14 +2193,14 @@ namespace TurbulenceService
                         id = reader.GetSqlInt32(0).Value;
                         if (result[id].Equals(null))
                         {
-                            result[id] = new SGSTensor(reader.GetSqlSingle(1).Value,
-                                reader.GetSqlSingle(2).Value,
-                                reader.GetSqlSingle(3).Value,
+                            result[id] = new VelocityGradient(reader.GetSqlSingle(1).Value,
                                 reader.GetSqlSingle(4).Value,
-                                reader.GetSqlSingle(5).Value,
-                                reader.GetSqlSingle(6).Value,
                                 reader.GetSqlSingle(7).Value,
+                                reader.GetSqlSingle(2).Value,
+                                reader.GetSqlSingle(5).Value,
                                 reader.GetSqlSingle(8).Value,
+                                reader.GetSqlSingle(3).Value,
+                                reader.GetSqlSingle(6).Value,
                                 reader.GetSqlSingle(9).Value);
                             field1_filter[id] = new Vector3(reader.GetSqlSingle(10).Value,
                                 reader.GetSqlSingle(11).Value,
@@ -2202,15 +2212,15 @@ namespace TurbulenceService
                         }
                         else
                         {
-                            result[id].xx += reader.GetSqlSingle(1).Value;
-                            result[id].yx += reader.GetSqlSingle(2).Value;
-                            result[id].zx += reader.GetSqlSingle(3).Value;
-                            result[id].xy += reader.GetSqlSingle(4).Value;
-                            result[id].yy += reader.GetSqlSingle(5).Value;
-                            result[id].zy += reader.GetSqlSingle(6).Value;
-                            result[id].xz += reader.GetSqlSingle(7).Value;
-                            result[id].yz += reader.GetSqlSingle(8).Value;
-                            result[id].zz += reader.GetSqlSingle(9).Value;
+                            result[id].duxdx += reader.GetSqlSingle(1).Value;
+                            result[id].duydx += reader.GetSqlSingle(2).Value;
+                            result[id].duzdx += reader.GetSqlSingle(3).Value;
+                            result[id].duxdy += reader.GetSqlSingle(4).Value;
+                            result[id].duydy += reader.GetSqlSingle(5).Value;
+                            result[id].duzdy += reader.GetSqlSingle(6).Value;
+                            result[id].duxdz += reader.GetSqlSingle(7).Value;
+                            result[id].duydz += reader.GetSqlSingle(8).Value;
+                            result[id].duzdz += reader.GetSqlSingle(9).Value;
                             field1_filter[id].x += reader.GetSqlSingle(10).Value;
                             field1_filter[id].y += reader.GetSqlSingle(11).Value;
                             field1_filter[id].z += reader.GetSqlSingle(12).Value;
@@ -2226,15 +2236,109 @@ namespace TurbulenceService
             }
             for (int i = 0; i < result.Length; i++)
             {
-                result[i].xx -= field1_filter[i].x * field2_filter[i].x;
-                result[i].yx -= field1_filter[i].y * field2_filter[i].x;
-                result[i].zx -= field1_filter[i].z * field2_filter[i].x;
-                result[i].xy -= field1_filter[i].x * field2_filter[i].y;
-                result[i].yy -= field1_filter[i].y * field2_filter[i].y;
-                result[i].zy -= field1_filter[i].z * field2_filter[i].y;
-                result[i].xz -= field1_filter[i].x * field2_filter[i].z;
-                result[i].yz -= field1_filter[i].y * field2_filter[i].z;
-                result[i].zz -= field1_filter[i].z * field2_filter[i].z;
+                result[i].duxdx -= field1_filter[i].x * field2_filter[i].x;
+                result[i].duydx -= field1_filter[i].x * field2_filter[i].y;
+                result[i].duzdx -= field1_filter[i].x * field2_filter[i].z;
+                result[i].duxdy -= field1_filter[i].y * field2_filter[i].x;
+                result[i].duydy -= field1_filter[i].y * field2_filter[i].y;
+                result[i].duzdy -= field1_filter[i].y * field2_filter[i].z;
+                result[i].duxdz -= field1_filter[i].z * field2_filter[i].x;
+                result[i].duydz -= field1_filter[i].z * field2_filter[i].y;
+                result[i].duydz -= field1_filter[i].z * field2_filter[i].z;
+            }
+            return records;
+        }
+
+        private int GetTwoFieldsSGSResults(IAsyncResult[] asyncRes, Vector3[] result)
+        {
+            int records = 0;
+            // Now go through and fetch results...
+            // FIXME: This should be done through callbacks.
+            Vector3[] field1_filter = new Vector3[result.Length];
+            float[] field2_filter = new float[result.Length];
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null)
+                {
+                    SqlDataReader reader = sqlcmds[s].EndExecuteReader(asyncRes[s]);
+                    int id;
+                    while (reader.Read() && !reader.IsDBNull(0))
+                    {
+                        id = reader.GetSqlInt32(0).Value;
+                        if (result[id].Equals(null))
+                        {
+                            result[id] = new Vector3(reader.GetSqlSingle(1).Value,
+                                reader.GetSqlSingle(2).Value,
+                                reader.GetSqlSingle(3).Value);
+                            field1_filter[id] = new Vector3(reader.GetSqlSingle(4).Value,
+                                reader.GetSqlSingle(5).Value,
+                                reader.GetSqlSingle(6).Value);
+                            field2_filter[id] = reader.GetSqlSingle(7).Value;
+                            records++;
+                        }
+                        else
+                        {
+                            result[id].x += reader.GetSqlSingle(1).Value;
+                            result[id].y += reader.GetSqlSingle(2).Value;
+                            result[id].z += reader.GetSqlSingle(3).Value;
+                            field1_filter[id].x += reader.GetSqlSingle(4).Value;
+                            field1_filter[id].y += reader.GetSqlSingle(5).Value;
+                            field1_filter[id].z += reader.GetSqlSingle(6).Value;
+                            field2_filter[id] += reader.GetSqlSingle(7).Value;
+                        }
+                    }
+                    reader.Close();
+                    connections[s].Close();
+                    connections[s] = null;
+                }
+            }
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i].x -= field1_filter[i].x * field2_filter[i];
+                result[i].y -= field1_filter[i].y * field2_filter[i];
+                result[i].z -= field1_filter[i].z * field2_filter[i];
+            }
+            return records;
+        }
+
+        private int GetTwoFieldsSGSResults(IAsyncResult[] asyncRes, float[] result)
+        {
+            int records = 0;
+            // Now go through and fetch results...
+            // FIXME: This should be done through callbacks.
+            float[] field1_filter = new float[result.Length];
+            float[] field2_filter = new float[result.Length];
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null)
+                {
+                    SqlDataReader reader = sqlcmds[s].EndExecuteReader(asyncRes[s]);
+                    int id;
+                    while (reader.Read() && !reader.IsDBNull(0))
+                    {
+                        id = reader.GetSqlInt32(0).Value;
+                        if (result[id].Equals(null))
+                        {
+                            result[id] = reader.GetSqlSingle(1).Value;
+                            field1_filter[id] = reader.GetSqlSingle(2).Value;
+                            field2_filter[id] = reader.GetSqlSingle(3).Value;
+                            records++;
+                        }
+                        else
+                        {
+                            result[id] += reader.GetSqlSingle(1).Value;
+                            field1_filter[id] += reader.GetSqlSingle(2).Value;
+                            field2_filter[id] += reader.GetSqlSingle(3).Value;
+                        }
+                    }
+                    reader.Close();
+                    connections[s].Close();
+                    connections[s] = null;
+                }
+            }
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] -= field1_filter[i] * field2_filter[i];
             }
             return records;
         }
@@ -2807,7 +2911,29 @@ namespace TurbulenceService
         public int ExecuteGetMHDData(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
-            SGSTensor[] result, float arg)
+            VelocityGradient[] result, float arg)
+        {
+            IAsyncResult[] asyncRes;
+            asyncRes = ExecuteTwoFieldsWorker(tableName1.ToString(), tableName2.ToString(),
+                        worker, time, (int)spatial, (int)temporal, arg);
+            return GetTwoFieldsSGSResults(asyncRes, result);
+        }
+
+        public int ExecuteGetMHDData(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            Vector3[] result, float arg)
+        {
+            IAsyncResult[] asyncRes;
+            asyncRes = ExecuteTwoFieldsWorker(tableName1.ToString(), tableName2.ToString(),
+                        worker, time, (int)spatial, (int)temporal, arg);
+            return GetTwoFieldsSGSResults(asyncRes, result);
+        }
+
+        public int ExecuteGetMHDData(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            float[] result, float arg)
         {
             IAsyncResult[] asyncRes;
             asyncRes = ExecuteTwoFieldsWorker(tableName1.ToString(), tableName2.ToString(),
@@ -2845,7 +2971,29 @@ namespace TurbulenceService
         public int ExecuteGetBoxFilter(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
-            SGSTensor[] result, float arg)
+            VelocityGradient[] result, float arg)
+        {
+            IAsyncResult[] asyncRes;
+            asyncRes = ExecuteBoxFilterWorker(tableName1.ToString(), tableName2.ToString(),
+                        worker, time, spatial, temporal, arg);
+            return GetTwoFieldsSGSResults(asyncRes, result);
+        }
+
+        public int ExecuteGetBoxFilter(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            Vector3[] result, float arg)
+        {
+            IAsyncResult[] asyncRes;
+            asyncRes = ExecuteBoxFilterWorker(tableName1.ToString(), tableName2.ToString(),
+                        worker, time, spatial, temporal, arg);
+            return GetTwoFieldsSGSResults(asyncRes, result);
+        }
+
+        public int ExecuteGetBoxFilter(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            float[] result, float arg)
         {
             IAsyncResult[] asyncRes;
             asyncRes = ExecuteBoxFilterWorker(tableName1.ToString(), tableName2.ToString(),
