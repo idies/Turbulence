@@ -233,7 +233,6 @@
       <p><em>FD4: 4th-order centered finite differencing (can be spatially interpolated)<br />
       </em><em>FD6: 6th-order centered finite differencing (without spatial interpolation)<br />
       </em><em>FD8: 8th-order centered finite differencing (without spatial interpolation) <br />
-      </em><em>M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. <br />
       </em><em>M2Q8: Splines with smoothness 2 (5th order) over 8 data points. <br />
       </em><em>M2Q14: Splines with smoothness 2 (5th order) over 14 data points.</em></p>
        
@@ -265,7 +264,6 @@
         evaluations at the datapoint closest to each coordinate value is returned) </em></p>
       <p><em>FD4Lag4: 4th-order Lagrange Polynomial interpolation in each direction,
           of the 4th-order finite difference values on the grid.<br />
-        </em><em>M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. <br />
         </em><em>M2Q8: Splines with smoothness 2 (5th order) over 8 data points. <br />
         </em><em>M2Q14: Splines with smoothness 2 (5th order) over 14 data points.</em></p>
 
