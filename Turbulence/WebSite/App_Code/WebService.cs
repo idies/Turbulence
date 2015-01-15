@@ -667,6 +667,16 @@ namespace TurbulenceService {
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
 
+            if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q4 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q6 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q8 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q10 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q12 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q14)
+            {
+                throw new Exception("This interpolation option does not support second order derivatives!");
+            }
+
             bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
@@ -1136,6 +1146,16 @@ namespace TurbulenceService {
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
 
+            if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q4 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q6 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q8 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q10 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q12 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q14)
+            {
+                throw new Exception("This interpolation option does not support second order derivatives!");
+            }
+
             bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
             
@@ -1272,6 +1292,16 @@ namespace TurbulenceService {
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, VelocityHessian[] result, ref object rowid)
         {
+            if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q4 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q6 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q8 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q10 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q12 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q14)
+            {
+                throw new Exception("This interpolation option does not support second order derivatives!");
+            }
+
             bool round = true;
             int kernelSize = -1;
             int kernelSizeY = -1;
@@ -1407,6 +1437,16 @@ namespace TurbulenceService {
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, Vector3[] result, ref object rowid)
         {
+            if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q4 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q6 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q8 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q10 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q12 ||
+                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q14)
+            {
+                throw new Exception("This interpolation option does not support second order derivatives!");
+            }
+
             bool round = true;
             int kernelSize = -1;
             int kernelSizeY = -1;
@@ -1991,6 +2031,8 @@ namespace TurbulenceService {
                 X, Y, Z, Xwidth, Ywidth, Zwidth, points_above_threshold);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
+
+            points_above_threshold.Sort((t1, t2) => -1 * t1.value.CompareTo(t2.value));
 
             return points_above_threshold.ToArray();
         }

@@ -419,22 +419,25 @@ namespace Website
                 case "GetDensity":
                     flags = new string[] { "None", "Lag4", "Lag6", "Lag8", "M1Q4", "M2Q8", "M2Q14" };
                     break;
-                case "GetPressureHessian":
                 case "GetPressureGradient":
                 case "GetVelocityGradient":
-                case "GetVelocityHessian":
-                case "GetVelocityLaplacian":
                 case "GetMagneticFieldGradient":
-                case "GetMagneticFieldHessian":
-                case "GetMagneticFieldLaplacian":
                 case "GetVectorPotentialGradient":
-                case "GetVectorPotentialHessian":
-                case "GetVectorPotentialLaplacian":
-                case "GetDensityHessian":
                 case "GetDensityGradient":
                     flags = new string[] { "FD4NoInt", "FD6NoInt", "FD8NoInt", "FD4Lag4", "M1Q4", "M2Q8", "M2Q14" };
                     break;
-
+                case "GetPressureHessian":
+                case "GetVelocityHessian":
+                case "GetMagneticFieldHessian":
+                case "GetVectorPotentialHessian":
+                case "GetDensityHessian":
+                    flags = new string[] { "FD4NoInt", "FD6NoInt", "FD8NoInt", "FD4Lag4", "M2Q8", "M2Q14" };
+                    break;
+                case "GetVelocityLaplacian":
+                case "GetMagneticFieldLaplacian":
+                case "GetVectorPotentialLaplacian":
+                    flags = new string[] { "FD4NoInt", "FD6NoInt", "FD8NoInt", "FD4Lag4" };
+                    break;
                 default:
                     flags = new string[] { "None" };
                     break;
@@ -1320,13 +1323,13 @@ namespace Website
                         dataset.Text, field, timef, fw, points);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
-                        outputText += String.Format("a{0}\r\n", delim);
+                        outputText += String.Format("{1}{0}\r\n", delim, field);
                     }
                     foreach (float result in results)
                     {
                         if (otype == OutputType.HTML)
                         {
-                            outputText += String.Format("a={0}<br />\n", result);
+                            outputText += String.Format("{1}={0}<br />\n", result, field);
                         }
                         else if (otype == OutputType.Tab || otype == OutputType.CSV)
                         {
@@ -1346,14 +1349,14 @@ namespace Website
                         dataset.Text, field, timef, fw, points);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
-                        outputText += String.Format("ax_b{0}ay_b{0}az_b{0}\r\n", delim);
+                        outputText += String.Format("{1}x{2}{0}{1}y{2}{0}{1}z{2}{0}\r\n", delim, field1, field2);
                     }
                     foreach (edu.jhu.pha.turbulence.Vector3 result in results)
                     {
                         if (otype == OutputType.HTML)
                         {
-                            outputText += String.Format("ax_b={0},ay_b={1},az_b={2}<br />\n",
-                                result.x, result.y, result.z);
+                            outputText += String.Format("{3}x{4}={0},{3}y{4}={1},{3}z{4}={2}<br />\n",
+                                result.x, result.y, result.z, field1, field2);
                         }
                         else if (otype == OutputType.Tab || otype == OutputType.CSV)
                         {
@@ -1372,7 +1375,7 @@ namespace Website
                         dataset.Text, field, timef, fw, points);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
-                        outputText += String.Format("uxux{0}uxuy{0}uxuz{0}uyuy{0}uyuz{0}uzuz\r\n", delim);
+                        outputText += String.Format("{1}x{1}x{0}{1}x{1}y{0}{1}x{1}z{0}{1}y{1}y{0}{1}y{1}z{0}{1}z{1}z\r\n", delim, TurbulenceService.DataInfo.GetCharFieldName(field));
                     }
                     foreach (edu.jhu.pha.turbulence.SGSTensor result in results)
                     {
@@ -1413,14 +1416,14 @@ namespace Website
                         dataset.Text, field, timef, fw, points);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
-                        outputText += String.Format("ax_bx{0}ax_by{0}ax_bz{0}ay_bx{0}ay_by{0}ay_bz{0}az_bx{0}az_by{0}az_bz{0}\r\n", delim);
+                        outputText += String.Format("{1}x{2}x{0}{1}x{2}y{0}{1}x{2}z{0}{1}y{2}x{0}{1}y{2}y{0}{1}y{2}z{0}{1}z{2}x{0}{1}z{2}y{0}{1}z{2}z{0}\r\n", delim, field1, field2);
                     }
                     foreach (edu.jhu.pha.turbulence.VelocityGradient result in results)
                     {
                         if (otype == OutputType.HTML)
                         {
-                            outputText += String.Format("ax_bx={0},ax_by={1},ax_bz={2},ay_bx={3},ay_by={4},ay_bz={5},az_bx={6},az_by={7},az_bz={8}<br />\n",
-                                result.duxdx, result.duxdy, result.duxdz, result.duydx, result.duydy, result.duydz, result.duzdx, result.duzdy, result.duzdz);
+                            outputText += String.Format("{9}x{10}x={0},{9}x{10}y={1},{9}x{10}z={2},{9}y{10}x={3},{9}y{10}y={4},{9}y{10}z={5},{9}z{10}x={6},{9}z{10}y={7},{9}z{10}z={8}<br />\n",
+                                result.duxdx, result.duxdy, result.duxdz, result.duydx, result.duydy, result.duydz, result.duzdx, result.duzdy, result.duzdz, field1, field2);
                         }
                         else if (otype == OutputType.Tab || otype == OutputType.CSV)
                         {

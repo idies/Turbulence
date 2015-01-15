@@ -106,14 +106,21 @@
   integer, parameter :: Lag8 = 8 ! 8th order Lagrangian interpolation in space<br />
   <br />
   ! ---- Spatial Differentiation &amp; Interpolation Flags for Get[Field]Gradient, 
-      Get[Field]Laplacian and Get[Field]Hessian ----<br />
+      Get[Field]Laplacian &amp; Get[Field]Hessian ----<br />
   integer, parameter :: FD4NoInt = 40 ! 4th order finite differential scheme for grid values, no spatial interpolation<br />
   integer, parameter :: FD6NoInt = 60 ! 6th order finite differential scheme for grid values, no spatial interpolation<br />
   integer, parameter :: FD8NoInt = 80 ! 8th order finite differential scheme for grid values, no spatial interpolation<br />
   integer, parameter :: FD4Lag4 = 44 ! 4th order finite differential scheme for grid values, 4th order Lagrangian interpolation in space<br />
-  </code><br /><br />
+  <br />
+  ! ---- Spatial Differentiation &amp; Interpolation Flags for Get[Field], Get[Field]Gradient, 
+      Get[Field]Laplacian &amp; Get[Field]Hessian ----<br />
+  integer, parameter :: M1Q4 = 104   ! Splines with smoothness 1 (3rd order) over 4 data points. Not applicable for Hessian.<br />
+  integer, parameter :: M2Q8 = 208   ! Splines with smoothness 2 (5th order) over 8 data points.<br />
+  integer, parameter :: M2Q14 = 214  ! Splines with smoothness 2 (5th order) over 14 data points.<br />
+  </code><br />
+  <br />
   Interpolation flags from Fortran are passed in as integer values, but we include these parameters
-  at the top of turbf.f90 and mhdf.f90 for reference.  
+  at the top of turbf.f90, mhdf.f90, channelf.f90 and mixingf.f90 for reference.  
   </p>
 
   <p class="code">
@@ -132,6 +139,13 @@
   &nbsp;&nbsp;FD6NoInt = 60, /* 6th order finite differential scheme for grid values, no spatial interpolation */<br />
   &nbsp;&nbsp;FD8NoInt = 80, /* 8th order finite differential scheme for grid values, no spatial interpolation */<br />
   &nbsp;&nbsp;FD4Lag4 = 44,  /*  4th order finite differential scheme for grid values, 4th order Lagrangian interpolation in space */<br />
+  };<br />
+  <br />
+  &nbsp;&nbsp;/* Spatial Differentiation &amp; Interpolation Flags for Get[Field], Get[Field]Gradient, 
+      Get[Field]Laplacian, Get[Field]Hessian */<br />
+  &nbsp;&nbsp;M1Q4 = 104, /* Splines with smoothness 1 (3rd order) over 4 data points. Not applicable for Hessian. */<br />
+  &nbsp;&nbsp;M2Q8 = 208, /* Splines with smoothness 2 (5th order) over 8 data points. */<br />
+  &nbsp;&nbsp;M2Q14 = 214, /* Splines with smoothness 2 (5th order) over 14 data points. */<br />
   };<br />
   <br />
   enum TemporalInterpolation {<br />
@@ -482,7 +496,7 @@
     integer count, real(3,count) input, real(6,count) output)</code><br />
   <br />
   <em>Example</em><br />
-  
+  <code>
   write(*, *) 'Velocity hessian at 10 particle locations'<br />
   CALL getpressurehessian(authkey, dataset,  time, FD4Lag4, NoTInt, 10, points, dataout6)<br />
   do i = 1, 10, 1<br />
@@ -490,6 +504,7 @@
   &nbsp;&nbsp;&nbsp;&nbsp;', d2pdxdz=', dataout6(3,i), ', d2pdydy=', dataout6(4,i),  &amp;<br />
   &nbsp;&nbsp;&nbsp;&nbsp;', d2pdydz=', dataout6(5,i), ', d2pdzdz', dataout6(6,i), ')'<br />
   end do<br />
+  </code>
   </p>
   
   <p class="code">
@@ -510,7 +525,7 @@
   </p>
 
   <font face="Arial, Helvetica, sans-serif">
-  <h4>And similarly for GetPosition, GetMagneticField, GetVectorPotential, GetMagneticFieldGradient, etc.</h4>
+  <h4>And similarly for GetPosition, GetMagneticField, GetVectorPotential, GetMagneticFieldGradient, GetBoxFilter, GetThreshold etc.</h4>
   </font>
     
 </div>

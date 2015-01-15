@@ -108,20 +108,25 @@
   NoTInt = <font color="purple">'None'</font>; <font color="green">% No temporal interpolation</font><br />
   PCHIPInt = <font color="purple">'PCHIP'</font>; <font color="green">% Piecewise cubic Hermit interpolation in time</font><br /><br />
   
-  <font color="green">% ---- Spatial Interpolation Flags for GetVelocity &amp; GetVelocityAndPressure ----</font><br />
+  <font color="green">% ---- Spatial Interpolation Flags for Get[Field] functions ----</font><br />
   NoSInt = <font color="purple">'None'</font>; <font color="green">% No spatial interpolation</font><br />
   Lag4 = <font color="purple">'Lag4'</font>; <font color="green">% 4th order Lagrangian interpolation in space</font><br />
   Lag6 = <font color="purple">'Lag6'</font>; <font color="green">% 6th order Lagrangian interpolation in space</font><br />
   Lag8 = <font color="purple">'Lag8'</font>; <font color="green">% 8th order Lagrangian interpolation in space</font><br /><br />
   
-  <font color="green">% ---- Spatial Differentiation &amp; Interpolation Flags for GetVelocityGradient &amp; GetPressureGradient ----</font><br />
+  <font color="green">% ---- Spatial Differentiation &amp; Interpolation Flags for Get[Field]Gradient, Get[Field]Laplacian &amp; Get[Field]Hessian ----</font><br />
   FD4NoInt = <font color="purple">'None_Fd4'</font>; <font color="green">% 4th order finite differential scheme for grid values, no spatial interpolation</font><br />
   FD6NoInt = <font color="purple">'None_Fd6'</font>; <font color="green">% 6th order finite differential scheme for grid values, no spatial interpolation</font><br />
   FD8NoInt = <font color="purple">'None_Fd8'</font>; <font color="green">% 8th order finite differential scheme for grid values, no spatial interpolation</font><br />
-  FD4Lag4  = <font color="purple">'Fd4Lag4'</font>; <font color="green">% 4th order finite differential scheme for grid values, 4th order Lagrangian interpolation in space</font><br />
+  FD4Lag4  = <font color="purple">'Fd4Lag4'</font>; <font color="green">% 4th order finite differential scheme for grid values, 4th order Lagrangian interpolation in space</font><br /><br />
+  
+  <font color="green">% ---- Spatial Differentiation &amp; Interpolation Flags for Get[Field], Get[Field]Gradient, Get[Field]Laplacian &amp; Get[Field]Hessian ----</font><br />
+  M1Q4 = <font color="purple">'M1Q4'</font>; <font color="green">% Splines with smoothness 1 (3rd order) over 4 data points. Not applicable for Hessian.</font><br />
+  M2Q8 = <font color="purple">'M2Q8'</font>; <font color="green">% Splines with smoothness 2 (5th order) over 8 data points.</font><br />
+  M2Q14 = <font color="purple">'M2Q14'</font>; <font color="green">% Splines with smoothness 2 (5th order) over 14 data points.</font><br />
   </code>
   </p>
-
+  
   <font face="Arial, Helvetica, sans-serif">
   <h3>Function Descriptions</h3>
   </font>
@@ -324,6 +329,10 @@
     end<br />
   </code>
   </p>
+
+  <font face="Arial, Helvetica, sans-serif">
+  <h4>And similarly for GetPosition, GetMagneticField, GetVectorPotential, GetMagneticFieldGradient, GetBoxFilter, GetThreshold etc.</h4>
+  </font>
     
 </div>
 <div id="rightcolumn"> 
