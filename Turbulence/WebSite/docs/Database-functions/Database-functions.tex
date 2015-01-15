@@ -51,7 +51,7 @@
 In this section, $f$ denotes any one of the three components of
 velocity, magnetic field, or vector potential in the $x$, $y$ and $z$ directions ($u_x$, $u_y$ or $u_z$; $b_x$, $b_y$ or $b_z$; $a_x$, $a_y$ or $a_z$), or pressure ($p$), depending on which function is called. $\Delta x$ and $\Delta y$ are the width of grid in $x$ and $y$ direction.
 
-\subsection{Options for GetVelocityGradient, GetMagneticFieldGradient, GetVectorPotentialGradient, and GetPressureGradient}
+\subsection{Options for GetVelocityGradient, GetMagneticFieldGradient, GetVectorPotentialGradient, GetPressureGradient and GetDensityGradient}
 
 \begin{figure}[h]
 \begin{minipage}{\linewidth}
@@ -85,8 +85,12 @@ x}[f(x_{n+1})-f(x_{n-1})]-\frac{1}{5\Delta x}[f(x_{n+2})-f(x_{n-2})]\nonumber\\
 x}[f(x_{n+4})-f(x_{n-4})]\nonumber\\
 && +o(\Delta x^8) \eea
 
-\subsection{Options for GetVelocityLaplacian, GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetVelocityHessian, GetMagneticFieldHessian, GetVectorPotentialHessian, and
-GetPressureHessian}
+\subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points.}
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+
+\subsection{Options for GetVelocityLaplacian, GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetVelocityHessian, GetMagneticFieldHessian, GetVectorPotentialHessian,
+GetPressureHessian and GetDensityHessian}
 In this section, second derivatives finite difference evaluations are shown. The expressions are
 given for derivatives along single directions in terms of the x-direction, and mixed derivatives are
 illustrated on the x-y plane. The same approach is used in the y and z directions, as well as in the x-z and y-z planes
@@ -164,6 +168,9 @@ x\Delta y}[f(x_{m+4},y_{n+4})+f(x_{m-4},y_{n-4})\nonumber\\
 &&-f(x_{m+4},y_{n-4})-f(x_{m-4},y_{n+4})]\nonumber\\
 &&+o(\Delta x^8) \eea
 
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+
 \section{Spatial interpolation inside database: equidistant grid}
 \label{sec:spa}
 \begin{figure}[h]
@@ -171,7 +178,7 @@ x\Delta y}[f(x_{m+4},y_{n+4})+f(x_{m-4},y_{n-4})\nonumber\\
 \centering\includegraphics[width=1.0\linewidth]{Lagrangian.eps}
 \end{minipage} \caption{Illustration of Lagrangian interpolation. }\label{Lagrangian}
 \end{figure}
-\subsection{Interpolation Options for GetVelocity, GetMagneticField, GetVectorPotential, GetPressure and GetVelocityAndPressure}
+\subsection{Interpolation Options for GetVelocity, GetMagneticField, GetVectorPotential, GetPressure, GetDensity and GetVelocityAndPressure}
 In this section, $f$ denotes any one of the three components of
 velocity, $u_x$, $u_y$ or $u_z$, magnetic field $b_x$, $b_y$ or $b_z$, vector potential $a_x$, $a_y$ or $a_z$, or pressure, $p$,  depending on which
 function is called. $\Delta x$, $\Delta y$ and $\Delta z$ are the
@@ -217,8 +224,13 @@ l_z^{q-4+k}(z')\eea \bea l_\theta^i(\theta') &=&
 i}^{n+4}(\theta'-\theta_j)}{\prod\limits_{j=n-3,j\neq
 i}^{n+4}(\theta_i-\theta_j)}\eea where $\theta$ can be x, y, or z.
 
+\subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points.}
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+
 \subsection{Interpolation Options for GetVelocityGradient, GetVelocityLaplacian, GetVelocityHessian, GetMagneticFieldGradient, GetVectorPotentialGradient,
- GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetMagneticFieldHessian, GetVectorPotentialHessian, GetPressureGradient, and GetPressureHessian}
+ GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetMagneticFieldHessian, GetVectorPotentialHessian, GetPressureGradient, GetPressureHessian, GetDensityGradient
+ and GetDensityHessian}
 
 In this section, $f$ denotes gradients of velocity, magnetic field, vector potential, or pressure gradient,
 Laplacian of velocity, magnetic field, vector potential, or Hessian of velocity, magnetic field, vector potential or pressure, depending on
@@ -243,6 +255,10 @@ l_z^{q-2+k}(z')\eea \bea l_\theta^i(\theta') &=&
 \frac{\prod\limits_{j=n-1,j\neq
 i}^{n+2}(\theta'-\theta_j)}{\prod\limits_{j=n-1,j\neq
 i}^{n+2}(\theta_i-\theta_j)}\eea where $\theta$ can be x, y, or z.
+
+\subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. Not applicable for Hessian.}
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
 
 \section{Spatial interpolation inside the database: non-uniform grid}\label{sec:interp}
 Spatial interpolation for domains with non-uninform grid spacing (e.g. the
@@ -421,12 +437,22 @@ f(t')=a+b(t'-t_n)+c(t'-t_n)^2+d(t'-t_n)^2(t'-t_{n+1}) \eea where
 \end{figure}
 
 In this section, $f$ denotes any one of the three components of velocity, $u_x$, $u_y$ or $u_z$, 
-magnetic field $b_x$, $b_y$ or $b_z$, vector potential $a_x$, $a_y$ or $a_z$, or pressure, $p$,  
-depending on the user supplied parameter for the GetBoxFilter and GetBoxFilterGradient functions called $field$. If the 
-GetBoxFilterSGS function is called, $f$ denotes any one of the six components of the sub-grid
-stress tensor for the respective field (e.g. $u_x^2$, $u_y^2$, $u_z^2$, $u_x u_y$, $u_x u_z$, $u_y u_z$).
+magnetic field, $b_x$, $b_y$ or $b_z$, vector potential, $a_x$, $a_y$ or $a_z$, pressure, $p$, or density, $d$,  
+depending on the user supplied parameter for the GetBoxFilter and GetBoxFilterGradient functions called $field$. If
+one of the GetBoxFilterSGS functions is called, $f$ denotes any one of the components of the sub-grid
+stress for the respective field (e.g. $u_x^2$, $u_y^2$, $u_z^2$, $u_x u_y$, $u_x u_z$, $u_y u_z$).
 The valid values
-for the $field$ parameter are $velocity, magnetic, potential, pressure$. $\Delta x$ is the resolution of the grid
+for the $field$ parameter are \emph{``velocity", ``magnetic", ``potential", ``pressure", ``density"} for the GetBoxFilter and GetBoxFilterGradient methods.
+For the GetBoxFilterSGSscalar method the valid values for the $field$ parameter are two scalar fields denoted by single characters, 
+e.g. \emph{``pp"} (for pressure-pressure), \emph{``dp"} (for density-pressure), \emph{``dd"} (for density-density), etc..
+For the GetBoxFilterSGSvector method the valid values for the $field$ parameter are a vector and a scalar field denoted by single characters, 
+e.g. \emph{``up"} (for velocity-pressure), \emph{``bp"} (for magnetic field-pressure), etc..
+For the GetBoxFilterSGSsymtensor method the valid values for the $field$ parameter are single vector fields 
+or the same vector field denoted by repeated single characters, 
+e.g. \emph{``velocity", ``magnetic", ``potential"} or \emph{``uu"} (for velocity), \emph{``bb"} (for magnetic field), \emph{``aa"} (for vector potential).
+For the GetBoxFilterSGStensor method the valid values for the $field$ parameter are two vector fields denoted by single characters, 
+e.g. \emph{``ub"} (for velocity-magnetic field), \emph{``ab"} (for vector potential-magnetic field), etc..
+$\Delta x$ is the resolution of the grid
 (it is equal in all directions). The user also supplies the desired 
 filter width $\Delta$, which is given as a floating point number and is required to be an odd multiple of the grid
 resolution (to eliminate the need for interpolating at the edges). ${\bf x'}=(x',y',z')$. 
@@ -522,6 +548,17 @@ The corrector step then gives the particle position at $t_{m+1}$ as
 The integration proceeds until $t_m$ reaches the user-specified final time $t_{ES}$. The last integration time-step is typically done using a smaller time-step so that the integration ends exactly at the specified $t_{ES}$. GetPosition then returns ${\bf x}^+({\bf y},t_{ES})$ for all particles that were at initial locations ${\bf y}$.
 
 For this integration scheme, the time-stepping error is of order $(\Delta t_p)^3$ over one time step. In general, accurate spatial and time interpolations are crucial to obtain the fluid velocities while tracking particles along their trajectories. Spatial interpolation with various optional orders of accuracy can be specified by the user, see \S\ref{sec:spa}  above. Time interpolation is done by default using PHCIP (see \S\ref{sec:tem} above).
+
+
+\section{Obtaining all locations above a threshold with GetThreshold function}
+
+The GetThreshold function produces all locations in the specified dataset that have norms for the specified $field$ above the user supplied $threshold$. 
+The norm at each of the locations is also returned. The parameters supplied to the function are the following. The $field$ parameter specifies the field to be
+thresholded and currently the valid values are one of the simulation fields, i.e. \emph{``velocity", ``pressure", ``magnetic", ``potential", ``density"} or
+the derived fields \emph{"vorticity"} and \emph{"Q"}. The X, Y, Z and Xwidth, Ywidth and Zwidth parameters denote the spatial region to be examined. X, Y and Z specify
+the bottom left corner for this region and Xwidth, Ywidth and Zwidth specify the width in each of the three dimensions in units of grid points. For example, 
+the MHD dataset has a $1024^3$ spatial grid and a region can be specified as [0, 0, 0, 256, 256, 256] to examine the $256^3$ region with bottom left corner at
+(0, 0, 0). The function returns the X, Y and Z coordinates and the norm of the field for all locations with norms above the threshold.
 
 \bibliographystyle{plain}
 \bibliography{Database-functions}
