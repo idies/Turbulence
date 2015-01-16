@@ -39,15 +39,24 @@ namespace Website
 
         protected void table_rows_update()
         {
+            spatial_ranges_update();
+            EndTimeRow.Visible = false;
+            DeltaTRow.Visible = false;
+            spatialRow.Visible = false;
+            temporalRow.Visible = false;
+            fieldRow.Visible = false;
+            filterWidthRow.Visible = false;
+            filterSpacingRow.Visible = false;
+            vorticityEntry.Enabled = false;
+            QEntry.Enabled = false;
+            fieldList2.Visible = false;
+            thresholdRow.Visible = false;
+            QueryText.InnerText = "Query a single point";
             if (method.SelectedValue.Equals("GetPosition"))
             {
                 EndTimeRow.Visible = true;
                 DeltaTRow.Visible = true;
                 spatialRow.Visible = true;
-                temporalRow.Visible = false;
-                fieldRow.Visible = false;
-                filterWidthRow.Visible = false;
-                filterSpacingRow.Visible = false;
                 if (dataset.SelectedValue.Equals("isotropic1024coarse"))
                 {
                     timerange.Text = "0.0 - 2.048";
@@ -81,13 +90,8 @@ namespace Website
             }
             else if (method.SelectedValue.Contains("Filter"))
             {
-                EndTimeRow.Visible = false;
-                DeltaTRow.Visible = false;
-                spatialRow.Visible = false;
-                temporalRow.Visible = false;
                 fieldRow.Visible = true;
                 filterWidthRow.Visible = true;
-                fieldList2.Visible = false;
                 if (method.SelectedValue.Equals("GetBoxFilterSGSsymtensor"))
                 {
                     velocityEntry.Enabled = true;
@@ -165,29 +169,126 @@ namespace Website
                 else
                     filterSpacingRow.Visible = false;
             }
+            else if (method.SelectedValue.Equals("GetThreshold"))
+            {
+                xwidth_range.Visible = true;
+                ywidth_range.Visible = true;
+                zwidth_range.Visible = true;
+                Xwidth.Visible = true;
+                Ywidth.Visible = true;
+                Zwidth.Visible = true;
+                spatialRow.Visible = true;
+                fieldRow.Visible = true;
+                thresholdRow.Visible = true;
+                vorticityEntry.Enabled = true;
+                QEntry.Enabled = true;
+                QueryText.InnerText = "Query a region";
+                if (dataset.SelectedValue.Equals("isotropic1024coarse"))
+                {
+                    timerange.Text = "0.0 - 2.048";
+                }
+                else if (dataset.SelectedValue.Equals("isotropic1024fine"))
+                {
+                    timerange.Text = "0.0 - 0.0198";
+                }
+                else if (dataset.SelectedValue.Equals("mhd1024"))
+                {
+                    timerange.Text = "0.0 - 2.56";
+                }
+                else if (dataset.SelectedValue.Equals("mixing"))
+                {
+                    timerange.Text = "0.0 - 40.44";
+                }
+                else if (dataset.SelectedValue.Equals("channel"))
+                {
+                    timerange.Text = "0.0 - 25.9935";
+                }
+            }
             else
             {
-                EndTimeRow.Visible = false;
-                DeltaTRow.Visible = false;
                 spatialRow.Visible = true;
                 temporalRow.Visible = true;
-                fieldRow.Visible = false;
-                filterWidthRow.Visible = false;
-                filterSpacingRow.Visible = false;
             }
         }
 
+        protected void spatial_ranges_update()
+        {
+            if (dataset.SelectedValue.Equals("isotropic1024coarse") ||
+                dataset.SelectedValue.Equals("isotropic1024fine") ||
+                dataset.SelectedValue.Equals("mhd1024") ||
+                dataset.SelectedValue.Equals("mixing"))
+            {
+                if (method.SelectedValue.Equals("GetThreshold"))
+                {
+                    x_range.Text = "[0, 1023]";
+                    y_range.Text = "[0, 1023]";
+                    z_range.Text = "[0, 1023]";
+                    xwidth_range.Text = "X width [1, 1024]";
+                    ywidth_range.Text = "Y width [1, 1024]";
+                    zwidth_range.Text = "Z width [1, 1024]";
+                    x.Text = "0";
+                    y.Text = "0";
+                    z.Text = "0";
+                    coord_range_details.Text = "<br />";
+                }
+                else
+                {
+                    x_range.Text = "[0, 2&pi;]";
+                    y_range.Text = "[0, 2&pi;]";
+                    z_range.Text = "[0, 2&pi;]";
+                    xwidth_range.Visible = false;
+                    ywidth_range.Visible = false;
+                    zwidth_range.Visible = false;
+                    Xwidth.Visible = false;
+                    Ywidth.Visible = false;
+                    Zwidth.Visible = false;
+                    x.Text = "3.14";
+                    y.Text = "3.14";
+                    z.Text = "3.14";
+                    coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
+                }
+            }
+            else if (dataset.SelectedValue.Equals("channel"))
+            {
+                if (method.SelectedValue.Equals("GetThreshold"))
+                {
+                    x_range.Text = "[0, 2047]";
+                    y_range.Text = "[0, 511]";
+                    z_range.Text = "[0, 1535]";
+                    xwidth_range.Text = "X width [1, 2048]";
+                    ywidth_range.Text = "Y width [1, 512]";
+                    zwidth_range.Text = "Z width [1, 1536]";
+                    x.Text = "0";
+                    y.Text = "0";
+                    z.Text = "0";
+                    coord_range_details.Text = "<br />";
+                }
+                else
+                {
+                    x_range.Text = "[0, 8&pi;]";
+                    y_range.Text = "[-1, 1]";
+                    z_range.Text = "[0, 3&pi;]";
+                    xwidth_range.Visible = false;
+                    ywidth_range.Visible = false;
+                    zwidth_range.Visible = false;
+                    Xwidth.Visible = false;
+                    Ywidth.Visible = false;
+                    Zwidth.Visible = false;
+                    x.Text = "3.14";
+                    y.Text = "0.0";
+                    z.Text = "3.14";
+                    coord_range_details.Text = "Values outside the range are treated as mod(8&pi;), mod(3&pi;) for x and z.<br/> The values for y must be within [-1, 1].";
+                }
+            }
+        }
 
         protected void dataset_update()
         {
             this.velocityEntry.Enabled = true;
             this.velocityEntry2.Enabled = true;
+            spatial_ranges_update();
             if (dataset.SelectedValue.Equals("isotropic1024coarse"))
             {
-                x_range.Text = "[0, 2&pi;]";
-                y_range.Text = "[0, 2&pi;]";
-                z_range.Text = "[0, 2&pi;]";
-                coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
                 timerange.Text = "0.0 - 2.048<br/>dt = .002";
                 this.GetMagneticField.Enabled = false;
                 this.GetMagneticFieldGradient.Enabled = false;
@@ -229,10 +330,6 @@ namespace Website
             }
             else if (dataset.SelectedValue.Equals("mhd1024"))
             {
-                x_range.Text = "[0, 2&pi;]";
-                y_range.Text = "[0, 2&pi;]";
-                z_range.Text = "[0, 2&pi;]";
-                coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
                 timerange.Text = "0.0 - 2.56<br/>dt = .0025";
                 this.GetMagneticField.Enabled = true;
                 this.GetMagneticFieldGradient.Enabled = true;
@@ -270,10 +367,6 @@ namespace Website
             }
             else if (dataset.SelectedValue.Equals("isotropic1024fine"))
             {
-                x_range.Text = "[0, 2&pi;]";
-                y_range.Text = "[0, 2&pi;]";
-                z_range.Text = "[0, 2&pi;]";
-                coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
                 timerange.Text = "0.0 - 0.0198<br/>dt = .0002";
                 this.GetMagneticField.Enabled = false;
                 this.GetMagneticFieldGradient.Enabled = false;
@@ -315,10 +408,6 @@ namespace Website
             }
             else if (dataset.SelectedValue.Equals("channel"))
             {
-                x_range.Text = "[0, 8&pi;]";
-                y_range.Text = "[-1, 1]";
-                z_range.Text = "[0, 3&pi;]";
-                coord_range_details.Text = "Values outside the range are treated as mod(8&pi;), mod(3&pi;) for x and z.<br/> The values for y must be within [-1, 1].";
                 timerange.Text = "0.0 - 25.9935<br/>dt = .0065";
                 this.GetMagneticField.Enabled = false;
                 this.GetMagneticFieldGradient.Enabled = false;
@@ -361,10 +450,6 @@ namespace Website
             }
             else if (dataset.SelectedValue.Equals("mixing"))
             {
-                x_range.Text = "[0, 2&pi;]";
-                y_range.Text = "[0, 2&pi;]";
-                z_range.Text = "[0, 2&pi;]";
-                coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
                 timerange.Text = "0.0 - 40.44<br/>dt = .04";
                 this.GetMagneticField.Enabled = false;
                 this.GetMagneticFieldGradient.Enabled = false;
@@ -437,6 +522,9 @@ namespace Website
                 case "GetMagneticFieldLaplacian":
                 case "GetVectorPotentialLaplacian":
                     flags = new string[] { "FD4NoInt", "FD6NoInt", "FD8NoInt", "FD4Lag4" };
+                    break;
+                case "GetThreshold":
+                    flags = new string[] { "None", "FD4NoInt", "FD6NoInt", "FD8NoInt" };
                     break;
                 default:
                     flags = new string[] { "None" };
@@ -1544,6 +1632,44 @@ namespace Website
                         }
                     }
                 }
+                else if (method.Text.Equals("GetThreshold"))
+                {
+                    edu.jhu.pha.turbulence.ThresholdInfo[] results;
+                    string field = fieldList.Text.ToLower();
+                    float thresholdValue = Convert.ToSingle(threshold.Text);
+                    int X_int = Convert.ToInt32(x.Text);
+                    int Y_int = Convert.ToInt32(y.Text);
+                    int Z_int = Convert.ToInt32(z.Text);
+                    int x_width_int = Convert.ToInt32(Xwidth.Text);
+                    int y_width_int = Convert.ToInt32(Ywidth.Text);
+                    int z_width_int = Convert.ToInt32(Zwidth.Text);
+                    results = service.GetThreshold(authToken, dataset.Text, field, timef, thresholdValue, spatialv,
+                        X_int, Y_int, Z_int, x_width_int, y_width_int, z_width_int);
+                    if (results.Length == 0)
+                    {
+                        outputText += "There are no points with values above the specified threshold.";
+                    }
+                    else
+                    {
+                        if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
+                        {
+                            outputText += String.Format("x{0}y{0}z{0}value\r\n", delim);
+                        }
+                        foreach (edu.jhu.pha.turbulence.ThresholdInfo result in results)
+                        {
+                            if (otype == OutputType.HTML)
+                            {
+                                outputText += String.Format("x={0},y={1},z={2},value={3}<br />\n",
+                                    result.x, result.y, result.z, result.value);
+                            }
+                            else if (otype == OutputType.Tab || otype == OutputType.CSV)
+                            {
+                                outputText += String.Format("{1}{0}{2}{0}{3}{0}{4}\r\n",
+                                    delim, result.x, result.y, result.z, result.value);
+                            }
+                        }
+                    }
+                }
                 else
                 {
                     throw new Exception("Unknown method!");
@@ -1583,32 +1709,47 @@ namespace Website
         {
             if (dataset.SelectedValue.Equals("isotropic1024coarse"))
             {
-                y.Text = "3.14";
+                if (!method.SelectedValue.Equals("GetThreshold"))
+                {
+                    y.Text = "3.14";
+                }
                 time.Text = "1.0";
                 EndTime.Text = "1.004";
                 dt.Text = "0.001";
             }
             else if (dataset.SelectedValue.Equals("mhd1024"))
             {
-                y.Text = "3.14";
+                if (!method.SelectedValue.Equals("GetThreshold"))
+                {
+                    y.Text = "3.14";
+                }
                 time.Text = "1.0";
                 EndTime.Text = "1.004";
                 dt.Text = "0.001";
             }
             else if (dataset.SelectedValue.Equals("isotropic1024fine"))
             {
-                y.Text = "3.14";
+                if (!method.SelectedValue.Equals("GetThreshold"))
+                {
+                    y.Text = "3.14";
+                }
                 time.Text = "0.0";
                 EndTime.Text = "0.004";
                 dt.Text = "0.001";
             }
             else if (dataset.SelectedValue.Equals("channel"))
             {
-                y.Text = "0.0";
+                if (!method.SelectedValue.Equals("GetThreshold"))
+                {
+                    y.Text = "0.0";
+                }
             }
             else if (dataset.SelectedValue.Equals("mixing"))
             {
-                y.Text = "3.14";
+                if (!method.SelectedValue.Equals("GetThreshold"))
+                {
+                    y.Text = "3.14";
+                }
                 time.Text = "5.0";
                 EndTime.Text = "5.08";
                 dt.Text = "0.02";
