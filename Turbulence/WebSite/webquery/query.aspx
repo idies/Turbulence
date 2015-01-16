@@ -65,7 +65,8 @@
                     </td></tr>
                  <tr><td>
         Function: [<a href="/analysisdoc.aspx" class="note">?</a>]</td><td >
-        <asp:DropDownList ID="method" runat="server" AutoPostBack="True">
+        <asp:DropDownList ID="method" runat="server" AutoPostBack="True" 
+                             onselectedindexchanged="method_SelectedIndexChanged">
             <asp:ListItem>GetVelocity</asp:ListItem>  
             <asp:ListItem>GetPressure</asp:ListItem>  
             <asp:ListItem ID="GetMagneticField" runat="server">GetMagneticField</asp:ListItem>  

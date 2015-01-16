@@ -20,11 +20,26 @@ namespace Website
         edu.jhu.pha.turbulence.TurbulenceService service;
 
         public enum OutputType { CSV, Tab, HTML, Binary };
+        
+        private String previous_selected_method
+        {
+            get
+            {
+                object o = ViewState["previous_selected_method"];
+                return (o == null) ? String.Empty : (string)o;
+            }
+
+            set
+            {
+                ViewState["previous_selected_method"] = value;
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             service = new edu.jhu.pha.turbulence.TurbulenceService();
             service.Timeout = 3600000;
+            spatial_ranges_update();
             dataset_update();
             spatial_flags_update();
             table_rows_update();
@@ -39,7 +54,6 @@ namespace Website
 
         protected void table_rows_update()
         {
-            spatial_ranges_update();
             EndTimeRow.Visible = false;
             DeltaTRow.Visible = false;
             spatialRow.Visible = false;
@@ -226,9 +240,6 @@ namespace Website
                     xwidth_range.Text = "X width [1, 1024]";
                     ywidth_range.Text = "Y width [1, 1024]";
                     zwidth_range.Text = "Z width [1, 1024]";
-                    x.Text = "0";
-                    y.Text = "0";
-                    z.Text = "0";
                     coord_range_details.Text = "<br />";
                 }
                 else
@@ -242,9 +253,6 @@ namespace Website
                     Xwidth.Visible = false;
                     Ywidth.Visible = false;
                     Zwidth.Visible = false;
-                    x.Text = "3.14";
-                    y.Text = "3.14";
-                    z.Text = "3.14";
                     coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
                 }
             }
@@ -258,9 +266,6 @@ namespace Website
                     xwidth_range.Text = "X width [1, 2048]";
                     ywidth_range.Text = "Y width [1, 512]";
                     zwidth_range.Text = "Z width [1, 1536]";
-                    x.Text = "0";
-                    y.Text = "0";
-                    z.Text = "0";
                     coord_range_details.Text = "<br />";
                 }
                 else
@@ -274,9 +279,6 @@ namespace Website
                     Xwidth.Visible = false;
                     Ywidth.Visible = false;
                     Zwidth.Visible = false;
-                    x.Text = "3.14";
-                    y.Text = "0.0";
-                    z.Text = "3.14";
                     coord_range_details.Text = "Values outside the range are treated as mod(8&pi;), mod(3&pi;) for x and z.<br/> The values for y must be within [-1, 1].";
                 }
             }
@@ -286,7 +288,6 @@ namespace Website
         {
             this.velocityEntry.Enabled = true;
             this.velocityEntry2.Enabled = true;
-            spatial_ranges_update();
             if (dataset.SelectedValue.Equals("isotropic1024coarse"))
             {
                 timerange.Text = "0.0 - 2.048<br/>dt = .002";
@@ -1754,6 +1755,44 @@ namespace Website
                 EndTime.Text = "5.08";
                 dt.Text = "0.02";
             }
+        }
+
+        protected void method_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (dataset.SelectedValue.Equals("isotropic1024coarse") ||
+                dataset.SelectedValue.Equals("isotropic1024fine") ||
+                dataset.SelectedValue.Equals("mhd1024") ||
+                dataset.SelectedValue.Equals("mixing"))
+            {
+                if (method.SelectedValue.Equals("GetThreshold"))
+                {
+                    x.Text = "0";
+                    y.Text = "0";
+                    z.Text = "0";
+                }
+                else if (previous_selected_method.Equals("GetThreshold"))
+                {
+                    x.Text = "3.14";
+                    y.Text = "3.14";
+                    z.Text = "3.14";
+                }
+            }
+            else if (dataset.SelectedValue.Equals("channel"))
+            {
+                if (method.SelectedValue.Equals("GetThreshold"))
+                {
+                    x.Text = "0";
+                    y.Text = "0";
+                    z.Text = "0";
+                }
+                else if (previous_selected_method.Equals("GetThreshold"))
+                {
+                    x.Text = "3.14";
+                    y.Text = "0.0";
+                    z.Text = "3.14";
+                }
+            }
+            previous_selected_method = method.SelectedValue;
         }
     }
 
