@@ -93,6 +93,7 @@
             <asp:ListItem ID="GetBoxFilterSGSsymtensor" runat="server">GetBoxFilterSGSsymtensor</asp:ListItem>
             <asp:ListItem ID="GetBoxFilterSGStensor" runat="server">GetBoxFilterSGStensor</asp:ListItem>
             <asp:ListItem ID="GetBoxFilterGradient" runat="server">GetBoxFilterGradient</asp:ListItem>
+            <asp:ListItem ID="GetThreshold" runat="server">GetThreshold</asp:ListItem>
             <asp:ListItem>NullOp</asp:ListItem>
         </asp:DropDownList>
         </td><td></td></tr>
@@ -141,6 +142,8 @@
                         <asp:ListItem ID="magneticEntry" runat="server">Magnetic Field</asp:ListItem>
                         <asp:ListItem ID="potentialEntry" runat="server">Vector Potential</asp:ListItem>
                         <asp:ListItem ID="densityEntry" runat="server">Density</asp:ListItem>
+                        <asp:ListItem ID="vorticityEntry" runat="server">Vorticity</asp:ListItem>
+                        <asp:ListItem ID="QEntry" runat="server">Q</asp:ListItem>
                     </asp:DropDownList></td>
                 <td>
                     <asp:DropDownList ID="fieldList2" runat="server">
@@ -172,12 +175,19 @@
                     Multiple of dx
                 </td>
             </tr>
+            <tr runat="server" ID="thresholdRow">
+                <td>
+                    Threshold: [<a href="/analysisdoc.aspx" class="note">?</a>]</td>
+                <td>
+                    <asp:TextBox ID="threshold" runat="server">0.5</asp:TextBox>
+                </td>
+            </tr>
         </table>
         <br />
         
         <hr />
         
-        <h3>Query a single point</h3>  
+        <h3 runat="server" id="QueryText">Query a single point</h3>  
         <br />
         <table>
         <tr><th>x <asp:Literal ID="x_range" runat="server" Visible="true"></asp:Literal></th>
@@ -186,6 +196,13 @@
         <tr><td><asp:TextBox ID="x" runat="server">3.14</asp:TextBox></td>
             <td><asp:TextBox ID="y" runat="server">3.14</asp:TextBox></td>
             <td><asp:TextBox ID="z" runat="server">3.14</asp:TextBox></td></tr>
+        <tr><td><br /></td></tr>
+        <tr><th><asp:Literal ID="xwidth_range" runat="server" Visible="true"></asp:Literal></th>
+            <th><asp:Literal ID="ywidth_range" runat="server" Visible="true"></asp:Literal></th>
+            <th><asp:Literal ID="zwidth_range" runat="server" Visible="true"></asp:Literal></th></tr>
+        <tr><td><asp:TextBox ID="Xwidth" runat="server">16</asp:TextBox></td>
+            <td><asp:TextBox ID="Ywidth" runat="server">16</asp:TextBox></td>
+            <td><asp:TextBox ID="Zwidth" runat="server">16</asp:TextBox></td></tr>
             
         <tr><td colspan="3" align="center"><em><asp:Literal ID="coord_range_details" runat="server" Visible="true"></asp:Literal></em></td></tr>
         <tr><td colspan="3" align="center">

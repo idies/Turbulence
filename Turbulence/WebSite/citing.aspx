@@ -61,18 +61,18 @@
       </blockquote>  
       <p >For articles that use the mhd flow data, we suggest also including:</p>
       <blockquote>
-        <p>H. Aluie, G. Eyink, E. Vishniac, S. Chen K. Kanov, R. Burns, C. Meneveau, A. Szalay, ``Forced MHD turbulence data set¡± (2013), available at 
+        <p>H. Aluie, G. Eyink, E. Vishniac, S. Chen K. Kanov, R. Burns, C. Meneveau, A. Szalay, &quot;Forced MHD turbulence data set&quot; (2013), available at 
         <a href="http://turbulence.pha.jhu.edu/docs/README-MHD.pdf">http://turbulence.pha.jhu.edu/docs/README-MHD.pdf</a> </p>
       </blockquote>   
       <p >For articles that use the mixing flow data, we suggest also including:</p>
       <blockquote>
-        <p>D. Livescu, C. Canada, K. Kanov, R. Burns & IDIES staff, J. Pulido, ¡°Homogeneous Buoyancy driven turbulence data set¡± (2014), 
+        <p>D. Livescu, C. Canada, K. Kanov, R. Burns & IDIES staff, J. Pulido, &quot;Homogeneous Buoyancy driven turbulence data set&quot; (2014), 
         available at <a href="http://turbulence.pha.jhu.edu/docs/README-HBDT.pdf">http://turbulence.pha.jhu.edu/docs/README-HBDT.pdf</a> </p>
       </blockquote> 
       <p >For articles that use the Lagrangian tracking GetPosition function, we suggest also including:</p>
       <blockquote>
         <p>H. Yu, K. Kanov, E. Perlman, J. Graham, E. Frederix, R. Burns, A. Szalay, G. Eyink, and C. Meneveau. 
-        "Studying Lagrangian dynamics of turbulence using on-demand fluid particle tracking in a public turbulence database". Journal of Turbulence <strong>13</strong>, No. 12 (2012). </p>
+        &quot;Studying Lagrangian dynamics of turbulence using on-demand fluid particle tracking in a public turbulence database&quot;. Journal of Turbulence <strong>13</strong>, No. 12 (2012). </p>
       </blockquote>
     
 </div>
