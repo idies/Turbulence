@@ -324,6 +324,7 @@ and the second order derivatives:
 \input{M2Q14_d2beta.tex}
 
 \section{Spatial interpolation inside the database: non-uniform grid}\label{sec:interp}
+\subsection{Lagrange interpolation}
 Spatial interpolation for domains with non-uninform grid spacing (e.g. the
 channel flow domain) is applied using multivariate polynomial interpolation of
 the barycentric Lagrange form from Ref.~\cite{Berrut2004}. Using this approach,
@@ -416,6 +417,124 @@ and similarly for the barycentric weights, \eqref{eq:interp_bary_weight} becomes
   w_\xi = \frac{1}{\prod_{\eta=\xi_s,\eta\neq \xi}^{\xi_e} (\xi - \eta)\Delta\theta}
 \end{equation}
 for the $x$ and $z$ directions. The computation of the barycentric weights for the $x$ and $z$ directions are carried out once (for a given interpolation order) for all grid points using \eqref{eq:interp_bary_weight_periodic}; for the $y$ direction the barycentric weights are computed for each point using \eqref{eq:interp_bary_weight}.
+
+\subsection{Spline interpolation}
+Similarly to the Lagrange case, regular spline interpolation is performed in the $x$ and $z$ coordinates.
+For the $y$ coordinate, the only difference with the uniform grid case is that polynomials are now different for
+each cell.
+
+\begin{enumerate}
+    \item
+        For each $0 \leq i \leq N - 1$, construct the Fornberg coefficients $\delta_{ij}^l$ for the
+        $l$-th derivative approximated at the point $x_i$, using the grid nodes $\nu_i(j), 0 \leq j \leq
+        q - 1$, where
+
+        \begin{enumerate}
+            \item
+                if the grid is periodic:
+
+                $\nu_i(0) = i - n$, $\nu_i(1) = i - n + 1$, \ldots, $\nu_i(q - 2) = i + n$
+
+                Note that since the distances between successive points on the grid is constant, the
+                resulting $\delta_{ij}^l$ will in fact be independent of $i$.
+            \item
+                otherwise:
+
+                \begin{enumerate}
+                    \item
+                        case $i < n$:
+                        $$\nu_i(0) = 0, \nu_i(1) = 1, \ldots, \nu_i(q - 2) = q-2$$
+                    \item
+                        case $n \leq i < N - n$:
+                        $$\nu_i(0) = i - n, \nu_i(1) = i - n + 1, \ldots, \nu_i(q - 2) = i+n$$
+                    \item
+                        case $N-n \leq i$:
+                        $$\nu_i(0) = N - q + 1, \nu_i(1) = N - q + 2, \ldots, \nu_i(q - 2) = N-1$$
+                \end{enumerate}
+        \end{enumerate}
+    \item
+        For each $0 \leq i < N-1$, construct the corresponding sequence of $\beta$ polynomials, and the
+        sequence of compute nodes $\mu$:
+        \begin{enumerate}
+            \item
+                if the grid is periodic:
+                \begin{align}
+                    \beta_{0}(\tilde{x}) &=
+                        \sum_{l = 0}^m
+                        (x_1 - x_0)^{-l}
+                        \delta_{00}^l \alpha_0^{(m, l)}(\tilde{x}) \\
+                    \beta_{j}(\tilde{x}) &=
+                        \sum_{l = 0}^m
+                        (x_1 - x_0)^{-l}
+                        \Big[\delta_{0j}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                             \delta_{0(j-1)}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                    \forall 1 \leq j < q-1 \\
+                    \beta_{q-1}(\tilde{x}) &=
+                        \sum_{l = 0}^m
+                        (x_1 - x_0)^{-l}
+                        \delta_{0(q-1)}^l \alpha_1^{(m, l)}(\tilde{x})
+                \end{align}
+                \begin{equation}
+                    \mu_i(0) = i-n, \mu_i(1) = i-n+1, \ldots, \mu_i(q-2) = i+n, \mu_i(q-1) = i+1+n
+                \end{equation}
+
+            \item
+                otherwise:
+                \begin{enumerate}
+                    \item
+                        case $i < n$
+                        \begin{align}
+                            \beta_{ij}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_{i+1} - x_i)^{-l}
+                                \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                     \delta_{(i+1)j}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                            \forall 0 \leq j < q - 1
+                        \end{align}
+                        \begin{equation}
+                            \mu_i(j) = \nu_i(j)
+                        \end{equation}
+                    \item
+                        case $n \leq i < N - n$:
+                        \begin{align}
+                            \beta_{i0}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_{i+1} - x_i)^{-l}
+                                \delta_{i0}^l \alpha_0^{(m, l)}(\tilde{x}) \\
+                            \beta_{ij}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_{i+1} - x_i)^{-l}
+                                \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                     \delta_{(i+1)(j-1)}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                            \forall 1 \leq j < q-1 \\
+                            \beta_{i(q-1)}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_{i+1} - x_i)^{-l}
+                                \delta_{(i+1)(q-1)}^l \alpha_1^{(m, l)}(\tilde{x})
+                        \end{align}
+                        \begin{equation}
+                            \mu_i(0) = i-n,
+                            \mu_i(1) = i-n+1,
+                            \ldots,
+                            \mu_i(q-2) = i+n,
+                            \mu_i(q-1) = i+1+n
+                        \end{equation}
+                    \item
+                        case $N-n \leq i$:
+                        \begin{align}
+                            \beta_{ij}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_{i+1} - x_i)^{-l}
+                                \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                     \delta_{(i+1)j}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                            \forall 0 \leq j < q-1
+                        \end{align}
+                        \begin{equation}
+                            \mu_i(j) = \nu_i(j)
+                        \end{equation}
+                \end{enumerate}
+        \end{enumerate}
+\end{enumerate}
 
 \section{Spatial differentiation inside the database: non-uniform grid}
 Spatial differentiation for grids with non-uniform spacing is performed using the barycentric method of the interpolating polynomial. In one dimension (assuming the $x$ direction; the same applies for the $y$ and $z$ directions), the interpolant for the field $f$ is given as
