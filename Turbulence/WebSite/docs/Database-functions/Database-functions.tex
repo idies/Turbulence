@@ -85,10 +85,6 @@ x}[f(x_{n+1})-f(x_{n-1})]-\frac{1}{5\Delta x}[f(x_{n+2})-f(x_{n-2})]\nonumber\\
 x}[f(x_{n+4})-f(x_{n-4})]\nonumber\\
 && +o(\Delta x^8) \eea
 
-\subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points.}
-\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
-\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
-
 \subsection{Options for GetVelocityLaplacian, GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetVelocityHessian, GetMagneticFieldHessian, GetVectorPotentialHessian,
 GetPressureHessian and GetDensityHessian}
 In this section, second derivatives finite difference evaluations are shown. The expressions are
@@ -168,9 +164,6 @@ x\Delta y}[f(x_{m+4},y_{n+4})+f(x_{m-4},y_{n-4})\nonumber\\
 &&-f(x_{m+4},y_{n-4})-f(x_{m-4},y_{n+4})]\nonumber\\
 &&+o(\Delta x^8) \eea
 
-\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
-\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
-
 \section{Spatial interpolation inside database: equidistant grid}
 \label{sec:spa}
 \begin{figure}[h]
@@ -183,13 +176,21 @@ In this section, $f$ denotes any one of the three components of
 velocity, $u_x$, $u_y$ or $u_z$, magnetic field $b_x$, $b_y$ or $b_z$, vector potential $a_x$, $a_y$ or $a_z$, or pressure, $p$,  depending on which
 function is called. $\Delta x$, $\Delta y$ and $\Delta z$ are the
 width of grid in $x$, $y$ and $z$ direction. ${\bf x'}=(x',y',z')$.
+
+The grid cell where the interpolation is performed is denoted by
+$n = \textrm{floor}\left(\frac{x'}{\Delta x}\right)$,
+$p = \textrm{floor}\left(\frac{y'}{\Delta y}\right)$ and
+$q = \textrm{floor}\left(\frac{z'}{\Delta z}\right)$,
+except in the cases of nearest neighbor approximation.
 \subsubsection*{NoSInt: No spatial  interpolation}
 \label{sec-noint}
 In this case, the value at the datapoint closest to each
 coordinate value is returned, rounding up or down in each
 direction. \bea f({\bf x'}) &=& f(x_n,y_p,z_q)\eea where
-$n=int(\frac{x'}{\Delta x}+\frac{1}{2})$, $p=int(\frac{y'}{\Delta
-y}+\frac{1}{2})$, $q=int(\frac{z'}{\Delta z}+\frac{1}{2})$.
+$n=\textrm{int}(\frac{x'}{\Delta x}+\frac{1}{2})$,
+$p=\textrm{int}(\frac{y'}{\Delta y}+\frac{1}{2})$,
+$q=\textrm{int}(\frac{z'}{\Delta z}+\frac{1}{2})$.
+
 
 \subsubsection*{Lag4: 4th-order Lagrange Polynomial interpolation}
 
@@ -225,8 +226,38 @@ i}^{n+4}(\theta'-\theta_j)}{\prod\limits_{j=n-3,j\neq
 i}^{n+4}(\theta_i-\theta_j)}\eea where $\theta$ can be x, y, or z.
 
 \subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points.}
+\begin{equation}
+    f(\mathbf{x}') =
+    \sum_{i=-1}^2 \sum_{j=-1}^2 \sum_{k=-1}^2
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \beta_j\left(\frac{y' - y_p}{\Delta y}\right)
+    \cdot \beta_k\left(\frac{z' - z_q}{\Delta z}\right)
+\end{equation}
+with the polynomials $\beta$ as follows:
+\input{M1Q4_d0beta.tex}
 \subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+\begin{equation}
+    f(\mathbf{x}') =
+    \sum_{i=-3}^4 \sum_{j=-3}^4 \sum_{k=-3}^4
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \beta_j\left(\frac{y' - y_p}{\Delta y}\right)
+    \cdot \beta_k\left(\frac{z' - z_q}{\Delta z}\right)
+\end{equation}
+with the polynomials $\beta$ as follows:
+\input{M2Q8_d0beta.tex}
 \subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+\begin{equation}
+    f(\mathbf{x}') =
+    \sum_{i=-6}^7 \sum_{j=-6}^7 \sum_{k=-6}^7
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \beta_j\left(\frac{y' - y_p}{\Delta y}\right)
+    \cdot \beta_k\left(\frac{z' - z_q}{\Delta z}\right)
+\end{equation}
+with the polynomials $\beta$ as follows:
+\input{M2Q14_d0beta.tex}
 
 \subsection{Interpolation Options for GetVelocityGradient, GetVelocityLaplacian, GetVelocityHessian, GetMagneticFieldGradient, GetVectorPotentialGradient,
  GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetMagneticFieldHessian, GetVectorPotentialHessian, GetPressureGradient, GetPressureHessian, GetDensityGradient
@@ -241,8 +272,9 @@ In this case, the value of the 4th, 6th, or 8th order finite-difference
 evaluation of the derivative at the datapoint closest to each coordinate value is
 returned, rounding up or down in each direction.
 \bea f({\bf x'}) &=& f(x_n,y_p,z_q)\eea where
-$n=int(\frac{x'}{\Delta x}+\frac{1}{2})$, $p=int(\frac{y'}{\Delta
-y}+\frac{1}{2})$, $q=int(\frac{z'}{\Delta z}+\frac{1}{2})$.
+$n=\textrm{int}(\frac{x'}{\Delta x}+\frac{1}{2})$,
+$p=\textrm{int}(\frac{y'}{\Delta y}+\frac{1}{2})$,
+$q=\textrm{int}(\frac{z'}{\Delta z}+\frac{1}{2})$.
 
 \subsubsection*{FD4Lag4: 4th-order Lagrange Polynomial interpolation of 4th-order finite diff.}
 
@@ -257,8 +289,39 @@ i}^{n+2}(\theta'-\theta_j)}{\prod\limits_{j=n-1,j\neq
 i}^{n+2}(\theta_i-\theta_j)}\eea where $\theta$ can be x, y, or z.
 
 \subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. Not applicable for Hessian.}
+Differentiation is performed directly on the interpolating polynomials, giving rise to continuous derivatives.
+For example:
+\begin{equation}
+    \frac{d}{dy} f(\mathbf{x}') =
+    \sum_{i=-1}^2 \sum_{j=-1}^2 \sum_{k=-1}^2
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \left(\frac{d}{dy} \beta_j\left(\frac{y' - y_p}{\Delta y}\right)\right)
+    \cdot \beta_k\left(\frac{z' - z_q}{\Delta z}\right)
+\end{equation}
+with the $\beta$ polynomials as above, and the derivatives of $\beta$ given here for convenience:
+\input{M1Q4_d1beta.tex}
 \subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+First order derivatives are computed similarly as for the M1Q4 case, with the derivatives as follows:
+\input{M2Q8_d1beta.tex}
+Second order derivatives can also be computed.
+Mixed derivatives use the first order derivatives of the $\beta$ polynomials:
+\begin{equation}
+    \frac{d^2}{dydz} f(\mathbf{x}') =
+    \sum_{i=-3}^4 \sum_{j=-3}^4 \sum_{k=-3}^4
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \left(\frac{d}{dy} \beta_j\left(\frac{y' - y_p}{\Delta y}\right)\right)
+    \cdot \left(\frac{d}{dz} \beta_k\left(\frac{z' - z_q}{\Delta z}\right)\right)
+\end{equation}
+For one component second order deriviatives, the exact same procedure as for first order derivatives is
+followed, with the derivatives as follows:
+\input{M2Q8_d2beta.tex}
 \subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+The procedure is identical as for M2Q8, using the first order derivatives given by:
+\input{M2Q14_d1beta.tex}
+and the second order derivatives:
+\input{M2Q14_d2beta.tex}
 
 \section{Spatial interpolation inside the database: non-uniform grid}\label{sec:interp}
 Spatial interpolation for domains with non-uninform grid spacing (e.g. the
