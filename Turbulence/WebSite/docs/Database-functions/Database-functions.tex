@@ -618,10 +618,14 @@ For this integration scheme, the time-stepping error is of order $(\Delta t_p)^3
 The GetThreshold function produces all locations in the specified dataset that have norms for the specified $field$ above the user supplied $threshold$. 
 The norm at each of the locations is also returned. The parameters supplied to the function are the following. The $field$ parameter specifies the field to be
 thresholded and currently the valid values are one of the simulation fields, i.e. \emph{``velocity", ``pressure", ``magnetic", ``potential", ``density"} or
-the derived fields \emph{"vorticity"} and \emph{"Q"}. The X, Y, Z and Xwidth, Ywidth and Zwidth parameters denote the spatial region to be examined. X, Y and Z specify
+the derived fields \emph{"vorticity"} and \emph{"Q"}. The $spatial$ option specifies the interpolation or differentiation option that should be applied. 
+As each field is evaluated at grid nodes no interpolation is needed. Thus, for
+the \emph{``velocity", ``pressure", ``magnetic", ``potential"} and \emph{``density"} fields the valid spatial option is $None$ (or 0) and for the \emph{"vorticity"} and \emph{"Q"} fields the valid differentiation options are \emph{Fd4NoInt, Fd6NoInt, Fd8NoInt} (or 40, 60, 80).
+The X, Y, Z and Xwidth, Ywidth and Zwidth parameters denote the spatial region to be examined. X, Y and Z specify
 the bottom left corner for this region and Xwidth, Ywidth and Zwidth specify the width in each of the three dimensions in units of grid points. For example, 
 the MHD dataset has a $1024^3$ spatial grid and a region can be specified as [0, 0, 0, 256, 256, 256] to examine the $256^3$ region with bottom left corner at
 (0, 0, 0). The function returns the X, Y and Z coordinates and the norm of the field for all locations with norms above the threshold.
+The output is ordered according to the norm of the field examined, from highest to lowest.
 
 \bibliographystyle{plain}
 \bibliography{Database-functions}
