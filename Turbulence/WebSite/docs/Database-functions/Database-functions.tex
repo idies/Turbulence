@@ -7,7 +7,7 @@
 \usepackage{color}
 \usepackage{bm}
 \usepackage{algorithmic}
-\usepackage[autostyle]{csquotes}
+\usepackage[colorlinks=true]{hyperref}
 
 \oddsidemargin=-0.0in
 \evensidemargin=-0.0in
@@ -50,7 +50,9 @@
 \section{Spatial differentiation inside database: equidistant grid}
 
 In this section, $f$ denotes any one of the three components of
-velocity, magnetic field, or vector potential in the $x$, $y$ and $z$ directions ($u_x$, $u_y$ or $u_z$; $b_x$, $b_y$ or $b_z$; $a_x$, $a_y$ or $a_z$), or pressure ($p$), depending on which function is called. $\Delta x$ and $\Delta y$ are the width of grid in $x$ and $y$ direction.
+velocity, magnetic field, or vector potential in the $x$, $y$ and $z$ directions ($u_x$, $u_y$ or $u_z$; $b_x$,
+$b_y$ or $b_z$; $a_x$, $a_y$ or $a_z$), or pressure ($p$), depending on which function is called. $\Delta x$ and
+$\Delta y$ are the width of grid in $x$ and $y$ direction.
 
 \subsection{Options for GetVelocityGradient, GetMagneticFieldGradient, GetVectorPotentialGradient, GetPressureGradient and GetDensityGradient}
 
@@ -85,6 +87,17 @@ x}[f(x_{n+1})-f(x_{n-1})]-\frac{1}{5\Delta x}[f(x_{n+2})-f(x_{n-2})]\nonumber\\
 &&+\frac{4}{105\Delta x}[f(x_{n+3})-f(x_{n-3})]-\frac{1}{280\Delta
 x}[f(x_{n+4})-f(x_{n-4})]\nonumber\\
 && +o(\Delta x^8) \eea
+\subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points.}
+When computing the derivatives at grid nodes, using this option is equivalent to using 2nd order centered finite
+differencing.
+However, the option is in fact a full-fledged interpolation; see \ref{sec:M1Q4 diff} for details.
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+When computing the derivatives at grid nodes, using this option is equivalent to the FD6 option.
+However, the option is in fact a full-fledged interpolation; see \ref{sec:M2Q8 diff} for details.
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+When computing the derivatives at grid nodes, using this option is equivalent to using 12th order centered finite
+differencing.
+However, the option is in fact a full-fledged interpolation; see \ref{sec:M2Q14 diff} for details.
 
 \subsection{Options for GetVelocityLaplacian, GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetVelocityHessian, GetMagneticFieldHessian, GetVectorPotentialHessian,
 GetPressureHessian and GetDensityHessian}
@@ -164,6 +177,14 @@ x\Delta y}[f(x_{m+3},y_{n+3})+f(x_{m-3},y_{n-3})\nonumber\\
 x\Delta y}[f(x_{m+4},y_{n+4})+f(x_{m-4},y_{n-4})\nonumber\\
 &&-f(x_{m+4},y_{n-4})-f(x_{m-4},y_{n+4})]\nonumber\\
 &&+o(\Delta x^8) \eea
+
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+When computing the derivatives at grid nodes, using this option is equivalent to the FD6 option.
+However, the option is in fact a full-fledged interpolation; see \ref{sec:M2Q8 diff} for details.
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+When computing the derivatives at grid nodes, the results coincide with centered differences computed with 6
+neighbours.
+However, the option is in fact a full-fledged interpolation; see section \ref{sec:M2Q14 diff} for details.
 
 \section{Spatial interpolation inside database: equidistant grid}
 \label{sec:spa}
@@ -290,6 +311,7 @@ i}^{n+2}(\theta'-\theta_j)}{\prod\limits_{j=n-1,j\neq
 i}^{n+2}(\theta_i-\theta_j)}\eea where $\theta$ can be x, y, or z.
 
 \subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. Not applicable for Hessian.}
+\label{sec:M1Q4 diff}
 Differentiation is performed directly on the interpolating polynomials, giving rise to continuous derivatives.
 For example:
 \begin{equation}
@@ -303,6 +325,7 @@ For example:
 with the $\beta$ polynomials as above, and the derivatives of $\beta$ given here for convenience:
 \input{M1Q4_d1beta.tex}
 \subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+\label{sec:M2Q8 diff}
 First order derivatives are computed similarly as for the M1Q4 case, with the derivatives as follows:
 \input{M2Q8_d1beta.tex}
 Second order derivatives can also be computed.
@@ -319,6 +342,7 @@ For one component second order deriviatives, the exact same procedure as for fir
 followed, with the derivatives as follows:
 \input{M2Q8_d2beta.tex}
 \subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+\label{sec:M2Q14 diff}
 The procedure is identical as for M2Q8, using the first order derivatives given by:
 \input{M2Q14_d1beta.tex}
 and the second order derivatives:
