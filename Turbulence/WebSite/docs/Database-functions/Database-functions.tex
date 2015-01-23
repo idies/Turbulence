@@ -7,6 +7,7 @@
 \usepackage{color}
 \usepackage{bm}
 \usepackage{algorithmic}
+\usepackage[autostyle]{csquotes}
 
 \oddsidemargin=-0.0in
 \evensidemargin=-0.0in
@@ -324,6 +325,7 @@ and the second order derivatives:
 \input{M2Q14_d2beta.tex}
 
 \section{Spatial interpolation inside the database: non-uniform grid}\label{sec:interp}
+\subsection{Lagrange interpolation}
 Spatial interpolation for domains with non-uninform grid spacing (e.g. the
 channel flow domain) is applied using multivariate polynomial interpolation of
 the barycentric Lagrange form from Ref.~\cite{Berrut2004}. Using this approach,
@@ -417,6 +419,215 @@ and similarly for the barycentric weights, \eqref{eq:interp_bary_weight} becomes
 \end{equation}
 for the $x$ and $z$ directions. The computation of the barycentric weights for the $x$ and $z$ directions are carried out once (for a given interpolation order) for all grid points using \eqref{eq:interp_bary_weight_periodic}; for the $y$ direction the barycentric weights are computed for each point using \eqref{eq:interp_bary_weight}.
 
+\subsection{Spline interpolation}
+Similarly to the Lagrange case, regular spline interpolation is performed in the $x$ and $z$ coordinates.
+For the $y$ coordinate, the only difference with the uniform grid case is that polynomials are now different for
+each cell.
+In the interest of completeness, we quote the general construction of the $\beta$ polynomials from our
+publication \cite{channel_paper}:
+
+\begin{quotation}
+    ``\textbf{Hermite splines}
+        Assuming that the values of a function $f(x)$ and its derivatives are known at the points $0$ and $1$,
+        the polynomial $s(x)$ can be built, such that
+        \begin{align}
+            s(x) &= \sum_{k = 0}^p a_k x^k \\
+            \Biggr[\frac{d^l s}{dx^l} (x) &=
+             f^{(l)}(x)\Biggr]_{x \in \{0, 1\}}, \forall l \in \{0, 1, \ldots, m\}
+            \label{eq:spline coefficients}
+        \end{align}
+        where $p$ is the order of the polynomial; if the linear system of equations \eqref{eq:spline
+        coefficients} is to have a unique solution $a_k$, $p$ must be equal to $2m+1$.
+
+        From this problem a sequence of ``base'' polynomials can be derived, such that the expression of $s(x)$
+        can be written as follows:
+        \begin{equation}
+            s(x) = \sum_{l = 0}^m \sum_{i = 0, 1} f^{(l)}(i) \alpha_i^{(m, l)} (x)
+        \end{equation}
+        where the $\alpha$ polynomials (of order $p$ each one) have the following explicit expressions
+        (see \cite{arXiv_splines} for details):
+        \begin{align}
+            \alpha^{(m, l)}_0 (x) &=
+            \frac{x^l}{l!}(1-x)^{m+1} \sum_{k=0}^{m-l} \frac{(m+k)!}{m! k!}x^k \\
+            \alpha^{(m, l)}_1 (x) &=
+            \frac{(x-1)^l}{l!}x^{m+1} \sum_{k=0}^{m-l} \frac{(m+k)!}{m! k!}(1-x)^k
+        \end{align}
+      \textbf{Grid splines}
+        In \cite{arXiv_splines} centered differences are used to approximate the derivatives of $f$,
+        since it would be impractical to store the derivatives of $f$ on the grid for the general
+        multidimensional case.
+        A naive algorithm is then provided to construct ``grid splines'':
+        \begin{equation}
+            s^{(m, q)}(x) = \sum_{i = -n}^{1+n} f(i) \beta_i^{(m, q)}(x)
+            \label{eq:uniform grid splines}
+        \end{equation}
+        where the $\beta$ polynomials can be constructed from the $\alpha$ polynomials and the centered
+        difference formulas.
+        $n$ is the number of immediate neighbours that are needed for the computation, while $q = 2n + 2$ is
+        the total number of points used (i.e. the stencil size).
+        Unlike in previous work, the pair $(m, q)$ is chosen for the characterization of each formula,
+        since the interest lies mainly in the smoothness $m$ of the interpolant,
+        and the computational cost is mostly related to $q$.
+        Note that the order $p = 2m+1$ also has an influence on the computational cost,
+        but this becomes less important in the multidimensional case.
+
+        This previous result is perfectly adequate for the case of periodic, uniform grids, since the coordinate
+        transforms are trivial.
+        Furthermore, the $\beta$ polynomials themselves owe their form to the fact that the original function is
+        known at points in $\mathbb{Z}$.
+        However, these results cannot be directly used for nonuniform grids, or even for uniform grids that are
+        not periodic.
+
+        The basis of \eqref{eq:uniform grid splines} is that the $\beta$ polynomials contain information about
+        the centered differences.
+        It is crucial that centered differences are used, since that means that, whether we compute the
+        interpolation in the interval $[i, i+1]$ or $[i+1, i+2]$, the derivatives will be approximated with the
+        same value at the point $i+1$, therefore the derivative of the interpolant will be continuous.
+        For the case of generic grids, it is this constraint that must be kept: the value of the finite
+        difference approximation used for some grid point, embedded in the form of the polynomials used, must
+        be the same whether we approach the grid point from the left or from the right.
+
+        In \cite{fornberg_generation_1988, fornberg_classroom_1998} a systematic way to construct all the
+        possible finite difference formulas for a given grid is provided.
+        This allows the construction of specific $\beta$ polynomials for individual grid points on a nonuniform,
+        nonperiodic grid.
+        I.e. instead of having a number $q$ of $\beta$ polynomials for each formula, there are now on the
+        order of $Nq$, where $N$ is the total number of grid points.
+        Obviously, the generation and storage of these many polynomials is only reasonable in cases when there
+        are many different fields that must be evaluated on the same grid.
+
+        Assume that a grid of points $x_i, 0 \leq i \leq N - 1$ is given, as well as a smoothness $m$ and a
+        stencil size $q$ (thus a number of neighbours $n = (q-2)/2$.
+        This is the outline of the algorithm that is then followed for a generic one dimensional grid to
+        construct the $\beta$ polynomials:
+
+        \begin{enumerate}
+            \item
+                For each $0 \leq i \leq N - 1$, construct the Fornberg coefficients $\delta_{ij}^l$ for the
+                $l$-th derivative approximated at the point $x_i$, using the grid nodes $\nu_i(j), 0 \leq j \leq
+                q - 1$, where
+
+                \begin{enumerate}
+                    \item
+                        if the grid is periodic:
+
+                        $\nu_i(0) = i - n$, $\nu_i(1) = i - n + 1$, \ldots, $\nu_i(q - 2) = i + n$
+
+                        Note that since the distances between successive points on the grid is constant, the
+                        resulting $\delta_{ij}^l$ will in fact be independent of $i$.
+                    \item
+                        otherwise:
+
+                        \begin{enumerate}
+                            \item
+                                case $i < n$:
+                                $$\nu_i(0) = 0, \nu_i(1) = 1, \ldots, \nu_i(q - 2) = q-2$$
+                            \item
+                                case $n \leq i < N - n$:
+                                $$\nu_i(0) = i - n, \nu_i(1) = i - n + 1, \ldots, \nu_i(q - 2) = i+n$$
+                            \item
+                                case $N-n \leq i$:
+                                $$\nu_i(0) = N - q + 1, \nu_i(1) = N - q + 2, \ldots, \nu_i(q - 2) = N-1$$
+                        \end{enumerate}
+                \end{enumerate}
+            \item
+                For each $0 \leq i < N-1$, construct the corresponding sequence of $\beta$ polynomials, and the
+                sequence of compute nodes $\mu$:
+                \begin{enumerate}
+                    \item
+                        if the grid is periodic:
+                        \begin{align}
+                            \beta_{0}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_1 - x_0)^{-l}
+                                \delta_{00}^l \alpha_0^{(m, l)}(\tilde{x}) \\
+                            \beta_{j}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_1 - x_0)^{-l}
+                                \Big[\delta_{0j}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                     \delta_{0(j-1)}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                            \forall 1 \leq j < q-1 \\
+                            \beta_{q-1}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_1 - x_0)^{-l}
+                                \delta_{0(q-1)}^l \alpha_1^{(m, l)}(\tilde{x})
+                        \end{align}
+                        \begin{equation}
+                            \mu_i(0) = i-n, \mu_i(1) = i-n+1, \ldots, \mu_i(q-2) = i+n, \mu_i(q-1) = i+1+n
+                        \end{equation}
+
+                    \item
+                        otherwise:
+                        \begin{enumerate}
+                            \item
+                                case $i < n$
+                                \begin{align}
+                                    \beta_{ij}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                             \delta_{(i+1)j}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                                    \forall 0 \leq j < q - 1
+                                \end{align}
+                                \begin{equation}
+                                    \mu_i(j) = \nu_i(j)
+                                \end{equation}
+                            \item
+                                case $n \leq i < N - n$:
+                                \begin{align}
+                                    \beta_{i0}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \delta_{i0}^l \alpha_0^{(m, l)}(\tilde{x}) \\
+                                    \beta_{ij}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                             \delta_{(i+1)(j-1)}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                                    \forall 1 \leq j < q-1 \\
+                                    \beta_{i(q-1)}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \delta_{(i+1)(q-1)}^l \alpha_1^{(m, l)}(\tilde{x})
+                                \end{align}
+                                \begin{equation}
+                                    \mu_i(0) = i-n,
+                                    \mu_i(1) = i-n+1,
+                                    \ldots,
+                                    \mu_i(q-2) = i+n,
+                                    \mu_i(q-1) = i+1+n
+                                \end{equation}
+                            \item
+                                case $N-n \leq i$:
+                                \begin{align}
+                                    \beta_{ij}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                             \delta_{(i+1)j}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                                    \forall 0 \leq j < q-1
+                                \end{align}
+                                \begin{equation}
+                                    \mu_i(j) = \nu_i(j)
+                                \end{equation}
+                        \end{enumerate}
+                \end{enumerate}
+        \end{enumerate}
+        For any arbitrary point $x_0 \leq x < x_{N-1}$, the 1 dimensional interpolation is performed as follows:
+        \begin{enumerate}
+            \item
+                find the $c$ (cell) index, such that $x_c \leq x < x_{c+1}$, and compute
+                $\tilde{x} = \frac{x - x_c}{x_{c+1} - x_c}$
+            \item
+                compute the sum
+                \begin{equation}
+                    \sum_{j=0}^{q-1} \beta_{cj} (\tilde{x}) f(\mu_{c}(j))
+                \end{equation}
+                where $f$ is the field that is to be interpolated, known at the grid points, and
+                imposing that $\beta_{cj}$ is 0 if undefined.''
+        \end{enumerate}
+\end{quotation}
+%}
 \section{Spatial differentiation inside the database: non-uniform grid}
 Spatial differentiation for grids with non-uniform spacing is performed using the barycentric method of the interpolating polynomial. In one dimension (assuming the $x$ direction; the same applies for the $y$ and $z$ directions), the interpolant for the field $f$ is given as
 \begin{equation}
