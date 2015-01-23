@@ -7,6 +7,7 @@
 \usepackage{color}
 \usepackage{bm}
 \usepackage{algorithmic}
+\usepackage[autostyle]{csquotes}
 
 \oddsidemargin=-0.0in
 \evensidemargin=-0.0in
@@ -425,8 +426,8 @@ each cell.
 In the interest of completeness, we quote the general construction of the $\beta$ polynomials from our
 publication \cite{channel_paper}:
 
-\begin{small}
-    \begin{paragraph}{Hermite splines}
+\begin{quotation}
+    ``\textbf{Hermite splines}
         Assuming that the values of a function $f(x)$ and its derivatives are known at the points $0$ and $1$,
         the polynomial $s(x)$ can be built, such that
         \begin{align}
@@ -451,8 +452,7 @@ publication \cite{channel_paper}:
             \alpha^{(m, l)}_1 (x) &=
             \frac{(x-1)^l}{l!}x^{m+1} \sum_{k=0}^{m-l} \frac{(m+k)!}{m! k!}(1-x)^k
         \end{align}
-    \end{paragraph}
-    \begin{paragraph}{Grid splines}
+      \textbf{Grid splines}
         In \cite{arXiv_splines} centered differences are used to approximate the derivatives of $f$,
         since it would be impractical to store the derivatives of $f$ on the grid for the general
         multidimensional case.
@@ -624,11 +624,10 @@ publication \cite{channel_paper}:
                     \sum_{j=0}^{q-1} \beta_{cj} (\tilde{x}) f(\mu_{c}(j))
                 \end{equation}
                 where $f$ is the field that is to be interpolated, known at the grid points, and
-                imposing that $\beta_{cj}$ is 0 if undefined.
+                imposing that $\beta_{cj}$ is 0 if undefined.''
         \end{enumerate}
-    \end{paragraph}
-\end{small}
-
+\end{quotation}
+%}
 \section{Spatial differentiation inside the database: non-uniform grid}
 Spatial differentiation for grids with non-uniform spacing is performed using the barycentric method of the interpolating polynomial. In one dimension (assuming the $x$ direction; the same applies for the $y$ and $z$ directions), the interpolant for the field $f$ is given as
 \begin{equation}
