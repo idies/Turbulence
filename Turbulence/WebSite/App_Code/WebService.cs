@@ -1970,32 +1970,37 @@ namespace TurbulenceService {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.mhd1024:
                 case DataInfo.DataSets.mixing:
-                    switch (field)
+                    if (field.Contains("vorticity"))
                     {
-                        case "vorticity":
-                            worker = (int)Worker.Workers.GetCurlThreshold;
-                            break;
-                        case "q":
-                            worker = (int)Worker.Workers.GetQThreshold;
-                            break;
-                        case "velocity":
-                            worker = (int)Worker.Workers.GetVelocityThreshold;
-                            break;
-                        case "magnetic":
-                            worker = (int)Worker.Workers.GetMagneticThreshold;
-                            break;
-                        case "potential":
-                            worker = (int)Worker.Workers.GetPotentialThreshold;
-                            break;
-                        case "pressure":
-                            worker = (int)Worker.Workers.GetPressureThreshold;
-                            break;
-                        case "density":
-                            worker = (int)Worker.Workers.GetDensityThreshold;
-                            break;
-                        default:
-                            throw new Exception("Invalid field specified");
+                        worker = (int)Worker.Workers.GetCurlThreshold;
                     }
+                    else if (field.Contains("q")){
+                        worker = (int)Worker.Workers.GetQThreshold;
+                    }
+                    else if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel"))
+                    {
+                        worker = (int)Worker.Workers.GetVelocityThreshold;
+                    }
+                    else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
+                    {
+                        worker = (int)Worker.Workers.GetMagneticThreshold;
+                    }
+                    else if (field.Equals("a") || field.Contains("vec") || field.Contains("pot") || field.Contains("Vec"))
+                    {
+                        worker = (int)Worker.Workers.GetPotentialThreshold;
+                    }
+                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                    {
+                        worker = (int)Worker.Workers.GetPressureThreshold;
+                    }
+                    else if (field.Equals("d") || field.Contains("density") || field.Contains("Density"))
+                    {
+                        worker = (int)Worker.Workers.GetDensityThreshold;
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid field specified");
+                    }                    
                     break;
                 case DataInfo.DataSets.channel:
                     switch (field)

@@ -234,19 +234,19 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x_range.Text = "[0, 1023]";
-                    y_range.Text = "[0, 1023]";
-                    z_range.Text = "[0, 1023]";
-                    xwidth_range.Text = "X width [1, 1024]";
-                    ywidth_range.Text = "Y width [1, 1024]";
-                    zwidth_range.Text = "Z width [1, 1024]";
+                    x_range.Text = "Starting index: <br />i_x [0, 1023]";
+                    y_range.Text = "<br />i_y [0, 1023]";
+                    z_range.Text = "<br />i_z [0, 1023]";
+                    xwidth_range.Text = "Size: <br />N_x [1, 1024]";
+                    ywidth_range.Text = "<br />N_y [1, 1024]";
+                    zwidth_range.Text = "<br />N_z [1, 1024]";
                     coord_range_details.Text = "<br />";
                 }
                 else
                 {
-                    x_range.Text = "[0, 2&pi;]";
-                    y_range.Text = "[0, 2&pi;]";
-                    z_range.Text = "[0, 2&pi;]";
+                    x_range.Text = "x [0, 2&pi;]";
+                    y_range.Text = "y [0, 2&pi;]";
+                    z_range.Text = "z [0, 2&pi;]";
                     xwidth_range.Visible = false;
                     ywidth_range.Visible = false;
                     zwidth_range.Visible = false;
@@ -260,19 +260,19 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x_range.Text = "[0, 2047]";
-                    y_range.Text = "[0, 511]";
-                    z_range.Text = "[0, 1535]";
-                    xwidth_range.Text = "X width [1, 2048]";
-                    ywidth_range.Text = "Y width [1, 512]";
-                    zwidth_range.Text = "Z width [1, 1536]";
+                    x_range.Text = "Starting index: <br />i_x [0, 2047]";
+                    y_range.Text = "<br />i_y [0, 511]";
+                    z_range.Text = "<br />i_z [0, 1535]";
+                    xwidth_range.Text = "Size: <br />N_x [1, 2048]";
+                    ywidth_range.Text = "<br />N_y [1, 512]";
+                    zwidth_range.Text = "<br />N_z [1, 1536]";
                     coord_range_details.Text = "<br />";
                 }
                 else
                 {
-                    x_range.Text = "[0, 8&pi;]";
-                    y_range.Text = "[-1, 1]";
-                    z_range.Text = "[0, 3&pi;]";
+                    x_range.Text = "x [0, 8&pi;]";
+                    y_range.Text = "y [-1, 1]";
+                    z_range.Text = "z [0, 3&pi;]";
                     xwidth_range.Visible = false;
                     ywidth_range.Visible = false;
                     zwidth_range.Visible = false;
@@ -491,8 +491,6 @@ namespace Website
 
         protected void spatial_flags_update()
         {
-            string selected = spatial.Text;
-
             string[] flags;
             switch (method.Text)
             {
@@ -525,13 +523,18 @@ namespace Website
                     flags = new string[] { "FD4NoInt", "FD6NoInt", "FD8NoInt", "FD4Lag4" };
                     break;
                 case "GetThreshold":
-                    flags = new string[] { "None", "FD4NoInt", "FD6NoInt", "FD8NoInt" };
+                    flags = getThresholdFlags();
                     break;
                 default:
                     flags = new string[] { "None" };
                     break;
             }
+            setSpatialFlags(flags);
+        }
 
+        protected void setSpatialFlags(string[] flags)
+        {
+            string selected = spatial.Text;
             spatial.Items.Clear();
             foreach (string option in flags)
             {
@@ -540,7 +543,6 @@ namespace Website
                     item.Selected = true;
                 spatial.Items.Add(item);
             }
-
         }
 
         protected void point_Click(object sender, EventArgs e)
@@ -1654,13 +1656,13 @@ namespace Website
                     {
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
-                            outputText += String.Format("x{0}y{0}z{0}value\r\n", delim);
+                            outputText += String.Format("i_x{0}i_y{0}i_z{0}value\r\n", delim);
                         }
                         foreach (edu.jhu.pha.turbulence.ThresholdInfo result in results)
                         {
                             if (otype == OutputType.HTML)
                             {
-                                outputText += String.Format("x={0},y={1},z={2},value={3}<br />\n",
+                                outputText += String.Format("i_x={0},i_y={1},i_z={2},value={3}<br />\n",
                                     result.x, result.y, result.z, result.value);
                             }
                             else if (otype == OutputType.Tab || otype == OutputType.CSV)
@@ -1793,6 +1795,28 @@ namespace Website
                 }
             }
             previous_selected_method = method.SelectedValue;
+        }
+
+        protected void fieldList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (method.SelectedValue.Equals("GetThreshold"))
+            {
+                setSpatialFlags(getThresholdFlags());
+            }
+        }
+
+        protected string[] getThresholdFlags()
+        {
+            string[] flags;
+            if (fieldList.Text.ToLower().Contains("vorticity") || fieldList.Text.Equals("Q"))
+            {
+                flags = new string[] { "FD4NoInt", "FD6NoInt", "FD8NoInt" };
+            }
+            else
+            {
+                flags = new string[] { "None" };
+            }
+            return flags;
         }
     }
 
