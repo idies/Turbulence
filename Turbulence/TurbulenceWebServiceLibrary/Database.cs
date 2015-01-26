@@ -266,7 +266,7 @@ namespace TurbulenceService
                 
                 try
                 {
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(0), new Morton3D(63,63,63)));
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(0), new Morton3D(511,511,511)));
                 }
                 catch (Exception ex)
                 {
@@ -358,7 +358,7 @@ namespace TurbulenceService
 
                 try
                 {
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(0), new Morton3D(261632)));
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(0), new Morton3D(511, 511, 511)));
                 }
                 catch (Exception ex)
                 {

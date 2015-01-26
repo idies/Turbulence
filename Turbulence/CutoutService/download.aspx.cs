@@ -461,9 +461,9 @@ namespace CutoutService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.mhddev:
                     if (!(tlow >= 0 && thigh < 1) ||
-                       !(xlow >= 0 && xhigh < 64) ||
-                       !(ylow >= 0 && yhigh < 64) ||
-                       !(zlow >= 0 && zhigh < 64))
+                       !(xlow >= 0 && xhigh < 512) ||
+                       !(ylow >= 0 && yhigh < 512) ||
+                       !(zlow >= 0 && zhigh < 512))
                     { Response.Write("The requested region is out of bounds"); Response.End(); }
                     break;
                 case DataInfo.DataSets.mhd1024:
@@ -488,7 +488,7 @@ namespace CutoutService
                     { Response.Write("The requested region is out of bounds"); Response.End(); }
                     break;
                 default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
+                    throw new Exception(String.Format("Invalid dataset specified: {0}!", dataset));
             }
         }
 

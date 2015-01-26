@@ -65,7 +65,7 @@
       <h2 class="titletext">JHTDB Cutout Service</h2>
      
     <form id="cutout" runat="server">
-    <div style="height: 500px; width: 1050px">
+    <div style="width: 1050px">
         <hr />
  
    <table>
@@ -189,7 +189,7 @@
         <asp:Literal ID="dllink" runat="server" Visible="true"></asp:Literal>
 
         <br /><br />
-        <code><div id="message"></div></code>
+        <div id="message"></div>
 
     </div>
     </form>

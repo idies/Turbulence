@@ -17,6 +17,7 @@ using System.Collections.Generic;
             string dbname,
             string codedb,
             string turbinfodb,
+            string outputdb,
             short datasetID,
             string field,
             int blobDim,
@@ -41,7 +42,7 @@ using System.Collections.Generic;
                 SqlConnection standardConn;
                 
                 string cString;
-                cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
+                cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, outputdb);
                 standardConn = new SqlConnection(cString);
                 standardConn.Open();
                 TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
