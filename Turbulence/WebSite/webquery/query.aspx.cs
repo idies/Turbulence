@@ -1638,7 +1638,12 @@ namespace Website
                 else if (method.Text.Equals("GetThreshold"))
                 {
                     edu.jhu.pha.turbulence.ThresholdInfo[] results;
-                    string field = fieldList.Text.ToLower();
+                    string field = fieldList.Text.ToLower(); 
+                    // Remove " Magnitude" from the field name if it exists.
+                    if (field.Contains("magnitude"))
+                    {
+                        field = field.Substring(0, field.IndexOf(" magnitude"));
+                    }
                     float thresholdValue = Convert.ToSingle(threshold.Text);
                     int X_int = Convert.ToInt32(x.Text);
                     int Y_int = Convert.ToInt32(y.Text);
@@ -1771,12 +1776,18 @@ namespace Website
                     x.Text = "0";
                     y.Text = "0";
                     z.Text = "0";
+                    velocityEntry.Text = "Velocity Magnitude";
+                    magneticEntry.Text = "Magnetic Field Magnitude";
+                    potentialEntry.Text = "Vector Potential Magnitude";
                 }
                 else if (previous_selected_method.Equals("GetThreshold"))
                 {
                     x.Text = "3.14";
                     y.Text = "3.14";
                     z.Text = "3.14";
+                    velocityEntry.Text = "Velocity";
+                    magneticEntry.Text = "Magnetic Field";
+                    potentialEntry.Text = "Vector Potential";
                 }
             }
             else if (dataset.SelectedValue.Equals("channel"))
@@ -1786,12 +1797,18 @@ namespace Website
                     x.Text = "0";
                     y.Text = "0";
                     z.Text = "0";
+                    velocityEntry.Text = "Velocity Magnitude";
+                    magneticEntry.Text = "Magnetic Field Magnitude";
+                    potentialEntry.Text = "Vector Potential Magnitude";
                 }
                 else if (previous_selected_method.Equals("GetThreshold"))
                 {
                     x.Text = "3.14";
                     y.Text = "0.0";
                     z.Text = "3.14";
+                    velocityEntry.Text = "Velocity";
+                    magneticEntry.Text = "Magnetic Field";
+                    potentialEntry.Text = "Vector Potential";
                 }
             }
             previous_selected_method = method.SelectedValue;
