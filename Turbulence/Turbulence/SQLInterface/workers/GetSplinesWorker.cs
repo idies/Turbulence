@@ -1249,12 +1249,12 @@ namespace Turbulence.SQLInterface.workers
                 {
                     ClacSplineGradient(blob, ref input.lagInt, startz, endz, starty, endy, startx, endx, iLagIntz, iLagInty, iLagIntx, ref up);
 
-                    int dimensions = 3;
+                    int gradient_components = 3;
                     for (int j = 0; j < setInfo.Components; j++)
                     {
-                        up[dimensions * j] = up[dimensions * j] / setInfo.Dx;
-                        up[1 + dimensions * j] = up[1 + dimensions * j] / setInfo.Dy;
-                        up[2 + dimensions * j] = up[2 + dimensions * j] / setInfo.Dz;
+                        up[gradient_components * j] = up[gradient_components * j] / setInfo.Dx;
+                        up[gradient_components * j + 1] = up[gradient_components * j + 1] / setInfo.Dy;
+                        up[gradient_components * j + 2] = up[gradient_components * j + 2] / setInfo.Dz;
                     }
                 }
                 else if (derivative == 2)
@@ -1340,7 +1340,7 @@ namespace Turbulence.SQLInterface.workers
             int z_coordinate = 2;
             int interpolant = 0;
             int first_derivative = 1;
-            int dimensions = 3;
+            int gradient_components = 3;
 
             fixed (double* polyVal = poly_val)
             {
@@ -1362,11 +1362,11 @@ namespace Turbulence.SQLInterface.workers
                                 for (int j = 0; j < setInfo.Components; j++)
                                 {
                                     // dudx computation
-                                    c[j] += dudx_x_coeff * fdata[off + j];
+                                    c[gradient_components * j] += dudx_x_coeff * fdata[off + j];
                                     // dudy computation
-                                    c[j + dimensions] += dudy_x_coeff * fdata[off + j];
+                                    c[gradient_components * j + 1] += dudy_x_coeff * fdata[off + j];
                                     // dudz computation
-                                    c[j + 2 * dimensions] += dudy_x_coeff * fdata[off + j];
+                                    c[gradient_components * j + 2] += dudy_x_coeff * fdata[off + j];
                                 }
                                 off += setInfo.Components;
                             }
@@ -1376,11 +1376,11 @@ namespace Turbulence.SQLInterface.workers
                             for (int j = 0; j < setInfo.Components; j++)
                             {
                                 // dudx computation
-                                b[j] += dudx_y_coeff * c[j];
+                                b[gradient_components * j] += dudx_y_coeff * c[gradient_components * j];
                                 // dudy computation
-                                b[j + dimensions] += dudy_y_coeff * c[j + dimensions];
+                                b[gradient_components * j + 1] += dudy_y_coeff * c[gradient_components * j + 1];
                                 // dudz computation
-                                b[j + 2 * dimensions] += dudx_y_coeff * c[j + 2 * dimensions];
+                                b[gradient_components * j + 2] += dudx_y_coeff * c[gradient_components * j + 2];
                             }
                         }
                         double dudz_z_coeff = GetBeta(poly_val, kernelSize, first_derivative, z_coordinate, iLagIntz + iz - startz);
@@ -1389,11 +1389,11 @@ namespace Turbulence.SQLInterface.workers
                         for (int j = 0; j < setInfo.Components; j++)
                         {
                             // dudx computation
-                            up[dimensions * j] += dudx_z_coeff * b[j];
+                            up[gradient_components * j] += dudx_z_coeff * b[gradient_components * j];
                             // dudy computation
-                            up[1 + dimensions * j] += dudx_z_coeff * b[j + dimensions];
+                            up[gradient_components * j + 1] += dudx_z_coeff * b[gradient_components * j + 1];
                             // dudz computation
-                            up[2 + dimensions * j] += dudz_z_coeff * b[j + 2 * dimensions];
+                            up[gradient_components * j + 2] += dudz_z_coeff * b[gradient_components * j + 2];
                         }
                     }
                 }
