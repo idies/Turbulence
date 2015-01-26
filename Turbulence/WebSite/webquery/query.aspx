@@ -137,13 +137,14 @@
                 <td>
                     Field(s): [<a href="/analysisdoc.aspx" class="note">?</a>]</td>
                 <td>
-                    <asp:DropDownList ID="fieldList" runat="server">
+                    <asp:DropDownList ID="fieldList" runat="server" AutoPostBack="True" 
+                        onselectedindexchanged="fieldList_SelectedIndexChanged">
                         <asp:ListItem ID="velocityEntry" runat="server">Velocity</asp:ListItem>
                         <asp:ListItem ID="pressureEntry" runat="server">Pressure</asp:ListItem>
                         <asp:ListItem ID="magneticEntry" runat="server">Magnetic Field</asp:ListItem>
                         <asp:ListItem ID="potentialEntry" runat="server">Vector Potential</asp:ListItem>
                         <asp:ListItem ID="densityEntry" runat="server">Density</asp:ListItem>
-                        <asp:ListItem ID="vorticityEntry" runat="server">Vorticity</asp:ListItem>
+                        <asp:ListItem ID="vorticityEntry" runat="server">Vorticity Magnitude</asp:ListItem>
                         <asp:ListItem ID="QEntry" runat="server">Q</asp:ListItem>
                     </asp:DropDownList></td>
                 <td>
@@ -191,9 +192,9 @@
         <h3 runat="server" id="QueryText">Query a single point</h3>  
         <br />
         <table>
-        <tr><th>x <asp:Literal ID="x_range" runat="server" Visible="true"></asp:Literal></th>
-            <th>y <asp:Literal ID="y_range" runat="server" Visible="true"></asp:Literal></th>
-            <th>z <asp:Literal ID="z_range" runat="server" Visible="true"></asp:Literal></th></tr>
+        <tr><th><asp:Literal ID="x_range" runat="server" Visible="true"></asp:Literal></th>
+            <th><asp:Literal ID="y_range" runat="server" Visible="true"></asp:Literal></th>
+            <th><asp:Literal ID="z_range" runat="server" Visible="true"></asp:Literal></th></tr>
         <tr><td><asp:TextBox ID="x" runat="server">3.14</asp:TextBox></td>
             <td><asp:TextBox ID="y" runat="server">3.14</asp:TextBox></td>
             <td><asp:TextBox ID="z" runat="server">3.14</asp:TextBox></td></tr>
