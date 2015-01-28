@@ -143,7 +143,8 @@ namespace Turbulence.SQLInterface
 
         protected void GetCutout(short datasetID, string turbinfodb, int timestep)
         {
-            SqlConnection turbInfoConn = new SqlConnection("Server=gw01;Database=turbinfo;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;");
+            SqlConnection turbInfoConn = new SqlConnection(
+                String.Format("Server=gw01;Database={0};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", turbinfodb));
             turbInfoConn.Open();
             SqlConnection sqlConn;
 

@@ -16,7 +16,7 @@ namespace Turbulence.SQLInterface.workers
 
         private int resultSize = 3;
         private double[] cachedAtomSum = new double[3];
-        private long  cachedAtomZindex;
+        private long cachedAtomZindex;
 
         public GetMHDBoxFilter(TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
@@ -28,6 +28,16 @@ namespace Turbulence.SQLInterface.workers
             this.filter_width = fw;
             this.kernelSize = filter_width;
             this.cachedAtomZindex = -1;
+        }
+
+        public GetMHDBoxFilter(TurbDataTable setInfo,
+            int filterwidth)
+        {
+            this.setInfo = setInfo;
+            this.spatialInterp = spatialInterp;
+            this.kernelSize = filterwidth;
+            // We return 8 sums per component
+            this.resultSize = setInfo.Components;
         }
 
         public override SqlMetaData[] GetRecordMetaData()
@@ -124,7 +134,7 @@ namespace Turbulence.SQLInterface.workers
             x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
             y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
             z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-            
+
             float[] data = blob.data;
             int startz = 0, starty = 0, startx = 0, endz = 0, endy = 0, endx = 0;
             blob.GetSubcubeStart(z - (filter_width / 2), y - (filter_width / 2), x - (filter_width / 2), ref startz, ref starty, ref startx);
@@ -182,8 +192,89 @@ namespace Turbulence.SQLInterface.workers
             up[0] = c1;
             up[1] = c2;
             up[2] = c3;
-            
+
             return up;
+        }
+
+        /// <summary>
+        /// Produces a flattened 3d array, where each element in the array is the filtered value for the field.
+        /// Elements in the array are offset by step.
+        /// </summary>
+        /// <param name="coordinates">Coordinates, at which the filtered cutout is to be generated.
+        /// Given in the format [x,y,z,xwidth,ywidth,zwidth], where x,y,z are the bottom left corner
+        /// and xwidth, ywidth, zwidth is top right corner.</param>
+        /// <param name="x_stride">The stride size along x.</param>
+        /// <param name="y_stride">The stride size along y.</param>
+        /// <param name="z_stride">The stride size along z.</param>
+        /// <returns>float[]</returns>
+        public float[] GetResult(int[] coordinates, int x_stride, int y_stride, int z_stride)
+        {
+            double c = Filtering.FilteringCoefficients(KernelSize);
+
+            // These are the widths of the summed volumes array.
+            ulong xwidth, ywidth, zwidth;
+            xwidth = (ulong)(cutout_coordinates[3] - cutout_coordinates[0]);
+            ywidth = (ulong)(cutout_coordinates[4] - cutout_coordinates[1]);
+            zwidth = (ulong)(cutout_coordinates[5] - cutout_coordinates[2]);
+            int result_x_width, result_y_width, result_z_width;
+            result_x_width = (coordinates[3] - 1 - coordinates[0]) / x_stride + 1;
+            result_y_width = (coordinates[4] - 1 - coordinates[1]) / y_stride + 1;
+            result_z_width = (coordinates[5] - 1 - coordinates[2]) / z_stride + 1;
+            int result_size = setInfo.Components * result_x_width * result_y_width * result_z_width;
+            ulong off1, off2, off3, off4, off5, off;
+            int lowz, lowy, lowx, highz, highy, highx;
+            ulong x_y_plane_size = ywidth * xwidth;
+            int dest = 0;
+
+            float[] result = new float[result_size];
+            double[] temp_result = new double[setInfo.Components];
+
+            for (int z = coordinates[2]; z < coordinates[5]; z += z_stride)
+            {
+                lowz = z - KernelSize / 2;
+                highz = z + KernelSize / 2;
+                off1 = (ulong)(lowz - cutout_coordinates[2]) * x_y_plane_size;
+
+                for (int y = coordinates[1]; y < coordinates[4]; y += y_stride)
+                {
+                    lowy = y - KernelSize / 2;
+                    highy = y + KernelSize / 2;
+                    off2 = off1 + (ulong)(lowy - cutout_coordinates[1]) * xwidth;
+
+                    for (int x = coordinates[0]; x < coordinates[3]; x += x_stride)
+                    {
+                        lowx = x - KernelSize / 2;
+                        highx = x + KernelSize / 2;
+                        off3 = off2 + (ulong)(lowx - cutout_coordinates[0]);
+
+                        //For each (x, y, z) point go through the kernel and compute the filter:
+                        for (int kernel_z = lowz; kernel_z <= highz; kernel_z++)
+                        {
+                            off4 = off3;
+                            for (int kernel_y = lowy; kernel_y <= highy; kernel_y++)
+                            {
+                                off5 = off4;
+                                for (int kernel_x = lowx; kernel_x <= highx; kernel_x++)
+                                {
+                                    off = off5 * (ulong)setInfo.Components;
+                                    result[dest] += (float)(c * GetDataItem(off5));
+                                    if (setInfo.Components > 1)
+                                    {
+                                        result[dest + 1] += (float)(c * GetDataItem(off + 1));
+                                        result[dest + 2] += (float)(c * GetDataItem(off + 2));
+                                    }
+                                    off5++;
+                                }
+                                off4 += xwidth;
+                            }
+                            off3 += x_y_plane_size;
+                        }
+                        dest += setInfo.Components;
+                    }
+                }
+            }
+
+            return result;
         }
 
     }

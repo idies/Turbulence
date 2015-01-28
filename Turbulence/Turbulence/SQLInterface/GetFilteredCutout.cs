@@ -40,7 +40,8 @@ public partial class StoredProcedures
             TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
             contextConn.Close();
 
-            GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
+            //GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
+            GetMHDBoxFilter worker = new GetMHDBoxFilter(table, filter_width);
             worker.GetData(datasetID, turbinfodb, timestep, coordinates);
             cutout = worker.GetResult(coordinates, x_stride, y_stride, z_stride);
 
