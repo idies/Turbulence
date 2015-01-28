@@ -150,7 +150,6 @@
     <Content Include="turbulence.css" />
     <Content Include="vid1.aspx" />
     <Content Include="vid2.aspx" />
-    <Content Include="vid3.aspx" />
     <Content Include="download\turblib-20150108.tar.gz" />
     <Content Include="download\turblib-20150108.zip" />
     <Content Include="download\turbmat-20150108.tar.gz" />
@@ -179,6 +178,8 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.disco" />
+    <Content Include="vid3.aspx" />
+    <Content Include="vid4.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -2713,7 +2714,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>26982</DevelopmentServerPort>
+          <DevelopmentServerPort>3447</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>
