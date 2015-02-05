@@ -28,7 +28,7 @@ namespace CutoutService
         [DllImport("msvcrt.dll")]
         public static extern unsafe void memcpy(void* dest, void* src, ulong count);
 
-        Database database = new Database("turbinfo", true);
+        Database database = new Database("turbinfo", false);
         AuthInfo authInfo = new AuthInfo("turbinfo", false);
         Log log = new Log("turbinfo", false);
 
@@ -473,7 +473,7 @@ namespace CutoutService
                     { Response.Write("The requested region is out of bounds"); Response.End(); }
                     break;
                 case DataInfo.DataSets.channel:
-                    if (!(tlow >= 0 && thigh < 1997) ||
+                    if (!(tlow >= 0 && thigh < 4000) ||
                        !(xlow >= 0 && xhigh < 2048) ||
                        !(ylow >= 0 && yhigh < 512) ||
                        !(zlow >= 0 && zhigh < 1536))
