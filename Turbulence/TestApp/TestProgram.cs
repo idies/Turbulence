@@ -41,7 +41,7 @@ namespace TestApp
             {
                 //TestGetForce();
                 //TestMixingDataset();
-                //AllTest();
+                AllTest();
                 //TestGetBoxFilterGradient();
                 //TestAllDisks();
                 //TestGetRawData();
@@ -56,7 +56,7 @@ namespace TestApp
                 //ComputeSplinesHessian();
                 //TestDensityHessian();
                 //ComputeDensityHessian();
-                TestGetThreshold();
+                //TestGetThreshold();
                 //return;
 
                 turbulence.TurbulenceService service = new turbulence.TurbulenceService();
@@ -2333,7 +2333,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("p={0}", raw_pressure);
 
-            expected_norm = 22.958f;
+            expected_norm = 23.26728f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "isotropic1024", "vorticity", time, 0.0f, turbulence.SpatialInterpolation.None_Fd4, 510, 510, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -2341,7 +2341,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("vort={0}", points_above_threshold[0].value);
 
-            expected_norm = 0.956618369f;
+            expected_norm = 1.040131f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "isotropic1024", "velocity", time, 0.0f, turbulence.SpatialInterpolation.None, 510, 510, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -2349,7 +2349,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("vel={0}", points_above_threshold[0].value);
 
-            expected_norm = 0.154272333f;
+            expected_norm = 0.2996746f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "isotropic1024", "pressure", time, 0.0f, turbulence.SpatialInterpolation.None, 510, 510, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -2983,7 +2983,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("p={0}", raw_pressure);
 
-            expected_norm = 4.457304f;
+            expected_norm = 14.51427f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "mhd1024", "vorticity", time, 0.0f, turbulence.SpatialInterpolation.None_Fd4, 510, 510, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -2991,7 +2991,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("vort. norm={0}", points_above_threshold[0].value);
 
-            expected_norm = 0.301806033f;
+            expected_norm = 0.344052f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "mhd1024", "velocity", time, 0.0f, turbulence.SpatialInterpolation.None, 510, 510, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -3542,7 +3542,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("vort. norm={0}", points_above_threshold[0].value);
 
-            expected_norm = 0.00469331164f;
+            expected_norm = 0.006632454f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "channel", "velocity", time, 0.0f, turbulence.SpatialInterpolation.None, 510, 508, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -3550,7 +3550,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("vel. norm={0}", points_above_threshold[0].value);
 
-            expected_norm = 0.008710773f;
+            expected_norm = 0.009846616f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "channel", "pressure", time, 0.0f, turbulence.SpatialInterpolation.None, 510, 508, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -4308,7 +4308,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("p={0}", raw_pressure);
 
-            expected_norm = 5.253168f;
+            expected_norm = 6.872591f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "mixing", "vorticity", time, 0.0f, turbulence.SpatialInterpolation.None_Fd4, 510, 510, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -4316,7 +4316,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("vort. norm={0}", points_above_threshold[0].value);
 
-            expected_norm = 0.185510963f;
+            expected_norm = 0.3000101f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "mixing", "velocity", time, 0.0f, turbulence.SpatialInterpolation.None, 510, 510, 510, 4, 4, 4);
             stopTime = DateTime.Now;
@@ -4324,7 +4324,7 @@ namespace TestApp
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("vel. norm={0}", points_above_threshold[0].value);
 
-            expected_norm = 1.08019233f;
+            expected_norm = 1.085284f;
             startTime = DateTime.Now;
             points_above_threshold = service.GetThreshold(authToken, "mixing", "density", time, 0.0f, turbulence.SpatialInterpolation.None, 510, 510, 510, 4, 4, 4);
             stopTime = DateTime.Now;

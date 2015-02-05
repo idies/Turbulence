@@ -35,7 +35,7 @@ namespace TurbulenceService {
 
         public TurbulenceService()
         {
-            database = new Database(infodb, true);
+            database = new Database(infodb, DEVEL_MODE);
             authInfo = new AuthInfo(infodb, DEVEL_MODE);
             log = new Log(infodb, DEVEL_MODE);
         }

@@ -108,7 +108,14 @@ namespace Website
                         cmd = conn.CreateCommand();
                         cmd.CommandTimeout = sqlCommandTimeout;
 
-                        cmd.CommandText = String.Format("SELECT SUM((single_pages_kb + multi_pages_kb + virtual_memory_committed_kb) * page_size_bytes) / (1024*1024) FROM sys.dm_os_memory_clerks WHERE TYPE = 'MEMORYCLERK_SQLCLR'");
+                        if (conn.ServerVersion.StartsWith("12."))
+                        {
+                            cmd.CommandText = String.Format("SELECT SUM((pages_kb + virtual_memory_committed_kb) * page_size_in_bytes) / (1024*1024) FROM sys.dm_os_memory_clerks WHERE TYPE = 'MEMORYCLERK_SQLCLR'");
+                        }
+                        else
+                        {
+                            cmd.CommandText = String.Format("SELECT SUM((single_pages_kb + multi_pages_kb + virtual_memory_committed_kb) * page_size_bytes) / (1024*1024) FROM sys.dm_os_memory_clerks WHERE TYPE = 'MEMORYCLERK_SQLCLR'");
+                        }
                         memory = (long)cmd.ExecuteScalar();
 
                         //cmd.CommandText = String.Format("SELECT [turbdb].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z);

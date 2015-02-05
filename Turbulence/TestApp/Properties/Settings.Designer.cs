@@ -26,7 +26,7 @@ namespace TestApp.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:26131/service/turbulence.asmx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:3447/service/turbulence.asmx")]
         public string TestApp_turbulence_TurbulenceService {
             get {
                 return ((string)(this["TestApp_turbulence_TurbulenceService"]));
