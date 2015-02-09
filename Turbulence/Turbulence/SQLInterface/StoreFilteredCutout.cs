@@ -17,6 +17,7 @@ using System.Collections.Generic;
             string dbname,
             string codedb,
             string turbinfodb,
+            string outputdb,
             short datasetID,
             string field,
             int blobDim,
@@ -41,25 +42,19 @@ using System.Collections.Generic;
                 SqlConnection standardConn;
                 
                 string cString;
-                cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
+                cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, outputdb);
                 standardConn = new SqlConnection(cString);
                 standardConn.Open();
                 TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
                 string DBtableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
                 //Worker worker = Worker.GetWorker(table, (int)Worker.Workers.GetMHDBoxFilterSV, 0, 0.0f, contextConn);
-                
-                
 
-                
                 int[] coordinates = new int[6];
                 ParseQueryBox(QueryBox, coordinates);
-                int[] resolution = { coordinates[3], coordinates[4], coordinates[5]};
-                GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
+                int[] resolution = { coordinates[3]/x_stride, coordinates[4]/y_stride, coordinates[5]/z_stride};
+                GetMHDBoxFilter worker = new GetMHDBoxFilter(table, filter_width);
                 worker.GetData(datasetID, turbinfodb, timestep, coordinates);
-                
-
-
                 cutout = worker.GetResult(coordinates, x_stride, y_stride, z_stride);
 
                 // Populate the record
