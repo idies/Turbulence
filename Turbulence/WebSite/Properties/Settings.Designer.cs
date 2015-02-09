@@ -26,7 +26,7 @@ namespace Website.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://test.turbulence.pha.jhu.edu/service/turbulence.asmx")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://turbulence.pha.jhu.edu/service/turbulence.asmx")]
         public string Website_edu_jhu_pha_turbulence_TurbulenceService {
             get {
                 return ((string)(this["Website_edu_jhu_pha_turbulence_TurbulenceService"]));
