@@ -1,0 +1,7 @@
+H:\Turbulence\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.csprojResolveAssemblyReference.cache
+H:\Turbulence\Turbulence\DatabaseCutout\bin\Debug\DatabaseCutout.dll
+H:\Turbulence\Turbulence\DatabaseCutout\bin\Debug\DatabaseCutout.pdb
+H:\Turbulence\Turbulence\DatabaseCutout\bin\Debug\Turbulence.dll
+H:\Turbulence\Turbulence\DatabaseCutout\bin\Debug\Turbulence.pdb
+H:\Turbulence\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.dll
+H:\Turbulence\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.pdb
