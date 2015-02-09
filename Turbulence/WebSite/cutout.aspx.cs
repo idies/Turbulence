@@ -108,7 +108,7 @@ namespace Website
                 potential.Checked = false;
                 magnetic.Checked = false;
                 min_time = 0;
-                max_time_range = 1997;
+                max_time_range = 4000;
                 min_x = 0;
                 max_x_range = 2048;
                 min_y = 0;

@@ -857,33 +857,9 @@ namespace TurbulenceService
                                 this.connections[i] = new SqlConnection(cString);
                                 this.connections[i].Open();
                             }
-                            serverX[i] = X < serverBoundaries[i].startx ? serverBoundaries[i].startx : X;
-                            if (X + Xwidth <= serverBoundaries[i].endx)
-                                serverXwidth[i] = X + Xwidth - serverX[i];
-                            else
-                                serverXwidth[i] = serverBoundaries[i].endx + 1 - serverX[i];
-                            int test_start = -1, test_width = -1;
-                            GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref test_start, ref test_width);
-                            if (serverX[i] != test_start || serverXwidth[i] != test_width)
-                                throw new Exception("Values are not equal!");
-
-                            serverY[i] = Y < serverBoundaries[i].starty ? serverBoundaries[i].starty : Y;
-                            if (Y + Ywidth <= serverBoundaries[i].endy)
-                                serverYwidth[i] = Y + Ywidth - serverY[i];
-                            else
-                                serverYwidth[i] = serverBoundaries[i].endy + 1 - serverY[i];
-                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref test_start, ref test_width);
-                            if (serverY[i] != test_start || serverYwidth[i] != test_width)
-                                throw new Exception("Values are not equal!");
-
-                            serverZ[i] = Z < serverBoundaries[i].startz ? serverBoundaries[i].startz : Z;
-                            if (Z + Zwidth <= serverBoundaries[i].endz)
-                                serverZwidth[i] = Z + Zwidth - serverZ[i];
-                            else
-                                serverZwidth[i] = serverBoundaries[i].endz + 1 - serverZ[i];
-                            GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref test_start, ref test_width);
-                            if (serverZ[i] != test_start || serverZwidth[i] != test_width)
-                                throw new Exception("Values are not equal!");
+                            GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i]);
+                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref serverY[i], ref serverYwidth[i]);
+                            GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i]);
 
                             //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
                             Morton3D access;
