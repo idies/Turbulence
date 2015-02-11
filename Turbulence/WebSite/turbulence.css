@@ -159,8 +159,8 @@ blockquote {
     padding: 10px;
     position: relative;
 	height: 120px;
-	clear:both;
-    position: relative;    
+	
+    float: left;    
     font: normal normal 10px Arial, Tahoma, Helvetica, sans-serif;
 
 }

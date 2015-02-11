@@ -49,7 +49,7 @@ namespace DatabaseCutout
             int[] serverYwidth = new int[serverCount];
             int[] serverZwidth = new int[serverCount];
             SqlCommand sqlcmd = new SqlCommand();
-             
+            SqlDataRecord record = new SqlDataRecord(new SqlMetaData("data", SqlDbType.VarBinary, -1)); 
             long dlsize = DetermineSize("u", twidth, xwidth, ywidth, zwidth);
             byte[] result = new byte[dlsize];
             if (fields.Contains("p"))
@@ -133,6 +133,10 @@ namespace DatabaseCutout
                         destinationIndex += xwidth * components * sizeof(float);
                     }
                 }
+                // Populate the record
+                record.SetBytes(0, 0, result, 0, result.Length);
+                // Send the record to the client.
+                SqlContext.Pipe.Send(record);
                 rawdata = null;
                 reader.Close();
                 connection.Close();
