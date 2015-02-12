@@ -158,8 +158,8 @@ namespace Turbulence.SQLInterface.workers
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
             {
                 int xi = LagInterpolation.CalcNodeWithRound(xp, setInfo.Dx);
-                int yi = LagInterpolation.CalcNodeWithRound(yp, setInfo.Dx);
-                int zi = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dx);
+                int yi = LagInterpolation.CalcNodeWithRound(yp, setInfo.Dy);
+                int zi = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dz);
 
                 float[] data = blob.data;
                 int off0 = blob.GetLocalOffsetMHD(zi, yi, xi, 0);
@@ -170,8 +170,8 @@ namespace Turbulence.SQLInterface.workers
             else
             {
                 int x = LagInterpolation.CalcNode(xp, setInfo.Dx);
-                int y = LagInterpolation.CalcNode(yp, setInfo.Dx);
-                int z = LagInterpolation.CalcNode(zp, setInfo.Dx);
+                int y = LagInterpolation.CalcNode(yp, setInfo.Dy);
+                int z = LagInterpolation.CalcNode(zp, setInfo.Dz);
 
                 // The coefficients are computed only once and cached, so that they don't have to be 
                 // recomputed for each partial sum
