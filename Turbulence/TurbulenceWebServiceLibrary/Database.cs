@@ -22,10 +22,10 @@ namespace TurbulenceService
     {
         string infodb;
         protected int[] gridResolution; // Dimensions of the entire grid given az [z,y,x]
-        int atomDim;                // length of side of a single data atom
-        List<string> servers;       // name of each server (resolved via web.config)
-        List<string> databases;     // name of the database holding turbulence data
-        List<string> codeDatabase;  // name of database from which turbulence code is executed
+        public int atomDim;                // length of side of a single data atom
+        public List<string> servers;       // name of each server (resolved via web.config)
+        public List<string> databases;     // name of the database holding turbulence data
+        public List<string> codeDatabase;  // name of database from which turbulence code is executed
         public int serverCount;     // Number of servers to balance against
         SqlConnection[] connections;// SQL Connetion Handles
         SqlCommand[] sqlcmds;
@@ -38,14 +38,14 @@ namespace TurbulenceService
         private double dx;           // the grid separation in the x-dimension
         private double dy;           // the grid separation in the y-dimension
         private double dz;           // the grid separation in the z-dimension
-        private bool channel_grid;   // flag indicating if we are working with the non-uniform gird for the channel flow dataset
+        public bool channel_grid;   // flag indicating if we are working with the non-uniform gird for the channel flow dataset
         private GridPoints gridPointsY; // grid values for the non-uniform y dimension in the case of channel flow
         public float Dt;            // used for converting from floating point time to timestep values stored in the DB
         private int timeInc;         // time increment between timesteps stored in the DB
         private int timeOff;        // timestep offset (t = dt * (timestep - timeOff); for channel flow timestep 132010 = time 0)
         public bool smallAtoms;     // indicator of whether the atoms stored in the DB are small with no edge replicaiton
         // or large with a replicated edge of length 4 on each side
-        List<ServerBoundaries> serverBoundaries; // info about the spatial partitioning of the data across servers
+        public List<ServerBoundaries> serverBoundaries; // info about the spatial partitioning of the data across servers
         const int MAX_READ_LENGTH = 256000000;
         const int MAX_NUMBER_THRESHOLD_POINTS = 1024 * 1024;
         const double DENSITY_CONSTANT = 80.0;
@@ -762,7 +762,7 @@ namespace TurbulenceService
         /// <param name="xp">Input Coordinate</param>
         /// <param name="round">Round to nearest integer (true) or floor (false).</param>
         /// <returns>Integer value [0-DIM)</returns>
-        private int GetIntLocX(float xp, bool round)
+        public int GetIntLocX(float xp, bool round)
         {
             int x;
             if (round)
@@ -782,7 +782,7 @@ namespace TurbulenceService
         /// <param name="yp">Input Coordinate</param>
         /// <param name="round">Round to nearest integer (true) or floor (false).</param>
         /// <returns>Integer value [0-DIM)</returns>
-        private int GetIntLocY(float yp, bool round, int kernelSizeY)
+        public int GetIntLocY(float yp, bool round, int kernelSizeY)
         {
             int y;
             if (channel_grid)
@@ -816,7 +816,7 @@ namespace TurbulenceService
         /// <param name="zp">Input Coordinate</param>
         /// <param name="round">Round to nearest integer (true) or floor (false).</param>
         /// <returns>Integer value [0-DIM)</returns>
-        private int GetIntLocZ(float zp, bool round)
+        public int GetIntLocZ(float zp, bool round)
         {
             int z;
             if (round)
@@ -831,7 +831,7 @@ namespace TurbulenceService
             return ((z % GridResolutionZ) + GridResolutionZ) % GridResolutionZ;
         }
 
-        private int GetKernelStart(int n, int kernelSize)
+        public int GetKernelStart(int n, int kernelSize)
         {
             // (kernelSize + 1)/2 produces Ceil(kernelSize/2)
             return n - (kernelSize + 1) / 2 + 1;
