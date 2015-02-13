@@ -221,7 +221,7 @@ int vtkJHTDBReader::RequestData(
 }
 
 void vtkJHTDBReader::ReadRawData(const int timeStep, const int subext[6]) {
-	String^ cString = String::Format("server={0};database={1};User ID=turbquery;Password=***REMOVED***;", this->serverName, this->codeDbName);
+	String^ cString = String::Format("server={0};database={1};Integrated Security=true;", this->serverName, this->codeDbName);
     SqlConnection ^ sqlcon = gcnew SqlConnection(cString);
     sqlcon->Open();
 	if (sqlcon->State == ConnectionState::Open)
