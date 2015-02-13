@@ -213,7 +213,7 @@ namespace DatabaseCutout
         public void selectServers(DataInfo.DataSets dataset_enum)
         {
             String dataset = dataset_enum.ToString();
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;User ID=turbweb;Password=***REMOVED***;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;User ID=turbweb;Password=*********;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -288,7 +288,7 @@ namespace DatabaseCutout
         public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers)
         {
             String dataset = dataset_enum.ToString();
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;User ID=turbweb;Password=***REMOVED***;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;User ID=turbweb;Password=*********;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -396,7 +396,7 @@ namespace DatabaseCutout
         public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers, int worker)
         {
             String dataset = dataset_enum.ToString();
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;User ID=turbweb;Password=***REMOVED***;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;User ID=turbweb;Password=*********;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
