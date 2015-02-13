@@ -141,7 +141,7 @@ namespace DatabaseCutout
                         if (server_name.Contains("_"))
                             server_name = server_name.Remove(server_name.IndexOf("_"));
                         String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                            server_name, codeDatabase[0], "turbquery", "***REMOVED***");
+                            server_name, codeDatabase[0], "turbquery", "******");
                         SqlConnection sqlConn = new SqlConnection(cString);
                         sqlConn.Open();
                         gridPointsY.GetGridPointsFromDB(sqlConn);
@@ -855,7 +855,7 @@ namespace DatabaseCutout
                                 if (server_name.Contains("_"))
                                     server_name = server_name.Remove(server_name.IndexOf("_"));
                                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                                    server_name, databases[i], "turbquery", "***REMOVED***");
+                                    server_name, databases[i], "turbquery", "********");
                                 this.connections[i] = new SqlConnection(cString);
                                 this.connections[i].Open();
                             }
@@ -923,7 +923,7 @@ namespace DatabaseCutout
                                 if (server_name.Contains("_"))
                                     server_name = server_name.Remove(server_name.IndexOf("_"));
                                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                                    server_name, databases[i], "turbquery", "***REMOVED***");
+                                    server_name, databases[i], "turbquery", "******");
                                 this.connections[i] = new SqlConnection(cString);
                                 this.connections[i].Open();
                             }
@@ -1000,7 +1000,7 @@ namespace DatabaseCutout
                     server_name = server_name.Remove(server_name.IndexOf("_"));
                 //String cString = ConfigurationManager.ConnectionStrings[server_name].ConnectionString;
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                    server_name, databases[server], "turbquery", "***REMOVED***");
+                    server_name, databases[server], "turbquery", "******");
 
                 //String cString = ConfigurationManager.ConnectionStrings[this.servers[server]].ConnectionString;
                 this.connections[server] = new SqlConnection(cString);
@@ -1071,7 +1071,7 @@ namespace DatabaseCutout
                     server_name = server_name.Remove(server_name.IndexOf("_"));
                 //String cString = ConfigurationManager.ConnectionStrings[server_name].ConnectionString;
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                    server_name, databases[server], "turbquery", "***REMOVED***");
+                    server_name, databases[server], "turbquery", "*********");
                 this.connections[server] = new SqlConnection(cString);
                 this.connections[server].Open();
                 sqlcmds[server] = this.connections[server].CreateCommand();
@@ -1134,7 +1134,7 @@ namespace DatabaseCutout
                     server_name = server_name.Remove(server_name.IndexOf("_"));
                 //String cString = ConfigurationManager.ConnectionStrings[server_name].ConnectionString;
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                    server_name, databases[server], "turbquery", "***REMOVED***");
+                    server_name, databases[server], "turbquery", "*********");
                 this.connections[server] = new SqlConnection(cString);
                 this.connections[server].Open();
                 sqlcmds[server] = this.connections[server].CreateCommand();

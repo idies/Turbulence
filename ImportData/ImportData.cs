@@ -25,7 +25,6 @@ namespace ImportData
             string server = "(local)";
             string dbname = "mhddb";
             string username = "kalin";
-            string sqlPassword = "***REMOVED***";
             int time_start = 1;
             int time_end = 1;
             int time_inc = 1;
@@ -113,7 +112,7 @@ namespace ImportData
         // To avoid storing the connection string in your code, 
         // you can retrieve it from a configuration file. 
         {
-            return String.Format("Server={0}; Database={1}; User ID={2}; Password={3};", server, dbname, username, sqlPassword);
+            return String.Format("Server={0}; Database={1}; User ID={2}; Integrated security=true;", server, dbname, username);
         }
 
         private static void OpenConnection(string connectionString)
