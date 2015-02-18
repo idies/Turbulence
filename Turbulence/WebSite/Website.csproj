@@ -205,9 +205,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Code\WebService.cs">
+    <Content Include="App_Code\WebService.cs">
       <SubType>Component</SubType>
-    </Compile>
+    </Content>
     <Compile Include="cutout.aspx.cs">
       <DependentUpon>cutout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

@@ -72,6 +72,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="TestProgram.cs" />
+    <Compile Include="Web References\turbulence\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
@@ -93,6 +98,7 @@
     </None>
     <None Include="Web References\turbulence\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <None Include="Web References\turbulence\SGSTensor.datasource">
       <DependentUpon>Reference.map</DependentUpon>
