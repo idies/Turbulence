@@ -469,63 +469,6 @@ namespace TurbulenceService
                 serverBoundaries = tempServerBoundaries;
             }
 
-            //if (dataset_enum == DataInfo.DataSets.isotropic1024coarse)
-            //{
-            //    codeDatabase = "turblib";
-
-            //    servers = new string[] { "gw01", "gw13", "gw02", "gw14", "blackbox5", "gw15", "gw12", "gw16" };
-            //    databases = new string[] { "turbdb101", "turbdb102", "turbdb103", "turbdb104", "turbdb105", "turbdb106", "turbdb107", "turbdb108" };
-
-            //    if (this.development == true)
-            //    {
-            //        codeDatabase = "turbdev";
-            //    }
-            //}
-            //else if (dataset_enum == DataInfo.DataSets.mhd1024)
-            //{
-            //    codeDatabase = "mhdlib"; //NOTE: Should be "mhdlib" when pushing to production                
-            //    servers = new string[] { "gw21", "gw22", "gw23", "gw24" };
-            //    databases = new string[] { "mhddb021", "mhddb022", "mhddb023", "mhddb024" };
-
-            //    if (this.development == true)
-            //    {
-            //        codeDatabase = "turbdev";
-            //    }
-            //}
-            //serverBoundaries = new ServerBoundaries[servers.Length];
-            //ServerBoundaries entireGrid = new ServerBoundaries(0, GridResolutionX - 1, 0, GridResolutionX - 1, 0, GridResolutionX - 1);
-            //serverBoundaries = entireGrid.getVirtualServerBoundaries(servers.Length);
-
-            //if (num_virtual_servers > 1)
-            //{
-            //    // Each virtual server will be responsible for some part of the data stored on the physical server
-            //    // We need to make sure that the data is partitioned according to the partitioning scheme (z-order)
-            //    // It is somewhat complicated as the data may not form a cube or occupy a contiguous region along the z-curve
-            //    if ((num_virtual_servers & (num_virtual_servers - 1)) != 0)
-            //        throw new Exception("The number of virtual servers must be a power of 2!");
-
-            //    string[] tempServers = new string[servers.Length * num_virtual_servers];
-            //    string[] tempDatabases = new string[servers.Length * num_virtual_servers];
-            //    ServerBoundaries[] tempServerBoundaries = new ServerBoundaries[servers.Length * num_virtual_servers];
-            //    ServerBoundaries[] VirtualServerBoundaries;
-            //    int currentServer = 0;
-            //    for (int i = 0; i < servers.Length; i++)
-            //    {
-            //        VirtualServerBoundaries = serverBoundaries[i].getVirtualServerBoundaries(num_virtual_servers);
-            //        for (int j = 0; j < num_virtual_servers; j++)
-            //        {
-            //            currentServer = i * num_virtual_servers + j;
-            //            tempServers[currentServer] = servers[i] + "_" + num_virtual_servers + "_" + j;
-            //            tempDatabases[currentServer] = databases[i];
-            //            tempServerBoundaries[currentServer] = VirtualServerBoundaries[j];
-            //        }
-            //    }
-
-            //    servers = tempServers;
-            //    databases = tempDatabases;
-            //    serverBoundaries = tempServerBoundaries;
-            //}
-
             this.serverCount = servers.Count;
             this.connections = new SqlConnection[this.serverCount];
             this.sqlcmds = new SqlCommand[this.serverCount];
@@ -1408,6 +1351,55 @@ namespace TurbulenceService
 
         /// <summary>
         /// Bulk load a large number of points into database workload tables for execution.
+        /// This method adds particles to a single server only.
+        /// </summary>
+        /// <param name="points">Points</param>
+        /// <param name="round">True for round, false for floor</param>
+        public void AddBulkParticlesSingleServer(Point3[] points, int kernelSizeZ, int kernelSizeY, int kernelSizeX, bool round, float time)
+        {
+            for (int i = 0; i < points.Length; i++)
+            {
+                if (channel_grid)
+                {
+                    points[i].x -= 0.45f * time;
+                }
+                int Z = GetIntLocZ(points[i].z, round);
+                int Y = GetIntLocY(points[i].y, round, kernelSizeY);
+                int X = GetIntLocX(points[i].x, round);
+                Morton3D zindex = new Morton3D(Z, Y, X);
+
+                //TODO: Flag is for debuggin purposes only
+                bool flag = false;
+                for (int s = 0; s < this.serverCount; s++)
+                {
+                    if ((serverBoundaries[s].startx <= X && X <= serverBoundaries[s].endx))
+                    {
+                        if ((serverBoundaries[s].starty <= Y && Y <= serverBoundaries[s].endy))
+                        {
+                            if ((serverBoundaries[s].startz <= Z && Z <= serverBoundaries[s].endz))
+                            {
+                                InsertIntoTempTable(s, i, zindex, points[i].z, points[i].y, points[i].x, true);
+
+                                if (flag)
+                                {
+                                    throw new Exception("Particle assigned to more than one server!");
+                                }
+                                flag = true;
+                            }
+                        }
+                    }
+                }
+
+                if (!flag)
+                {
+                    throw new Exception("Particle not assigned to any server!");
+                }
+            }
+            DoBulkInsert();
+        }
+
+        /// <summary>
+        /// Bulk load a large number of points into database workload tables for execution.
         /// While creating the data tables for the bulk load also computes the workload density.
         /// </summary>
         /// <param name="points">Points</param>
@@ -1536,25 +1528,6 @@ namespace TurbulenceService
 
             DoBulkInsert();
         }
-
-        ///// <summary>
-        ///// Bulk load a large number of points into database workload tables for execution.
-        ///// Used for the MHD dataset.
-        ///// </summary>
-        ///// <param name="points">Points</param>
-        ///// <param name="round">True for round, false for floor</param>
-        //public void AddBulkTrackingParticles(ParticleTracking[] points, bool round, bool correcting_pos, int nOrder)
-        //{
-        //    long mask = ~(long)(atomDim * atomDim * atomDim - 1);
-        //    for (int i = 0; i < points.Length; i++)
-        //    {
-        //        if (correcting_pos)
-        //            AddWorkloadTrackingPointToMultipleServers(i, points[i].z, points[i].y, points[i].x, points[i], round, nOrder, mask);
-        //        else
-        //            AddWorkloadTrackingPointToMultipleServers(i, points[i].predictor.z, points[i].predictor.y, points[i].predictor.x, points[i], round, nOrder, mask);
-        //    }
-        //    DoBulkInsert();
-        //}
 
         /// <summary>
         /// Bulk load a large number of points into database workload tables for execution.
@@ -2539,82 +2512,6 @@ namespace TurbulenceService
             return asyncRes;
         }
 
-        private IAsyncResult[] ExecuteParticleTrackingWorker(string dataset,
-            Worker.Workers worker,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            int arg
-            )
-        {
-            // initiate reader requests
-            IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
-            for (int s = 0; s < serverCount; s++)
-            {
-                if (connections[s] != null && datatables[s].Rows.Count > 0)
-                {
-                    sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteParticleTrackingWorker] @serverName, @database, @codedb, @dataset, @workerType, "
-                                             + " @spatialInterp, @temporalInterp, @inputSize, @tempTable", codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@database", databases[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@dataset", dataset);
-                    sqlcmds[s].Parameters.AddWithValue("@workerType", (int)worker);
-                    sqlcmds[s].Parameters.AddWithValue("@spatialInterp", (int)spatial);
-                    sqlcmds[s].Parameters.AddWithValue("@temporalInterp", (int)temporal);
-                    sqlcmds[s].Parameters.AddWithValue("@inputSize", count[s]);
-                    //sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableNames[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableName);
-                    sqlcmds[s].CommandTimeout = 3600;
-                    asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
-                }
-            }
-
-            return asyncRes;
-        }
-
-        private IAsyncResult[] ExecuteGetPositionWorker(string dataset,
-            Worker.Workers worker,
-            float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            bool compute_predictor,
-            float dt
-            )
-        {
-            // initiate reader requests
-            IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
-            for (int s = 0; s < serverCount; s++)
-            {
-                if (connections[s] != null && datatables[s].Rows.Count > 0)
-                {
-                    sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteGetPositionWorker] @serverName, @database, @codedb, "
-                                             + " @dataset, @workerType, @blobDim, @time, "
-                                             + " @spatialInterp, @temporalInterp, @correcting_pos, @dt, @inputSize, @tempTable",
-                                             codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@serverName", connections[s].DataSource);
-                    sqlcmds[s].Parameters.AddWithValue("@database", databases[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@dataset", dataset);
-                    sqlcmds[s].Parameters.AddWithValue("@workerType", (int)worker);
-                    sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
-                    sqlcmds[s].Parameters.AddWithValue("@time", time);
-                    sqlcmds[s].Parameters.AddWithValue("@spatialInterp", (int)spatial);
-                    sqlcmds[s].Parameters.AddWithValue("@temporalInterp", (int)temporal);
-                    sqlcmds[s].Parameters.AddWithValue("@correcting_pos", compute_predictor);
-                    sqlcmds[s].Parameters.AddWithValue("@dt", dt);
-                    sqlcmds[s].Parameters.AddWithValue("@inputSize", count[s]);
-                    //sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableNames[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableName);
-                    sqlcmds[s].CommandTimeout = 3600;
-                    asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
-                }
-            }
-
-            return asyncRes;
-        }
-
         private IAsyncResult[] ExecuteBoxFilterWorker(string tableName,
             int worker,
             float time,
@@ -3285,127 +3182,87 @@ namespace TurbulenceService
             return records;
         }
 
-        public int ExecuteGetPosition(string dataset,
+        public int ExecuteGetPosition(short dataset,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
-            TrackingInfo[] points)
+            string tableName,
+            float time,
+            float endTime,
+            float dt,
+            Point3[] points)
         {
-            bool[] encountered_particles = new bool[points.Length];
             int numberOfCallbacksNotYetCompleted = 0;
             ManualResetEvent doneEvent = new ManualResetEvent(false);
             Exception exception = null;
+
+            string turbinfo_connectionString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
+            string turbinfoServer = builder.DataSource;
 
             for (int s = 0; s < serverCount; s++)
             {
                 if (connections[s] != null && datatables[s].Rows.Count > 0)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteParticleTrackingWorker] @serverName, @database, @codedb, @dataset, @workerType, "
-                                             + " @spatialInterp, @temporalInterp, @inputSize, @tempTable", codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@database", databases[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@dataset", dataset);
+                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteParticleTrackingWorkerTaskParallel] @turbinfoServer, @turbinfoDB, @localServer, @localDatabase, @datasetID, "
+                                                + "@tableName, @atomDim, @workerType, "
+                                                + " @spatialInterp, @temporalInterp, @inputSize, @tempTable, @time, @endTime, @dt, @development", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoServer", turbinfoServer);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoDB", "turbinfo");
+                    sqlcmds[s].Parameters.AddWithValue("@localServer", servers[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@localDatabase", databases[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset);
+                    sqlcmds[s].Parameters.AddWithValue("@tableName", tableName);
+                    sqlcmds[s].Parameters.AddWithValue("@atomDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", (int)Worker.Workers.GetPositionDBEvaluation);
                     sqlcmds[s].Parameters.AddWithValue("@spatialInterp", (int)spatial);
                     sqlcmds[s].Parameters.AddWithValue("@temporalInterp", (int)temporal);
                     sqlcmds[s].Parameters.AddWithValue("@inputSize", count[s]);
-                    //sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableNames[s]);
                     sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableName);
+                    sqlcmds[s].Parameters.AddWithValue("@time", time);
+                    sqlcmds[s].Parameters.AddWithValue("@endTime", endTime);
+                    sqlcmds[s].Parameters.AddWithValue("@dt", dt);
+                    sqlcmds[s].Parameters.AddWithValue("@development", development);
                     sqlcmds[s].CommandTimeout = 3600;
                     Interlocked.Increment(ref numberOfCallbacksNotYetCompleted);
                     AsyncCallback callback = new AsyncCallback(result =>
                     {
-                        HandleCallback(result, encountered_particles, points, ref numberOfCallbacksNotYetCompleted, doneEvent, ref exception);
+                        HandleCallback(result, points, ref numberOfCallbacksNotYetCompleted, doneEvent, ref exception);
                     });
-                    sqlcmds[s].BeginExecuteReader(callback, new Tuple<int, SqlCommand>(s, sqlcmds[s]));
+                    sqlcmds[s].BeginExecuteReader(callback, new Tuple<int, SqlCommand>(s, sqlcmds[s]));                    
                 }
             }
-            //IAsyncResult[] asyncRes = ExecuteParticleTrackingWorker(dataset,
-            //    Worker.Workers.GetPositionDBEvaluation, spatial, temporal, 0);
 
-            //return GetPositionResults(asyncRes, points);
             doneEvent.WaitOne();
             if (exception != null)
                 throw new Exception(exception.Message, exception.InnerException);
             return 0;
         }
 
-        public void HandleCallback(IAsyncResult asyncRes, bool[] encountered_particles, TrackingInfo[] points,
+        public void HandleCallback(IAsyncResult asyncRes, Point3[] points,
             ref int numberOfCallbacksNotYetCompleted, ManualResetEvent doneEvent, ref Exception exception)
         {
             Tuple<int, SqlCommand> state = (Tuple<int, SqlCommand>)asyncRes.AsyncState;
             int server_index = state.Item1;
-            lock (encountered_particles)
+            lock (points)
             {
-                lock (points)
+                try
                 {
-                    try
+                    SqlDataReader reader = state.Item2.EndExecuteReader(asyncRes);
+                    int id;
+                    while (reader.Read())
                     {
-                        SqlDataReader reader = state.Item2.EndExecuteReader(asyncRes);
-                        int id;
-                        while (reader.Read())
-                        {
-                            id = reader.GetSqlInt32(0).Value;
+                        id = reader.GetSqlInt32(0).Value;
 
-                            if (!encountered_particles[id])
-                            {
-                                points[id] = new TrackingInfo(
-                                    new Point3(reader.GetSqlSingle(1).Value, reader.GetSqlSingle(2).Value, reader.GetSqlSingle(3).Value),
-                                    new Point3(reader.GetSqlSingle(4).Value, reader.GetSqlSingle(5).Value, reader.GetSqlSingle(6).Value),
-                                    reader.GetSqlInt32(10).Value,
-                                    reader.GetSqlSingle(11).Value,
-                                    reader.GetSqlSingle(12).Value,
-                                    reader.GetSqlSingle(13).Value,
-                                    reader.GetSqlBoolean(14).Value,
-                                    reader.GetSqlBoolean(15).Value
-                                    );
-                                encountered_particles[id] = true;
-                            }
-                            else
-                            {
-                                // If this point was already returned from another server
-                                // it means it was crossing the server boundaries.
-                                // Therefore, we just need to add the velocity increment to the predictor or corrector position, e.g.:
-                                // predictor = pos + vel * dt
-                                // when we have 2 srevers each computes predictor_i = pos + vel_i * dt
-                                // when we get the data from the first server we set predictor = pos + vel_0 * dt
-                                // from the second server we get vel_1 * dt and predictor += vel_1 * dt
-                                // which yields predictor = pos + vel_0 * dt + vel_1 * dt = pos + vel * dt
-                                if (!points[id].compute_predictor)
-                                {
-                                    //The logic here is a little counter-intuitive. 
-                                    //The point was assigned to multiple servers. 
-                                    //Each server has performed the evaluation and has updated the compute_predictor flag. 
-                                    //However, we need to add the velocity increments from the different servers either to the predictor or the corrector. 
-                                    //Thus, if the compute_predictor flag is set to true it means the corrector was computed 
-                                    //and the velocity increment should be added to the corrector 
-                                    //and vice versa if the compute_predictor flag is set to false it means the predictor was computed 
-                                    //and the velocity increment should be added to the predictor.
-
-                                    points[id].predictor.x += reader.GetSqlSingle(7).Value;
-                                    points[id].predictor.y += reader.GetSqlSingle(8).Value;
-                                    points[id].predictor.z += reader.GetSqlSingle(9).Value;
-                                }
-                                else
-                                {
-                                    points[id].position.x += 0.5f * reader.GetSqlSingle(7).Value;
-                                    points[id].position.y += 0.5f * reader.GetSqlSingle(8).Value;
-                                    points[id].position.z += 0.5f * reader.GetSqlSingle(9).Value;
-                                }
-                            }
-                        }
-                        reader.Close();
-                        datatables[server_index].Clear();
-                        count[server_index] = 0;
-                        // We may not be done!
-                        //connections[s].Close();
-                        //connections[s] = null; 
+                        points[id] = new Point3(reader.GetSqlSingle(1).Value, reader.GetSqlSingle(2).Value, reader.GetSqlSingle(3).Value);
                     }
-                    catch (Exception e)
-                    {
-                        exception = e;
-                    }
+                    reader.Close();
+                    datatables[server_index].Clear();
+                    count[server_index] = 0;
+                }
+                catch (Exception e)
+                {
+                    exception = e;
                 }
             }
             if (Interlocked.Decrement(ref numberOfCallbacksNotYetCompleted) == 0)

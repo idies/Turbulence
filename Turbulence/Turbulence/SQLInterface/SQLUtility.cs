@@ -555,64 +555,7 @@ namespace Turbulence.SQLInterface
 
             return map;
         }
-
-        //same as above, but returns a different map and an array
-        public static Dictionary<long, List<int>> ReadTempTableGetCubesToRead(string tempTable,
-            TurbDataTable table, int result_size, SqlConnection conn,
-            Dictionary<int, MHDInputRequest> input, float time,
-            ref float points_per_cube, int correcting_pos)
-        {
-            Dictionary<long, List<int>> map = new Dictionary<long, List<int>>();
-            tempTable = SanitizeTemporaryTable(tempTable);
-            MHDInputRequest request;
-
-            int total_points = 0;
-
-            string query = "";
-            //if (getPosition)
-            //    query = String.Format("SELECT reqseq, zindex, x, y, z, pre_x, pre_y, pre_z, Vx, Vy, Vz FROM {0}", tempTable);
-            //else
-                query = String.Format("SELECT reqseq, zindex, x, y, z FROM {0}", tempTable);
-            SqlCommand cmd = new SqlCommand(query, conn);
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            long zindex = 0;
-            int reqseq = -1;
-            while (reader.Read())
-            {
-                reqseq = reader.GetSqlInt32(0).Value;
-                if (!input.ContainsKey(reqseq))
-                {
-                    request = new MHDInputRequest(
-                        reqseq,
-                        reader.GetSqlSingle(2).Value,
-                        reader.GetSqlSingle(3).Value,
-                        reader.GetSqlSingle(4).Value,
-                        result_size,
-                        0
-                        );
-                    input[reqseq] = request;
-                }
-                else
-                    request = input[reqseq];
-
-                zindex = reader.GetSqlInt64(1).Value;
-
-                request.numberOfCubes++;
-                if (!map.ContainsKey(zindex))
-                {
-                    map[zindex] = new List<int>();
-                }
-                map[zindex].Add(request.request);
-                total_points++;
-            }
-            reader.Close();
-
-            points_per_cube = (float)total_points / map.Keys.Count;
-
-            return map;
-        }
-        
+                
         //same as above, but returns a different map and an array
         public static Dictionary<long, List<int>> ReadTempTableGetAtomsToRead(string tempTable,
             Worker worker, Worker.Workers workerType,
