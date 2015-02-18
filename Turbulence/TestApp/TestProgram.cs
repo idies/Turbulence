@@ -41,7 +41,7 @@ namespace TestApp
             {
                 //TestGetForce();
                 //TestMixingDataset();
-                AllTest();
+                //AllTest();
                 //TestGetBoxFilterGradient();
                 //TestAllDisks();
                 //TestGetRawData();
@@ -50,7 +50,7 @@ namespace TestApp
                 //TestChannelFlowInterpolation();
                 //TestGetBoxFilter();
                 //TestChannelFlowDB();
-                //TestParticleTracking();
+                TestParticleTracking();
                 //TestSplines();
                 //ComputeSplinesGradient();
                 //ComputeSplinesHessian();
@@ -910,10 +910,10 @@ namespace TestApp
             endTime = 0.00056f;
             startTime = 0.50566f;
 
-            runningTime = DateTime.Now;
+            //runningTime = DateTime.Now;
             //positions = service.GetPositionDBEvaluation(authToken, "isotropic1024", startTime, endTime, -0.001f, turbulence.SpatialInterpolation.Lag4, points);
-            Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
-            Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
+            //Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
+            //Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
 
             runningTime = DateTime.Now;
             positions2 = service.GetPosition(authToken, "isotropic1024", startTime, endTime, 0.001f, turbulence.SpatialInterpolation.Lag4, points);

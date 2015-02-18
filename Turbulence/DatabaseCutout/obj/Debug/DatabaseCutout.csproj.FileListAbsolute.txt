@@ -5,3 +5,10 @@ H:\Turbulence\Turbulence\DatabaseCutout\bin\Debug\Turbulence.dll
 H:\Turbulence\Turbulence\DatabaseCutout\bin\Debug\Turbulence.pdb
 H:\Turbulence\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.dll
 H:\Turbulence\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.pdb
+C:\Users\kalin\Documents\Turbulence.git\Turbulence\DatabaseCutout\bin\Debug\DatabaseCutout.dll
+C:\Users\kalin\Documents\Turbulence.git\Turbulence\DatabaseCutout\bin\Debug\DatabaseCutout.pdb
+C:\Users\kalin\Documents\Turbulence.git\Turbulence\DatabaseCutout\bin\Debug\Turbulence.dll
+C:\Users\kalin\Documents\Turbulence.git\Turbulence\DatabaseCutout\bin\Debug\Turbulence.pdb
+C:\Users\kalin\Documents\Turbulence.git\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.csprojResolveAssemblyReference.cache
+C:\Users\kalin\Documents\Turbulence.git\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.dll
+C:\Users\kalin\Documents\Turbulence.git\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.pdb

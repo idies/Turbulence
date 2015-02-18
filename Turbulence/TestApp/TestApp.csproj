@@ -72,17 +72,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="TestProgram.cs" />
-    <Compile Include="Web References\turbulence\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Web References\turbulence\Point3.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -94,7 +93,6 @@
     </None>
     <None Include="Web References\turbulence\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <None Include="Web References\turbulence\SGSTensor.datasource">
       <DependentUpon>Reference.map</DependentUpon>
@@ -114,12 +112,6 @@
     </None>
     <None Include="Web References\turbulence\VelocityHessian.datasource">
       <DependentUpon>Reference.map</DependentUpon>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -159,10 +151,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:3447/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://localhost:52306/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\turbulence\</RelPath>
-      <UpdateFromURL>http://localhost:3447/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://localhost:52306/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

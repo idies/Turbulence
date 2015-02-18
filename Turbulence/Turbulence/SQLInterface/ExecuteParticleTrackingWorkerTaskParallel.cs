@@ -34,6 +34,9 @@ public partial class StoredProcedures
         int temporalInterp,         // TurbulenceOptions.TemporalInterpolation
         int inputSize,
         string tempTable,
+        float time,
+        float endTime,
+        float dt,
         bool development)
     {
         //TimeSpan IOTime = new TimeSpan(0), preProcessTime = new TimeSpan(0), resultTime = new TimeSpan(0),
@@ -111,7 +114,12 @@ public partial class StoredProcedures
 
         // Read input data
         bool all_done = false;
-        map = ReadTempTableGetAtomsToRead(tempTable, worker, contextConn, input, serverBoundaries);
+        int initial_timestep;
+        if (temporalInterp == (int)TurbulenceOptions.TemporalInterpolation.None)
+            initial_timestep = SQLUtility.GetNearestTimestep(time, table);
+        else
+            initial_timestep = SQLUtility.GetFlooredTimestep(time, table);
+        map = ReadTempTableGetAtomsToRead(tempTable, worker, contextConn, input, serverBoundaries, initial_timestep, time, endTime, dt);
         cmd = new SqlCommand(String.Format(@"DELETE FROM {0}", tempTable), contextConn);
         try
         {
@@ -158,18 +166,17 @@ public partial class StoredProcedures
         //cmd = new SqlCommand(@"SET STATISTICS IO ON;", conn);
         //cmd.CommandType = CommandType.Text;
         //cmd.ExecuteNonQuery();
-        //float[] result;
 
-        record = new SqlDataRecord(worker.GetRecordMetaData());
+        record = new SqlDataRecord(GetRecordMetaData());
         SqlContext.Pipe.SendResultsStart(record);
 
         SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
         SQLUtility.TrackingInputRequest point = new SQLUtility.TrackingInputRequest();
         // Bitmask to ignore low order bits of address
         long mask = ~(long)(worker.DataTable.atomDim * worker.DataTable.atomDim * worker.DataTable.atomDim - 1);
-        //List<int> done_points = new List<int>();
+        
+        List<int> done_points = new List<int>();
 
-        //throw new Exception(zindexRegionsString);
         if ((TurbulenceOptions.TemporalInterpolation)temporalInterp ==
             TurbulenceOptions.TemporalInterpolation.None)
         {
@@ -223,26 +230,14 @@ public partial class StoredProcedures
 
                                 while (bytesread < table.BlobByteSize)
                                 {
-                                    //int bytes = (int)reader.GetBytes(2, 0, rawdata, bytesread, table.BlobByteSize - bytesread);
                                     int bytes = (int)reader.GetBytes(3, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
                                     bytesread += bytes;
                                 }
                                 blob.Setup(timestep, new Morton3D(thisBlob), rawdata);
 
-                                //for (int i = 0; i < map[key].Count; i++)
                                 foreach (int i in map[s][key])
                                 {
-                                    //point = input[map[key][i]];
                                     point = input[i];
-
-                                    //// If a particle has crossed the server boundary and this is not the first iteration
-                                    //// it should be sent back to the Web-server for reassignment without computing it's partial position
-                                    //// If this is the first iteration it was assigned to all of the servers that have data for it
-                                    //// so we should compute it's partial position (the results will be added at the Web-server)
-                                    //if (point.crossed_boundary && iteration_number > 0)
-                                    //{
-                                    //    continue;
-                                    //}
 
                                     if (worker == null)
                                         throw new Exception("worker is NULL!");
@@ -276,8 +271,7 @@ public partial class StoredProcedures
                 {
                     if (input[input_point].done)
                     {
-                        GenerateResultRow(record, input[input_point]);
-                        input.Remove(input_point);
+                        done_points.Add(input_point);
                         continue;
                     }
                     // reset the velocity increment
@@ -290,6 +284,12 @@ public partial class StoredProcedures
                     AddRequestToMap(ref map, input[input_point], worker, mask, serverBoundaries);
                     all_done = false;
                 }
+                foreach (int done_point in done_points)
+                {
+                    GenerateResultRowFinalPosition(record, input[done_point]);
+                    input.Remove(done_point);
+                }
+                done_points.Clear();
             }
             // Encourage garbage collector to clean up.
             blob = null;
@@ -359,7 +359,9 @@ public partial class StoredProcedures
         Turbulence.SQLInterface.workers.GetPositionWorker worker,
         SqlConnection conn,
         Dictionary<int, SQLUtility.TrackingInputRequest> input,
-        List<ServerBoundaries> serverBoundaries)
+        List<ServerBoundaries> serverBoundaries,
+        int timestep,
+        float time, float endTime, float dt)
     {
         Dictionary<SQLUtility.TimestepZindexKey, List<int>>[] map = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>[serverBoundaries.Count];
         tempTable = SQLUtility.SanitizeTemporaryTable(tempTable);
@@ -374,7 +376,8 @@ public partial class StoredProcedures
 
         string query = "";
         SqlCommand cmd;
-        query += String.Format("SELECT reqseq, timestep, zindex, x, y, z, pre_x, pre_y, pre_z, time, endTime, dt, compute_predictor FROM {0}", tempTable);
+        //query += String.Format("SELECT reqseq, timestep, zindex, x, y, z, pre_x, pre_y, pre_z, time, endTime, dt, compute_predictor FROM {0}", tempTable);
+        query += String.Format("SELECT reqseq, zindex, x, y, z FROM {0}", tempTable);
         cmd = new SqlCommand(query, conn);
         SqlDataReader reader = cmd.ExecuteReader();
 
@@ -383,15 +386,15 @@ public partial class StoredProcedures
             reqseq = reader.GetSqlInt32(0).Value;
             request = new SQLUtility.TrackingInputRequest(
                 reqseq,
-                reader.GetSqlInt32(1).Value,
-                reader.GetSqlInt64(2).Value,
+                timestep,
+                reader.GetSqlInt64(1).Value,
                 new Point3(reader.GetSqlSingle(3).Value, reader.GetSqlSingle(4).Value, reader.GetSqlSingle(5).Value),
-                new Point3(reader.GetSqlSingle(6).Value, reader.GetSqlSingle(7).Value, reader.GetSqlSingle(8).Value),
+                new Point3(),
                 new Vector3(),
-                reader.GetSqlSingle(9).Value,
-                reader.GetSqlSingle(10).Value,
-                reader.GetSqlSingle(11).Value,
-                reader.GetSqlBoolean(12).Value);
+                time,
+                endTime,
+                dt,
+                true);
 
             input[reqseq] = request;
 
@@ -487,5 +490,24 @@ public partial class StoredProcedures
                 break;
             }
         }
+    }
+
+    static void GenerateResultRowFinalPosition(SqlDataRecord record, SQLUtility.TrackingInputRequest temp_point)
+    {
+        record.SetInt32(0, temp_point.request);
+        record.SetFloat(1, temp_point.pos.x);
+        record.SetFloat(2, temp_point.pos.y);
+        record.SetFloat(3, temp_point.pos.z);
+        SqlContext.Pipe.SendResultsRow(record);
+    }
+
+    static SqlMetaData[] GetRecordMetaData()
+    {
+        return new SqlMetaData[] {
+                new SqlMetaData("Req", SqlDbType.Int),
+                new SqlMetaData("X", SqlDbType.Real),
+                new SqlMetaData("Y", SqlDbType.Real),
+                new SqlMetaData("Z", SqlDbType.Real)
+            };
     }
 };
