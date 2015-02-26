@@ -151,6 +151,8 @@
     <Compile Include="SciLib\TemporalInterpolation.cs" />
     <Compile Include="SQLInterface\CutoutDataReader.cs" />
     <Compile Include="SQLInterface\ExecuteParticleTrackingWorkerTaskParallel.cs" />
+    <Compile Include="SQLInterface\ExecuteTwoFieldsBoxFilterWorker.cs" />
+    <Compile Include="SQLInterface\ExecuteTwoFieldsWorker.cs" />
     <Compile Include="SQLInterface\GetStridedDataCutout.cs" />
     <Compile Include="SQLInterface\Database.cs" />
     <Compile Include="SQLInterface\StoreFilteredCutout.cs" />
