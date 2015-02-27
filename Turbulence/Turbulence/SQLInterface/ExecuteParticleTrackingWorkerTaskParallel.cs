@@ -364,6 +364,11 @@ public partial class StoredProcedures
         float time, float endTime, float dt)
     {
         Dictionary<SQLUtility.TimestepZindexKey, List<int>>[] map = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>[serverBoundaries.Count];
+        for (int i = 0; i < serverBoundaries.Count; i++)
+        {
+            map[i] = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>();
+        }
+
         tempTable = SQLUtility.SanitizeTemporaryTable(tempTable);
         SQLUtility.TrackingInputRequest request;
 
@@ -479,7 +484,7 @@ public partial class StoredProcedures
         for (int i = 0; i < serverBoundaries.Count; i++)
         {
             //NOTE: We assume each node stores a contiguous range of zindexes.
-            if (serverBoundaries[i].startKey <= zindex && serverBoundaries[i].endKey <= zindex)
+            if (serverBoundaries[i].startKey <= zindex && zindex <= serverBoundaries[i].endKey)
             {
                 if (!map[i].ContainsKey(key))
                 {
