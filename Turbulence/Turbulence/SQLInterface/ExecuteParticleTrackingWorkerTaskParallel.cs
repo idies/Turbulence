@@ -388,7 +388,7 @@ public partial class StoredProcedures
                 reqseq,
                 timestep,
                 reader.GetSqlInt64(1).Value,
-                new Point3(reader.GetSqlSingle(3).Value, reader.GetSqlSingle(4).Value, reader.GetSqlSingle(5).Value),
+                new Point3(reader.GetSqlSingle(2).Value, reader.GetSqlSingle(3).Value, reader.GetSqlSingle(4).Value),
                 new Point3(),
                 new Vector3(),
                 time,
