@@ -99,8 +99,6 @@ public partial class StoredProcedures
         // Load information about the requested dataset
         TurbDataTable table = TurbDataTable.GetTableInfo(localServer, localDatabase, tableName, atomDim, contextConn);
 
-        tableName = String.Format("{0}.dbo.{1}", localDatabase, table.TableName);
-
         // Instantiate a worker class
         Turbulence.SQLInterface.workers.GetPositionWorker worker =
             new Turbulence.SQLInterface.workers.GetPositionWorker(table,
@@ -206,6 +204,8 @@ public partial class StoredProcedures
                         {
                             connections[s].Open();
                         }
+                        
+                        tableName = String.Format("{0}.dbo.{1}", databases[s], table.TableName);
 
                         //Create a table to perform query via a JOIN
                         string joinTable = SQLUtility.CreateTemporaryJoinTable(map[s].Keys, (TurbulenceOptions.TemporalInterpolation)temporalInterp, table.TimeInc, connections[s], points_per_cube);
