@@ -93,10 +93,6 @@ namespace Turbulence.SQLInterface
             public bool resultSent;
             public double[] lagInt;
 
-            public bool evaluate;
-            public int numberOfNodes;
-            public int numberOfNodeResults;
-
             public TrackingInputRequest() { }
 
             public TrackingInputRequest(int request, int timeStep, long zindex,
@@ -117,35 +113,6 @@ namespace Turbulence.SQLInterface
                 this.done = false;
                 this.cubesRead = 0;
                 this.numberOfCubes = 0;
-                this.resultSent = false;
-                this.lagInt = null;
-
-                this.numberOfCubes = 0;
-                this.numberOfNodeResults = 0;
-                this.evaluate = true;
-            }
-
-            public TrackingInputRequest(int request, int timeStep, long zindex,
-                Point3 pos, Point3 pre_pos, Vector3 vel,
-                float time, float endTime, float dt, bool compute_predictor, int numberOfNodes, bool evaluate)
-            {
-                this.request = request;
-                this.timeStep = timeStep;
-                this.zindex = zindex;
-                this.pos = pos;
-                this.pre_pos = pre_pos;
-                this.vel_inc = vel;
-                this.time = time;
-                this.endTime = endTime;
-                this.dt = dt;
-                this.compute_predictor = compute_predictor;
-                this.crossed_boundary = false;
-                this.evaluate = evaluate;
-                this.done = false;
-                this.cubesRead = 0;
-                this.numberOfCubes = 0;
-                this.numberOfNodeResults = 0;
-                this.numberOfNodes = numberOfNodes;
                 this.resultSent = false;
                 this.lagInt = null;
             }

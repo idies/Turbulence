@@ -22,10 +22,10 @@ namespace TurbulenceService
     {
         string infodb;
         protected int[] gridResolution; // Dimensions of the entire grid given az [z,y,x]
-        public int atomDim;                // length of side of a single data atom
-        public List<string> servers;       // name of each server (resolved via web.config)
-        public List<string> databases;     // name of the database holding turbulence data
-        public List<string> codeDatabase;  // name of database from which turbulence code is executed
+        int atomDim;                // length of side of a single data atom
+        List<string> servers;       // name of each server (resolved via web.config)
+        List<string> databases;     // name of the database holding turbulence data
+        List<string> codeDatabase;  // name of database from which turbulence code is executed
         public int serverCount;     // Number of servers to balance against
         SqlConnection[] connections;// SQL Connetion Handles
         SqlCommand[] sqlcmds;
@@ -38,14 +38,14 @@ namespace TurbulenceService
         private double dx;           // the grid separation in the x-dimension
         private double dy;           // the grid separation in the y-dimension
         private double dz;           // the grid separation in the z-dimension
-        public bool channel_grid;   // flag indicating if we are working with the non-uniform gird for the channel flow dataset
+        private bool channel_grid;   // flag indicating if we are working with the non-uniform gird for the channel flow dataset
         private GridPoints gridPointsY; // grid values for the non-uniform y dimension in the case of channel flow
         public float Dt;            // used for converting from floating point time to timestep values stored in the DB
         private int timeInc;         // time increment between timesteps stored in the DB
         private int timeOff;        // timestep offset (t = dt * (timestep - timeOff); for channel flow timestep 132010 = time 0)
         public bool smallAtoms;     // indicator of whether the atoms stored in the DB are small with no edge replicaiton
         // or large with a replicated edge of length 4 on each side
-        public List<ServerBoundaries> serverBoundaries; // info about the spatial partitioning of the data across servers
+        List<ServerBoundaries> serverBoundaries; // info about the spatial partitioning of the data across servers
         const int MAX_READ_LENGTH = 256000000;
         const int MAX_NUMBER_THRESHOLD_POINTS = 1024 * 1024;
         const double DENSITY_CONSTANT = 80.0;
@@ -98,7 +98,7 @@ namespace TurbulenceService
         /// get the grid values.
         /// </remarks>
         /// <param name="dataset"></param>
-        public void Initialize(DataInfo.DataSets dataset, int num_virtual_servers)
+        public void Initialize(int dataset, int num_virtual_servers)
         {
             setBlobDim(dataset);
             selectServers(dataset, num_virtual_servers);
@@ -110,21 +110,25 @@ namespace TurbulenceService
         public int GridResolutionY { get { return gridResolution[1]; } }
         public int GridResolutionZ { get { return gridResolution[0]; } }
 
-        private void setResolution(DataInfo.DataSets dataset)
+        private void setResolution(int dataset)
         {
-            switch (dataset)
+           //switch (dataset)
+            //{
+                //case DataInfo.DataSets.isotropic1024fine:
+                //case DataInfo.DataSets.isotropic1024coarse:
+               // case DataInfo.DataSets.mhd1024:
+               // case DataInfo.DataSets.mixing:
+            if (dataset != 6)
             {
-                case DataInfo.DataSets.isotropic1024fine:
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.mhd1024:
-                case DataInfo.DataSets.mixing:
                     this.gridResolution = new int[] { 1024, 1024, 1024 };
                     this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
                     this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
                     this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
                     channel_grid = false;
-                    break;
-                case DataInfo.DataSets.channel:
+                    //break;  /*Warning we no longer catch an exception...*/
+            }
+               else if (dataset == 6)
+               {
                     this.gridResolution = new int[] { 1536, 512, 2048 };
                     this.dx = (8.0 * Math.PI) / (double)this.GridResolutionX;
                     this.dz = (3.0 * Math.PI) / (double)this.GridResolutionZ;
@@ -149,33 +153,35 @@ namespace TurbulenceService
                     {
                         throw new Exception("Servers not initialized!");
                     }
-                    break;
-                default:
-                    throw new Exception("Invalid dataset specified!");
+                    //break;
+                //default:
+                   // throw new Exception("Invalid dataset specified!");
             }
         }
 
-        public void setBlobDim(DataInfo.DataSets dataset)
+        public void setBlobDim(int dataset)
         {
-            switch (dataset)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.mhd1024:
-                case DataInfo.DataSets.channel:
-                case DataInfo.DataSets.mixing:
+            //switch (dataset)
+           // {
+                //case DataInfo.DataSets.isotropic1024fine:
+                //case DataInfo.DataSets.isotropic1024coarse:
+                //case DataInfo.DataSets.mhd1024:
+                //case DataInfo.DataSets.channel:
+                //case DataInfo.DataSets.mixing:
                     this.atomDim = 8;
                     this.smallAtoms = true;
-                    break;
-                default:
-                    throw new Exception("Invalid dataset specified!");
-            }
+                    //break;
+                //default:
+                //    throw new Exception("Invalid dataset specified!");
+            //}
         }
 
-        public void setDtTimeInc(DataInfo.DataSets dataset)
+        public void setDtTimeInc(int dataset)
         {
-            switch (dataset)
-            {
+            //switch (dataset)
+            //{
+            /* Moved to db */
+            /*
                 case DataInfo.DataSets.isotropic1024fine:
                     this.Dt = 0.0002F;
                     this.timeInc = 1;
@@ -198,8 +204,27 @@ namespace TurbulenceService
                     this.timeInc = 1;
                     this.timeOff = 1;
                     break;
-                default:
-                    throw new Exception("Invalid dataset specified!");
+             */
+              //  default:
+              //      throw new Exception("Invalid dataset specified!");
+
+            //}//
+            SqlConnection sqlcon;
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            sqlcon = new SqlConnection(connectionString);
+            sqlcon.Open();
+            SqlCommand cmd = new SqlCommand(
+                String.Format("select dt, timeinc, timeoff from turbinfo.dbo.datasets where id= '{0}'", dataset), sqlcon);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                reader.Read();
+                if (reader.HasRows)
+                {
+                    this.Dt = (float)reader.GetDouble(0); /*We may need to switch this to a double here*/
+                    this.timeInc = reader.GetInt32(1);
+                    this.timeOff = reader.GetInt32(2);
+                }
+                else throw new Exception("Invalid dataset specified!");
             }
         }
 
@@ -208,9 +233,10 @@ namespace TurbulenceService
         /// Initialize servers, connections and input data tables.
         /// </summary>
         /// <param name="worker">Worker type used</param>
-        public void selectServers(DataInfo.DataSets dataset_enum)
+        public void selectServers(int dataset_id)
         {
-            String dataset = dataset_enum.ToString();
+            String dataset = DataInfo.findDataSetName(dataset_id);
+            //String dataset = dataset_enum.ToString();
             String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
@@ -283,9 +309,9 @@ namespace TurbulenceService
         /// Initialize servers, connections and input data tables.
         /// </summary>
         /// <param name="num_virtual_servers">Number of virtual servers to use. Currently assumes this is multiple of 2.</param>
-        public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers)
-        {            
-            String dataset = dataset_enum.ToString();
+        public void selectServers(int dataset_id, int num_virtual_servers)
+        {
+            String dataset = DataInfo.findDataSetName(dataset_id);
             String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
@@ -391,9 +417,9 @@ namespace TurbulenceService
         /// Initialize servers, connections and input data tables.
         /// </summary>
         /// <param name="num_virtual_servers">Number of virtual servers to use. Currently assumes this is multiple of 2.</param>
-        public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers, int worker)
+        public void selectServers(int dataset_id, int num_virtual_servers, int worker)
         {
-            String dataset = dataset_enum.ToString();
+            String dataset = DataInfo.findDataSetName(dataset_id);
             String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
@@ -762,7 +788,7 @@ namespace TurbulenceService
         /// <param name="xp">Input Coordinate</param>
         /// <param name="round">Round to nearest integer (true) or floor (false).</param>
         /// <returns>Integer value [0-DIM)</returns>
-        public int GetIntLocX(float xp, bool round)
+        private int GetIntLocX(float xp, bool round)
         {
             int x;
             if (round)
@@ -782,7 +808,7 @@ namespace TurbulenceService
         /// <param name="yp">Input Coordinate</param>
         /// <param name="round">Round to nearest integer (true) or floor (false).</param>
         /// <returns>Integer value [0-DIM)</returns>
-        public int GetIntLocY(float yp, bool round, int kernelSizeY)
+        private int GetIntLocY(float yp, bool round, int kernelSizeY)
         {
             int y;
             if (channel_grid)
@@ -816,7 +842,7 @@ namespace TurbulenceService
         /// <param name="zp">Input Coordinate</param>
         /// <param name="round">Round to nearest integer (true) or floor (false).</param>
         /// <returns>Integer value [0-DIM)</returns>
-        public int GetIntLocZ(float zp, bool round)
+        private int GetIntLocZ(float zp, bool round)
         {
             int z;
             if (round)
@@ -831,7 +857,7 @@ namespace TurbulenceService
             return ((z % GridResolutionZ) + GridResolutionZ) % GridResolutionZ;
         }
 
-        public int GetKernelStart(int n, int kernelSize)
+        private int GetKernelStart(int n, int kernelSize)
         {
             // (kernelSize + 1)/2 produces Ceil(kernelSize/2)
             return n - (kernelSize + 1) / 2 + 1;
@@ -2727,7 +2753,7 @@ namespace TurbulenceService
             return asyncRes;
         }
 
-        private IAsyncResult[] ExecuteGetFilteredCutout(DataInfo.DataSets dataset_enum, string field,
+        private IAsyncResult[] ExecuteGetFilteredCutout(int dataset_id, string field,
             int timestep, int filter_width, int x_stride, int y_stride, int z_stride,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
         {
@@ -2747,7 +2773,7 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
-                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
+                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_id);
                     sqlcmds[s].Parameters.AddWithValue("@field", field);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
@@ -2764,7 +2790,7 @@ namespace TurbulenceService
             return asyncRes;
         }
 
-        private IAsyncResult[] ExecuteGetStridedDataCutout(DataInfo.DataSets dataset_enum, string field,
+        private IAsyncResult[] ExecuteGetStridedDataCutout(int dataset_id, string field,
             int timestep, int x_stride, int y_stride, int z_stride,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
         {
@@ -2784,7 +2810,7 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
-                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
+                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_id);
                     sqlcmds[s].Parameters.AddWithValue("@field", field);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
@@ -2800,7 +2826,7 @@ namespace TurbulenceService
             return asyncRes;
         }
 
-        private IAsyncResult[] ExecuteGetThreshold(DataInfo.DataSets dataset_enum, string tableName, int workerType, 
+        private IAsyncResult[] ExecuteGetThreshold(int dataset_id, string tableName, int workerType, 
             int timestep, int spatialInterp, double threshold, 
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
         {
@@ -2817,7 +2843,7 @@ namespace TurbulenceService
                         "@cachedb, @turbinfodb, @tableName, @workerType, @blobDim, @timestep, " +
                         "@spatialInterp, @arg, @threshold, @QueryBox ",
                         codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
+                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_id);
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
@@ -2851,7 +2877,7 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDData(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result)
@@ -2862,7 +2888,7 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDData(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result, float arg)
@@ -2873,7 +2899,7 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDData(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             SGSTensor[] result, float arg)
@@ -2884,7 +2910,7 @@ namespace TurbulenceService
             return GetSGSResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+        public int ExecuteGetMHDData(string tableName1, string tableName2, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             VelocityGradient[] result, float arg)
@@ -2895,7 +2921,7 @@ namespace TurbulenceService
             return GetTwoFieldsSGSResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+        public int ExecuteGetMHDData(string tableName1, string tableName2, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result, float arg)
@@ -2906,7 +2932,7 @@ namespace TurbulenceService
             return GetTwoFieldsSGSResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+        public int ExecuteGetMHDData(string tableName1, string tableName2, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             float[] result, float arg)
@@ -2917,7 +2943,7 @@ namespace TurbulenceService
             return GetTwoFieldsSGSResults(asyncRes, result);
         }
 
-        public int ExecuteGetBoxFilter(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetBoxFilter(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result, float arg)
@@ -2926,14 +2952,14 @@ namespace TurbulenceService
             asyncRes = ExecuteBoxFilterWorker(tableName.ToString(),
                         worker, time, spatial, temporal, arg);
             int ret = 0;
-            if (tableName == DataInfo.TableNames.pr || tableName == DataInfo.TableNames.pressure08 || tableName == DataInfo.TableNames.isotropic1024fine_pr)
+            if (tableName == "pr" || tableName == "pressure08" || tableName == "isotropic1024fine_pr")
                 ret = GetPressureResults(asyncRes, result);
             else
                 ret = GetXYZResults(asyncRes, result);
             return ret;
         }
 
-        public int ExecuteGetBoxFilter(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetBoxFilter(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             SGSTensor[] result, float arg)
@@ -2944,7 +2970,7 @@ namespace TurbulenceService
             return GetSGSResults(asyncRes, result);
         }
 
-        public int ExecuteGetBoxFilter(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+        public int ExecuteGetBoxFilter(string tableName1, string tableName2, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             VelocityGradient[] result, float arg)
@@ -2955,7 +2981,7 @@ namespace TurbulenceService
             return GetTwoFieldsSGSResults(asyncRes, result);
         }
 
-        public int ExecuteGetBoxFilter(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+        public int ExecuteGetBoxFilter(string tableName1, string tableName2, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result, float arg)
@@ -2966,26 +2992,26 @@ namespace TurbulenceService
             return GetTwoFieldsSGSResults(asyncRes, result);
         }
 
-        public int ExecuteGetBoxFilter(DataInfo.TableNames tableName1, DataInfo.TableNames tableName2, int worker, float time,
+        public int ExecuteGetBoxFilter(string tableName1, string tableName2, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             float[] result, float arg)
         {
             IAsyncResult[] asyncRes;
-            asyncRes = ExecuteBoxFilterWorker(tableName1.ToString(), tableName2.ToString(),
+            asyncRes = ExecuteBoxFilterWorker(tableName1, tableName2,
                         worker, time, spatial, temporal, arg);
             return GetTwoFieldsSGSResults(asyncRes, result);
         }
 
         // customized for batching
-        public int ExecuteGetMHDDataBatch(DataInfo.TableNames tableName, float time,
+        public int ExecuteGetMHDDataBatch(string tableName, float time,
             string boundary, Vector3[] result)
         {
             IAsyncResult[] asyncRes;
             switch (tableName)
             {
-                case DataInfo.TableNames.velocity08:
-                    asyncRes = ExecuteMHDWorkerBatch(tableName.ToString(),
+                case "velocity08":
+                    asyncRes = ExecuteMHDWorkerBatch(tableName,
                         Worker.Workers.GetMHDVelocity, time, boundary, 0);
                     break;
                 default:
@@ -2994,12 +3020,12 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDData(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Pressure[] result)
         {
-            IAsyncResult[] asyncRes = ExecuteMHDWorker(tableName.ToString(),
+            IAsyncResult[] asyncRes = ExecuteMHDWorker(tableName,
                         worker, time, (int)spatial, (int)temporal, 0);
             return GetPressureResults(asyncRes, result);
         }
@@ -3080,23 +3106,23 @@ namespace TurbulenceService
         /// <remarks>
         /// Also used for LaplacianOfVelocityGradient
         /// </remarks>
-        public int ExecuteGetMHDGradient(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDGradient(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             VelocityGradient[] result)
         {
             IAsyncResult[] asyncRes;
-            asyncRes = ExecuteMHDWorker(tableName.ToString(),
+            asyncRes = ExecuteMHDWorker(tableName,
                         worker, time, (int)spatial, (int)temporal, 0);
             return GetVelocityGradientResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDFilterGradient(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDFilterGradient(string tableName, int worker, float time,
             int spatial, float filter_width,
             VelocityGradient[] result)
         {
             IAsyncResult[] asyncRes;
-            asyncRes = ExecuteMHDWorker(tableName.ToString(),
+            asyncRes = ExecuteMHDWorker(tableName,
                         worker, time, spatial, 0, filter_width);
             return GetVelocityGradientResults(asyncRes, result);
         }
@@ -3112,40 +3138,40 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDLaplacian(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDLaplacian(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result)
         {
             IAsyncResult[] asyncRes;
-            asyncRes = ExecuteMHDWorker(tableName.ToString(),
+            asyncRes = ExecuteMHDWorker(tableName,
                         worker, time, (int)spatial, (int)temporal, 0);
             return GetVelocityLaplacianResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDHessian(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDHessian(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             VelocityHessian[] result)
         {
             IAsyncResult[] asyncRes;
-            asyncRes = ExecuteMHDWorker(tableName.ToString(),
+            asyncRes = ExecuteMHDWorker(tableName,
                         worker, time, (int)spatial, (int)temporal, 0);
             return GetVelocityHessianResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDPressureHessian(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetMHDPressureHessian(string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             PressureHessian[] result)
         {
-            IAsyncResult[] asyncRes = ExecuteMHDWorker(tableName.ToString(),
+            IAsyncResult[] asyncRes = ExecuteMHDWorker(tableName,
                         worker, time, (int)spatial, (int)temporal, 0);
             return GetPressureHessianResults(asyncRes, result);
         }
 
-        public int ExecuteGetThreshold(DataInfo.DataSets dataset_enum,
-            DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetThreshold(int dataset_id,
+            string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             double threshold,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
@@ -3169,13 +3195,13 @@ namespace TurbulenceService
 
             GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
 
-            IAsyncResult[] asyncRes = ExecuteGetThreshold(dataset_enum, tableName.ToString(), worker, timestep, (int)spatial, threshold, 
+            IAsyncResult[] asyncRes = ExecuteGetThreshold(dataset_id, tableName.ToString(), worker, timestep, (int)spatial, threshold, 
                 serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
             return GetThresholdResults(asyncRes, result);
         }
 
-        public int ExecuteGetPDF(DataInfo.DataSets dataset_enum,
-            DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetPDF(int dataset_id,
+            string tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             int binSize, int numberOfBins,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
@@ -3193,12 +3219,12 @@ namespace TurbulenceService
 
             GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
 
-            IAsyncResult[] asyncRes = ExecuteGetPDF(dataset_enum, tableName.ToString(), worker, timestep, (int)spatial, binSize, numberOfBins,
+            IAsyncResult[] asyncRes = ExecuteGetPDF(dataset_id, tableName.ToString(), worker, timestep, (int)spatial, binSize, numberOfBins,
                 serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, arg);
             return GetPDFResults(asyncRes, result);
         }
 
-        private IAsyncResult[] ExecuteGetPDF(DataInfo.DataSets dataset_enum, string tableName, int workerType,
+        private IAsyncResult[] ExecuteGetPDF(int dataset_id, string tableName, int workerType,
             int timestep, int spatialInterp, int binSize, int numberOfBins,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth,
             int arg)
@@ -3216,7 +3242,7 @@ namespace TurbulenceService
                         "@cachedb, @turbinfodb, @tableName, @workerType, @blobDim, @timestep, " +
                         "@spatialInterp, @arg, @binSize, @numberOfBins, @QueryBox ",
                         codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
+                    sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_id);
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
@@ -3427,7 +3453,7 @@ namespace TurbulenceService
             return GetPositionResults(asyncRes, points, predictor, compute_predictor);
         }
 
-        public byte[] GetRawData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
+        public byte[] GetRawData(int dataset_id, string tableName, float time, int components,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
         {
             // we return a cube of data with the specified width
@@ -3435,7 +3461,7 @@ namespace TurbulenceService
             byte[] result = new byte[Xwidth * Ywidth * Zwidth * components * sizeof(float)];
             IAsyncResult[] asyncRes;
 
-            selectServers(dataset_enum);
+            selectServers(dataset_id);
 
             //if (channel_grid)
             //{
@@ -3467,13 +3493,13 @@ namespace TurbulenceService
             return result;
         }
 
-        public byte[] GetFilteredData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
+        public byte[] GetFilteredData(int dataset_id, string tableName, float time, int components,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, 
             int x_stride, int y_stride, int z_stride, int filter_width)
         {
             IAsyncResult[] asyncRes;
 
-            selectServers(dataset_enum);
+            selectServers(dataset_id);
 
             //if (channel_grid)
             //{
@@ -3503,7 +3529,7 @@ namespace TurbulenceService
             if (filter_width == 1)
             {
                 //DateTime start = DateTime.Now;
-                asyncRes = ExecuteGetStridedDataCutout(dataset_enum, tableName.ToString(),
+                asyncRes = ExecuteGetStridedDataCutout(dataset_id, tableName.ToString(),
                     timestep, x_stride, y_stride, z_stride, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
             }
             else
@@ -3512,7 +3538,7 @@ namespace TurbulenceService
                 {
                     filter_width = filter_width + 1;
                 }
-                asyncRes = ExecuteGetFilteredCutout(dataset_enum, tableName.ToString(),
+                asyncRes = ExecuteGetFilteredCutout(dataset_id, tableName.ToString(),
                     timestep, filter_width, x_stride, y_stride, z_stride, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
             }
 

@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
+using System.Data.SqlClient;
 
 namespace TurbulenceService
 {
@@ -14,8 +15,8 @@ namespace TurbulenceService
     /// Summary description for DataInfo
     /// </summary>
     public class DataInfo
-    {
-        public enum DataSets : int
+    {   /*Enumerations have to be specified at compile time.  We will have to change the way this works */
+        /* public enum DataSets : int
         {
             mhd1024 = 3,
             isotropic1024coarse = 4,
@@ -23,12 +24,45 @@ namespace TurbulenceService
             channel = 6,
             mixing = 7
         }
-
+         */
+        public int DataSets;
+        public static int findDataSetInt(string DataSetName)
+        {
+            SqlConnection sqlcon;
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            sqlcon = new SqlConnection(connectionString);
+            sqlcon.Open();
+            SqlCommand cmd = new SqlCommand(
+                String.Format("select id from turbinfo.dbo.datasets where name= '{0}'", DataSetName), sqlcon);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                reader.Read();
+                if (reader.HasRows) return reader.GetInt32(0);
+                    
+                else throw new Exception("Invalid dataset specified!");
+            }
+        }
+        public static string findDataSetName(int dataset_id)
+        {
+            SqlConnection sqlcon;
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            sqlcon = new SqlConnection(connectionString);
+            sqlcon.Open();
+            SqlCommand cmd = new SqlCommand(
+                String.Format("select name from turbinfo.dbo.datasets where id= {0}", dataset_id), sqlcon);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                reader.Read();
+                if (reader.HasRows) return reader.GetString(0);
+                else throw new Exception("Invalid dataset specified!");
+            }
+        }
         // TODO: This needs to be refactored. We probably don't want to keep track of
         // the table names here, but only the datasets. One issue is that both the fine
         // and the coarse isotropic datasets are stored in the same table. The stored 
         // procedure should take only the dataset name as parameter and we can include
         // and extra "field" parameter to distinguish between velocity, pressure, magnetic, etc.
+        /*
         public enum TableNames : int
         {
             //isotropic1024coarse, //Original isotropic turb. DB data table is "isotropic1024data"
@@ -44,9 +78,11 @@ namespace TurbulenceService
             isotropic1024fine_pr,
             density // Mixing DB Density table
         }
+        */
+        public String tablename;
 
-        public static int getNumberComponents(TableNames tableName)
-        {
+        public static int getNumberComponents(String tableName)
+        {   /*
             switch (tableName)
             {
                 case TableNames.density:
@@ -70,8 +106,74 @@ namespace TurbulenceService
                 default:
                     throw new Exception("Invalid field specified!");
             }
+             */
+            SqlConnection sqlcon;
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            sqlcon = new SqlConnection(connectionString);
+            sqlcon.Open();
+            SqlCommand cmd = new SqlCommand(
+                String.Format("select components from turbinfo.dbo.datafields where tablename = '{0}'", tableName), sqlcon);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                reader.Read();
+                if (reader.HasRows) return reader.GetInt32(0);
+                else return 0;                
+            }
+        }
+        public string TableNames;
+        public static string getTableName(string dataSet, string field)
+        {
+            SqlConnection sqlcon;
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            sqlcon = new SqlConnection(connectionString);
+            sqlcon.Open();
+            field = field.ToLower(); /*Set field to lowercase*/
+            SqlCommand cmd = new SqlCommand(
+                String.Format("select tablename from turbinfo.dbo.datafields, turbinfo.dbo.datasets where datasets.name = '{0}' and datafields.dataset_id = datasets.id and (datafields.name ='{1}' or datafields.charname ='{1}' or datafields.longname = '{1}')", dataSet, field), sqlcon);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                reader.Read();
+                if (reader.HasRows)
+                {
+                     
+                    return reader.GetString(0);
+                }
+                else
+                {
+                     
+                    return "0";
+                }
+            }
+            
+        }
+        public static string GetCharFieldName(string field)
+        {
+            SqlConnection sqlcon;
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            sqlcon = new SqlConnection(connectionString);
+            sqlcon.Open();
+            field = field.ToLower(); /*Set field to lowercase*/
+            SqlCommand cmd = new SqlCommand(
+                String.Format("select charname from turbinfo.dbo.datafields where (datafields.name ='{1}' or datafields.charname ='{1}' or datafields.longname = '{1}')", field), sqlcon);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                reader.Read();
+                if (reader.HasRows)
+                {
+                    string datasetname = reader.GetString(0);
+                    sqlcon.Close();
+                    return datasetname;
+                }
+                else
+                {
+                    sqlcon.Close();
+                    throw new Exception("Invalid data set specified!");
+                }
+            }
+
         }
 
+        /*
         public static TableNames getTableName(DataSets dataSet, string field)
         {
             switch (dataSet)
@@ -121,7 +223,7 @@ namespace TurbulenceService
                     throw new Exception("Invalid data set specified!");
             }
         }
-
+        
         public static string GetCharFieldName(string field)
         {
             if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
@@ -137,9 +239,11 @@ namespace TurbulenceService
             else
                 throw new Exception("Invalid field specified!");
         }
+        */
 
         // {"external name", "internal name"}
         // The offsets are used in the log, so names should only be added to this list.
+        /*
         private static string[,] sets = { {"isotropic1024", "isotropic1024coarse"},
                                {"isotropic1024coarse", "isotropic1024coarse"},
                                {"isotropic1024fine", "isotropic1024fine"},
@@ -147,35 +251,85 @@ namespace TurbulenceService
                                {"mhd1024", "mhd1024"},
                                {"channel", "channel"},
                                {"mixing", "mixing"}};
-
+        */
         public static string findDataSet(string setname)
         {
+            SqlConnection sqlcon;
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            sqlcon = new SqlConnection(connectionString);
+            sqlcon.Open();
+            
             if (setname != null)
             {
+                /* Old hardcoded way */
+                /*
                 for (int i = 0; i < sets.GetLength(0); i++)
                 {
                     if (sets[i, 0].Equals(setname.ToLower()))
                         return sets[i, 1];
+                }
+                 */
+                SqlCommand cmd = new SqlCommand(
+                String.Format("select id, name from turbinfo.dbo.datasets where name='{0}'", setname),sqlcon);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    reader.Read();
+                    if (reader.GetString(1).Equals(setname.ToLower()))
+                    {
+                        
+                        return reader.GetString(1);
+                    }
+
                 }
             }
             throw new Exception(String.Format("Invalid set name: {0}", setname));
         }
 
         // used to map dataset names to numbers stored in the log
+        /* Replaced with call to DB (above)
         public static int findDataSetInt(string setname)
         {
             return (int)Enum.Parse(typeof(DataSets), setname);
         }
-
+        */
         /* Hard coded hack to verify time ranges.
          * TODO: Make this more general purpose in the future.
          */
-        public static bool isTimeInRange(DataSets dataset, float time)
+        public static bool isTimeInRange(int dataset_id, float time)
         {
             if (time < 0)
             {
                 return false;
             }
+            else
+            {
+                SqlConnection sqlcon;
+                String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+                sqlcon = new SqlConnection(connectionString);
+                sqlcon.Open();
+                SqlCommand cmd = new SqlCommand(
+                String.Format("select maxTime from turbinfo.dbo.datasets where id= {0}", dataset_id), sqlcon);
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    reader.Read();
+                    if (reader.HasRows)
+                    {
+                        float maxTime = (float)reader.GetDouble(0);
+                        
+                        if (time > maxTime)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+
+                }
+                sqlcon.Close();
+            }
+                /*
             else if (dataset == DataSets.isotropic1024coarse && time > 2.05F)
             {
                 return false;
@@ -196,11 +350,11 @@ namespace TurbulenceService
             {
                 return false;
             }
-
+            */
             return true;
         }
 
-        public static void verifyTimeInRange(DataSets dataset, float time)
+        public static void verifyTimeInRange(int dataset, float time)
         {
             if (!isTimeInRange(dataset, time))
             {

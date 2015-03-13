@@ -12,9 +12,6 @@ namespace Turbulence.SQLInterface.workers
 {
     public class GetPositionWorker : Worker
     {
-        public const int TIMESTEPS_TO_READ_NO_INTERPOLATION = 1;
-        public const int TIMESTEPS_TO_READ_WITH_INTERPOLATION = 4;
-
         TurbulenceOptions.TemporalInterpolation temporalInterpolation;
         long full;
         private GetMHDWorker turbulence_worker;
@@ -163,11 +160,11 @@ namespace Turbulence.SQLInterface.workers
 
             if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
             {
-                timestepsForInterpolation =  TIMESTEPS_TO_READ_NO_INTERPOLATION;
+                timestepsForInterpolation = 1;
             }
             else
             {
-                timestepsForInterpolation = TIMESTEPS_TO_READ_WITH_INTERPOLATION;
+                timestepsForInterpolation = 4;
 
                 int timestep0 = basetime - setInfo.TimeInc;
                 int timestep1 = basetime;
@@ -266,15 +263,15 @@ namespace Turbulence.SQLInterface.workers
                     int X, Y, Z;
                     if (kernelSize == 0)
                     {
-                        X = LagInterpolation.CalcNodeWithRound(point.pre_pos.x, setInfo.Dx);
-                        Y = LagInterpolation.CalcNodeWithRound(point.pre_pos.y, setInfo.Dy);
-                        Z = LagInterpolation.CalcNodeWithRound(point.pre_pos.z, setInfo.Dz);
+                        X = LagInterpolation.CalcNodeWithRound(point.pre_pos.x, setInfo.DxFloat);
+                        Y = LagInterpolation.CalcNodeWithRound(point.pre_pos.y, setInfo.DxFloat);
+                        Z = LagInterpolation.CalcNodeWithRound(point.pre_pos.z, setInfo.DxFloat);
                     }
                     else
                     {
-                        X = LagInterpolation.CalcNode(point.pre_pos.x, setInfo.Dx);
-                        Y = LagInterpolation.CalcNode(point.pre_pos.y, setInfo.Dy);
-                        Z = LagInterpolation.CalcNode(point.pre_pos.z, setInfo.Dz);
+                        X = LagInterpolation.CalcNode(point.pre_pos.x, setInfo.DxFloat);
+                        Y = LagInterpolation.CalcNode(point.pre_pos.y, setInfo.DxFloat);
+                        Z = LagInterpolation.CalcNode(point.pre_pos.z, setInfo.DxFloat);
                     }
                     point.zindex = new Morton3D(Z, Y, X);
                     point.compute_predictor = false;

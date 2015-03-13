@@ -4,6 +4,8 @@ using System.Collections;
 using System.Web.Services;
 using System.Web.Services.Protocols;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Configuration;
 using Turbulence.TurbLib;
 using Turbulence.TurbLib.DataTypes;
 using Turbulence.SQLInterface;
@@ -73,15 +75,28 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //dataset = DataInfo.findDataSet(dataset);
+            /* Old hardcoded way */
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            string tablename = DataInfo.getTableName(dataset, "vel");
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
-
-            int worker = (int)Worker.Workers.GetMHDVelocity;
-
+            /*Not sure why channel is special at this point...*/
+            if (dataset == "channel")
+            {
+                int worker = (int)Worker.Workers.GetChannelVelocity;             
+            }
+            else
+            {
+                int worker = (int)Worker.Workers.GetMHDVelocity;
+                GetMHDData(auth, dataset, dataset_id, tablename, worker,
+                            time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
+            }
+                /*
+             *
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -105,11 +120,12 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+            */
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
 
-        private void GetMHDData(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
+        private void GetMHDData(AuthInfo.AuthToken auth, string dataset, int dataset_id, string tableName, int worker,
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, Vector3[] result, ref object rowid)
         {
@@ -117,7 +133,13 @@ namespace TurbulenceService {
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            //bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            bool IsChannelGrid = false;
+            if (dataset == "channel")
+            {
+                IsChannelGrid = true;
+            }
+
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -128,7 +150,7 @@ namespace TurbulenceService {
 
             //database.AddBulkParticles(points, round, spatialInterpolation, worker);
             database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
-
+            /* Was tableName, changed to dataset */
             database.ExecuteGetMHDData(tableName, worker, time,
                 spatialInterpolation, temporalInterpolation, result);
         }
@@ -151,22 +173,23 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            DataInfo.verifyTimeInRange(dataset_id, time);
 
             bool round = spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None ? true : false;
-            switch (dataset_enum)
+            switch (dataset_id)
             {
-                case DataInfo.DataSets.isotropic1024fine:
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.channel:
+                case 5:
+                case 4:
+                case 6:
                     throw new Exception("Batching only supported for MHD");
 
-                case DataInfo.DataSets.mhd1024:
-                    database.selectServers(dataset_enum);
+                case 3:
+                    database.selectServers(dataset_id);
 
                     rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetMHDVelocity,
                         (int)spatialInterpolation,
@@ -216,19 +239,20 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
             // we return a cube of data with the specified width
             // for the 3 components of the velocity field
             int components = 3;
             byte[] result = null;
-            DataInfo.TableNames tableName;
+            string tableName;
 
-            switch (dataset_enum)
+            /*switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                     tableName = DataInfo.TableNames.isotropic1024fine_vel;
@@ -246,6 +270,8 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+             * */
+            tableName = DataInfo.getTableName(dataset, "vel");
 
             rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawVelocity,
                 (int)TurbulenceOptions.SpatialInterpolation.None,
@@ -253,7 +279,7 @@ namespace TurbulenceService {
                 Xwidth * Ywidth * Zwidth, time, null, null);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            result = database.GetRawData(dataset_id, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
@@ -270,19 +296,20 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Pressure[] result = new Pressure[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            DataInfo.verifyTimeInRange(dataset_id, time);
 
             bool round = spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None ? true : false;
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            DataInfo.TableNames tableName;
+            //DataInfo.TableNames tableName;
             int worker;
-
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -305,8 +332,10 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            */
+            string tableName = DataInfo.getTableName(dataset, "pr");
+            worker = (int)Worker.Workers.GetMHDPressure;
+            bool IsChannelGrid = dataset_id ==6 ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -331,18 +360,21 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
             // we return a cube of data with the specified width
             // for the scalar pressure field
             int components = 1;
             byte[] result = null;
-            DataInfo.TableNames tableName;
+            //DataInfo.TableNames tableName;
 
+            string tableName = DataInfo.getTableName(dataset, "pr");
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -361,13 +393,14 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+             */
             rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPressure,
                 (int)TurbulenceOptions.SpatialInterpolation.None,
                 (int)TurbulenceOptions.TemporalInterpolation.None,
                Xwidth * Ywidth * Zwidth, time, null, null);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            result = database.GetRawData(dataset_id, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
@@ -384,12 +417,13 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
-
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -404,6 +438,14 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+            */
+
+            string tableName = DataInfo.getTableName(dataset, "mag");
+            /*This is a hack.  Fix in db...check the fields or something */
+            if (dataset_id == 6) throw new Exception(String.Format("GetMagneticField is not available on channel datasets!"));
+            GetMHDData(auth, dataset, dataset_id, tableName, (int)Worker.Workers.GetMHDMagnetic,
+                  time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
+              
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
@@ -415,18 +457,19 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
             // we return a cube of data with the specified width
             // for the 3 components of the magnetic field
             int components = 3;
             byte[] result = null;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
@@ -447,6 +490,19 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+             */
+            
+            string tableName = DataInfo.getTableName(dataset, "mag");
+            rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawMagnetic,
+                        (int)TurbulenceOptions.SpatialInterpolation.None,
+                        (int)TurbulenceOptions.TemporalInterpolation.None,
+                       Xwidth * Ywidth * Zwidth, time, null, null);
+            log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
+
+            result = database.GetRawData(dataset_id, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+
+            if (dataset_id == 6) throw new Exception(String.Format("GetMagneticField is not available on channel datasets!"));
+
             log.UpdateLogRecord(rowid, database.Bitfield);
 
             return result;
@@ -462,12 +518,13 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
-
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -482,6 +539,8 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+             */
+
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
@@ -493,17 +552,18 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
             // we return a cube of data with the specified width
             // for the 3 components of the vector potential field
             int components = 3;
             byte[] result = null;
-
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -525,6 +585,29 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+             * */
+            SqlConnection sqlcon;
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            sqlcon = new SqlConnection(connectionString);
+            sqlcon.Open();
+            SqlCommand cmd = new SqlCommand(
+                String.Format("select tablename from turbinfo.dbo.datasets where dataset_id= '{0}' and name='vec'", dataset_id), sqlcon);
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                reader.Read();
+                if (reader.HasRows)
+                {
+                    string tableName = reader.GetString(0);
+                    rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPotential,
+                        (int)TurbulenceOptions.SpatialInterpolation.None,
+                        (int)TurbulenceOptions.TemporalInterpolation.None,
+                       Xwidth * Ywidth * Zwidth, time, null, null);
+                    log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
+                    result = database.GetRawData(dataset_id, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+
+                }
+                else throw new Exception("GetRawVectorPotential is not available for this dataset!");
+            }
             log.UpdateLogRecord(rowid, database.Bitfield);
 
             return result;
@@ -540,19 +623,22 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Pressure[] result = new Pressure[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            DataInfo.verifyTimeInRange(dataset_id, time);
 
             bool round = spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None ? true : false;
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            DataInfo.TableNames tableName;
-            int worker;
-
+            string tableName = "density";
+            int worker = (int)Worker.Workers.GetDensity;
+            /*We might need to add a check to make sure the dataset has density*/
+             
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.mixing:
@@ -562,8 +648,9 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            */
+            
+            bool IsChannelGrid = dataset_id == 6 ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -591,19 +678,20 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
 
             bool round = true;
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            DataInfo.TableNames tableName;
+            string tableName = "density";
             int worker;
-
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.mixing:
@@ -613,8 +701,10 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+             * */
+            worker = (int)Worker.Workers.GetDensityGradient;
 
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            bool IsChannelGrid = dataset_id == 6 ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -643,10 +733,11 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             PressureHessian[] result = new PressureHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
 
             object rowid = null;
 
@@ -654,9 +745,10 @@ namespace TurbulenceService {
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            DataInfo.TableNames tableName;
+            string tableName = "density";
             int worker;
-
+            worker = (int)Worker.Workers.GetDensityHessian;
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.mixing:
@@ -666,6 +758,7 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+             * */
 
             if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q4 ||
                 spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q6 ||
@@ -677,7 +770,7 @@ namespace TurbulenceService {
                 throw new Exception("This interpolation option does not support second order derivatives!");
             }
 
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            bool IsChannelGrid = dataset_id == 6 ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -702,18 +795,20 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            int worker = (int)Worker.Workers.GetDensityHessian;
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
             // we return a cube of data with the specified width
             // for the scalar pressure field
             int components = 1;
             byte[] result = null;
-            DataInfo.TableNames tableName;
-
+            string tableName = "density";
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.mixing:
@@ -722,13 +817,15 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+             * */
+
             rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawDensity,
                 (int)TurbulenceOptions.SpatialInterpolation.None,
                 (int)TurbulenceOptions.TemporalInterpolation.None,
                Xwidth * Ywidth * Zwidth, time, null, null);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            result = database.GetRawData(dataset_id, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
@@ -752,7 +849,8 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
 
             object rowid = null;
             rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetForce,
@@ -763,14 +861,14 @@ namespace TurbulenceService {
             const int time_offset = 4800;  // integral time offset to match forcing files
             Vector3[] result = new Vector3[points.Length];
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
 
             log.UpdateRecordCount(auth.Id, points.Length);
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                case DataInfo.DataSets.isotropic1024coarse:
+            
+            switch (dataset_id)
+            { /*Ugh--fix this later.  Not sure the data differences at this time...*/
+                case 5: //DataInfo.DataSets.isotropic1024fine:
+                case 4: //DataInfo.DataSets.isotropic1024coarse:
                     TurbDataTable table = TurbDataTable.GetTableInfo(dataset);
 
                     string directory = System.Web.HttpContext.Current.Request.MapPath("/")
@@ -836,7 +934,7 @@ namespace TurbulenceService {
                     }
                     break;
 
-                case DataInfo.DataSets.mhd1024:
+                case 3: //DataInfo.DataSets.mhd1024:
                     for (int i = 0; i < points.Length; i++)
                     {
                         result[i].x = 0.25f * (float)(Math.Sin(2 * points[i].x) * Math.Cos(2 * points[i].y) * Math.Cos(2 * points[i].z));
@@ -867,11 +965,13 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3P[] result = new Vector3P[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
-            
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
+            /* Not sure what the case was for other than for invalid sets...*/
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -892,7 +992,16 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
+            */
+            Vector3[] velocities = GetVelocity(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points);
+            Pressure[] pressures = GetPressure(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points);
+            for (int i = 0; i < points.Length; i++)
+            {
+                result[i].x = velocities[i].x;
+                result[i].y = velocities[i].y;
+                result[i].z = velocities[i].z;
+                result[i].p = pressures[i].p;
+            }
             return result;
         }
 
@@ -908,14 +1017,15 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             VelocityGradient[] result = new VelocityGradient[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
 
             int worker = (int)Worker.Workers.GetMHDVelocityGradient;
-
+            /*
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -938,7 +1048,17 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
+            */
+            string tablename = DataInfo.getTableName(dataset, "vel");
+            if (dataset_id == 6)
+            {
+                GetMHDGradient(auth, dataset, dataset_id, tablename, (int)Worker.Workers.GetChannelVelocityGradient,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
+            }
+            {
+                GetMHDGradient(auth, dataset, dataset_id, tablename, worker,
+                            time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
+            }
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
@@ -953,26 +1073,30 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             VelocityGradient[] result = new VelocityGradient[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.channel:
                     throw new Exception(String.Format("GetMagneticField is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDGradient(auth, dataset, dataset_enum, DataInfo.TableNames.magnetic08, (int)Worker.Workers.GetMHDMagneticGradient,
+                    GetMHDGradient(auth, dataset, dataset_id, DataInfo.TableNames.magnetic08, (int)Worker.Workers.GetMHDMagneticGradient,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
+            */
+            string tablename = DataInfo.getTableName(dataset, "mag");
+            GetMHDGradient(auth, dataset, dataset_id, tablename, (int)Worker.Workers.GetMHDMagneticGradient,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
@@ -987,31 +1111,35 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             VelocityGradient[] result = new VelocityGradient[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.channel:
                     throw new Exception(String.Format("GetVectorPotential is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDGradient(auth, dataset, dataset_enum, DataInfo.TableNames.potential08, (int)Worker.Workers.GetMHDPotentialGradient,
+                    GetMHDGradient(auth, dataset, dataset_id, DataInfo.TableNames.potential08, (int)Worker.Workers.GetMHDPotentialGradient,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
+            */
+            string tableName = DataInfo.getTableName(dataset, "vec");
+            GetMHDGradient(auth, dataset, dataset_id, tableName, (int)Worker.Workers.GetMHDPotentialGradient,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
 
-        private void GetMHDGradient(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
+        private void GetMHDGradient(AuthInfo.AuthToken auth, string dataset, int dataset_id, string tableName, int worker,
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, VelocityGradient[] result, ref object rowid)
         {
@@ -1019,7 +1147,7 @@ namespace TurbulenceService {
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            bool IsChannelGrid = dataset_id == 6 ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -1044,20 +1172,23 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
 
             bool round = true;
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            DataInfo.TableNames tableName;
+            //DataInfo.TableNames tableName;
+            string tableName = DataInfo.getTableName(dataset, "pr");
+            
             int worker;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                     tableName = DataInfo.TableNames.isotropic1024fine_pr;
@@ -1079,8 +1210,17 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+            */
 
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            bool IsChannelGrid = dataset_id == 6 ? true : false;
+            if (IsChannelGrid)
+            {
+                worker = (int)Worker.Workers.GetChannelPressureGradient;
+            }
+            else
+            {
+                worker = (int)Worker.Workers.GetMHDPressureGradient;
+            }
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
             
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -1109,10 +1249,11 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             PressureHessian[] result = new PressureHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
 
             object rowid = null;
 
@@ -1120,10 +1261,11 @@ namespace TurbulenceService {
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            DataInfo.TableNames tableName;
+            //DataInfo.TableNames tableName;
+            string tableName = DataInfo.getTableName(dataset, "pr");
             int worker;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                     tableName = DataInfo.TableNames.isotropic1024fine_pr;
@@ -1145,7 +1287,7 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
+            */
             if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q4 ||
                 spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q6 ||
                 spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q8 ||
@@ -1156,7 +1298,15 @@ namespace TurbulenceService {
                 throw new Exception("This interpolation option does not support second order derivatives!");
             }
 
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            bool IsChannelGrid = dataset_id == 6 ? true : false;
+            if (IsChannelGrid)
+            {
+                worker = (int)Worker.Workers.GetChannelPressureHessian;
+            }
+            else
+            {
+                worker = (int)Worker.Workers.GetMHDPressureHessian;
+            }
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
             
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -1185,35 +1335,48 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             VelocityHessian[] result = new VelocityHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
 
             int worker = (int)Worker.Workers.GetMHDVelocityHessian;
-            
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
-                    GetMHDHessian(auth, dataset, dataset_enum, DataInfo.TableNames.isotropic1024fine_vel, worker,
+                    GetMHDHessian(auth, dataset, dataset_id, DataInfo.TableNames.isotropic1024fine_vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
-                    GetMHDHessian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
+                    GetMHDHessian(auth, dataset, dataset_id, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDHessian(auth, dataset, dataset_enum, DataInfo.TableNames.velocity08, worker,
+                    GetMHDHessian(auth, dataset, dataset_id, DataInfo.TableNames.velocity08, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 case DataInfo.DataSets.channel:
-                    GetMHDHessian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, (int)Worker.Workers.GetChannelVelocityHessian,
+                    GetMHDHessian(auth, dataset, dataset_id, DataInfo.TableNames.vel, (int)Worker.Workers.GetChannelVelocityHessian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
+            }
+             * */
+            string tableName = DataInfo.getTableName(dataset, "vel");
+            if (dataset_id == 6)
+            {
+                GetMHDHessian(auth, dataset, dataset_id, tableName, (int)Worker.Workers.GetChannelVelocityHessian,
+                       time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
+            }
+            else
+            {
+                GetMHDHessian(auth, dataset, dataset_id, tableName, worker,
+                            time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
             }
 
             log.UpdateLogRecord(rowid, database.Bitfield);
@@ -1230,25 +1393,30 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             VelocityHessian[] result = new VelocityHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.channel:
                     throw new Exception(String.Format("GetMagnetic is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDHessian(auth, dataset, dataset_enum, DataInfo.TableNames.magnetic08, (int)Worker.Workers.GetMHDMagneticHessian,
+                    GetMHDHessian(auth, dataset, dataset_id, DataInfo.TableNames.magnetic08, (int)Worker.Workers.GetMHDMagneticHessian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+            */
+            string tableName = DataInfo.getTableName(dataset, "mag");
+            GetMHDHessian(auth, dataset, dataset_id,tableName, (int)Worker.Workers.GetMHDMagneticHessian,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
@@ -1264,31 +1432,35 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             VelocityHessian[] result = new VelocityHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.channel:
                     throw new Exception(String.Format("GetVectorPotential is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDHessian(auth, dataset, dataset_enum, DataInfo.TableNames.potential08, (int)Worker.Workers.GetMHDPotentialHessian,
+                    GetMHDHessian(auth, dataset, dataset_id, DataInfo.TableNames.potential08, (int)Worker.Workers.GetMHDPotentialHessian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
+            */
+            string tableName = DataInfo.getTableName(dataset, "vec");
+            GetMHDHessian(auth, dataset, dataset_id, tableName, (int)Worker.Workers.GetMHDPotentialHessian,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
 
-        private void GetMHDHessian(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
+        private void GetMHDHessian(AuthInfo.AuthToken auth, string dataset, int dataset_id, string tableName, int worker,
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, VelocityHessian[] result, ref object rowid)
         {
@@ -1306,7 +1478,7 @@ namespace TurbulenceService {
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            bool IsChannelGrid = dataset_id ==6 ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -1332,33 +1504,46 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
-                    GetMHDLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.isotropic1024fine_vel, (int)Worker.Workers.GetMHDVelocityLaplacian,
+                    GetMHDLaplacian(auth, dataset, dataset_id, DataInfo.TableNames.isotropic1024fine_vel, (int)Worker.Workers.GetMHDVelocityLaplacian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
-                    GetMHDLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, (int)Worker.Workers.GetMHDVelocityLaplacian,
+                    GetMHDLaplacian(auth, dataset, dataset_id, DataInfo.TableNames.vel, (int)Worker.Workers.GetMHDVelocityLaplacian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.velocity08, (int)Worker.Workers.GetMHDVelocityLaplacian,
+                    GetMHDLaplacian(auth, dataset, dataset_id, DataInfo.TableNames.velocity08, (int)Worker.Workers.GetMHDVelocityLaplacian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 case DataInfo.DataSets.channel:
-                    GetMHDLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, (int)Worker.Workers.GetChannelVelocityLaplacian,
+                    GetMHDLaplacian(auth, dataset, dataset_id, DataInfo.TableNames.vel, (int)Worker.Workers.GetChannelVelocityLaplacian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
+            }
+            */
+            string tableName = DataInfo.getTableName(dataset, "vel");
+            if (dataset_id == 6)
+            {
+                GetMHDLaplacian(auth, dataset, dataset_id, tableName, (int)Worker.Workers.GetChannelVelocityLaplacian,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
+            }
+            else
+            {
+                GetMHDLaplacian(auth, dataset, dataset_id, tableName, (int)Worker.Workers.GetMHDVelocityLaplacian,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
             }
 
             log.UpdateLogRecord(rowid, database.Bitfield);
@@ -1375,26 +1560,30 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            //DataInfo.DataSets dataset_id = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.channel:
                     throw new Exception(String.Format("GetMagneticField is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.magnetic08, (int)Worker.Workers.GetMHDMagneticLaplacian,
+                    GetMHDLaplacian(auth, dataset, dataset_id, DataInfo.TableNames.magnetic08, (int)Worker.Workers.GetMHDMagneticLaplacian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
+            */
+            string tableName = DataInfo.getTableName(dataset, "mag");
+            GetMHDLaplacian(auth, dataset, dataset_id, tableName, (int)Worker.Workers.GetMHDMagneticLaplacian,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
@@ -1409,31 +1598,35 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            //DataInfo.DataSets dataset_id = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             object rowid = null;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.channel:
                     throw new Exception(String.Format("GetVectorPotential is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.potential08, (int)Worker.Workers.GetMHDPotentialLaplacian,
+                    GetMHDLaplacian(auth, dataset, dataset_id, DataInfo.TableNames.potential08, (int)Worker.Workers.GetMHDPotentialLaplacian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
+            */
+            string tableName = DataInfo.getTableName(dataset, "vec");
+            GetMHDLaplacian(auth, dataset, dataset_id, tableName, (int)Worker.Workers.GetMHDPotentialLaplacian,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
 
-        private void GetMHDLaplacian(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
+        private void GetMHDLaplacian(AuthInfo.AuthToken auth, string dataset, int dataset_id, string tableName, int worker,
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, Vector3[] result, ref object rowid)
         {
@@ -1451,7 +1644,7 @@ namespace TurbulenceService {
             int kernelSize = -1;
             int kernelSizeY = -1;
 
-            bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
+            bool IsChannelGrid = dataset_id== 6 ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -1474,11 +1667,12 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            DataInfo.verifyTimeInRange(dataset_enum, StartTime);
-            DataInfo.verifyTimeInRange(dataset_enum, EndTime);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            DataInfo.verifyTimeInRange(dataset_id, StartTime);
+            DataInfo.verifyTimeInRange(dataset_id, EndTime);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
 
             if (Math.Abs(EndTime - StartTime) - Math.Abs(dt) < -0.000001F)
                 throw new Exception(String.Format("The time step dt cannot be greater than the StartTime : EndTime range!"));
@@ -1528,9 +1722,9 @@ namespace TurbulenceService {
             //}
 
             time = StartTime;
-            string tableName = DataInfo.getTableName(dataset_enum, "velocity").ToString();
-
-            switch (dataset_enum)
+            string tableName = DataInfo.getTableName(dataset, "vel");
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
@@ -1573,6 +1767,35 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+            */
+            for (int i = 0; i < integralSteps; i++)
+            {
+                //database.AddBulkParticles(points, round, spatialInterpolation, worker);
+                database.AddBulkParticles(points, kernelSize, kernelSize, kernelSize, round, time);
+                database.ExecuteGetPosition(tableName, time,
+                    spatialInterpolation, temporalInterpolation, points, predictor, true, dt);
+
+                time = time + dt;
+                //database.AddBulkParticles(predictor, round, spatialInterpolation, worker);
+                database.AddBulkParticles(predictor, kernelSize, kernelSize, kernelSize, round, time);
+                database.ExecuteGetPosition(tableName, time,
+                    spatialInterpolation, temporalInterpolation, points, predictor, false, dt);
+            }
+
+            dt1 = (float)(EndTime - (StartTime + integralSteps * dt));
+
+            if ((StartTime > EndTime && dt1 <= -0.00001) || (StartTime < EndTime && dt1 >= 0.00001))
+            {
+                //database.AddBulkParticles(points, round, spatialInterpolation, worker);
+                database.AddBulkParticles(points, kernelSize, kernelSize, kernelSize, round, time);
+                database.ExecuteGetPosition(tableName, time,
+                    spatialInterpolation, temporalInterpolation, points, predictor, true, dt1);
+
+                //database.AddBulkParticles(predictor, round, spatialInterpolation, worker);
+                database.AddBulkParticles(predictor, kernelSize, kernelSize, kernelSize, round, time);
+                database.ExecuteGetPosition(tableName, EndTime,
+                    spatialInterpolation, temporalInterpolation, points, predictor, false, dt1);
+            }
 
             database.Close();
 
@@ -1597,12 +1820,16 @@ namespace TurbulenceService {
             int num_virtual_servers = 4;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            if (dataset_id == 6) //Channel hack--fix this later
+            { 
                 throw new Exception(String.Format("GetBoxFilter is not available for the channel flow datasets!"));
             }
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            
+                
+            
+            DataInfo.verifyTimeInRange(dataset_id, time);
             double dx = (2.0 * Math.PI) / (double)database.GridResolutionX;
             int int_filterwidth = (int)Math.Round(filterwidth / dx);
 
@@ -1625,13 +1852,13 @@ namespace TurbulenceService {
             if (num_virtual_servers == 1 && database.CheckInputForWrapAround(points, int_filterwidth, round))
                 num_virtual_servers = 2;
 
-            database.Initialize(dataset_enum, num_virtual_servers);
-            //database.selectServers(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
+            //database.selectServers(dataset_id, num_virtual_servers);
 
             Vector3[] result = new Vector3[points.Length];
             object rowid = null;
 
-            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field);
+            string tableName = DataInfo.getTableName(dataset, field);
                         
             int worker = (int)Worker.Workers.GetMHDBoxFilter;
 
@@ -1641,7 +1868,10 @@ namespace TurbulenceService {
             rowid = log.CreateLog(auth.Id, dataset, worker, 0, 0,
                points.Length, time, null, null);
             log.UpdateRecordCount(auth.Id, points.Length);
-
+            if (tableName == "0")
+            {
+                throw new Exception(String.Format("Test.  for dataset {0} with id {1} and table {2} and field {3}", dataset, dataset_id, tableName, field));
+            }
             if (worker == (int)Worker.Workers.GetMHDBoxFilter)
             {
                 database.ExecuteGetMHDData(tableName, worker, time,
@@ -1674,8 +1904,8 @@ namespace TurbulenceService {
         {
             SGSTensor[] result = new SGSTensor[points.Length];
             int worker = (int)Worker.Workers.GetMHDBoxFilterSGS; ;
-            DataInfo.TableNames tableName1;
-            DataInfo.TableNames tableName2;
+            string tableName1;
+            string tableName2;
             object rowid;
 
             InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
@@ -1710,8 +1940,8 @@ namespace TurbulenceService {
         {
             VelocityGradient[] result = new VelocityGradient[points.Length];
             int worker = (int)Worker.Workers.GetMHDBoxFilterSGS; ;
-            DataInfo.TableNames tableName1;
-            DataInfo.TableNames tableName2;
+            string tableName1;
+            string tableName2;
             object rowid;
 
             InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
@@ -1746,8 +1976,8 @@ namespace TurbulenceService {
         {
             Vector3[] result = new Vector3[points.Length];
             int worker = (int)Worker.Workers.GetMHDBoxFilterSGS; ;
-            DataInfo.TableNames tableName1;
-            DataInfo.TableNames tableName2;
+            string tableName1;
+            string tableName2;
             object rowid;
 
             InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
@@ -1761,7 +1991,7 @@ namespace TurbulenceService {
                 // switch the table names if the first one is for a scalar field
                 if (DataInfo.getNumberComponents(tableName1) == 1)
                 {
-                    DataInfo.TableNames temp = tableName1;
+                    string temp = tableName1;
                     tableName1 = tableName2;
                     tableName2 = temp;
                 }
@@ -1788,8 +2018,8 @@ namespace TurbulenceService {
         {
             float[] result = new float[points.Length];
             int worker = (int)Worker.Workers.GetMHDBoxFilterSGS; ;
-            DataInfo.TableNames tableName1;
-            DataInfo.TableNames tableName2;
+            string tableName1;
+            string tableName2;
             object rowid;
 
             InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
@@ -1818,18 +2048,19 @@ namespace TurbulenceService {
 
         private void InitializeSGSMethod(string authToken, float time, Point3[] points, string field, 
             ref int worker,
-            ref string dataset, ref float filterwidth, out DataInfo.TableNames tableName1, out DataInfo.TableNames tableName2,
+            ref string dataset, ref float filterwidth, out string tableName1, out string tableName2,
             out object rowid)
         {
             int num_virtual_servers = 4;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            if (dataset_enum == DataInfo.DataSets.channel)
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            if (dataset_id == 6)
             {
                 throw new Exception(String.Format("Box filter methods are not available for the channel flow datasets!"));
             }
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            DataInfo.verifyTimeInRange(dataset_id, time);
 
             double dx = (2.0 * Math.PI) / (double)database.GridResolutionX;
             int int_filterwidth = (int)Math.Round(filterwidth / dx);
@@ -1852,7 +2083,7 @@ namespace TurbulenceService {
             if (num_virtual_servers == 1 && database.CheckInputForWrapAround(points, int_filterwidth, round))
                 num_virtual_servers = 2;
 
-            database.Initialize(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
             
             worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker);
 
@@ -1865,12 +2096,12 @@ namespace TurbulenceService {
             // We determine the appropriate table name for each of these cases below.
             if (field.Length == 2)
             {
-                tableName1 = DataInfo.getTableName(dataset_enum, field.Substring(0, 1));
-                tableName2 = DataInfo.getTableName(dataset_enum, field.Substring(1, 1));
+                tableName1 = DataInfo.getTableName(dataset, field.Substring(0, 1));
+                tableName2 = DataInfo.getTableName(dataset, field.Substring(1, 1));
             }
             else
             {
-                tableName1 = DataInfo.getTableName(dataset_enum, field);
+                tableName1 = DataInfo.getTableName(dataset, field);
                 tableName2 = tableName1;
             }
         }
@@ -1883,13 +2114,14 @@ namespace TurbulenceService {
             int num_virtual_servers = 4;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            if (dataset_enum == DataInfo.DataSets.channel)
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            if (dataset_id == 6)
             {
                 throw new Exception(String.Format("GetBoxFilter is not available for the channel flow datasets!"));
             }
-            DataInfo.verifyTimeInRange(dataset_enum, time);
-            //database.Initialize(dataset_enum);
+            DataInfo.verifyTimeInRange(dataset_id, time);
+            //database.Initialize(dataset_id);
             double dx = (2.0 * Math.PI) / (double)database.GridResolutionX;
             int int_filterwidth = (int)Math.Round(filterwidth / dx);
             int FDgrid_spacing = (int)Math.Round(spacing / dx);
@@ -1915,13 +2147,13 @@ namespace TurbulenceService {
             if (num_virtual_servers == 1 && database.CheckInputForWrapAround(points, int_filterwidth, round))
                 num_virtual_servers = 2;
 
-            database.Initialize(dataset_enum, num_virtual_servers);
-            //database.selectServers(dataset_enum, num_virtual_servers);
+            database.Initialize(dataset_id, num_virtual_servers);
+            //database.selectServers(dataset_id, num_virtual_servers);
 
             VelocityGradient[] result = new VelocityGradient[points.Length];
             object rowid = null;
 
-            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field);
+            string tableName = DataInfo.getTableName(dataset, field);
 
             int worker = (int)Worker.Workers.GetMHDBoxFilterGradient;
 
@@ -1955,16 +2187,18 @@ namespace TurbulenceService {
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 4;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
             
-            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field);
+            string tableName = DataInfo.getTableName(dataset, field);
 
             int worker;
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic1024fine:
@@ -2024,7 +2258,63 @@ namespace TurbulenceService {
                 default:
                     throw new Exception("Invalid dataset specified");
             }
+            */
 
+            if (dataset_id == 6)
+            {
+                switch (field)
+                {
+                    case "vorticity":
+                        worker = (int)Worker.Workers.GetChannelCurlThreshold;
+                        break;
+                    case "q":
+                        worker = (int)Worker.Workers.GetChannelQThreshold;
+                        break;
+                    case "velocity":
+                        worker = (int)Worker.Workers.GetChannelVelocityThreshold;
+                        break;
+                    case "pressure":
+                        worker = (int)Worker.Workers.GetChannelPressureThreshold;
+                        break;
+                    default:
+                        throw new Exception("Invalid field specified");
+                }
+            }
+            else
+            {
+                if (field.Contains("vorticity"))
+                {
+                    worker = (int)Worker.Workers.GetCurlThreshold;
+                }
+                else if (field.Contains("q"))
+                {
+                    worker = (int)Worker.Workers.GetQThreshold;
+                }
+                else if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel"))
+                {
+                    worker = (int)Worker.Workers.GetVelocityThreshold;
+                }
+                else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
+                {
+                    worker = (int)Worker.Workers.GetMagneticThreshold;
+                }
+                else if (field.Equals("a") || field.Contains("vec") || field.Contains("pot") || field.Contains("Vec"))
+                {
+                    worker = (int)Worker.Workers.GetPotentialThreshold;
+                }
+                else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                {
+                    worker = (int)Worker.Workers.GetPressureThreshold;
+                }
+                else if (field.Equals("d") || field.Contains("density") || field.Contains("Density"))
+                {
+                    worker = (int)Worker.Workers.GetDensityThreshold;
+                }
+                else
+                {
+                    throw new Exception("Invalid field specified");
+                } 
+            }
             rowid = log.CreateLog(auth.Id, dataset, worker,
                 (int)spatialInterpolation,
                 (int)TurbulenceOptions.TemporalInterpolation.None,
@@ -2032,7 +2322,7 @@ namespace TurbulenceService {
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
             List<ThresholdInfo> points_above_threshold = new List<ThresholdInfo>();
-            database.ExecuteGetThreshold(dataset_enum, tableName, worker, time, spatialInterpolation, threshold,
+            database.ExecuteGetThreshold(dataset_id, tableName, worker, time, spatialInterpolation, threshold,
                 X, Y, Z, Xwidth, Ywidth, Zwidth, points_above_threshold);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
@@ -2058,16 +2348,17 @@ namespace TurbulenceService {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             VelocityGradient[] result = new VelocityGradient[points.Length];
             dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            //DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int dataset_id = DataInfo.findDataSetInt(dataset);
             int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
+            database.Initialize(dataset_id, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_id, time);
             object rowid = null;
 
-            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field);
+            string tableName = DataInfo.getTableName(dataset, field);
             int worker = (int)Worker.Workers.GetLaplacianOfGradient;
-
-            switch (dataset_enum)
+            /*
+            switch (dataset_id)
             {
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
@@ -2098,7 +2389,30 @@ namespace TurbulenceService {
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
+            */
+            bool round = true;
+            int kernelSize = -1;
+            if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None_Fd4)
+                kernelSize = 4;
+            else if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None_Fd6)
+                kernelSize = 6;
+            else if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None_Fd8)
+                kernelSize = 8;
+            else
+                throw new Exception("Invalid spatial interpolation option specified!\n");
 
+            rowid = log.CreateLog(auth.Id, dataset, worker,
+                (int)spatialInterpolation,
+                (int)temporalInterpolation,
+               points.Length, time, null, null);
+            log.UpdateRecordCount(auth.Id, points.Length);
+
+            //database.AddBulkParticles(points, round, spatialInterpolation, worker);
+            database.AddBulkParticles(points, kernelSize, kernelSize, kernelSize, round, time);
+
+            database.ExecuteGetMHDGradient(tableName, worker, time,
+                spatialInterpolation, temporalInterpolation, result);
+            
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
