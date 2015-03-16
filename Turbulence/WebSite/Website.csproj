@@ -127,6 +127,7 @@
     <Content Include="instructionswebserv.aspx" />
     <Content Include="images\jpdf-qr.jpg" />
     <Content Include="matlabanalysistools.aspx" />
+    <Content Include="MHD1024-Vorticity.avi" />
     <Content Include="navbar.htm" />
     <Content Include="images\nsf.gif" />
     <Content Include="images\pdf-grad.jpg" />
@@ -150,7 +151,10 @@
     <Content Include="turbulence.css" />
     <Content Include="vid1.aspx" />
     <Content Include="vid2.aspx" />
-    <Content Include="vid3.aspx" />
+    <Content Include="download\turblib-20150108.tar.gz" />
+    <Content Include="download\turblib-20150108.zip" />
+    <Content Include="download\turbmat-20150108.tar.gz" />
+    <Content Include="download\turbmat-20150108.zip" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -175,6 +179,8 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.disco" />
+    <Content Include="vid3.aspx" />
+    <Content Include="vid4.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -199,7 +205,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Code\WebService.cs" />
+    <Content Include="App_Code\WebService.cs">
+      <SubType>Component</SubType>
+    </Content>
     <Compile Include="cutout.aspx.cs">
       <DependentUpon>cutout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2597,7 +2605,7 @@
     <None Include="docs\channel\readme\README-CHANNEL.bib" />
     <None Include="docs\channel\readme\README-CHANNEL.pdf" />
     <None Include="docs\channel\readme\README-CHANNEL.tex" />
-    <None Include="docs\Database-functions.pdf" />
+    <Content Include="docs\Database-functions.pdf" />
     <None Include="docs\Database-functions\1DGrid.eps" />
     <None Include="docs\Database-functions\2DGrid.eps" />
     <None Include="docs\Database-functions\Database-functions.bib" />
@@ -2608,45 +2616,45 @@
     <None Include="docs\Database-functions\PCHIP.eps" />
     <None Include="docs\hbdt\README-HBDT.bib" />
     <None Include="docs\hbdt\README-HBDT.tex" />
-    <None Include="docs\README-CHANNEL.pdf" />
-    <None Include="docs\README-HBDT.pdf" />
+    <Content Include="docs\README-CHANNEL.pdf" />
+    <Content Include="docs\README-HBDT.pdf" />
     <None Include="docs\README-isotropic.doc" />
-    <None Include="docs\README-isotropic.pdf" />
+    <Content Include="docs\README-isotropic.pdf" />
     <None Include="docs\README-MHD.doc" />
-    <None Include="docs\README-MHD.pdf" />
-    <None Include="download\turblib-20071108.tar.gz" />
-    <None Include="download\turblib-20080215.tar.gz" />
-    <None Include="download\turblib-20080312.tar.gz" />
-    <None Include="download\turblib-20080409.tar.gz" />
-    <None Include="download\turblib-20090709.tar.gz" />
-    <None Include="download\turblib-20090808.tar.gz" />
-    <None Include="download\turblib-20090809.tar.gz" />
-    <None Include="download\turblib-20091206.tar.gz" />
-    <None Include="download\turblib-20100309.tar.gz" />
-    <None Include="download\turblib-20100331.tar.gz" />
-    <None Include="download\turblib-20100419.tar.gz" />
-    <None Include="download\turblib-20111031.tar.gz" />
-    <None Include="download\turblib-20120913.tar.gz" />
-    <None Include="download\turblib-20130128.tar.gz" />
-    <None Include="download\turblib-20130214.tar.gz" />
-    <None Include="download\turblib-20131113.tar.gz" />
+    <Content Include="docs\README-MHD.pdf" />
+    <Content Include="download\turblib-20071108.tar.gz" />
+    <Content Include="download\turblib-20080215.tar.gz" />
+    <Content Include="download\turblib-20080312.tar.gz" />
+    <Content Include="download\turblib-20080409.tar.gz" />
+    <Content Include="download\turblib-20090709.tar.gz" />
+    <Content Include="download\turblib-20090808.tar.gz" />
+    <Content Include="download\turblib-20090809.tar.gz" />
+    <Content Include="download\turblib-20091206.tar.gz" />
+    <Content Include="download\turblib-20100309.tar.gz" />
+    <Content Include="download\turblib-20100331.tar.gz" />
+    <Content Include="download\turblib-20100419.tar.gz" />
+    <Content Include="download\turblib-20111031.tar.gz" />
+    <Content Include="download\turblib-20120913.tar.gz" />
+    <Content Include="download\turblib-20130128.tar.gz" />
+    <Content Include="download\turblib-20130214.tar.gz" />
+    <Content Include="download\turblib-20131113.tar.gz" />
     <Content Include="download\turblib-20131113.zip" />
-    <None Include="download\turblib-20140606.tar.gz" />
+    <Content Include="download\turblib-20140606.tar.gz" />
     <Content Include="download\turblib-20140606.zip" />
-    <None Include="download\turblib-20141017.tar.gz" />
+    <Content Include="download\turblib-20141017.tar.gz" />
     <Content Include="download\turblib-20141017.zip" />
-    <None Include="download\Turbmat-0.2.0.tar.gz" />
+    <Content Include="download\Turbmat-0.2.0.tar.gz" />
     <Content Include="download\Turbmat-0.2.0.zip" />
-    <None Include="download\turbmat-20110428.tar.gz" />
-    <None Include="download\turbmat-20131113.tar.gz" />
+    <Content Include="download\turbmat-20110428.tar.gz" />
+    <Content Include="download\turbmat-20131113.tar.gz" />
     <Content Include="download\turbmat-20131113.zip" />
-    <None Include="download\turbmat-20140606.tar.gz" />
+    <Content Include="download\turbmat-20140606.tar.gz" />
     <Content Include="download\turbmat-20140606.zip" />
-    <None Include="download\turbmat-20141017.tar.gz" />
+    <Content Include="download\turbmat-20141017.tar.gz" />
     <Content Include="download\turbmat-20141017.zip" />
-    <None Include="download\Turbmat-Tools-0.3.1.tar.gz" />
+    <Content Include="download\Turbmat-Tools-0.3.1.tar.gz" />
     <Content Include="download\Turbmat-Tools-0.3.1.zip" />
-    <None Include="download\Turbmat-Tools-0.3.2.tar.gz" />
+    <Content Include="download\Turbmat-Tools-0.3.2.tar.gz" />
     <Content Include="download\Turbmat-Tools-0.3.2.zip" />
     <None Include="images\nature12128.flv" />
     <None Include="images\nature12128.mp4" />
@@ -2687,10 +2695,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://turbulence.pha.jhu.edu/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\edu.jhu.pha.turbulence\</RelPath>
-      <UpdateFromURL>http://turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://test.turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
@@ -2707,7 +2715,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>26131</DevelopmentServerPort>
+          <DevelopmentServerPort>3265</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

@@ -7,6 +7,7 @@
 \usepackage{color}
 \usepackage{bm}
 \usepackage{algorithmic}
+\usepackage[colorlinks=true]{hyperref}
 
 \oddsidemargin=-0.0in
 \evensidemargin=-0.0in
@@ -49,9 +50,11 @@
 \section{Spatial differentiation inside database: equidistant grid}
 
 In this section, $f$ denotes any one of the three components of
-velocity, magnetic field, or vector potential in the $x$, $y$ and $z$ directions ($u_x$, $u_y$ or $u_z$; $b_x$, $b_y$ or $b_z$; $a_x$, $a_y$ or $a_z$), or pressure ($p$), depending on which function is called. $\Delta x$ and $\Delta y$ are the width of grid in $x$ and $y$ direction.
+velocity, magnetic field, or vector potential in the $x$, $y$ and $z$ directions ($u_x$, $u_y$ or $u_z$; $b_x$,
+$b_y$ or $b_z$; $a_x$, $a_y$ or $a_z$), or pressure ($p$), depending on which function is called. $\Delta x$ and
+$\Delta y$ are the width of grid in $x$ and $y$ direction.
 
-\subsection{Options for GetVelocityGradient, GetMagneticFieldGradient, GetVectorPotentialGradient, and GetPressureGradient}
+\subsection{Options for GetVelocityGradient, GetMagneticFieldGradient, GetVectorPotentialGradient, GetPressureGradient and GetDensityGradient}
 
 \begin{figure}[h]
 \begin{minipage}{\linewidth}
@@ -84,9 +87,20 @@ x}[f(x_{n+1})-f(x_{n-1})]-\frac{1}{5\Delta x}[f(x_{n+2})-f(x_{n-2})]\nonumber\\
 &&+\frac{4}{105\Delta x}[f(x_{n+3})-f(x_{n-3})]-\frac{1}{280\Delta
 x}[f(x_{n+4})-f(x_{n-4})]\nonumber\\
 && +o(\Delta x^8) \eea
+\subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points.}
+When computing the derivatives at grid nodes, using this option is equivalent to using 2nd order centered finite
+differencing.
+However, the option is in fact a full-fledged interpolation; see \ref{sec:M1Q4 diff} for details.
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+When computing the derivatives at grid nodes, using this option is equivalent to the FD6 option.
+However, the option is in fact a full-fledged interpolation; see \ref{sec:M2Q8 diff} for details.
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+When computing the derivatives at grid nodes, using this option is equivalent to using 12th order centered finite
+differencing.
+However, the option is in fact a full-fledged interpolation; see \ref{sec:M2Q14 diff} for details.
 
-\subsection{Options for GetVelocityLaplacian, GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetVelocityHessian, GetMagneticFieldHessian, GetVectorPotentialHessian, and
-GetPressureHessian}
+\subsection{Options for GetVelocityLaplacian, GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetVelocityHessian, GetMagneticFieldHessian, GetVectorPotentialHessian,
+GetPressureHessian and GetDensityHessian}
 In this section, second derivatives finite difference evaluations are shown. The expressions are
 given for derivatives along single directions in terms of the x-direction, and mixed derivatives are
 illustrated on the x-y plane. The same approach is used in the y and z directions, as well as in the x-z and y-z planes
@@ -164,6 +178,14 @@ x\Delta y}[f(x_{m+4},y_{n+4})+f(x_{m-4},y_{n-4})\nonumber\\
 &&-f(x_{m+4},y_{n-4})-f(x_{m-4},y_{n+4})]\nonumber\\
 &&+o(\Delta x^8) \eea
 
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+When computing the derivatives at grid nodes, using this option is equivalent to the FD6 option.
+However, the option is in fact a full-fledged interpolation; see \ref{sec:M2Q8 diff} for details.
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+When computing the derivatives at grid nodes, the results coincide with centered differences computed with 6
+neighbours.
+However, the option is in fact a full-fledged interpolation; see section \ref{sec:M2Q14 diff} for details.
+
 \section{Spatial interpolation inside database: equidistant grid}
 \label{sec:spa}
 \begin{figure}[h]
@@ -171,18 +193,26 @@ x\Delta y}[f(x_{m+4},y_{n+4})+f(x_{m-4},y_{n-4})\nonumber\\
 \centering\includegraphics[width=1.0\linewidth]{Lagrangian.eps}
 \end{minipage} \caption{Illustration of Lagrangian interpolation. }\label{Lagrangian}
 \end{figure}
-\subsection{Interpolation Options for GetVelocity, GetMagneticField, GetVectorPotential, GetPressure and GetVelocityAndPressure}
+\subsection{Interpolation Options for GetVelocity, GetMagneticField, GetVectorPotential, GetPressure, GetDensity and GetVelocityAndPressure}
 In this section, $f$ denotes any one of the three components of
 velocity, $u_x$, $u_y$ or $u_z$, magnetic field $b_x$, $b_y$ or $b_z$, vector potential $a_x$, $a_y$ or $a_z$, or pressure, $p$,  depending on which
 function is called. $\Delta x$, $\Delta y$ and $\Delta z$ are the
 width of grid in $x$, $y$ and $z$ direction. ${\bf x'}=(x',y',z')$.
+
+The grid cell where the interpolation is performed is denoted by
+$n = \textrm{floor}\left(\frac{x'}{\Delta x}\right)$,
+$p = \textrm{floor}\left(\frac{y'}{\Delta y}\right)$ and
+$q = \textrm{floor}\left(\frac{z'}{\Delta z}\right)$,
+except in the cases of nearest neighbor approximation.
 \subsubsection*{NoSInt: No spatial  interpolation}
 \label{sec-noint}
 In this case, the value at the datapoint closest to each
 coordinate value is returned, rounding up or down in each
 direction. \bea f({\bf x'}) &=& f(x_n,y_p,z_q)\eea where
-$n=int(\frac{x'}{\Delta x}+\frac{1}{2})$, $p=int(\frac{y'}{\Delta
-y}+\frac{1}{2})$, $q=int(\frac{z'}{\Delta z}+\frac{1}{2})$.
+$n=\textrm{int}(\frac{x'}{\Delta x}+\frac{1}{2})$,
+$p=\textrm{int}(\frac{y'}{\Delta y}+\frac{1}{2})$,
+$q=\textrm{int}(\frac{z'}{\Delta z}+\frac{1}{2})$.
+
 
 \subsubsection*{Lag4: 4th-order Lagrange Polynomial interpolation}
 
@@ -217,8 +247,43 @@ l_z^{q-4+k}(z')\eea \bea l_\theta^i(\theta') &=&
 i}^{n+4}(\theta'-\theta_j)}{\prod\limits_{j=n-3,j\neq
 i}^{n+4}(\theta_i-\theta_j)}\eea where $\theta$ can be x, y, or z.
 
+\subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points.}
+\begin{equation}
+    f(\mathbf{x}') =
+    \sum_{i=-1}^2 \sum_{j=-1}^2 \sum_{k=-1}^2
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \beta_j\left(\frac{y' - y_p}{\Delta y}\right)
+    \cdot \beta_k\left(\frac{z' - z_q}{\Delta z}\right)
+\end{equation}
+with the polynomials $\beta$ as follows:
+\input{M1Q4_d0beta.tex}
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+\begin{equation}
+    f(\mathbf{x}') =
+    \sum_{i=-3}^4 \sum_{j=-3}^4 \sum_{k=-3}^4
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \beta_j\left(\frac{y' - y_p}{\Delta y}\right)
+    \cdot \beta_k\left(\frac{z' - z_q}{\Delta z}\right)
+\end{equation}
+with the polynomials $\beta$ as follows:
+\input{M2Q8_d0beta.tex}
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+\begin{equation}
+    f(\mathbf{x}') =
+    \sum_{i=-6}^7 \sum_{j=-6}^7 \sum_{k=-6}^7
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \beta_j\left(\frac{y' - y_p}{\Delta y}\right)
+    \cdot \beta_k\left(\frac{z' - z_q}{\Delta z}\right)
+\end{equation}
+with the polynomials $\beta$ as follows:
+\input{M2Q14_d0beta.tex}
+
 \subsection{Interpolation Options for GetVelocityGradient, GetVelocityLaplacian, GetVelocityHessian, GetMagneticFieldGradient, GetVectorPotentialGradient,
- GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetMagneticFieldHessian, GetVectorPotentialHessian, GetPressureGradient, and GetPressureHessian}
+ GetMagneticFieldLaplacian, GetVectorPotentialLaplacian, GetMagneticFieldHessian, GetVectorPotentialHessian, GetPressureGradient, GetPressureHessian, GetDensityGradient
+ and GetDensityHessian}
 
 In this section, $f$ denotes gradients of velocity, magnetic field, vector potential, or pressure gradient,
 Laplacian of velocity, magnetic field, vector potential, or Hessian of velocity, magnetic field, vector potential or pressure, depending on
@@ -229,8 +294,9 @@ In this case, the value of the 4th, 6th, or 8th order finite-difference
 evaluation of the derivative at the datapoint closest to each coordinate value is
 returned, rounding up or down in each direction.
 \bea f({\bf x'}) &=& f(x_n,y_p,z_q)\eea where
-$n=int(\frac{x'}{\Delta x}+\frac{1}{2})$, $p=int(\frac{y'}{\Delta
-y}+\frac{1}{2})$, $q=int(\frac{z'}{\Delta z}+\frac{1}{2})$.
+$n=\textrm{int}(\frac{x'}{\Delta x}+\frac{1}{2})$,
+$p=\textrm{int}(\frac{y'}{\Delta y}+\frac{1}{2})$,
+$q=\textrm{int}(\frac{z'}{\Delta z}+\frac{1}{2})$.
 
 \subsubsection*{FD4Lag4: 4th-order Lagrange Polynomial interpolation of 4th-order finite diff.}
 
@@ -244,7 +310,46 @@ l_z^{q-2+k}(z')\eea \bea l_\theta^i(\theta') &=&
 i}^{n+2}(\theta'-\theta_j)}{\prod\limits_{j=n-1,j\neq
 i}^{n+2}(\theta_i-\theta_j)}\eea where $\theta$ can be x, y, or z.
 
+\subsubsection*{M1Q4: Splines with smoothness 1 (3rd order) over 4 data points. Not applicable for Hessian.}
+\label{sec:M1Q4 diff}
+Differentiation is performed directly on the interpolating polynomials, giving rise to continuous derivatives.
+For example:
+\begin{equation}
+    \frac{d}{dy} f(\mathbf{x}') =
+    \sum_{i=-1}^2 \sum_{j=-1}^2 \sum_{k=-1}^2
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \left(\frac{d}{dy} \beta_j\left(\frac{y' - y_p}{\Delta y}\right)\right)
+    \cdot \beta_k\left(\frac{z' - z_q}{\Delta z}\right)
+\end{equation}
+with the $\beta$ polynomials as above, and the derivatives of $\beta$ given here for convenience:
+\input{M1Q4_d1beta.tex}
+\subsubsection*{M2Q8: Splines with smoothness 2 (5th order) over 8 data points.}
+\label{sec:M2Q8 diff}
+First order derivatives are computed similarly as for the M1Q4 case, with the derivatives as follows:
+\input{M2Q8_d1beta.tex}
+Second order derivatives can also be computed.
+Mixed derivatives use the first order derivatives of the $\beta$ polynomials:
+\begin{equation}
+    \frac{d^2}{dydz} f(\mathbf{x}') =
+    \sum_{i=-3}^4 \sum_{j=-3}^4 \sum_{k=-3}^4
+    f(x_{n+i}, y_{p+j}, z_{q+k})
+    \cdot \beta_i\left(\frac{x' - x_n}{\Delta x}\right)
+    \cdot \left(\frac{d}{dy} \beta_j\left(\frac{y' - y_p}{\Delta y}\right)\right)
+    \cdot \left(\frac{d}{dz} \beta_k\left(\frac{z' - z_q}{\Delta z}\right)\right)
+\end{equation}
+For one component second order deriviatives, the exact same procedure as for first order derivatives is
+followed, with the derivatives as follows:
+\input{M2Q8_d2beta.tex}
+\subsubsection*{M2Q14: Splines with smoothness 2 (5th order) over 14 data points.}
+\label{sec:M2Q14 diff}
+The procedure is identical as for M2Q8, using the first order derivatives given by:
+\input{M2Q14_d1beta.tex}
+and the second order derivatives:
+\input{M2Q14_d2beta.tex}
+
 \section{Spatial interpolation inside the database: non-uniform grid}\label{sec:interp}
+\subsection{Lagrange interpolation}
 Spatial interpolation for domains with non-uninform grid spacing (e.g. the
 channel flow domain) is applied using multivariate polynomial interpolation of
 the barycentric Lagrange form from Ref.~\cite{Berrut2004}. Using this approach,
@@ -338,6 +443,215 @@ and similarly for the barycentric weights, \eqref{eq:interp_bary_weight} becomes
 \end{equation}
 for the $x$ and $z$ directions. The computation of the barycentric weights for the $x$ and $z$ directions are carried out once (for a given interpolation order) for all grid points using \eqref{eq:interp_bary_weight_periodic}; for the $y$ direction the barycentric weights are computed for each point using \eqref{eq:interp_bary_weight}.
 
+\subsection{Spline interpolation}
+Similarly to the Lagrange case, regular spline interpolation is performed in the $x$ and $z$ coordinates.
+For the $y$ coordinate, the only difference with the uniform grid case is that polynomials are now different for
+each cell.
+In the interest of completeness, we quote the general construction of the $\beta$ polynomials from our
+publication \cite{channel_paper}:
+
+\begin{quotation}
+    ``\textbf{Hermite splines}
+        Assuming that the values of a function $f(x)$ and its derivatives are known at the points $0$ and $1$,
+        the polynomial $s(x)$ can be built, such that
+        \begin{align}
+            s(x) &= \sum_{k = 0}^p a_k x^k \\
+            \Biggr[\frac{d^l s}{dx^l} (x) &=
+             f^{(l)}(x)\Biggr]_{x \in \{0, 1\}}, \forall l \in \{0, 1, \ldots, m\}
+            \label{eq:spline coefficients}
+        \end{align}
+        where $p$ is the order of the polynomial; if the linear system of equations \eqref{eq:spline
+        coefficients} is to have a unique solution $a_k$, $p$ must be equal to $2m+1$.
+
+        From this problem a sequence of ``base'' polynomials can be derived, such that the expression of $s(x)$
+        can be written as follows:
+        \begin{equation}
+            s(x) = \sum_{l = 0}^m \sum_{i = 0, 1} f^{(l)}(i) \alpha_i^{(m, l)} (x)
+        \end{equation}
+        where the $\alpha$ polynomials (of order $p$ each one) have the following explicit expressions
+        (see \cite{arXiv_splines} for details):
+        \begin{align}
+            \alpha^{(m, l)}_0 (x) &=
+            \frac{x^l}{l!}(1-x)^{m+1} \sum_{k=0}^{m-l} \frac{(m+k)!}{m! k!}x^k \\
+            \alpha^{(m, l)}_1 (x) &=
+            \frac{(x-1)^l}{l!}x^{m+1} \sum_{k=0}^{m-l} \frac{(m+k)!}{m! k!}(1-x)^k
+        \end{align}
+      \textbf{Grid splines}
+        In \cite{arXiv_splines} centered differences are used to approximate the derivatives of $f$,
+        since it would be impractical to store the derivatives of $f$ on the grid for the general
+        multidimensional case.
+        A naive algorithm is then provided to construct ``grid splines'':
+        \begin{equation}
+            s^{(m, q)}(x) = \sum_{i = -n}^{1+n} f(i) \beta_i^{(m, q)}(x)
+            \label{eq:uniform grid splines}
+        \end{equation}
+        where the $\beta$ polynomials can be constructed from the $\alpha$ polynomials and the centered
+        difference formulas.
+        $n$ is the number of immediate neighbours that are needed for the computation, while $q = 2n + 2$ is
+        the total number of points used (i.e. the stencil size).
+        Unlike in previous work, the pair $(m, q)$ is chosen for the characterization of each formula,
+        since the interest lies mainly in the smoothness $m$ of the interpolant,
+        and the computational cost is mostly related to $q$.
+        Note that the order $p = 2m+1$ also has an influence on the computational cost,
+        but this becomes less important in the multidimensional case.
+
+        This previous result is perfectly adequate for the case of periodic, uniform grids, since the coordinate
+        transforms are trivial.
+        Furthermore, the $\beta$ polynomials themselves owe their form to the fact that the original function is
+        known at points in $\mathbb{Z}$.
+        However, these results cannot be directly used for nonuniform grids, or even for uniform grids that are
+        not periodic.
+
+        The basis of \eqref{eq:uniform grid splines} is that the $\beta$ polynomials contain information about
+        the centered differences.
+        It is crucial that centered differences are used, since that means that, whether we compute the
+        interpolation in the interval $[i, i+1]$ or $[i+1, i+2]$, the derivatives will be approximated with the
+        same value at the point $i+1$, therefore the derivative of the interpolant will be continuous.
+        For the case of generic grids, it is this constraint that must be kept: the value of the finite
+        difference approximation used for some grid point, embedded in the form of the polynomials used, must
+        be the same whether we approach the grid point from the left or from the right.
+
+        In \cite{fornberg_generation_1988, fornberg_classroom_1998} a systematic way to construct all the
+        possible finite difference formulas for a given grid is provided.
+        This allows the construction of specific $\beta$ polynomials for individual grid points on a nonuniform,
+        nonperiodic grid.
+        I.e. instead of having a number $q$ of $\beta$ polynomials for each formula, there are now on the
+        order of $Nq$, where $N$ is the total number of grid points.
+        Obviously, the generation and storage of these many polynomials is only reasonable in cases when there
+        are many different fields that must be evaluated on the same grid.
+
+        Assume that a grid of points $x_i, 0 \leq i \leq N - 1$ is given, as well as a smoothness $m$ and a
+        stencil size $q$ (thus a number of neighbours $n = (q-2)/2$.
+        This is the outline of the algorithm that is then followed for a generic one dimensional grid to
+        construct the $\beta$ polynomials:
+
+        \begin{enumerate}
+            \item
+                For each $0 \leq i \leq N - 1$, construct the Fornberg coefficients $\delta_{ij}^l$ for the
+                $l$-th derivative approximated at the point $x_i$, using the grid nodes $\nu_i(j), 0 \leq j \leq
+                q - 1$, where
+
+                \begin{enumerate}
+                    \item
+                        if the grid is periodic:
+
+                        $\nu_i(0) = i - n$, $\nu_i(1) = i - n + 1$, \ldots, $\nu_i(q - 2) = i + n$
+
+                        Note that since the distances between successive points on the grid is constant, the
+                        resulting $\delta_{ij}^l$ will in fact be independent of $i$.
+                    \item
+                        otherwise:
+
+                        \begin{enumerate}
+                            \item
+                                case $i < n$:
+                                $$\nu_i(0) = 0, \nu_i(1) = 1, \ldots, \nu_i(q - 2) = q-2$$
+                            \item
+                                case $n \leq i < N - n$:
+                                $$\nu_i(0) = i - n, \nu_i(1) = i - n + 1, \ldots, \nu_i(q - 2) = i+n$$
+                            \item
+                                case $N-n \leq i$:
+                                $$\nu_i(0) = N - q + 1, \nu_i(1) = N - q + 2, \ldots, \nu_i(q - 2) = N-1$$
+                        \end{enumerate}
+                \end{enumerate}
+            \item
+                For each $0 \leq i < N-1$, construct the corresponding sequence of $\beta$ polynomials, and the
+                sequence of compute nodes $\mu$:
+                \begin{enumerate}
+                    \item
+                        if the grid is periodic:
+                        \begin{align}
+                            \beta_{0}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_1 - x_0)^{-l}
+                                \delta_{00}^l \alpha_0^{(m, l)}(\tilde{x}) \\
+                            \beta_{j}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_1 - x_0)^{-l}
+                                \Big[\delta_{0j}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                     \delta_{0(j-1)}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                            \forall 1 \leq j < q-1 \\
+                            \beta_{q-1}(\tilde{x}) &=
+                                \sum_{l = 0}^m
+                                (x_1 - x_0)^{-l}
+                                \delta_{0(q-1)}^l \alpha_1^{(m, l)}(\tilde{x})
+                        \end{align}
+                        \begin{equation}
+                            \mu_i(0) = i-n, \mu_i(1) = i-n+1, \ldots, \mu_i(q-2) = i+n, \mu_i(q-1) = i+1+n
+                        \end{equation}
+
+                    \item
+                        otherwise:
+                        \begin{enumerate}
+                            \item
+                                case $i < n$
+                                \begin{align}
+                                    \beta_{ij}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                             \delta_{(i+1)j}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                                    \forall 0 \leq j < q - 1
+                                \end{align}
+                                \begin{equation}
+                                    \mu_i(j) = \nu_i(j)
+                                \end{equation}
+                            \item
+                                case $n \leq i < N - n$:
+                                \begin{align}
+                                    \beta_{i0}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \delta_{i0}^l \alpha_0^{(m, l)}(\tilde{x}) \\
+                                    \beta_{ij}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                             \delta_{(i+1)(j-1)}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                                    \forall 1 \leq j < q-1 \\
+                                    \beta_{i(q-1)}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \delta_{(i+1)(q-1)}^l \alpha_1^{(m, l)}(\tilde{x})
+                                \end{align}
+                                \begin{equation}
+                                    \mu_i(0) = i-n,
+                                    \mu_i(1) = i-n+1,
+                                    \ldots,
+                                    \mu_i(q-2) = i+n,
+                                    \mu_i(q-1) = i+1+n
+                                \end{equation}
+                            \item
+                                case $N-n \leq i$:
+                                \begin{align}
+                                    \beta_{ij}(\tilde{x}) &=
+                                        \sum_{l = 0}^m
+                                        (x_{i+1} - x_i)^{-l}
+                                        \Big[\delta_{ij}^l \alpha_0^{(m, l)}(\tilde{x}) +
+                                             \delta_{(i+1)j}^l \alpha_1^{(m, l)}(\tilde{x})\Big],
+                                    \forall 0 \leq j < q-1
+                                \end{align}
+                                \begin{equation}
+                                    \mu_i(j) = \nu_i(j)
+                                \end{equation}
+                        \end{enumerate}
+                \end{enumerate}
+        \end{enumerate}
+        For any arbitrary point $x_0 \leq x < x_{N-1}$, the 1 dimensional interpolation is performed as follows:
+        \begin{enumerate}
+            \item
+                find the $c$ (cell) index, such that $x_c \leq x < x_{c+1}$, and compute
+                $\tilde{x} = \frac{x - x_c}{x_{c+1} - x_c}$
+            \item
+                compute the sum
+                \begin{equation}
+                    \sum_{j=0}^{q-1} \beta_{cj} (\tilde{x}) f(\mu_{c}(j))
+                \end{equation}
+                where $f$ is the field that is to be interpolated, known at the grid points, and
+                imposing that $\beta_{cj}$ is 0 if undefined.''
+        \end{enumerate}
+\end{quotation}
+%}
 \section{Spatial differentiation inside the database: non-uniform grid}
 Spatial differentiation for grids with non-uniform spacing is performed using the barycentric method of the interpolating polynomial. In one dimension (assuming the $x$ direction; the same applies for the $y$ and $z$ directions), the interpolant for the field $f$ is given as
 \begin{equation}
@@ -421,12 +735,22 @@ f(t')=a+b(t'-t_n)+c(t'-t_n)^2+d(t'-t_n)^2(t'-t_{n+1}) \eea where
 \end{figure}
 
 In this section, $f$ denotes any one of the three components of velocity, $u_x$, $u_y$ or $u_z$, 
-magnetic field $b_x$, $b_y$ or $b_z$, vector potential $a_x$, $a_y$ or $a_z$, or pressure, $p$,  
-depending on the user supplied parameter for the GetBoxFilter and GetBoxFilterGradient functions called $field$. If the 
-GetBoxFilterSGS function is called, $f$ denotes any one of the six components of the sub-grid
-stress tensor for the respective field (e.g. $u_x^2$, $u_y^2$, $u_z^2$, $u_x u_y$, $u_x u_z$, $u_y u_z$).
+magnetic field, $b_x$, $b_y$ or $b_z$, vector potential, $a_x$, $a_y$ or $a_z$, pressure, $p$, or density, $d$,  
+depending on the user supplied parameter for the GetBoxFilter and GetBoxFilterGradient functions called $field$. If
+one of the GetBoxFilterSGS functions is called, $f$ denotes any one of the components of the sub-grid
+stress for the respective field (e.g. $u_x^2$, $u_y^2$, $u_z^2$, $u_x u_y$, $u_x u_z$, $u_y u_z$).
 The valid values
-for the $field$ parameter are $velocity, magnetic, potential, pressure$. $\Delta x$ is the resolution of the grid
+for the $field$ parameter are \emph{``velocity", ``magnetic", ``potential", ``pressure", ``density"} for the GetBoxFilter and GetBoxFilterGradient methods.
+For the GetBoxFilterSGSscalar method the valid values for the $field$ parameter are two scalar fields denoted by single characters, 
+e.g. \emph{``pp"} (for pressure-pressure), \emph{``dp"} (for density-pressure), \emph{``dd"} (for density-density), etc..
+For the GetBoxFilterSGSvector method the valid values for the $field$ parameter are a vector and a scalar field denoted by single characters, 
+e.g. \emph{``up"} (for velocity-pressure), \emph{``bp"} (for magnetic field-pressure), etc..
+For the GetBoxFilterSGSsymtensor method the valid values for the $field$ parameter are single vector fields 
+or the same vector field denoted by repeated single characters, 
+e.g. \emph{``velocity", ``magnetic", ``potential"} or \emph{``uu"} (for velocity), \emph{``bb"} (for magnetic field), \emph{``aa"} (for vector potential).
+For the GetBoxFilterSGStensor method the valid values for the $field$ parameter are two vector fields denoted by single characters, 
+e.g. \emph{``ub"} (for velocity-magnetic field), \emph{``ab"} (for vector potential-magnetic field), etc..
+$\Delta x$ is the resolution of the grid
 (it is equal in all directions). The user also supplies the desired 
 filter width $\Delta$, which is given as a floating point number and is required to be an odd multiple of the grid
 resolution (to eliminate the need for interpolating at the edges). ${\bf x'}=(x',y',z')$. 
@@ -522,6 +846,21 @@ The corrector step then gives the particle position at $t_{m+1}$ as
 The integration proceeds until $t_m$ reaches the user-specified final time $t_{ES}$. The last integration time-step is typically done using a smaller time-step so that the integration ends exactly at the specified $t_{ES}$. GetPosition then returns ${\bf x}^+({\bf y},t_{ES})$ for all particles that were at initial locations ${\bf y}$.
 
 For this integration scheme, the time-stepping error is of order $(\Delta t_p)^3$ over one time step. In general, accurate spatial and time interpolations are crucial to obtain the fluid velocities while tracking particles along their trajectories. Spatial interpolation with various optional orders of accuracy can be specified by the user, see \S\ref{sec:spa}  above. Time interpolation is done by default using PHCIP (see \S\ref{sec:tem} above).
+
+
+\section{Obtaining all locations above a threshold with GetThreshold function}
+
+The GetThreshold function produces all locations in the specified dataset that have norms for the specified $field$ above the user supplied $threshold$. 
+The norm at each of the locations is also returned. The parameters supplied to the function are the following. The $field$ parameter specifies the field to be
+thresholded and currently the valid values are one of the simulation fields, i.e. \emph{``velocity", ``pressure", ``magnetic", ``potential", ``density"} or
+the derived fields \emph{"vorticity"} and \emph{"Q"}. The $spatial$ option specifies the interpolation or differentiation option that should be applied. 
+As each field is evaluated at grid nodes no interpolation is needed. Thus, for
+the \emph{``velocity", ``pressure", ``magnetic", ``potential"} and \emph{``density"} fields the valid spatial option is $None$ (or 0) and for the \emph{"vorticity"} and \emph{"Q"} fields the valid differentiation options are \emph{Fd4NoInt, Fd6NoInt, Fd8NoInt} (or 40, 60, 80).
+The X, Y, Z and Xwidth, Ywidth and Zwidth parameters denote the spatial region to be examined. X, Y and Z specify
+the bottom left corner for this region and Xwidth, Ywidth and Zwidth specify the width in each of the three dimensions in units of grid points. For example, 
+the MHD dataset has a $1024^3$ spatial grid and a region can be specified as [0, 0, 0, 256, 256, 256] to examine the $256^3$ region with bottom left corner at
+(0, 0, 0). The function returns the X, Y and Z coordinates and the norm of the field for all locations with norms above the threshold.
+The output is ordered according to the norm of the field examined, from highest to lowest.
 
 \bibliographystyle{plain}
 \bibliography{Database-functions}

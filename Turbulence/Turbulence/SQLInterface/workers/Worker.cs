@@ -49,6 +49,10 @@ namespace Turbulence.SQLInterface
 
         public abstract double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input);
         public abstract double[] GetResult(TurbulenceBlob blob, SQLUtility.MHDInputRequest input);
+        public virtual double[] GetResult(TurbulenceBlob blob1, TurbulenceBlob blob2, SQLUtility.MHDInputRequest input)
+        {
+            throw new NotImplementedException();
+        }
         public virtual HashSet<SQLUtility.PartialResult> GetResult(TurbulenceBlob blob, Dictionary<long, SQLUtility.PartialResult> active_points)
         {
             throw new NotImplementedException();
@@ -139,7 +143,8 @@ namespace Turbulence.SQLInterface
 
         protected void GetCutout(short datasetID, string turbinfodb, int timestep)
         {
-            SqlConnection turbInfoConn = new SqlConnection("Server=gw01;Database=turbinfo;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;");
+            SqlConnection turbInfoConn = new SqlConnection(
+                String.Format("Server=gw01;Database={0};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", turbinfodb));
             turbInfoConn.Open();
             SqlConnection sqlConn;
 
@@ -445,7 +450,7 @@ namespace Turbulence.SQLInterface
             GetVelocityOld = 888,
             GetVelocityWithPressureOld = 889,
 
-            GetMHDVelocity = 56,
+            GetMHDVelocity = 56, //NOTE: At some point there was a separate splines worker with id 130 
             GetMHDPressure = 57,
             GetMHDMagnetic = 58,
             GetMHDPotential = 59,
@@ -453,19 +458,19 @@ namespace Turbulence.SQLInterface
             GetRawPressure = 61,
             GetRawMagnetic = 62,
             GetRawPotential = 63,
-            GetMHDVelocityGradient = 64,
+            GetMHDVelocityGradient = 64, //NOTE: At some point there was a separate splines worker with id 133
             GetMHDMagneticGradient = 65,
             GetMHDPotentialGradient = 66,
             GetMHDPressureGradient = 67,
             GetMHDVelocityLaplacian = 68,
             GetMHDMagneticLaplacian = 69,
             GetMHDPotentialLaplacian = 70,
-            GetMHDVelocityHessian = 71,
+            GetMHDVelocityHessian = 71, //NOTE: At some point there was a separate splines worker with id 134
             GetMHDMagneticHessian = 72,
             GetMHDPotentialHessian = 73,
             GetMHDPressureHessian = 74,
 
-            GetMHDBoxFilter = 75,
+            GetMHDBoxFilter = 75, //NOTE: At some point there was another box filter worker with id 76 
             GetMHDBoxFilterSV = 77,
             GetMHDBoxFilterSGS = 78,
             GetMHDBoxFilterSGS_SV = 79,
@@ -492,10 +497,10 @@ namespace Turbulence.SQLInterface
             GetChannelVelocityHessian = 125,
             GetChannelPressureHessian = 126,
             
-            GetDensity = 150,
-            GetDensityGradient = 151,
-            GetDensityHessian = 152,
-            GetRawDensity = 153,
+            GetDensity = 150, //NOTE: used to be 140
+            GetDensityGradient = 151, //NOTE: used to be 141
+            GetDensityHessian = 152, //NOTE: used to be 142
+            GetRawDensity = 153, //NOTE: used to be 143
 
             GetVelocityWorkerDirectOpt = 556,
             GetVelocityWorkerDirectWorst = 557
@@ -680,6 +685,25 @@ namespace Turbulence.SQLInterface
                     {
                         return new workers.GetChannelHessian(setInfo, spatialInterp, sqlcon);
                     }                    
+
+                default:
+                    throw new Exception(String.Format("Unknown worker type: {0}", procedure));
+            }
+        }
+
+        public static Worker GetWorker(TurbDataTable setInfo1, TurbDataTable setInfo2, int procedure,
+            int spatialInterpOption,
+            float arg,
+            SqlConnection sqlcon)
+        {
+            TurbulenceOptions.SpatialInterpolation spatialInterp = (TurbulenceOptions.SpatialInterpolation)spatialInterpOption;
+            switch ((Workers)procedure)
+            {
+                case Workers.GetMHDBoxFilterSGS:
+                    return new workers.GetMHDBoxFilterSGS(setInfo1, setInfo2, spatialInterp, arg);
+
+                case Workers.GetMHDBoxFilterSGS_SV:
+                    return new workers.GetMHDBoxFilterSGS_SV(setInfo1, setInfo2, spatialInterp, arg);
 
                 default:
                     throw new Exception(String.Format("Unknown worker type: {0}", procedure));

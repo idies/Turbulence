@@ -12,10 +12,11 @@ namespace Turbulence.SQLInterface.workers
 {
     public class GetMHDBoxFilterSGS : Worker
     {
+        private TurbDataTable setInfo2;
         int filter_width;
 
-        private int resultSize = 9;
-        private double[] cachedAtomSum = new double[9];
+        private int resultSize;
+        private double[] cachedAtomSum;
         private long cachedAtomZindex;
 
         public GetMHDBoxFilterSGS(TurbDataTable setInfo,
@@ -27,12 +28,74 @@ namespace Turbulence.SQLInterface.workers
             int fw = (int)Math.Round(filterwidth / setInfo.Dx);
             this.filter_width = fw;
             this.kernelSize = filter_width;
+            this.resultSize = 9;
+            cachedAtomSum = new double[9];
+            this.cachedAtomZindex = -1;
+        }
+
+        public GetMHDBoxFilterSGS(TurbDataTable setInfo1, TurbDataTable setInfo2,
+            TurbulenceOptions.SpatialInterpolation spatialInterp,
+            float filterwidth)
+        {
+            this.setInfo = setInfo1;
+            this.setInfo2 = setInfo2;
+            this.spatialInterp = spatialInterp;
+            int fw = (int)Math.Round(filterwidth / setInfo.Dx);
+            this.filter_width = fw;
+            this.kernelSize = filter_width;
+            if (setInfo1.Components == 3)
+            {
+                if (setInfo2.Components == 3)
+                {
+                    this.resultSize = 15;
+                }
+                else
+                {
+                    this.resultSize = 7;
+                }
+            }
+            else
+            {
+                if (setInfo2.Components == 3)
+                {
+                    throw new Exception("This is not allowed! The vector field should come first!");
+                }
+                else
+                {
+                    this.resultSize = 3;
+                }
+            }
+            cachedAtomSum = new double[15];
             this.cachedAtomZindex = -1;
         }
 
         public override SqlMetaData[] GetRecordMetaData()
         {
-            return new SqlMetaData[] {
+            if (resultSize == 3)
+            {
+                return new SqlMetaData[] {
+                new SqlMetaData("Req", SqlDbType.Int),
+                new SqlMetaData("aXbX", SqlDbType.Real),
+                new SqlMetaData("aX", SqlDbType.Real),
+                new SqlMetaData("bX", SqlDbType.Real),
+                new SqlMetaData("Cubes Read", SqlDbType.Int)};
+            }
+            else if (resultSize == 7)
+            {
+                return new SqlMetaData[] {
+                new SqlMetaData("Req", SqlDbType.Int),
+                new SqlMetaData("aXbX", SqlDbType.Real),
+                new SqlMetaData("aYbX", SqlDbType.Real),
+                new SqlMetaData("aZbX", SqlDbType.Real),                
+                new SqlMetaData("aX", SqlDbType.Real),
+                new SqlMetaData("aY", SqlDbType.Real),
+                new SqlMetaData("aZ", SqlDbType.Real),
+                new SqlMetaData("bX", SqlDbType.Real),
+                new SqlMetaData("Cubes Read", SqlDbType.Int)};
+            }
+            else if (resultSize == 9)
+            {
+                return new SqlMetaData[] {
                 new SqlMetaData("Req", SqlDbType.Int),
                 new SqlMetaData("XX", SqlDbType.Real),
                 new SqlMetaData("YY", SqlDbType.Real),
@@ -44,14 +107,36 @@ namespace Turbulence.SQLInterface.workers
                 new SqlMetaData("Y", SqlDbType.Real),
                 new SqlMetaData("Z", SqlDbType.Real),
                 new SqlMetaData("Cubes Read", SqlDbType.Int)};
+            }
+            else
+            {
+                return new SqlMetaData[] {
+                new SqlMetaData("Req", SqlDbType.Int),
+                new SqlMetaData("aXbX", SqlDbType.Real),
+                new SqlMetaData("aYbX", SqlDbType.Real),
+                new SqlMetaData("aZbX", SqlDbType.Real),
+                new SqlMetaData("aXbY", SqlDbType.Real),
+                new SqlMetaData("aYbY", SqlDbType.Real),
+                new SqlMetaData("aZbY", SqlDbType.Real),
+                new SqlMetaData("aXbZ", SqlDbType.Real),
+                new SqlMetaData("aYbZ", SqlDbType.Real),
+                new SqlMetaData("aZbZ", SqlDbType.Real),
+                new SqlMetaData("aX", SqlDbType.Real),
+                new SqlMetaData("aY", SqlDbType.Real),
+                new SqlMetaData("aZ", SqlDbType.Real),
+                new SqlMetaData("bX", SqlDbType.Real),
+                new SqlMetaData("bY", SqlDbType.Real),
+                new SqlMetaData("bZ", SqlDbType.Real),
+                new SqlMetaData("Cubes Read", SqlDbType.Int)};
+            }
         }
 
         public override void GetAtomsForPoint(SQLUtility.MHDInputRequest request, long mask, int pointsPerCubeEstimate, Dictionary<long, List<int>> map, ref int total_points)
         {
             int X, Y, Z;
             X = LagInterpolation.CalcNodeWithRound(request.x, setInfo.Dx);
-            Y = LagInterpolation.CalcNodeWithRound(request.y, setInfo.Dx);
-            Z = LagInterpolation.CalcNodeWithRound(request.z, setInfo.Dx);
+            Y = LagInterpolation.CalcNodeWithRound(request.y, setInfo.Dy);
+            Z = LagInterpolation.CalcNodeWithRound(request.z, setInfo.Dz);
 
             int startz = Z - filter_width / 2, starty = Y - filter_width / 2, startx = X - filter_width / 2;
             int endz = Z + filter_width / 2, endy = Y + filter_width / 2, endx = X + filter_width / 2;
@@ -73,8 +158,8 @@ namespace Turbulence.SQLInterface.workers
                     {
                         // Wrap the coordinates into the grid space
                         int xi = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                        int yi = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                        int zi = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                        int yi = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                        int zi = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                         if (setInfo.PointInRange(xi, yi, zi))
                         {
@@ -106,6 +191,14 @@ namespace Turbulence.SQLInterface.workers
             return CalcBoxFilter(blob, xp, yp, zp, input);
         }
 
+        public override double[] GetResult(TurbulenceBlob blob1, TurbulenceBlob blob2, SQLUtility.MHDInputRequest input)
+        {
+            float xp = input.x;
+            float yp = input.y;
+            float zp = input.z;
+            return CalcBoxFilter(blob1, blob2, xp, yp, zp, input);
+        }
+
         public override int GetResultSize()
         {
             return resultSize;
@@ -113,16 +206,16 @@ namespace Turbulence.SQLInterface.workers
 
         unsafe public double[] CalcBoxFilter(TurbulenceBlob blob, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
         {
-            double[] up = new double[9]; // Result value for the user
+            double[] up = new double[resultSize]; // Result value for the user
 
             int x = LagInterpolation.CalcNodeWithRound(xp, setInfo.Dx);
-            int y = LagInterpolation.CalcNodeWithRound(yp, setInfo.Dx);
-            int z = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dx);
+            int y = LagInterpolation.CalcNodeWithRound(yp, setInfo.Dy);
+            int z = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dz);
 
             // Wrap the coordinates into the grid space
             x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-            y = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-            z = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+            y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+            z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
             float[] data = blob.data;
             int startz = 0, starty = 0, startx = 0, endz = 0, endy = 0, endx = 0;
@@ -202,6 +295,119 @@ namespace Turbulence.SQLInterface.workers
             up[6] = partial_sum[6];
             up[7] = partial_sum[7];
             up[8] = partial_sum[8];
+
+            return up;
+        }
+
+        unsafe public double[] CalcBoxFilter(TurbulenceBlob blob1, TurbulenceBlob blob2, float xp, float yp, float zp, SQLUtility.MHDInputRequest input)
+        {
+            double[] up = new double[resultSize]; // Result value for the user
+
+            int x = LagInterpolation.CalcNodeWithRound(xp, setInfo.Dx);
+            int y = LagInterpolation.CalcNodeWithRound(yp, setInfo.Dy);
+            int z = LagInterpolation.CalcNodeWithRound(zp, setInfo.Dz);
+
+            // Wrap the coordinates into the grid space
+            x = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+            y = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+            z = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+
+            float[] data1 = blob1.data;
+            float[] data2 = blob2.data;
+            // NOTE: The start and end indexes should match between the two blobs.
+            int startz = 0, starty = 0, startx = 0, endz = 0, endy = 0, endx = 0;
+            blob1.GetSubcubeStart(z - (filter_width / 2), y - (filter_width / 2), x - (filter_width / 2), ref startz, ref starty, ref startx);
+            blob1.GetSubcubeEnd(z + (filter_width / 2), y + (filter_width / 2), x + (filter_width / 2), ref endz, ref endy, ref endx);
+
+            if (startx == 0 && starty == 0 && startz == 0 && endx == blob1.GetSide - 1 && endy == blob1.GetSide - 1 && endz == blob1.GetSide - 1)
+            {
+                if (cachedAtomZindex == blob1.Key)
+                {
+                    for (int i = 0; i < resultSize; i++)
+                    {
+                        up[i] = cachedAtomSum[i];
+                    }
+                    return up;
+                }
+            }
+
+            int blob1_off0 = startx * blob1.GetComponents;
+            int blob2_off0 = startx * blob2.GetComponents;
+
+            double c = Filtering.FilteringCoefficients(filter_width);
+            double[] partial_sum = new double[resultSize];
+
+            fixed (double* lagint = input.lagInt)
+            {
+                fixed (float* fdata1 = data1, fdata2 = data2)
+                {
+                    for (int iz = startz; iz <= endz; iz++)
+                    {
+                        int blob1_off1 = blob1_off0 + iz * blob1.GetSide * blob1.GetSide * blob1.GetComponents;
+                        int blob2_off1 = blob2_off0 + iz * blob2.GetSide * blob2.GetSide * blob2.GetComponents;
+                        for (int iy = starty; iy <= endy; iy++)
+                        {
+                            int blob1_off = blob1_off1 + iy * blob1.GetSide * blob1.GetComponents;
+                            int blob2_off = blob2_off1 + iy * blob2.GetSide * blob2.GetComponents;
+                            for (int ix = startx; ix <= endx; ix++)
+                            {
+                                partial_sum[0] += c * fdata1[blob1_off] * fdata2[blob2_off];
+
+                                if (blob1.GetComponents == 3)
+                                {
+                                    partial_sum[1] += c * fdata1[blob1_off + 1] * fdata2[blob2_off];
+                                    partial_sum[2] += c * fdata1[blob1_off + 2] * fdata2[blob2_off];
+                                    if (blob2.GetComponents == 3)
+                                    {
+                                        partial_sum[3] += c * fdata1[blob1_off] * fdata2[blob2_off + 1];
+                                        partial_sum[4] += c * fdata1[blob1_off + 1] * fdata2[blob2_off + 1];
+                                        partial_sum[5] += c * fdata1[blob1_off + 2] * fdata2[blob2_off + 1];
+                                        partial_sum[6] += c * fdata1[blob1_off] * fdata2[blob2_off + 2];
+                                        partial_sum[7] += c * fdata1[blob1_off + 1] * fdata2[blob2_off + 2];
+                                        partial_sum[8] += c * fdata1[blob1_off + 2] * fdata2[blob2_off + 2];
+                                        partial_sum[9] += c * fdata1[blob1_off];
+                                        partial_sum[10] += c * fdata1[blob1_off + 1];
+                                        partial_sum[11] += c * fdata1[blob1_off + 2];
+                                        partial_sum[12] += c * fdata2[blob2_off];
+                                        partial_sum[13] += c * fdata2[blob2_off + 1];
+                                        partial_sum[14] += c * fdata2[blob2_off + 2];
+                                    }
+                                    else
+                                    {
+                                        partial_sum[3] += c * fdata1[blob1_off];
+                                        partial_sum[4] += c * fdata1[blob1_off + 1];
+                                        partial_sum[5] += c * fdata1[blob1_off + 2];
+                                        partial_sum[6] += c * fdata2[blob2_off];
+                                    }
+                                }
+                                else
+                                {
+                                    // This should be the scalar-scalar case.
+                                    partial_sum[1] += c * fdata1[blob1_off];
+                                    partial_sum[2] += c * fdata2[blob2_off];
+                                }
+
+                                blob1_off += blob1.GetComponents;
+                                blob2_off += blob2.GetComponents;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (startx == 0 && starty == 0 && startz == 0 && endx == blob1.GetSide - 1 && endy == blob1.GetSide - 1 && endz == blob1.GetSide - 1)
+            {
+                cachedAtomZindex = blob1.Key;
+                for (int i = 0; i < resultSize; i++)
+                {
+                    cachedAtomSum[i] = partial_sum[i];
+                }
+            }
+            
+            for (int i = 0; i < resultSize; i++)
+            {
+                up[i] = partial_sum[i];
+            }
 
             return up;
         }

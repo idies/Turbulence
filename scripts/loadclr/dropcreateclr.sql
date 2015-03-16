@@ -2,7 +2,6 @@ DROP FUNCTION [dbo].[CreateMortonIndex]
 DROP FUNCTION [dbo].[GetMortonX]
 DROP FUNCTION [dbo].[GetMortonY]
 DROP FUNCTION [dbo].[GetMortonZ]
-DROP FUNCTION [dbo].[MHDCover]
 DROP PROCEDURE [dbo].[ExecuteTurbulenceWorker]
 DROP PROCEDURE [dbo].[ExecuteGetPositionWorker]
 DROP PROCEDURE [dbo].[ExecuteMHDWorker]
@@ -10,6 +9,9 @@ DROP PROCEDURE [dbo].[ExecuteBoxFilterWorker]
 DROP PROCEDURE [dbo].[GetDataCutout]
 DROP PROCEDURE [dbo].[GetThreshold]
 DROP PROCEDURE [dbo].[GetFilteredCutout]
+DROP PROCEDURE [dbo].[GetStridedDataCutout]
+DROP PROCEDURE [dbo].[ExecuteTwoFieldsWorker]
+DROP PROCEDURE [dbo].[ExecuteTwoFieldsBoxFilterWorker]
 DROP ASSEMBLY Turbulence 
 CREATE ASSEMBLY Turbulence FROM @DLL_Turbulence WITH PERMISSION_SET = UNSAFE 
 GO
@@ -119,11 +121,66 @@ CREATE PROCEDURE [dbo].[GetFilteredCutout] (
 	@blobDim int,
 	@timestep int,
 	@filter_width int,
-	@step int,
+	@x_stride int,
+	@y_stride int,
+	@z_stride int,
 	@QueryBox nvarchar(4000)
 ) AS EXTERNAL NAME Turbulence.StoredProcedures.GetFilteredCutout
 GO
 GRANT EXECUTE ON [dbo].[GetFilteredCutout] TO [turbquery]
+GO
+CREATE PROCEDURE [dbo].[GetStridedDataCutout] (
+	@serverName nvarchar(4000),
+	@dbname nvarchar(4000),
+	@codedb nvarchar(4000),
+	@turbinfodb nvarchar(4000),
+	@datasetID smallint,
+	@field nvarchar(4000),
+	@blobDim int,
+	@timestep int,
+	@x_stride int,
+	@y_stride int,
+	@z_stride int,
+	@QueryBox nvarchar(4000)
+) AS EXTERNAL NAME Turbulence.StoredProcedures.GetStridedDataCutout
+GO
+GRANT EXECUTE ON [dbo].[GetStridedDataCutout] TO [turbquery]
+GO
+CREATE PROCEDURE [dbo].[ExecuteTwoFieldsWorker] (
+	@serverName nvarchar(4000),
+	@dbname nvarchar(4000),
+	@codedb nvarchar(4000),
+	@field1 nvarchar(4000),
+	@field2 nvarchar(4000),
+	@workerType int,
+	@blobDim int,
+	@time real,
+	@spatialInterp int,
+	@temporalInterp int,
+	@arg real,
+	@intpuSize int,
+	@tempTable nvarchar(4000)
+) AS EXTERNAL NAME Turbulence.StoredProcedures.ExecuteTwoFieldsWorker
+GO
+GRANT EXECUTE ON [dbo].[ExecuteTwoFieldsWorker] TO [turbquery]
+GO
+CREATE PROCEDURE [dbo].[ExecuteTwoFieldsBoxFilterWorker] (
+	@serverName nvarchar(4000),
+	@dbname nvarchar(4000),
+	@codedb nvarchar(4000),
+	@field1 nvarchar(4000),
+	@field2 nvarchar(4000),
+	@workerType int,
+	@blobDim int,
+	@time real,
+	@spatialInterp int,
+	@temporalInterp int,
+	@arg real,
+	@intpuSize int,
+	@tempTable nvarchar(4000)
+) AS EXTERNAL NAME Turbulence.StoredProcedures.ExecuteTwoFieldsBoxFilterWorker
+GO
+GRANT EXECUTE ON [dbo].[ExecuteTwoFieldsBoxFilterWorker] TO [turbquery]
 GO
 CREATE FUNCTION dbo.CreateMortonIndex (
 	@z int,

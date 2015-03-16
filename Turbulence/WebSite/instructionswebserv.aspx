@@ -20,9 +20,9 @@
 
 </div>
 <!--#include file="navbar.htm" -->
-<div id="leftcolumn">
+<div id="leftcolumn"><div id="custom" style="margin-top: 120px">
    <p><img src="images/fig4-1.jpg" width="205" /></p>
-      
+      </div>
 </div>
 <div id="centercolumn">
       
@@ -35,7 +35,7 @@
         Database Cluster is possible through Web Services. We have provided instuctions
         and example code for using the service with several popular languages,
         but one should be able to get it working with <i>any</i> language
-      supporting Web Services.</p>
+      supporting Web Services.  <a href=help/authtoken.aspx>Click here for an access authorization token.</a></p> 
     </font>      
     
     <h4><font face="Arial, Helvetica, sans-serif"><a href="help/c-fortran/">C and Fortran</a></font></h4>
@@ -54,7 +54,7 @@
     <code><a href="http://turbulence.pha.jhu.edu/service/turbulence.asmx?WSDL">http://turbulence.pha.jhu.edu/service/turbulence.asmx</a></code><br />
     <font face="Arial, Helvetica, sans-serif">Example XML requests and responses can be found <a href="http://turbulence.pha.jhu.edu/service/turbulence.asmx">here</a>.
     </font> </p>
-    <p><a href="images/fig2.jpg"><img src="images/fig2.jpg" width="700"  /></a></p>
+    
 
     <p align="left"><font face="Arial, Helvetica, sans-serif"><i>Please take
           a look at our current <a href="privacy.aspx">privacy policy</a> before

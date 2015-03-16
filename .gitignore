@@ -26,10 +26,5 @@ Turbulence/CutoutService/obj/*
 Turbulence/CutoutService/bin/*
 Turbulence/Turbulence.suo
 /Turbulence/Website/Website.csproj
-/Turbulence/RESTfulWebServices/bin
-/Turbulence/RESTfulWebServices/obj
-/Turbulence/RESTfulWebServices/lib
-packages
-
-
-
+/Turbulence/CutoutService/CutoutService.csproj.user
+ParticleTracking/ParticleTrackingTestClient/app.config

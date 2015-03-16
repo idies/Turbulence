@@ -171,25 +171,41 @@ namespace Turbulence.SQLInterface.workers
                 int timestep2 = basetime + setInfo.TimeInc;
                 int timestep3 = basetime + setInfo.TimeInc * 2;
 
-                float time0 = (timestep0 - setInfo.TimeOff) * setInfo.Dt;
+                //float time0 = (timestep0 - setInfo.TimeOff) * setInfo.Dt;
                 float time1 = (timestep1 - setInfo.TimeOff) * setInfo.Dt;
                 float time2 = (timestep2 - setInfo.TimeOff) * setInfo.Dt;
-                float time3 = (timestep3 - setInfo.TimeOff) * setInfo.Dt;
+                //float time3 = (timestep3 - setInfo.TimeOff) * setInfo.Dt;
 
                 float delta = time2 - time1;
 
                 if (point.compute_predictor)
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pos.x, point.pos.y, point.pos.z, ref point.lagInt);
-                    if (dt1 < point.dt)
+                    if (point.dt > 0)
                     {
-                        if (dt1 < 0.00001)
+                        if (dt1 < point.dt)
                         {
-                            throw new Exception("This shouldn't happen!");
-                            
+                            if (dt1 < 0.00001)
+                            {
+                                throw new Exception("This shouldn't happen!");
+
+                            }
+                            else
+                                point.dt = dt1;
                         }
-                        else
-                            point.dt = dt1;
+                    }
+                    else
+                    {
+                        if (dt1 < -point.dt)
+                        {
+                            if (dt1 < 0.00001)
+                            {
+                                throw new Exception("This shouldn't happen!");
+
+                            }
+                            else
+                                point.dt = -dt1;
+                        }
                     }
                 }
                 else
@@ -277,15 +293,15 @@ namespace Turbulence.SQLInterface.workers
                     int X, Y, Z;
                     if (kernelSize == 0)
                     {
-                        X = LagInterpolation.CalcNodeWithRound(point.pos.x, setInfo.DxFloat);
-                        Y = LagInterpolation.CalcNodeWithRound(point.pos.y, setInfo.DxFloat);
-                        Z = LagInterpolation.CalcNodeWithRound(point.pos.z, setInfo.DxFloat);
+                        X = LagInterpolation.CalcNodeWithRound(point.pos.x, setInfo.Dx);
+                        Y = LagInterpolation.CalcNodeWithRound(point.pos.y, setInfo.Dy);
+                        Z = LagInterpolation.CalcNodeWithRound(point.pos.z, setInfo.Dz);
                     }
                     else
                     {
-                        X = LagInterpolation.CalcNode(point.pos.x, setInfo.DxFloat);
-                        Y = LagInterpolation.CalcNode(point.pos.y, setInfo.DxFloat);
-                        Z = LagInterpolation.CalcNode(point.pos.z, setInfo.DxFloat);
+                        X = LagInterpolation.CalcNode(point.pos.x, setInfo.Dx);
+                        Y = LagInterpolation.CalcNode(point.pos.y, setInfo.Dy);
+                        Z = LagInterpolation.CalcNode(point.pos.z, setInfo.Dz);
                     }
                     point.zindex = new Morton3D(Z, Y, X);
                 }

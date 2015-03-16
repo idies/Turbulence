@@ -360,9 +360,11 @@ namespace Turbulence.SQLInterface.workers
         /// <param name="coordinates">Coordinates, at which the filtered cutout is to be generated.
         /// Given in the format [x,y,z,xwidth,ywidth,zwidth], where x,y,z are the bottom left corner
         /// and xwidth, ywidth, zwidth is top right corner.</param>
-        /// <param name="step">The step size for the result.</param>
+        /// <param name="x_stride">The stride size along x.</param>
+        /// <param name="y_stride">The stride size along y.</param>
+        /// <param name="z_stride">The stride size along z.</param>
         /// <returns>float[]</returns>
-        public float[] GetResult(int[] coordinates, int step)
+        public float[] GetResult(int[] coordinates, int x_stride, int y_stride, int z_stride)
         {
             double c = Filtering.FilteringCoefficients(KernelSize);
 
@@ -372,9 +374,9 @@ namespace Turbulence.SQLInterface.workers
             ywidth = cutout_coordinates[4] - cutout_coordinates[1];
             zwidth = cutout_coordinates[5] - cutout_coordinates[2];
             int result_x_width, result_y_width, result_z_width;
-            result_x_width = (coordinates[3] - 1 - coordinates[0]) / step + 1;
-            result_y_width = (coordinates[4] - 1 - coordinates[1]) / step + 1;
-            result_z_width = (coordinates[5] - 1 - coordinates[2]) / step + 1;
+            result_x_width = (coordinates[3] - 1 - coordinates[0]) / x_stride + 1;
+            result_y_width = (coordinates[4] - 1 - coordinates[1]) / y_stride + 1;
+            result_z_width = (coordinates[5] - 1 - coordinates[2]) / z_stride + 1;
             int result_size = setInfo.Components * result_x_width * result_y_width * result_z_width;
             ulong off0;
             int dest = 0;
@@ -382,11 +384,11 @@ namespace Turbulence.SQLInterface.workers
             float[] result = new float[result_size];
             double[] temp_result = new double[setInfo.Components];
 
-            for (int z = coordinates[2]; z < coordinates[5]; z += step)
+            for (int z = coordinates[2]; z < coordinates[5]; z += z_stride)
             {
-                for (int y = coordinates[1]; y < coordinates[4]; y += step)
+                for (int y = coordinates[1]; y < coordinates[4]; y += y_stride)
                 {
-                    for (int x = coordinates[0]; x < coordinates[3]; x += step)
+                    for (int x = coordinates[0]; x < coordinates[3]; x += x_stride)
                     {
                         int lowz = z - KernelSize / 2 - 1, lowy = y - KernelSize / 2 - 1, lowx = x - KernelSize / 2 - 1;
                         int highz = z + KernelSize / 2, highy = y + KernelSize / 2, highx = x + KernelSize / 2;
@@ -510,17 +512,6 @@ namespace Turbulence.SQLInterface.workers
             x_width = cutout_coordinates[3] - cutout_coordinates[0];
             y_width = cutout_coordinates[4] - cutout_coordinates[1];
             z_width = cutout_coordinates[5] - cutout_coordinates[2];
-            ulong cutout_size = (ulong)setInfo.Components * (ulong)x_width * (ulong)y_width * (ulong)z_width;
-            if (cutout_size > int.MaxValue / sizeof(float))
-            {
-                //big_cutout = new BigArray<float>(cutout_size);
-                //using_big_cutout = true;
-                throw new Exception("Cutout size is too big!");
-            }
-            else
-            {
-                //cutout = new float[cutout_size];
-            }
 
             InitializeSummedVolumes(x_width, y_width, z_width);
 

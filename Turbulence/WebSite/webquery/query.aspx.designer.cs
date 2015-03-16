@@ -256,13 +256,40 @@ namespace Website {
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilter;
         
         /// <summary>
-        /// GetBoxFilterSGS control.
+        /// GetBoxFilterSGSscalar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGS;
+        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSscalar;
+        
+        /// <summary>
+        /// GetBoxFilterSGSvector control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSvector;
+        
+        /// <summary>
+        /// GetBoxFilterSGSsymtensor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSsymtensor;
+        
+        /// <summary>
+        /// GetBoxFilterSGStensor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGStensor;
         
         /// <summary>
         /// GetBoxFilterGradient control.
@@ -272,6 +299,15 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilterGradient;
+        
+        /// <summary>
+        /// GetThreshold control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetThreshold;
         
         /// <summary>
         /// spatialRow control.
@@ -328,6 +364,15 @@ namespace Website {
         protected global::System.Web.UI.WebControls.DropDownList fieldList;
         
         /// <summary>
+        /// velocityEntry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem velocityEntry;
+        
+        /// <summary>
         /// pressureEntry control.
         /// </summary>
         /// <remarks>
@@ -364,6 +409,78 @@ namespace Website {
         protected global::System.Web.UI.WebControls.ListItem densityEntry;
         
         /// <summary>
+        /// vorticityEntry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem vorticityEntry;
+        
+        /// <summary>
+        /// QEntry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem QEntry;
+        
+        /// <summary>
+        /// fieldList2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList fieldList2;
+        
+        /// <summary>
+        /// velocityEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem velocityEntry2;
+        
+        /// <summary>
+        /// pressureEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem pressureEntry2;
+        
+        /// <summary>
+        /// magneticEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem magneticEntry2;
+        
+        /// <summary>
+        /// potentialEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem potentialEntry2;
+        
+        /// <summary>
+        /// densityEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem densityEntry2;
+        
+        /// <summary>
         /// filterWidthRow control.
         /// </summary>
         /// <remarks>
@@ -398,6 +515,33 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox filterSpacing;
+        
+        /// <summary>
+        /// thresholdRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow thresholdRow;
+        
+        /// <summary>
+        /// threshold control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox threshold;
+        
+        /// <summary>
+        /// QueryText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl QueryText;
         
         /// <summary>
         /// x_range control.
@@ -452,6 +596,60 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox z;
+        
+        /// <summary>
+        /// xwidth_range control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal xwidth_range;
+        
+        /// <summary>
+        /// ywidth_range control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ywidth_range;
+        
+        /// <summary>
+        /// zwidth_range control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal zwidth_range;
+        
+        /// <summary>
+        /// Xwidth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox Xwidth;
+        
+        /// <summary>
+        /// Ywidth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox Ywidth;
+        
+        /// <summary>
+        /// Zwidth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox Zwidth;
         
         /// <summary>
         /// coord_range_details control.

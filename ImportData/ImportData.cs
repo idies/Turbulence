@@ -25,7 +25,6 @@ namespace ImportData
             string server = "(local)";
             string dbname = "mhddb";
             string username = "kalin";
-            string sqlPassword = "***REMOVED***";
             int time_start = 1;
             int time_end = 1;
             int time_inc = 1;
@@ -55,7 +54,7 @@ namespace ImportData
                 Environment.Exit(1);
             }
 
-            string connectionString = GetConnectionString(server, dbname, username, sqlPassword);
+            string connectionString = GetConnectionString(server, dbname, username);
             // Open a connection to the database.
             OpenConnection(connectionString);
 
@@ -109,11 +108,11 @@ namespace ImportData
             Console.WriteLine("Copied {0} so far...", e.RowsCopied);
         }
 
-        private static string GetConnectionString(string server, string dbname, string username, string sqlPassword)
+        private static string GetConnectionString(string server, string dbname, string username)
         // To avoid storing the connection string in your code, 
         // you can retrieve it from a configuration file. 
         {
-            return String.Format("Server={0}; Database={1}; User ID={2}; Password={3};", server, dbname, username, sqlPassword);
+            return String.Format("Server={0}; Database={1}; User ID={2}; Integrated security=true;", server, dbname, username);
         }
 
         private static void OpenConnection(string connectionString)

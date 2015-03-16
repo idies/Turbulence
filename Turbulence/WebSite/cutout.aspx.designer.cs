@@ -103,13 +103,13 @@ namespace Website {
         protected global::System.Web.UI.WebControls.CheckBox step_checkbox;
         
         /// <summary>
-        /// stepSize control.
+        /// stepCell control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox stepSize;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl stepCell;
         
         /// <summary>
         /// timestart_range control.
@@ -146,6 +146,24 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox timeend;
+        
+        /// <summary>
+        /// timeStepLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label timeStepLabel;
+        
+        /// <summary>
+        /// timeStepSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox timeStepSize;
         
         /// <summary>
         /// channel_grid_note control.
@@ -193,6 +211,24 @@ namespace Website {
         protected global::System.Web.UI.WebControls.TextBox xEnd;
         
         /// <summary>
+        /// xStepLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label xStepLabel;
+        
+        /// <summary>
+        /// xStepSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox xStepSize;
+        
+        /// <summary>
         /// y_range control.
         /// </summary>
         /// <remarks>
@@ -229,6 +265,24 @@ namespace Website {
         protected global::System.Web.UI.WebControls.TextBox yEnd;
         
         /// <summary>
+        /// yStepLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label yStepLabel;
+        
+        /// <summary>
+        /// yStepSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox yStepSize;
+        
+        /// <summary>
         /// z_range control.
         /// </summary>
         /// <remarks>
@@ -263,6 +317,51 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox zEnd;
+        
+        /// <summary>
+        /// zStepLabel control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label zStepLabel;
+        
+        /// <summary>
+        /// zStepSize control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox zStepSize;
+        
+        /// <summary>
+        /// filterwidth_checkbox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox filterwidth_checkbox;
+        
+        /// <summary>
+        /// filterwidth_cell control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl filterwidth_cell;
+        
+        /// <summary>
+        /// filterWidth control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox filterWidth;
         
         /// <summary>
         /// Button1 control.

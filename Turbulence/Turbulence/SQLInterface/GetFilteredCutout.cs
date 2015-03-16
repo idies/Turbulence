@@ -20,7 +20,9 @@ public partial class StoredProcedures
         int blobDim, 
         int timestep,
         int filter_width,
-        int step,
+        int x_stride,
+        int y_stride,
+        int z_stride,
         string QueryBox)
     {
         byte[] result = null;
@@ -32,18 +34,16 @@ public partial class StoredProcedures
             contextConn = new SqlConnection("context connection=true");
             contextConn.Open();
 
-            TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
-            string DBtableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
-
-            GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
-            contextConn.Close();
-
             int[] coordinates = new int[6];
             ParseQueryBox(QueryBox, coordinates);
 
-            worker.GetData(datasetID, turbinfodb, timestep, coordinates);
+            TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
+            contextConn.Close();
 
-            cutout = worker.GetResult(coordinates, step);
+            //GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
+            GetMHDBoxFilter worker = new GetMHDBoxFilter(table, filter_width);
+            worker.GetData(datasetID, turbinfodb, timestep, coordinates);
+            cutout = worker.GetResult(coordinates, x_stride, y_stride, z_stride);
 
             // Populate the record
             int cutout_byte_length = Buffer.ByteLength(cutout);

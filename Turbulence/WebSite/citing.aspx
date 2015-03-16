@@ -26,39 +26,54 @@
 </div>
 <div id="centercolumn">
       
-  <p align="left" class="style21 style22 style28"><strong><br />
+  <p align="left" ><strong><br />
         Citing the database
       in your work: </strong></p>
-      <p class="style24 style22 style27">The JH Turbulence Database (JHTDB) is developed as an open
+      <p c>The JH Turbulence Database (JHTDB) is developed as an open
         resource by the Johns Hopkins University, under the sponsorship of the
         National Science Foundation. Continued support for the database depends
         on demonstrable evidence of the database's value to the scientific community.
         We kindly request that you cite the database in your
         publications and presentations. The following citations are suggested:<br />
       </p>
-      <p class="style24 style22 style27">For journal articles, proceedings, etc..,
+      <p >For journal articles, proceedings, etc..,
         we suggest:</p>
       <blockquote>
-        <p><em>Y. Li, E. Perlman, M. Wan,
+        <p>Y. Li, E. Perlman, M. Wan,
             Y. Yang, R. Burns, C. Meneveau, R. Burns, S. Chen, A. Szalay &amp; G.
             Eyink. &quot;A public turbulence database cluster and applications
             to study Lagrangian evolution of velocity increments in turbulence&quot;.
-             J. Turbulence <strong>9</strong>, No. 31 (2008). </em></p>
-        <p><em>E. Perlman, R. Burns,
+             Journal of Turbulence <strong>9</strong>, No. 31 (2008). </p>
+        <p>E. Perlman, R. Burns,
                       Y. Li, and C. Meneveau. &quot;Data Exploration of Turbulence Simulations
                       using a Database Cluster&quot;. Supercomputing SC07, ACM, IEEE,
-                      2007.</em><em><br />
-                      </em></p>
+                      2007.<br />
+                      </p>
       </blockquote>      
-      <p class="style22 style27">For presentations, posters, etc.., we suggest:</p>
+      <p >For presentations, posters, etc.., we suggest:</p>
       <blockquote>
-        <p class="style27 "><em> Data obtained from the JHTDB at http://turbulence.pha.jhu.edu</em></p>
+        <p >  Data obtained from the JHTDB at http://turbulence.pha.jhu.edu</p>
       </blockquote>  
-      <p class="style22 style27">For articles that use the channel flow data, we suggest also including:</p>
+      <p >For articles that use the channel flow data, we suggest also including:</p>
       <blockquote>
-        <p class="style27 "><em> J. Graham, M. Lee, N. Malaya, R.D. Moser, G. Eyink, C. Meneveau, K. Kanov, R. Burns &amp; A. Szalay, &quot;Turbulent channel flow data set&quot;
-(2013), available at http://turbulence.pha.jhu.edu/docs/README-CHANNEL.pdf </em></p>
-      </blockquote>     
+        <p>J. Graham, M. Lee, N. Malaya, R.D. Moser, G. Eyink, C. Meneveau, K. Kanov, R. Burns &amp; A. Szalay, &quot;Turbulent channel flow data set&quot;
+(2013), available at <a href="http://turbulence.pha.jhu.edu/docs/README-CHANNEL.pdf">http://turbulence.pha.jhu.edu/docs/README-CHANNEL.pdf</a> </p>
+      </blockquote>  
+      <p >For articles that use the mhd flow data, we suggest also including:</p>
+      <blockquote>
+        <p>H. Aluie, G. Eyink, E. Vishniac, S. Chen K. Kanov, R. Burns, C. Meneveau, A. Szalay, &quot;Forced MHD turbulence data set&quot; (2013), available at 
+        <a href="http://turbulence.pha.jhu.edu/docs/README-MHD.pdf">http://turbulence.pha.jhu.edu/docs/README-MHD.pdf</a> </p>
+      </blockquote>   
+      <p >For articles that use the mixing flow data, we suggest also including:</p>
+      <blockquote>
+        <p>D. Livescu, C. Canada, K. Kanov, R. Burns & IDIES staff, J. Pulido, &quot;Homogeneous Buoyancy driven turbulence data set&quot; (2014), 
+        available at <a href="http://turbulence.pha.jhu.edu/docs/README-HBDT.pdf">http://turbulence.pha.jhu.edu/docs/README-HBDT.pdf</a> </p>
+      </blockquote> 
+      <p >For articles that use the Lagrangian tracking GetPosition function, we suggest also including:</p>
+      <blockquote>
+        <p>H. Yu, K. Kanov, E. Perlman, J. Graham, E. Frederix, R. Burns, A. Szalay, G. Eyink, and C. Meneveau. 
+        &quot;Studying Lagrangian dynamics of turbulence using on-demand fluid particle tracking in a public turbulence database&quot;. Journal of Turbulence <strong>13</strong>, No. 12 (2012). </p>
+      </blockquote>
     
 </div>
 <div id="rightcolumn"> 
