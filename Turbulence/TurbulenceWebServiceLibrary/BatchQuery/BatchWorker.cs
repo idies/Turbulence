@@ -73,8 +73,11 @@ namespace TurbulenceService
 
 			// execute batch job
             Database database = new Database(infodb, GetVelocityBatchWorker.DEVEL_MODE);
-            DataInfo.TableNames field = DataInfo.TableNames.velocity08;
-			database.selectServers(DataInfo.DataSets.mhd1024);
+            //DataInfo.TableNames field = DataInfo.TableNames.velocity08;
+            int dataset_id = DataInfo.findDataSetInt(dataset);
+            //string tableName = DataInfo.getTableName(dataset, field);
+            string field = "vel"; /*Not sure about this*/
+			database.selectServers(dataset_id);
 
 			// aggregate all queries and construct boundaries
 			Point3[] points = new Point3[records];
