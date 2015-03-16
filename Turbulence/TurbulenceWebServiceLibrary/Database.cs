@@ -2730,6 +2730,7 @@ namespace TurbulenceService
             IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
             for (int s = 0; s < serverCount; s++)
             {
+               
                 if (connections[s] != null)
                 {
                     string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
@@ -2746,6 +2747,7 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
                     sqlcmds[s].Parameters.AddWithValue("@queryBox", queryBox);
                     sqlcmds[s].CommandTimeout = 3600;
+                    
                     asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
                 }
             }
@@ -3482,7 +3484,7 @@ namespace TurbulenceService
             GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
 
             //DateTime start = DateTime.Now;
-            asyncRes = ExecuteGetRawData(tableName.ToString(),
+            asyncRes = ExecuteGetRawData(tableName,
                 timestep, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
             GetRawResults(asyncRes, result, components, X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
 
@@ -3538,7 +3540,7 @@ namespace TurbulenceService
                 {
                     filter_width = filter_width + 1;
                 }
-                asyncRes = ExecuteGetFilteredCutout(dataset_id, tableName.ToString(),
+                asyncRes = ExecuteGetFilteredCutout(dataset_id, tableName,
                     timestep, filter_width, x_stride, y_stride, z_stride, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
             }
 
