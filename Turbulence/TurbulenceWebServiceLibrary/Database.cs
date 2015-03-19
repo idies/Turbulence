@@ -3223,7 +3223,7 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@endTime", endTime);
                     sqlcmds[s].Parameters.AddWithValue("@dt", dt);
                     sqlcmds[s].Parameters.AddWithValue("@development", development);
-                    sqlcmds[s].CommandTimeout = 3600;
+                    sqlcmds[s].CommandTimeout = 36000;
                     Interlocked.Increment(ref numberOfCallbacksNotYetCompleted);
                     AsyncCallback callback = new AsyncCallback(result =>
                     {

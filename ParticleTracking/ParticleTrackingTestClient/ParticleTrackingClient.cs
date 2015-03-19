@@ -28,9 +28,10 @@ namespace ParticleTrackingTestClient
                 Turbulence.TurbLib.TurbulenceOptions.SpatialInterpolation spatialInterp = Turbulence.TurbLib.TurbulenceOptions.SpatialInterpolation.Lag6;
                 round = false;
 
+                int num_processes = 4;
                 DataInfo.DataSets dataset = DataInfo.DataSets.mhd1024;
                 database = new Database("turbinfo", true);
-                database.selectServers(dataset);
+                database.selectServers(dataset, num_processes);
 
                 SQLUtility.TrackingInputRequest[] particles;
                 CreatInput(1, out particles);
@@ -54,7 +55,7 @@ namespace ParticleTrackingTestClient
                         // 1 hour receive timeout
                         binding.ReceiveTimeout = new System.TimeSpan(1, 0, 0);
                         //TODO: change the address based on the server name
-                        EndpointAddress address = new EndpointAddress("net.tcp://localhost:8090/ParticleTrackingService");
+                        EndpointAddress address = new EndpointAddress("net.tcp://gw02.10g.sdss.pha.jhu.edu:8090/ParticleTrackingService");
                         factories[i] = new DuplexChannelFactory<IParticleTrackingService>(instanceContext, binding, address);
                         channels[i] = factories[i].CreateChannel();
                         channels[i].Init(database.servers[i], database.databases[i], (short)dataset, "velocity08", database.atomDim, (int)spatialInterp, development);

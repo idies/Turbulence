@@ -57,7 +57,7 @@ namespace TestApp
                 //TestDensityHessian();
                 //ComputeDensityHessian();
                 //TestGetThreshold();
-                //return;
+                return;
 
                 turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
@@ -868,66 +868,78 @@ namespace TestApp
         {
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
-            DateTime runningTime;
-            float startTime = (float)random.NextDouble() * (2.048f - 0.5f);
-            float endTime = startTime + 0.5f;
-            int pointsize = 1000;
-            turbulence.Point3[] points = new turbulence.Point3[pointsize];
-            turbulence.Point3[] positions = new turbulence.Point3[pointsize];
-            turbulence.Point3[] positions2 = new turbulence.Point3[pointsize];
-            string authToken = "edu.jhu.pha.turbulence.testing-201406";
+            TimeSpan total = new TimeSpan(0);
+            string dataset = "mhd1024";
+            float dt = 0.0025f;
+            float time_range = 500 * dt;
+            float max_time = 2.56f;
 
-            for (int i = 0; i < points.Length; i++)
+            int num_runs = 3;
+            for (int run = 0; run < num_runs; run++)
             {
-                points[i] = new turbulence.Point3();
-                points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
-                points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
-                points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
-                //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
-                //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
-                //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+                DateTime runningTime, runningTimeEnd;
+                float startTime = (float)random.NextDouble() * (max_time - time_range);
+                float endTime = startTime + time_range;
+                int pointsize = 10000;
+                turbulence.Point3[] points = new turbulence.Point3[pointsize];
+                turbulence.Point3[] positions = new turbulence.Point3[pointsize];
+                turbulence.Point3[] positions2 = new turbulence.Point3[pointsize];
+                string authToken = "edu.jhu.pha.turbulence.testing-201406";
+
+                for (int i = 0; i < points.Length; i++)
+                {
+                    points[i] = new turbulence.Point3();
+                    points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
+                    points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
+                    points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
+                    //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
+                    //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+                    //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+                }
+
+                service.Timeout = -1;
+                Console.WriteLine("Calling service");
+
+                //for (int i = 0; i < points.Length; i++)
+                //{
+                //    points[i] = new turbulence.Point3();
+                //    points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
+                //    points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
+                //    points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
+                //    //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
+                //    //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+                //    //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+                //}
+                //startTime = (float)random.NextDouble() * (2.048f - 0.5f);
+                //endTime = startTime + 0.5f;
+
+                //points[0].x = 0.00696346f;
+                //points[0].y = 2.231412f;
+                //points[0].z = 1.12341235f;
+                //endTime = 0.00056f;
+                //startTime = 0.50566f;
+
+                //runningTime = DateTime.Now;
+                //positions = service.GetPositionDBEvaluation(authToken, "isotropic1024", startTime, endTime, -0.001f, turbulence.SpatialInterpolation.Lag4, points);
+                //Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
+                //Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
+
+                runningTime = DateTime.Now;
+                positions2 = service.GetPosition(authToken, dataset, startTime, endTime, dt, turbulence.SpatialInterpolation.Lag4, points);
+                runningTimeEnd = DateTime.Now;
+                Console.WriteLine("Run {1}: Execution time: {0}", (runningTimeEnd - runningTime).TotalSeconds, run);
+                Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions2[0].x, positions2[0].y, positions2[0].z, startTime, endTime);
+                total += runningTimeEnd - runningTime;
+
+                //for (int i = 0; i < points.Length; i++)
+                //{
+                //    if (Math.Abs(positions[i].x - positions2[i].x) > 0.0001f ||
+                //        Math.Abs(positions[i].y - positions2[i].y) > 0.0001f ||
+                //        Math.Abs(positions[i].z - positions2[i].z) > 0.0001f)
+                //        Console.WriteLine("Positions don't match!");
+                //}
             }
-
-            service.Timeout = -1;
-            Console.WriteLine("Calling service");
-
-            //for (int i = 0; i < points.Length; i++)
-            //{
-            //    points[i] = new turbulence.Point3();
-            //    points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
-            //    points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
-            //    points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
-            //    //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
-            //    //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
-            //    //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
-            //}
-            //startTime = (float)random.NextDouble() * (2.048f - 0.5f);
-            //endTime = startTime + 0.5f;
-
-            points[0].x = 0.00696346f;
-            points[0].y = 2.231412f;
-            points[0].z = 1.12341235f;
-            endTime = 0.00056f;
-            startTime = 0.50566f;
-
-            //runningTime = DateTime.Now;
-            //positions = service.GetPositionDBEvaluation(authToken, "isotropic1024", startTime, endTime, -0.001f, turbulence.SpatialInterpolation.Lag4, points);
-            //Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
-            //Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
-
-            runningTime = DateTime.Now;
-            positions2 = service.GetPosition(authToken, "isotropic1024", startTime, endTime, 0.001f, turbulence.SpatialInterpolation.Lag4, points);
-            Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
-            Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions2[0].x, positions2[0].y, positions2[0].z, startTime, endTime);
-
-            //for (int i = 0; i < points.Length; i++)
-            //{
-            //    if (Math.Abs(positions[i].x - positions2[i].x) > 0.0001f ||
-            //        Math.Abs(positions[i].y - positions2[i].y) > 0.0001f ||
-            //        Math.Abs(positions[i].z - positions2[i].z) > 0.0001f)
-            //        Console.WriteLine("Positions don't match!");
-            //}
-
+            Console.WriteLine("Avg. execution time: {0}", total.TotalSeconds / num_runs);
             Console.WriteLine("Press any key to continue.");
             Console.ReadLine();
         }

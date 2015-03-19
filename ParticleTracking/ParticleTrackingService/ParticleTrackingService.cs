@@ -134,8 +134,12 @@ namespace ParticleTracking
             this.localServer = localServer;
             this.localDatabase = localDatabase;
 
-            localConn = new SqlConnection(
-                String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", localServer, localDatabase));
+            if (localServer.Contains("_"))
+                localConn = new SqlConnection(
+                    String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", localServer.Remove(localServer.IndexOf("_")), localDatabase));
+            else
+                localConn = new SqlConnection(
+                    String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", localServer, localDatabase));
             localConn.Open();
 
             // Load information about the requested dataset
