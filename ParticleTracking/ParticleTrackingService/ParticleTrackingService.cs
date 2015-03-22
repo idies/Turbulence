@@ -34,6 +34,7 @@ namespace ParticleTracking
         {
             long zindex = 0;
             SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
+            HashSet<SQLUtility.TimestepZindexKey> atoms = new HashSet<SQLUtility.TimestepZindexKey>(); //NOTE: HashSet requires .Net 3.5
             int X, Y, Z;
 
             if (worker.spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
@@ -55,18 +56,28 @@ namespace ParticleTracking
                 zindex = new Morton3D(Z, Y, X).Key & mask;
                 key.SetValues(request.timeStep, zindex);
 
+
                 if (table.PointInRange(X, Y, Z))
                 {
-                    if (!map.ContainsKey(key))
+                    if (!atoms.Contains(key))
                     {
-                        map[key] = new List<int>();
+                        atoms.Add(key);
                     }
-                    map[key].Add(request.request);
-                    request.numberOfCubes++;
+                    //if (!map.ContainsKey(key))
+                    //{
+                    //    map[key] = new List<int>();
+                    //}
+                    //map[key].Add(request.request);
+                    //request.numberOfCubes++;
                 }
                 else
                 {
                     request.crossed_boundary = true;
+                    // If the request is not marked for evaluation do not add it to the map.
+                    if (!request.evaluate)
+                    {
+                        return;
+                    }
                 }
             }
             else
@@ -112,20 +123,39 @@ namespace ParticleTracking
 
                             if (table.PointInRange(xi, yi, zi))
                             {
-                                if (!map.ContainsKey(key))
+                                if (!atoms.Contains(key))
                                 {
-                                    map[key] = new List<int>();
+                                    atoms.Add(key);
                                 }
-                                map[key].Add(request.request);
-                                request.numberOfCubes++;
+                                //if (!map.ContainsKey(key))
+                                //{
+                                //    map[key] = new List<int>();
+                                //}
+                                //map[key].Add(request.request);
+                                //request.numberOfCubes++;
                             }
                             else
                             {
                                 request.crossed_boundary = true;
+                                // If the request is not marked for evaluation do not add it to the map.
+                                if (!request.evaluate)
+                                {
+                                    return;
+                                }
                             }
                         }
                     }
                 }
+            }
+
+            foreach (SQLUtility.TimestepZindexKey atom in atoms)
+            {
+                if (!map.ContainsKey(atom))
+                {
+                    map[atom] = new List<int>();
+                }
+                map[atom].Add(request.request);
+                request.numberOfCubes++;
             }
         }
 
@@ -216,8 +246,8 @@ namespace ParticleTracking
                 {
                     working = true;
                     Dictionary<SQLUtility.TimestepZindexKey, List<int>> atoms_map = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>(); // Contains the database atoms to be retrieved from the DB
-                    // and the input particles associated with each atom
-                    // (identified by their request/particle id.
+                                                                                                                                               // and the input particles associated with each atom
+                                                                                                                                               // (identified by their request/particle id).
                     long mask = ~(long)(worker.DataTable.atomDim * worker.DataTable.atomDim * worker.DataTable.atomDim - 1);
                     SqlCommand cmd;
                     SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
@@ -314,6 +344,19 @@ namespace ParticleTracking
                             input[input_point].cubesRead = 0;
                             input[input_point].numberOfCubes = 0;
                             input[input_point].lagInt = null;
+
+                            // Check for particles that have crossed during execution.
+                            // These will not be added to the list to send back to the mediator otherwise
+                            // and then need to be reassigned.
+                            if (input[input_point].crossed_boundary && !input[input_point].evaluate)
+                            {
+                                SQLUtility.TrackingInputRequest done_particle;
+                                if (!input.TryRemove(input_point, out done_particle))
+                                {
+                                    throw new Exception("Could not remove particle that has cross data boundaries on this node!");
+                                }
+                                done_particles.Add(done_particle);
+                            }
                         }
 
                         if (done_particles.Count > 0)
