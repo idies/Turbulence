@@ -170,6 +170,7 @@ namespace ParticleTracking
             else
                 localConn = new SqlConnection(
                     String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", localServer, localDatabase));
+            Console.WriteLine("Attempting to connect using connection string: {0}", localConn.ConnectionString);
             localConn.Open();
 
             // Load information about the requested dataset
@@ -229,6 +230,7 @@ namespace ParticleTracking
 
         public void DoParticleTrackingWork(List<SQLUtility.TrackingInputRequest> particles)
         {
+            //Console.WriteLine("Starting to add particles!");
             AddParticles(particles);
             //Console.WriteLine("Added a list of particles");
             IParticleTrackingServiceCallback callback_channel = OperationContext.Current.GetCallbackChannel<IParticleTrackingServiceCallback>();
@@ -237,6 +239,7 @@ namespace ParticleTracking
 
         public void DoParticleTrackingWorkOneParticle(SQLUtility.TrackingInputRequest one_particle)
         {
+            //Console.WriteLine("Adding one particle!");
             AddOneParticle(one_particle);
             //Console.WriteLine("Added one particle");
             IParticleTrackingServiceCallback callback_channel = OperationContext.Current.GetCallbackChannel<IParticleTrackingServiceCallback>();
@@ -247,6 +250,11 @@ namespace ParticleTracking
         {
             if (!working)
             {
+                Console.WriteLine("Starting to do work!");
+                if (localConn.State != ConnectionState.Open)
+                {
+                    Console.WriteLine("local connection is not open, state is: " + localConn.State);
+                }
                 try
                 {
                     working = true;
