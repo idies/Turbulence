@@ -16,13 +16,19 @@ namespace ParticleTrackingTestClient
         IParticleTrackingService[] channels;
         Database database;
         ConcurrentDictionary<int, SQLUtility.TrackingInputRequest> partial_results;
-        int num_particles = 100;
+        int num_particles = 1000;
         int num_done_particles = 0;
         bool round;
         int kernelSizeX;
         int kernelSizeY;
         int kernelSizeZ;
         ManualResetEvent doneEvent = new ManualResetEvent(false);
+
+        //for debugging:
+        //--------------------------------
+        SQLUtility.TrackingInputRequest[] initial_particles;
+        ConcurrentDictionary<int, SQLUtility.TrackingInputRequest> particles_not_yet_finished;
+        //--------------------------------
 
         public void TestParticleTracking()
         {
@@ -34,19 +40,30 @@ namespace ParticleTrackingTestClient
 
                 Random random = new Random();
                 TimeSpan total = new TimeSpan(0);
-                float dt = 0.0025f;
+                float dt = 0.001f;
                 float time_range = 50 * dt;
                 float max_time = 2.56f;
                 float startTime = (float)random.NextDouble() * (max_time - time_range);
+                startTime = 2.394468f;
                 float endTime = startTime + time_range;
                 int num_processes = 1;
                 DataInfo.DataSets dataset = DataInfo.DataSets.mhd1024;
                 string tableName = "velocity08";
                 database = new Database("turbinfo", true);
-                database.selectServers(dataset, num_processes);
+                database.Initialize(dataset, num_processes);
 
                 SQLUtility.TrackingInputRequest[] particles;
                 CreatInput(startTime, endTime, dt, num_particles, out particles);
+
+
+                //--------------------------------
+                initial_particles = particles;
+                particles_not_yet_finished = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
+                foreach (SQLUtility.TrackingInputRequest particle in particles)
+                {
+                    particles_not_yet_finished.TryAdd(particle.request, particle);
+                }
+                //--------------------------------
 
                 DateTime runningTime, runningTimeEnd;
                 runningTime = DateTime.Now;
@@ -64,23 +81,23 @@ namespace ParticleTrackingTestClient
                 InstanceContext instanceContext = new InstanceContext(this);
                 for (int i = 0; i < database.serverCount; i++)
                 {
-                    if (particles_per_node[i] != null && particles_per_node[i].Count > 0)
-                    {
-                        NetTcpBinding binding = new NetTcpBinding();
-                        // 1 hour receive timeout
-                        binding.ReceiveTimeout = new System.TimeSpan(10, 0, 0);
-                        binding.SendTimeout = new System.TimeSpan(10, 0, 0);
-                        //TODO: change the address based on the server name
-                        string servername = database.servers[i];
-                        if (servername.Contains("_"))
-                            servername = database.servers[i].Remove(database.servers[i].IndexOf("_"));
-                        EndpointAddress address = new EndpointAddress(
-                            String.Format("net.tcp://{0}.10g.sdss.pha.jhu.edu:8090/ParticleTrackingService", servername));
-                        factories[i] = new DuplexChannelFactory<IParticleTrackingService>(instanceContext, binding, address);
-                        channels[i] = factories[i].CreateChannel();
-                        channels[i].Init(database.servers[i], database.databases[i], (short)dataset, tableName, database.atomDim, (int)spatialInterp, development);
-                        Console.WriteLine("called Init() on server {0}, database {1}", database.servers[i], database.databases[i]);
-                    }
+                    NetTcpBinding binding = new NetTcpBinding();
+                    // 1 hour receive timeout
+                    binding.CloseTimeout = new System.TimeSpan(10, 0, 0);
+                    binding.OpenTimeout = new System.TimeSpan(10, 0, 0);
+                    binding.ReceiveTimeout = new System.TimeSpan(10, 0, 0);
+                    binding.SendTimeout = new System.TimeSpan(10, 0, 0);
+                    //TODO: change the address based on the server name
+                    string servername = database.servers[i];
+                    if (servername.Contains("_"))
+                        servername = database.servers[i].Remove(database.servers[i].IndexOf("_"));
+                    EndpointAddress address = new EndpointAddress(
+                        String.Format("net.tcp://{0}.10g.sdss.pha.jhu.edu:8090/ParticleTrackingService", servername));
+                    factories[i] = new DuplexChannelFactory<IParticleTrackingService>(instanceContext, binding, address);
+                    channels[i] = factories[i].CreateChannel();
+                    Console.WriteLine("receive timeout" + binding.ReceiveTimeout);
+                    channels[i].Init(database.servers[i], database.databases[i], (short)dataset, tableName, database.atomDim, (int)spatialInterp, development);
+                    Console.WriteLine("called Init() on server {0}, database {1}", database.servers[i], database.databases[i]);
                 }
                 for (int i = 0; i < database.serverCount; i++)
                 {
@@ -92,7 +109,12 @@ namespace ParticleTrackingTestClient
                 Console.WriteLine("Finished particle distribution. Waiting for results.");
                 doneEvent.WaitOne();
                 runningTimeEnd = DateTime.Now;
-                Console.WriteLine("Total running time: " + (runningTimeEnd - runningTimeEnd).TotalSeconds);
+                Console.WriteLine("Total running time: " + (runningTimeEnd - runningTime).TotalSeconds);
+                Console.WriteLine("Start time: {0}, End time: {1}, dt: {2}", startTime, endTime, dt);
+                for (int i = 0; i < database.serverCount; i++)
+                {
+                    channels[i].Finish();
+                }
             }
             catch (Exception ex)
             {
@@ -110,7 +132,9 @@ namespace ParticleTrackingTestClient
 
         private void CreatInput(float startTime, float endTime, float dt, int num_particles, out SQLUtility.TrackingInputRequest[] particles)
         {
-            int timestep = (int)Math.Round(startTime / database.TimeInc) * database.TimeInc + database.TimeOff;
+            float database_time = startTime / database.Dt;
+            int timestep = (int)Math.Round(database_time / database.TimeInc) * database.TimeInc + database.TimeOff;
+            //timestep = 0;
             particles = new SQLUtility.TrackingInputRequest[num_particles];
             Random rand = new Random();
             for (int i = 0; i < num_particles; i++)
@@ -119,9 +143,9 @@ namespace ParticleTrackingTestClient
                 x = (float)(2 * Math.PI * rand.NextDouble());
                 y = (float)(2 * Math.PI * rand.NextDouble());
                 z = (float)(2 * Math.PI * rand.NextDouble());
-                //x = 4.0000f;
-                //y = 3.1415f;
-                //z = 1.0000f;
+                //x = 2.626932f; //2.626932, 1.86579, 2.205185
+                //y = 1.86579f;
+                //z = 2.205185f;
                 int Z = database.GetIntLocZ(z, round);
                 int Y = database.GetIntLocY(y, round, kernelSizeY);
                 int X = database.GetIntLocX(x, round);
@@ -136,102 +160,134 @@ namespace ParticleTrackingTestClient
 
         void IParticleTrackingServiceCallback.DoneParticles(List<Turbulence.SQLInterface.SQLUtility.TrackingInputRequest> done_particles)
         {
-            for (int i = 0; i < done_particles.Count; i++)
+            try
             {
-                if (!done_particles[i].crossed_boundary)
+                for (int i = 0; i < done_particles.Count; i++)
                 {
-                    if (done_particles[i].done)
+                    if (!done_particles[i].crossed_boundary)
                     {
-                        Console.WriteLine("particle {0}: Final position: x = {1}, y = {2}, z = {3}", done_particles[i].request,
-                            done_particles[i].pos.x, done_particles[i].pos.y, done_particles[i].pos.z);
-                        Interlocked.Increment(ref num_done_particles);
-                        Console.WriteLine("number of done particles is " + num_done_particles);
-                        if (num_done_particles == num_particles)
-                            doneEvent.Set();
-                    }
-                    else
-                    {
-                        Console.WriteLine("particle {0} at position: x = {1}, y = {2}, z = {3} not done, but not crossed either!", done_particles[i].request,
-                            done_particles[i].pos.x, done_particles[i].pos.y, done_particles[i].pos.z);
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("particle {0} at position: x = {1}, y = {2}, z = {3} has crossed boundaries", done_particles[i].request,
-                        done_particles[i].pos.x, done_particles[i].pos.y, done_particles[i].pos.z);
+                        if (done_particles[i].done)
+                        {
+                            //Console.WriteLine("particle {0}: Final position: x = {1}, y = {2}, z = {3}", done_particles[i].request,
+                            //    done_particles[i].pos.x, done_particles[i].pos.y, done_particles[i].pos.z);
+                            Interlocked.Increment(ref num_done_particles);
+                            Console.WriteLine("number of done particles is " + num_done_particles);
 
-                    // Check if the particle was assigned for evaluation.
-                    // If so, partial results are expected from a few nodes.
-                    // If not, it should be assigned to the nodes that have the data.
-                    if (done_particles[i].evaluate)
-                    {
-                        if (partial_results == null)
-                        {
-                            partial_results = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
-                        }
-                        if (!partial_results.ContainsKey(done_particles[i].request))
-                        {
-                            // This is the first time we are receiving partial results for this particle.
-                            // Update predictor or corrector with the computed "partial" predictor or corrector from this server
-                            SQLUtility.TrackingInputRequest new_partial_result = done_particles[i]; // NOTE: This here is a shallow copy. Is this OK?
-                            new_partial_result.numberOfNodeResults++;
-                            partial_results[done_particles[i].request] = new_partial_result;
+                            //--------------------------------
+                            SQLUtility.TrackingInputRequest finished_particle;
+                            particles_not_yet_finished.TryRemove(done_particles[i].request, out finished_particle);
+                            //--------------------------------
+
+                            if (num_done_particles == num_particles)
+                                doneEvent.Set();
                         }
                         else
                         {
-                            // Update predictor or corrector with the velocity increment computed from this server.
-                            // Each server will update the compute predictor flag after performing the evaluation.
-                            // Therefore if "compute predictor" is set to true this means that the corrector position was computed
-                            // and the predictor should be computed next.
-                            // Vice versa, if the "compute predictor" is false the predictor was computed.
-                            if (done_particles[i].compute_predictor)
-                            {
-                                partial_results[done_particles[i].request].pos.x += 0.5f * done_particles[i].vel_inc.x;
-                                partial_results[done_particles[i].request].pos.y += 0.5f * done_particles[i].vel_inc.y;
-                                partial_results[done_particles[i].request].pos.z += 0.5f * done_particles[i].vel_inc.z;
-                            }
-                            else
-                            {
-                                partial_results[done_particles[i].request].pre_pos.x += done_particles[i].vel_inc.x;
-                                partial_results[done_particles[i].request].pre_pos.y += done_particles[i].vel_inc.y;
-                                partial_results[done_particles[i].request].pre_pos.z += done_particles[i].vel_inc.z;
-                            }
-                            partial_results[done_particles[i].request].numberOfNodeResults++;
-                            if (partial_results[done_particles[i].request].numberOfNodeResults == partial_results[done_particles[i].request].numberOfNodes)
-                            {
-                                // All of the partial results have been received. The particle can be reassigned.
-                                // Unless it is actually done.
-                                SQLUtility.TrackingInputRequest particle_to_be_reassigned;
-                                if (!partial_results.TryRemove(done_particles[i].request, out particle_to_be_reassigned))
-                                {
-                                    Console.WriteLine("Could not remove particle from the dictionary!");
-                                }
-
-                                if (done_particles[i].done)
-                                {
-                                    Console.WriteLine("particle {0}: Final position: x = {1}, y = {2}, z = {3} computed from multiple nodes", particle_to_be_reassigned.request,
-                                        particle_to_be_reassigned.pos.x, particle_to_be_reassigned.pos.y, particle_to_be_reassigned.pos.z);
-                                    Interlocked.Increment(ref num_done_particles);
-                                    Console.WriteLine("number of done particles is " + num_done_particles);
-                                    if (num_done_particles == num_particles)
-                                        doneEvent.Set();
-                                }
-                                else
-                                {
-                                    ResetParticle(particle_to_be_reassigned);
-                                    AssignParticleToMultipleNodes(particle_to_be_reassigned, round, kernelSizeZ, kernelSizeY, kernelSizeX);
-                                }
-                            }
+                            Console.WriteLine("particle {0} at position: x = {1}, y = {2}, z = {3} not done, but not crossed either!", done_particles[i].request,
+                                done_particles[i].pos.x, done_particles[i].pos.y, done_particles[i].pos.z);
                         }
                     }
                     else
                     {
-                        // The particle has crossed the boundaries as it was being advected on one of the nodes and needs to be assigned to 
-                        // all of the nodes that have the appropriate data.
-                        ResetParticle(done_particles[i]);
-                        AssignParticleToMultipleNodes(done_particles[i], round, kernelSizeZ, kernelSizeY, kernelSizeX);
+                        //Console.WriteLine("particle {0} at position: x = {1}, y = {2}, z = {3} has crossed boundaries", done_particles[i].request,
+                        //    done_particles[i].pos.x, done_particles[i].pos.y, done_particles[i].pos.z);
+
+                        // Check if the particle was assigned for evaluation.
+                        // If so, partial results are expected from a few nodes.
+                        // If not, it should be assigned to the nodes that have the data.
+                        if (done_particles[i].evaluate)
+                        {
+                            if (partial_results == null)
+                            {
+                                partial_results = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
+                            }
+                            if (!partial_results.ContainsKey(done_particles[i].request))
+                            {
+                                // This is the first time we are receiving partial results for this particle.
+                                // Update predictor or corrector with the computed "partial" predictor or corrector from this server
+                                SQLUtility.TrackingInputRequest new_partial_result = done_particles[i]; // NOTE: This here is a shallow copy. Is this OK?
+                                new_partial_result.numberOfNodeResults++;
+                                partial_results[done_particles[i].request] = new_partial_result;
+                            }
+                            else
+                            {
+                                // Update predictor or corrector with the velocity increment computed from this server.
+                                // Each server will update the compute predictor flag after performing the evaluation.
+                                // Therefore if "compute predictor" is set to true this means that the corrector position was computed
+                                // and the predictor should be computed next.
+                                // Vice versa, if the "compute predictor" is false the predictor was computed.
+                                if (done_particles[i].compute_predictor)
+                                {
+                                    partial_results[done_particles[i].request].pos.x += 0.5f * done_particles[i].vel_inc.x;
+                                    partial_results[done_particles[i].request].pos.y += 0.5f * done_particles[i].vel_inc.y;
+                                    partial_results[done_particles[i].request].pos.z += 0.5f * done_particles[i].vel_inc.z;
+                                }
+                                else
+                                {
+                                    partial_results[done_particles[i].request].pre_pos.x += done_particles[i].vel_inc.x;
+                                    partial_results[done_particles[i].request].pre_pos.y += done_particles[i].vel_inc.y;
+                                    partial_results[done_particles[i].request].pre_pos.z += done_particles[i].vel_inc.z;
+                                }
+                                partial_results[done_particles[i].request].numberOfNodeResults++;
+                                if (partial_results[done_particles[i].request].numberOfNodeResults == partial_results[done_particles[i].request].numberOfNodes)
+                                {
+                                    // All of the partial results have been received. The particle can be reassigned.
+                                    // Unless it is actually done.
+                                    SQLUtility.TrackingInputRequest particle_to_be_reassigned;
+                                    if (!partial_results.TryRemove(done_particles[i].request, out particle_to_be_reassigned))
+                                    {
+                                        Console.WriteLine("Could not remove particle from the dictionary!");
+                                    }
+
+                                    if (done_particles[i].done)
+                                    {
+                                        Console.WriteLine("particle {0}: Final position: x = {1}, y = {2}, z = {3} computed from multiple nodes", particle_to_be_reassigned.request,
+                                            particle_to_be_reassigned.pos.x, particle_to_be_reassigned.pos.y, particle_to_be_reassigned.pos.z);
+                                        Interlocked.Increment(ref num_done_particles);
+                                        Console.WriteLine("number of done particles is " + num_done_particles);
+
+                                        //--------------------------------
+                                        SQLUtility.TrackingInputRequest finished_particle;
+                                        particles_not_yet_finished.TryRemove(done_particles[i].request, out finished_particle);
+
+                                        //--------------------------------
+                                        if (num_done_particles == num_particles)
+                                            doneEvent.Set();
+                                    }
+                                    else
+                                    {
+                                        ResetParticle(particle_to_be_reassigned);
+                                        AssignParticleToMultipleNodes(particle_to_be_reassigned, round, kernelSizeZ, kernelSizeY, kernelSizeX);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // The particle has crossed the boundaries as it was being advected on one of the nodes and needs to be assigned to 
+                            // all of the nodes that have the appropriate data.
+                            ResetParticle(done_particles[i]);
+                            AssignParticleToMultipleNodes(done_particles[i], round, kernelSizeZ, kernelSizeY, kernelSizeX);
+                        }
                     }
-                }                
+                }
+
+                //--------------------------------
+                if (particles_not_yet_finished.Count < 100)
+                {
+                    Console.WriteLine("Particles that have not finished yet:");
+                    foreach (SQLUtility.TrackingInputRequest particle in particles_not_yet_finished.Values)
+                    {
+                        Console.WriteLine("{0}, {1}, {2}", particle.pos.x, particle.pos.y, particle.pos.z);
+                    }
+                    Console.WriteLine();
+                }
+                //--------------------------------
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
             }
         }
 

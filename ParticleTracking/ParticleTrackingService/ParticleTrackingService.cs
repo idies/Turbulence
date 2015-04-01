@@ -209,6 +209,11 @@ namespace ParticleTracking
 
         private void AddOneParticle(SQLUtility.TrackingInputRequest one_particle)
         {
+            if (input == null)
+            {
+                input = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
+            }
+
             if (input.ContainsKey(one_particle.request))
             {
                 throw new Exception("Particle already exists in input dictionary!");
