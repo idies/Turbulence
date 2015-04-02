@@ -65,7 +65,7 @@ public partial class StoredProcedures
         // Load information about the requested dataset
         TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, contextConn);
 
-        string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
+        string tableName = String.Format("{0}.{1}.{2}", dbname, table.SchemaName, table.TableName);
 
         // Instantiate a worker class
         Worker worker = Worker.GetWorker(table, workerType, spatialInterp, arg, contextConn);

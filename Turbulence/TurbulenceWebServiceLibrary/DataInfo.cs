@@ -35,7 +35,7 @@ namespace TurbulenceService
             {
                 sqlcon.Open();
                 using (SqlCommand cmd = new SqlCommand(
-                    String.Format("select id from turbinfo.dbo.datasets where name= '{0}'", DataSetName), sqlcon))
+                    String.Format("select DatasetID from turbinfo.dbo.datasets where name= '{0}'", DataSetName), sqlcon))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -54,7 +54,7 @@ namespace TurbulenceService
             {
                 sqlcon.Open();
                 using (SqlCommand cmd = new SqlCommand(
-                    String.Format("select name from turbinfo.dbo.datasets where id= {0}", dataset_id), sqlcon))
+                    String.Format("select name from turbinfo.dbo.datasets where datasetID= {0}", dataset_id), sqlcon))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -98,7 +98,7 @@ namespace TurbulenceService
             {
                 sqlcon.Open();
                 using (SqlCommand cmd = new SqlCommand(
-                           String.Format("select tablename from turbinfo.dbo.datafields, turbinfo.dbo.datasets where datasets.name = '{0}' and datafields.dataset_id = datasets.id and (datafields.name ='{1}' or datafields.charname ='{1}' or datafields.longname = '{1}')", dataSet, field), sqlcon))
+                           String.Format("select tablename from turbinfo.dbo.datafields, turbinfo.dbo.datasets where datasets.name = '{0}' and datafields.datasetid = datasets.datasetID and (datafields.name ='{1}' or datafields.charname ='{1}' or datafields.longname = '{1}')", dataSet, field), sqlcon))
                 {
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -155,7 +155,7 @@ namespace TurbulenceService
                 {
                     sqlcon.Open();
                     using (SqlCommand cmd = new SqlCommand(
-                               String.Format("select id, name from turbinfo.dbo.datasets where name='{0}'", setname), sqlcon))
+                               String.Format("select datasetID, name from turbinfo.dbo.datasets where name='{0}'", setname), sqlcon))
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
@@ -186,7 +186,7 @@ namespace TurbulenceService
                 {
                     sqlcon.Open();
                     using (SqlCommand cmd = new SqlCommand(
-                              String.Format("select maxTime from turbinfo.dbo.datasets where id= {0}", dataset_id), sqlcon))
+                              String.Format("select maxTime from turbinfo.dbo.datasets where DatasetID= {0}", dataset_id), sqlcon))
                     {
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {

@@ -62,6 +62,21 @@ namespace TurbulenceService
             get { return bitfield; }
         }
 
+        public int BlobDim
+        {
+            get { return atomDim; }
+        }
+
+        public List<string> Servers
+        {
+            get { return servers; }
+        }
+
+        public List<string> Databases
+        {
+            get { return databases; }
+        }
+
         /// <summary>
         /// Create a new connection manager
         /// </summary>
@@ -214,7 +229,7 @@ namespace TurbulenceService
             sqlcon = new SqlConnection(connectionString);
             sqlcon.Open();
             SqlCommand cmd = new SqlCommand(
-                String.Format("select dt, timeinc, timeoff from turbinfo.dbo.datasets where id= '{0}'", dataset), sqlcon);
+                String.Format("select dt, timeinc, timeoff from turbinfo.dbo.datasets where DatasetID= '{0}'", dataset), sqlcon);
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 reader.Read();
