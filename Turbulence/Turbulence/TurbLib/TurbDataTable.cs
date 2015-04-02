@@ -373,7 +373,7 @@ namespace Turbulence.TurbLib
             //String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;            
             //using (SqlConnection conn)
             //{
-                conn.Open();
+                //conn.Open();
                 /*First get the datafieldinfo */
                 /*Hacked to provide the top 3.  The problem is the tablenames are not unique.  Fix this after the demo*/
                 using (SqlCommand cmd = new SqlCommand( 
