@@ -866,69 +866,72 @@ namespace TurbulenceService {
             { /*Ugh--fix this later.  Not sure the data differences at this time...*/
                 case 5: //DataInfo.DataSets.isotropic1024fine:
                 case 4: //DataInfo.DataSets.isotropic1024coarse:
+                    
+            //sqlcon = new SqlConnection(connectionString);
                     TurbDataTable table = TurbDataTable.GetTableInfo(dataset);
 
-                    string directory = System.Web.HttpContext.Current.Request.MapPath("/")
-                        + @"data\forcing\";
+                        string directory = System.Web.HttpContext.Current.Request.MapPath("/")
+                            + @"data\forcing\";
 
-                    ReadForceData forceDataReader = new ReadForceData(directory);
+                        ReadForceData forceDataReader = new ReadForceData(directory);
 
-                    if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
-                    {
-
-                        int timestep = SQLUtility.GetNearestTimestep(time, table);
-
-                        FourierInfo[] forceInfo = forceDataReader.getForceDataForTimestep(timestep + time_offset);
-
-                        GetForce gf = new GetForce();
-                        for (int i = 0; i < points.Length; i++)
+                        if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
                         {
-                            result[i] = gf.getForceByTime(forceInfo, points[i]);
-                        }
 
-                    }
-                    else if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.PCHIP)
-                    {
-                        // PCHIP code ripped from ExecuteTurbulenceWorker.cs
-                        // TODO: Make this code more generic for use elsewhere (eric)
-                        int basetime = SQLUtility.GetFlooredTimestep(time, table);
-                        int[] timesteps = { basetime - table.TimeInc,
+                            int timestep = SQLUtility.GetNearestTimestep(time, table);
+
+                            FourierInfo[] forceInfo = forceDataReader.getForceDataForTimestep(timestep + time_offset);
+
+                            GetForce gf = new GetForce();
+                            for (int i = 0; i < points.Length; i++)
+                            {
+                                result[i] = gf.getForceByTime(forceInfo, points[i]);
+                            }
+
+                        }
+                        else if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.PCHIP)
+                        {
+                            // PCHIP code ripped from ExecuteTurbulenceWorker.cs
+                            // TODO: Make this code more generic for use elsewhere (eric)
+                            int basetime = SQLUtility.GetFlooredTimestep(time, table);
+                            int[] timesteps = { basetime - table.TimeInc,
                         basetime,
                         basetime + table.TimeInc,
                         basetime + table.TimeInc * 2 };
-                        float[] times = { timesteps[0] * table.Dt,
+                            float[] times = { timesteps[0] * table.Dt,
                                             timesteps[1] * table.Dt,
                                             timesteps[2] * table.Dt,
                                             timesteps[3] * table.Dt };
 
-                        FourierInfo[][] forceInfo = new FourierInfo[4][];
-                        for (int i = 0; i < 4; i++)
-                        {
-                            forceInfo[i] = forceDataReader.getForceDataForTimestep(timesteps[i] + time_offset);
-                        }
+                            FourierInfo[][] forceInfo = new FourierInfo[4][];
+                            for (int i = 0; i < 4; i++)
+                            {
+                                forceInfo[i] = forceDataReader.getForceDataForTimestep(timesteps[i] + time_offset);
+                            }
 
-                        GetForce gf = new GetForce();
-                        for (int i = 0; i < points.Length; i++)
-                        {
-                            Vector3[] forces = { gf.getForceByTime(forceInfo[0], points[i]),
+                            GetForce gf = new GetForce();
+                            for (int i = 0; i < points.Length; i++)
+                            {
+                                Vector3[] forces = { gf.getForceByTime(forceInfo[0], points[i]),
                                           gf.getForceByTime(forceInfo[1], points[i]),
                                           gf.getForceByTime(forceInfo[2], points[i]),
                                           gf.getForceByTime(forceInfo[3], points[i]) };
-                            result[i].x = Turbulence.SciLib.TemporalInterpolation.PCHIP(time,
-                                times[0], times[1], times[2], times[3],
-                                forces[0].x, forces[1].x, forces[2].x, forces[3].x);
-                            result[i].y = Turbulence.SciLib.TemporalInterpolation.PCHIP(time,
-                                times[0], times[1], times[2], times[3],
-                                forces[0].y, forces[1].y, forces[2].y, forces[3].y);
-                            result[i].z = Turbulence.SciLib.TemporalInterpolation.PCHIP(time,
-                                times[0], times[1], times[2], times[3],
-                                forces[0].z, forces[1].z, forces[2].z, forces[3].z);
+                                result[i].x = Turbulence.SciLib.TemporalInterpolation.PCHIP(time,
+                                    times[0], times[1], times[2], times[3],
+                                    forces[0].x, forces[1].x, forces[2].x, forces[3].x);
+                                result[i].y = Turbulence.SciLib.TemporalInterpolation.PCHIP(time,
+                                    times[0], times[1], times[2], times[3],
+                                    forces[0].y, forces[1].y, forces[2].y, forces[3].y);
+                                result[i].z = Turbulence.SciLib.TemporalInterpolation.PCHIP(time,
+                                    times[0], times[1], times[2], times[3],
+                                    forces[0].z, forces[1].z, forces[2].z, forces[3].z);
+                            }
                         }
-                    }
-                    else
-                    {
-                        throw new Exception("Unsupported TemporalInterpolation Type");
-                    }
+                        else
+                        {
+                            throw new Exception("Unsupported TemporalInterpolation Type");
+                        }
+                    
                     break;
 
                 case 3: //DataInfo.DataSets.mhd1024:

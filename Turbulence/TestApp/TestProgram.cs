@@ -931,71 +931,7 @@ namespace TestApp
             Console.WriteLine("Press any key to continue.");
             Console.ReadLine();
         }
-
-        public static bool testBlob() {
-          TurbDataTable table = TurbDataTable.GetTableInfo("testing");
-          TurbulenceBlob blob = new TurbulenceBlob(table);
-          byte[] rawdata = new byte[table.BlobByteSize];
-          float[] flat = new float[8 * 8 * 8 * 3];
-
-          Morton3D[] baseids = { new Morton3D(0, 0, 0),
-          new Morton3D(960, 960, 960) };
-
-          for (int i = 0; i < baseids.Length; i++)
-          {
-            Morton3D baseid = baseids[i];
-            Console.WriteLine("Using cube: {0} ({1},{2},{3})",
-              baseid, baseid.X, baseid.Y, baseid.Z);
-            blob.Setup(0, baseid, rawdata);
-            // Try to fetch all possible 6*6*6 blocks
-            double v;
-
-            int x, y, z;
-            Console.WriteLine("Retrieving all points in cube");
-            for (x = baseid.X - 4; x < baseid.X + 64 + 4; x++)
-            {
-              for (y = baseid.Y - 4; y < baseid.Y + 64 + 4; y++)
-              {
-                for (z = baseid.Z - 4; z < baseid.Z + 64 + 4; z++)
-                {
-                  v = blob.GetDataValue(z, y, x, 0);
-                  v = blob.GetDataValue(z, y, x, 3);
-                }
-              }
-            }
-
-            Console.WriteLine("Iterating through all 6^3 flat cubes");
-            for (x = baseid.X - 1; x < baseid.X + 64 + 1; x++)
-            {
-              for (y = baseid.Y - 1; y < baseid.Y + 64 + 1; y++)
-              {
-                for (z = baseid.Z - 1; z < baseid.Z + 64 + 1; z++)
-                {
-
-                  blob.GetFlatDataCubeAroundPoint(z % 1024, y % 1024, x % 1024, 6, flat);
-                  blob.GetFlatDataCubeAroundPoint(z - 1024, y - 1024, x - 1024, 6, flat);
-                  blob.GetFlatDataCubeAroundPoint(z + 1024, y + 1024, x + 1024, 6, flat);
-                }
-              }
-            }
-
-            Console.WriteLine("Iterating through all flat 8^3 cubes");
-            for (x = baseid.X; x < baseid.X + 64; x++)
-            {
-              for (y = baseid.Y; y < baseid.Y + 64; y++)
-              {
-                for (z = baseid.Z; z < baseid.Z + 64; z++)
-                {
-                  blob.GetFlatDataCubeAroundPoint(z % 1024 , y % 1024, x % 1024, 8, flat);
-                }
-              }
-            }
-
-
-          }
-          return true;
-        }
-
+        
         public static bool testMorton() {
 
             for (int x = 0; x < 1024; x += 9)

@@ -27,6 +27,7 @@ namespace Turbulence.TurbLib
         protected double dx;           // grid resolution along x
         protected double dy;           // grid resolution along y
         protected double dz;           // grid resolution along z
+        private string schemaname;
 
         private string serverName;  // SQL Server name [used to determine the data boundaries]
         private int SqlArrayHeader;
@@ -57,6 +58,7 @@ namespace Turbulence.TurbLib
         public int EndX { get { return serverBoundaries.endx; } }
         public int EndY { get { return serverBoundaries.endy; } }
         public int EndZ { get { return serverBoundaries.endz; } }
+        public string SchemaName { get { return schemaname; } }
 
         //public float Dx { get { return 2.0F * (float)Math.PI / (float)gridResolution; } }
         public float DxFloat { get { return (float)dx; } }
@@ -223,13 +225,14 @@ namespace Turbulence.TurbLib
             this.timeOff = timeoff;
             this.dx = (2.0 * Math.PI) / (double)gridResolution;
             this.SqlArrayHeader = 6 * sizeof(int);
+            //this.SchemaName = SchemaName;
         }
 
         public TurbDataTable(string serverName, string dbName, SqlConnection conn, string dataName,
             string tableName, int blobDim,
             int edgeRegion,
             int components, string[] dataDescription,
-            float dt, int timestart, int timeend, int timeinc, int timeoff)
+            float dt, int timestart, int timeend, int timeinc, int timeoff, string SchemaName)
         {
             this.serverName = serverName;
             this.dataName = dataName;
@@ -250,7 +253,7 @@ namespace Turbulence.TurbLib
             
             this.SqlArrayHeader = 6 * sizeof(int);
             this.serverBoundaries = new ServerBoundaries();
-
+            this.schemaname = SchemaName;
             #region VirtualServers
 
             int num_virtual_servers = -1;
@@ -329,41 +332,33 @@ namespace Turbulence.TurbLib
             return false;
         }
 
-        /// <summary>
-        /// Information about each of the datasets we have installed.
-        /// </summary>
-        /// <param name="tableName"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// TODO: This information could easily be stored as XML (or similar) inside the database.
-        /// </remarks>
+
         public static TurbDataTable GetTableInfo(string tableName)
         {
             if (tableName.Equals("isotropic1024coarse") || tableName.Equals("isotropic1024old"))
-          {
-            return new TurbDataTable("isotropic turbulence with a resolution of 1024",
-                "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -10, 4700, 10, 0);
-          }
-          else if (tableName.Equals("isotropic1024fine") || tableName.Equals("isotropic1024fine_old"))
-          {
-            return new TurbDataTable("isotropic turbulence with a resolution of 1024",
-                "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -1, 100, 1, 0);
-          }
-          else if (tableName.Equals("testing"))
-          { 
-            return new TurbDataTable("testing table",
-                "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -1, 100, 1, 0);
-          }
-          else
-          {
-            throw new Exception(String.Format("Unknown dataset: {0}", tableName));
-          }
+            {
+                return new TurbDataTable("isotropic turbulence with a resolution of 1024",
+                    "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+                    0.0002f, -10, 4700, 10, 0);
+            }
+            else if (tableName.Equals("isotropic1024fine") || tableName.Equals("isotropic1024fine_old"))
+            {
+                return new TurbDataTable("isotropic turbulence with a resolution of 1024",
+                    "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+                    0.0002f, -1, 100, 1, 0);
+            }
+            else if (tableName.Equals("testing"))
+            {
+                return new TurbDataTable("testing table",
+                    "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+                    0.0002f, -1, 100, 1, 0);
+            }
+            else
+            {
+                throw new Exception(String.Format("Unknown dataset: {0}", tableName));
+            }
 
         }
-
         /// <summary>
         /// Information about each of the datasets we have installed.
         /// </summary>
@@ -374,6 +369,83 @@ namespace Turbulence.TurbLib
         /// </remarks>
         public static TurbDataTable GetTableInfo(string serverName, string dbName, string tableName, int blobDim, SqlConnection conn)
         {
+            string[] DataDescription = new string[50];
+            //String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;            
+            //using (SqlConnection conn)
+            //{
+                conn.Open();
+                /*First get the datafieldinfo */
+                /*Hacked to provide the top 3.  The problem is the tablenames are not unique.  Fix this after the demo*/
+                using (SqlCommand cmd = new SqlCommand( 
+                    String.Format("select top 3 FieldDescriptions.name from turbinfo.dbo.datafields, turbinfo.dbo.FieldDescriptions where datafields.tablename= '{0}' and datafields.DataFieldID = FieldDescriptions.DataFieldID", tableName), conn))
+                {
+                    using (SqlDataReader readerdf = cmd.ExecuteReader())
+                    {
+                        int c = 0;
+                        if (readerdf.HasRows)
+                        {
+                            while (readerdf.Read())
+                            {
+                                DataDescription[c] = readerdf.GetString(0);
+                            }
+                        }
+                        else throw new Exception("Invalid dataset specified!");
+                    }
+                }
+            
+             /*Fix this later. Ideally the dataset name should be passed in to determine the following info */
+                using (SqlCommand cmd = new SqlCommand(
+                    String.Format("SELECT df.longname, df.tablename, df.components, dt, tstart, thigh, timeinc, timeoff, schemaname,isUniformGrid " 
+                      +"FROM [turbinfo].[dbo].[datasets] as datasets, [turbinfo].[dbo].[DatabaseMap] as dbm,"
+	                       +"[turbinfo].[dbo].[datafields] as df "
+                      + "where datasets.name = dbm.DatasetName and datasets.DatasetID = df.DatasetID and df.tablename='{0}'"
+                      +"and dbm.ProductionMachineName = '{1}'" 
+                      +"and dbm.ProductionDatabaseName = '{2}'", tableName, serverName, dbName), conn))
+                    
+                    //select longname, tablename, components, dt, tstart, thigh, timeinc, timeoff, isUniformGrid, "
+                    //+ "schemaname from turbinfo.dbo.datasets where datafields.tablename= '{0}' and datafields.datasetid = datasets.datasetid", tableName, dbName), conn))
+                {
+                    
+                    string longname;
+                    string tablename;
+                    int components;
+                    double dt;
+                    int tstart;
+                    int thigh;
+                    int timeinc;
+                    int timeoff;
+                    string schemaname;
+                    bool isuniformgrid;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        reader.Read();
+                        if (reader.HasRows)
+                        {
+                            longname = reader.GetString(0);
+                            tablename = reader.GetString(1);
+                            components = reader.GetInt32(2);
+                            dt = reader.GetDouble(3);
+                            tstart = reader.GetInt32(4);
+                            thigh = reader.GetInt32(5);
+                            timeinc = reader.GetInt32(6);
+                            timeoff = reader.GetInt32(7);
+                            schemaname = reader.GetString(8);
+                            isuniformgrid = reader.GetBoolean(9);
+                                                                                                          
+                        }
+                        else throw new Exception("Invalid dataset specified!");
+                    }
+                    if (isuniformgrid)
+                    {
+                        return new TurbDataTable(serverName, dbName, conn, longname, tablename, blobDim, 0, components, DataDescription, (float)dt, tstart, thigh, timeinc, timeoff, schemaname);
+                    }
+                    else
+                    {
+                        return new ChannelFlowDataTable(serverName, dbName, conn, longname, tablename, blobDim, 0, components, DataDescription, (float)dt, tstart, thigh, timeinc, timeoff, schemaname);
+                    }  
+                }
+            //}
+            /*
             if (tableName.Equals("isotropic1024fine_vel"))
             {
                 return new TurbDataTable(serverName, dbName, conn, "velocity",
@@ -498,7 +570,7 @@ namespace Turbulence.TurbLib
             {
                 throw new Exception(String.Format("Unknown dataset: {0}", tableName));
             }
-
+            */
         }
 
         /// <summary>
@@ -646,16 +718,16 @@ namespace Turbulence.TurbLib
             string tableName, int blobDim,
             int edgeRegion,
             int components, string[] dataDescription,
-            float dt, int timestart, int timeend, int timeinc, int timeoff)
+            float dt, int timestart, int timeend, int timeinc, int timeoff, string SchemaName)
             : base(serverName, dbName, conn, dataName, tableName, blobDim, edgeRegion, components, dataDescription,
-            dt, timestart, timeend, timeinc, timeoff)
+            dt, timestart, timeend, timeinc, timeoff, SchemaName)
         {
             this.gridResolution = new int[] { 1536, 512, 2048 };
             this.dx = (8.0 * Math.PI) / (double)gridResolution[2];
             this.dz = (3.0 * Math.PI) / (double)gridResolution[0];
             // dy is not uniform for the channel flow DB
             // we have to store all of the grid points for the y-dimension
-            this.dy = 0.0;
+            this.dy = 0.0;            
             gridPointsY = new GridPoints(gridResolution[1]);
             gridPointsY.GetGridPointsFromDB(conn);
         }
