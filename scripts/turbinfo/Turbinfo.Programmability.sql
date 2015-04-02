@@ -26,9 +26,8 @@ begin
 	declare @timeinc int, @timeoff int, @thigh int
 	
 	--get minLim and maxLim
-	--set @minLim = turblib.dbo.CreateMortonIndex(@z, @y, @x)
-	set @minLim = 0
-	set @maxLim = turblib.dbo.CreateMortonIndex (@zwidth, @ywidth, @xwidth)
+	set @minLim = turblib.dbo.CreateMortonIndex(@z, @y, @x)
+	set @maxLim = turblib.dbo.CreateMortonIndex(@z + @zwidth, @y + @ywidth, @z + @zwidth)
 
 	--get info about source dataset
 	select @dt = dt, @timeinc = timeinc, @timeoff = timeoff 
@@ -89,9 +88,9 @@ begin
 			@maxTime, @dt,
 			@timeinc, @timeoff,
 			@thigh,
-			@xwidth,
-			@ywidth,
-			@zwidth )
+			@x + @xwidth,
+			@y + @ywidth,
+			@z + @zwidth )
 
 		--select * from @t1
 
@@ -114,11 +113,11 @@ go
 /*
 result = isoFineFiltered.uploadToDatabase("isotropic1024fineFiltered", 89, 10, 512, 512, 512, 64, 64, 64)
 
-exec spAddUserDataset 'testName113', 'testSchema131', 5, 512, 512, 512, 16, 16, 16, 89, 10
+exec spAddUserDataset 'testName11', 'testSchema11', 5, 512, 512, 512, 16, 16, 16, 89, 10
 
 declare @idtab as table (datasetID int)
 insert @idtab (datasetID) 
- exec spAddUserDataset 'testName9999', 'testSchema9999', 5, 0, 0, 0, 16, 16, 16, 89, 10
+ exec spAddUserDataset 'testName999', 'testSchema999', 5, 512, 512, 512, 16, 16, 16, 89, 10
 --select datasetID from @idtab
 select * from datasets where datasetID > 100
 select * from datafields
