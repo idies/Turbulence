@@ -19,26 +19,7 @@ create procedure [spAddUserDataset]
 
 as
 begin
-/*
-INSERT INTO [dbo].[datasets]
-           ([name]
-           ,[isUserCreated]
-           ,[ScratchID]
-           ,[schemaname]
-           ,[SourceDatasetID]
-           ,[minLim]
-           ,[maxLim]
-           ,[maxTime]
-           ,[dt]
-           ,[timeinc]
-           ,[timeoff]
-           ,[thigh]
-           ,[xhigh]
-           ,[yhigh]
-           ,[zhigh])
 
-
-*/
 	declare @minLim bigint
 	declare @maxLim bigint
 	declare @dt float, @maxTime float
