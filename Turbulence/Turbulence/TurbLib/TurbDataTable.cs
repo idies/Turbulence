@@ -273,7 +273,7 @@ namespace Turbulence.TurbLib
                 num_virtual_servers = 1;
             }
 
-            SqlCommand command = new SqlCommand(String.Format("SELECT MIN(zindex), MAX(zindex) FROM {0}.dbo.zindex", dbName), conn);
+            SqlCommand command = new SqlCommand(String.Format("SELECT MIN(zindex), MAX(zindex) FROM {0}.{1}.zindex_{2}", dbName, SchemaName, tableName), conn);
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 if (reader.HasRows)
@@ -369,43 +369,48 @@ namespace Turbulence.TurbLib
         /// </remarks>
         public static TurbDataTable GetTableInfo(string serverName, string dbName, string tableName, int blobDim, SqlConnection conn)
         {
-            string[] DataDescription = new string[50];
+            string[] DataDescription = new string[3];
             //String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;            
             //using (SqlConnection conn)
             //{
-                //conn.Open();
-                /*First get the datafieldinfo */
-                /*Hacked to provide the top 3.  The problem is the tablenames are not unique.  Fix this after the demo*/
-                using (SqlCommand cmd = new SqlCommand( 
-                    String.Format("select top 3 FieldDescriptions.name from turbinfo.dbo.datafields, turbinfo.dbo.FieldDescriptions where datafields.tablename= '{0}' and datafields.DataFieldID = FieldDescriptions.DataFieldID", tableName), conn))
+            //conn.Open();
+            /*First get the datafieldinfo */
+            /*Hacked to provide the top 3.  The problem is the tablenames are not unique.  Fix this after the demo*/
+            /*Just set, this is not needed for the demo*/
+            DataDescription = new string[] { "Ux", "Uy", "Uz" };
+            /*
+            using (SqlCommand cmd = new SqlCommand( 
+                String.Format("select top 3 FieldDescriptions.name from turbinfo.dbo.datafields, turbinfo.dbo.FieldDescriptions where datafields.tablename= '{0}' and datafields.DataFieldID = FieldDescriptions.DataFieldID", tableName), conn))
+            {
+                using (SqlDataReader readerdf = cmd.ExecuteReader())
                 {
-                    using (SqlDataReader readerdf = cmd.ExecuteReader())
+                    int c = 0;
+                    if (readerdf.HasRows)
                     {
-                        int c = 0;
-                        if (readerdf.HasRows)
+                        while (readerdf.Read())
                         {
-                            while (readerdf.Read())
-                            {
-                                DataDescription[c] = readerdf.GetString(0);
-                            }
+                            DataDescription[c] = readerdf.GetString(0);
                         }
-                        else throw new Exception("Invalid dataset specified!");
                     }
+                    else throw new Exception("Couldn't get field descriptions!");
                 }
-            
-             /*Fix this later. Ideally the dataset name should be passed in to determine the following info */
+            }
+           */
+            /*Fix this later. Ideally the dataset name should be passed in to determine the following info */
+            /*Total hack.  Fix this after demo*/
+            if (dbName == "TurbScratch")
+            {
+
                 using (SqlCommand cmd = new SqlCommand(
-                    String.Format("SELECT df.longname, df.tablename, df.components, dt, tstart, thigh, timeinc, timeoff, schemaname,isUniformGrid " 
-                      +"FROM [turbinfo].[dbo].[datasets] as datasets, [turbinfo].[dbo].[DatabaseMap] as dbm,"
-	                       +"[turbinfo].[dbo].[datafields] as df "
-                      + "where datasets.name = dbm.DatasetName and datasets.DatasetID = df.DatasetID and df.tablename='{0}'"
-                      +"and dbm.ProductionMachineName = '{1}'" 
-                      +"and dbm.ProductionDatabaseName = '{2}'", tableName, serverName, dbName), conn))
-                    
-                    //select longname, tablename, components, dt, tstart, thigh, timeinc, timeoff, isUniformGrid, "
-                    //+ "schemaname from turbinfo.dbo.datasets where datafields.tablename= '{0}' and datafields.datasetid = datasets.datasetid", tableName, dbName), conn))
+                    String.Format("SELECT df.longname, df.tablename, df.components, dt, tstart, thigh, timeinc, timeoff, schemaname,isUniformGrid "
+                      + "FROM [turbinfo].[dbo].[datasets] as datasets,"
+                           + "[turbinfo].[dbo].[datafields] as df "
+                      + "where datasets.DatasetID = df.DatasetID and df.tablename='{0}'", tableName), conn))
+
+                //select longname, tablename, components, dt, tstart, thigh, timeinc, timeoff, isUniformGrid, "
+                //+ "schemaname from turbinfo.dbo.datasets where datafields.tablename= '{0}' and datafields.datasetid = datasets.datasetid", tableName, dbName), conn))
                 {
-                    
+
                     string longname;
                     string tablename;
                     int components;
@@ -431,9 +436,13 @@ namespace Turbulence.TurbLib
                             timeoff = reader.GetInt32(7);
                             schemaname = reader.GetString(8);
                             isuniformgrid = reader.GetBoolean(9);
-                                                                                                          
+
                         }
-                        else throw new Exception("Invalid dataset specified!");
+                        else
+                        {
+                            string error = String.Format("Couldn't get table info for table: {0}", tableName);
+                            throw new Exception(error);
+                        }
                     }
                     if (isuniformgrid)
                     {
@@ -442,135 +451,69 @@ namespace Turbulence.TurbLib
                     else
                     {
                         return new ChannelFlowDataTable(serverName, dbName, conn, longname, tablename, blobDim, 0, components, DataDescription, (float)dt, tstart, thigh, timeinc, timeoff, schemaname);
-                    }  
+                    }
                 }
-            //}
-            /*
-            if (tableName.Equals("isotropic1024fine_vel"))
-            {
-                return new TurbDataTable(serverName, dbName, conn, "velocity",
-                    "vel", blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                    0.0002f, -1, 100, 1, 0);
-            }
-            else if (tableName.Equals("isotropic1024fine_pr"))
-            {
-                return new TurbDataTable(serverName, dbName, conn, "pressure",
-                    "pr", blobDim, 0, 1, new string[] { "P" },
-                    0.0002f, -1, 100, 1, 0);
-            }
-            else if (tableName.Equals("testing"))
-            {
-                return new TurbDataTable(serverName, dbName, conn, "testing table",
-                    "velocity08", blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz", "P" },
-                    0.0002f, -1, 100, 1, 0);
-            }
-            else if (tableName.Equals("vel") || tableName.Contains("vel_"))
-            {
-                if (dbName.Contains("channeldb"))
-                {
-                    return new ChannelFlowDataTable(serverName, dbName, conn, "velocity",
-                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0013f, 132005, 152015, 5, 132010);
-                }
-                else if (dbName.Contains("mixing"))
-                {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
-                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.04f, 0, 1014, 1, 1);
-                }
-                else
-                {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
-                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0002f, -10, 10240, 10, 0);
-                }
-            }
-            else if (tableName.Equals("velocity08"))
-            {
-                if (dbName.Contains("channeldb"))
-                {
-                    return new ChannelFlowDataTable(serverName, dbName, conn, "velocity",
-                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0013f, 132005, 152015, 5, 132010);
-                }
-                else if (dbName.Contains("mixing"))
-                {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
-                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.04f, 0, 1014, 1, 1);
-                }
-                else
-                {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
-                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.00025f, -10, 10240, 10, 0);
-                }
-            }
-            else if (tableName.Equals("pr") || tableName.Contains("pr_"))
-            {
-                if (dbName.Contains("channeldb"))
-                {
-                    return new ChannelFlowDataTable(serverName, dbName, conn, "pressure",
-                        tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.0013f, 132005, 152015, 5, 132010);
-                }
-                else if (dbName.Contains("mixing"))
-                {
-                    return new TurbDataTable(serverName, dbName, conn, "pressure",
-                        tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.04f, 0, 1014, 1, 1);
-                }
-                else
-                {
-                    return new TurbDataTable(serverName, dbName, conn, "pressure",
-                        tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.0002f, -10, 10240, 10, 0);
-                }
-            }
-            else if (tableName.Equals("pressure08"))
-            {
-                if (dbName.Contains("channeldb"))
-                {
-                    return new ChannelFlowDataTable(serverName, dbName, conn, "pressure",
-                        tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.0013f, 132005, 152015, 5, 132010);
-                }
-                else if (dbName.Contains("mixing"))
-                {
-                    return new TurbDataTable(serverName, dbName, conn, "pressure",
-                        tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.04f, 0, 1014, 1, 1);
-                }
-                else
-                {
-                    return new TurbDataTable(serverName, dbName, conn, "pressure",
-                        tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.00025f, -1, 100, 10, 0);
-                }
-            }
-            else if (tableName.Contains("magnetic"))
-            {
-                return new TurbDataTable(serverName, dbName, conn, "magnetic",
-                    tableName, blobDim, 0, 3, new string[] { "Bx", "By", "Bz" },
-                    0.00025f, -10, 10240, 10, 0);
-            }
-            else if (tableName.Contains("potential"))
-            {
-                return new TurbDataTable(serverName, dbName, conn, "potential",
-                    tableName, blobDim, 0, 3, new string[] { "Ax", "Ay", "Az" },
-                    0.00025f, -10, 10240, 10, 0);
-            }
-            else if (tableName.Equals("density"))
-            {
-                return new TurbDataTable(serverName, dbName, conn, "density",
-                    tableName, blobDim, 0, 1, new string[] { "D" },
-                    0.04f, 0, 1014, 1, 1);
+
             }
             else
             {
-                throw new Exception(String.Format("Unknown dataset: {0}", tableName));
+
+                using (SqlCommand cmd = new SqlCommand(
+                    String.Format("SELECT df.longname, df.tablename, df.components, dt, tstart, thigh, timeinc, timeoff, schemaname,isUniformGrid "
+                      + "FROM [turbinfo].[dbo].[datasets] as datasets, [turbinfo].[dbo].[DatabaseMap] as dbm,"
+                           + "[turbinfo].[dbo].[datafields] as df "
+                      + "where datasets.name = dbm.DatasetName and datasets.DatasetID = df.DatasetID and df.tablename='{0}'"
+                      + "and dbm.ProductionMachineName = '{1}'"
+                      + "and dbm.ProductionDatabaseName = '{2}'", tableName, serverName, dbName), conn))
+
+                //select longname, tablename, components, dt, tstart, thigh, timeinc, timeoff, isUniformGrid, "
+                //+ "schemaname from turbinfo.dbo.datasets where datafields.tablename= '{0}' and datafields.datasetid = datasets.datasetid", tableName, dbName), conn))
+                {
+
+                    string longname;
+                    string tablename;
+                    int components;
+                    double dt;
+                    int tstart;
+                    int thigh;
+                    int timeinc;
+                    int timeoff;
+                    string schemaname;
+                    bool isuniformgrid;
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        reader.Read();
+                        if (reader.HasRows)
+                        {
+                            longname = reader.GetString(0);
+                            tablename = reader.GetString(1);
+                            components = reader.GetInt32(2);
+                            dt = reader.GetDouble(3);
+                            tstart = reader.GetInt32(4);
+                            thigh = reader.GetInt32(5);
+                            timeinc = reader.GetInt32(6);
+                            timeoff = reader.GetInt32(7);
+                            schemaname = reader.GetString(8);
+                            isuniformgrid = reader.GetBoolean(9);
+
+                        }
+
+                        else
+                        {
+                            string error = String.Format("Couldn't get table info for db: {0}", serverName);
+                            throw new Exception(error);
+                        }
+                    }
+                    if (isuniformgrid)
+                    {
+                        return new TurbDataTable(serverName, dbName, conn, longname, tablename, blobDim, 0, components, DataDescription, (float)dt, tstart, thigh, timeinc, timeoff, schemaname);
+                    }
+                    else
+                    {
+                        return new ChannelFlowDataTable(serverName, dbName, conn, longname, tablename, blobDim, 0, components, DataDescription, (float)dt, tstart, thigh, timeinc, timeoff, schemaname);
+                    }
+                }
             }
-            */
         }
 
         /// <summary>

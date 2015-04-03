@@ -66,7 +66,25 @@ namespace TurbulenceService
                 }
             }
         }
-        
+        public static Boolean isUserCreated(int dataset_id)
+        {
+            String connectionString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            using (SqlConnection sqlcon = new SqlConnection(connectionString))
+            {
+                sqlcon.Open();
+                using (SqlCommand cmd = new SqlCommand(
+                    String.Format("select isUserCreated from turbinfo.dbo.datasets where datasetID= {0}", dataset_id), sqlcon))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        reader.Read();
+                        if (reader.HasRows) return reader.GetBoolean(0);
+
+                        else throw new Exception("Invalid dataset specified!");
+                    }
+                }
+            }
+        }
         public String tablename;
 
         public static int getNumberComponents(String tableName)
@@ -160,16 +178,20 @@ namespace TurbulenceService
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             reader.Read();
-                            if (reader.GetString(1).Equals(setname.ToLower()))
+                            if (reader.HasRows)
                             {
                                 return reader.GetString(1);
                             }
+                            else { throw new Exception(String.Format("Invalid set name")); }
 
                         }
                     }
                 }
             }
-            throw new Exception(String.Format("Invalid set name: {0}", setname));
+            else
+            {
+                throw new Exception(String.Format("Invalid set name: {0}", setname));
+            }
         }
 
         public static bool isTimeInRange(int dataset_id, float time)

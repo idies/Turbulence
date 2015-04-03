@@ -49,6 +49,7 @@ namespace TurbulenceService
         const int MAX_READ_LENGTH = 256000000;
         const int MAX_NUMBER_THRESHOLD_POINTS = 1024 * 1024;
         const double DENSITY_CONSTANT = 80.0;
+        bool isUserCreated;
 
         // zindex ranges stored on each server for the channel flow DB
         //long[] range_start;
@@ -251,6 +252,7 @@ namespace TurbulenceService
         public void selectServers(int dataset_id)
         {
             String dataset = DataInfo.findDataSetName(dataset_id);
+            this.isUserCreated = DataInfo.isUserCreated(dataset_id);
             //String dataset = dataset_enum.ToString();
             String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
@@ -261,11 +263,19 @@ namespace TurbulenceService
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
-                "from {0}..{1} where DatasetName = @dataset " + 
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-                "order by minLim", infodb, DBMapTable);
-            cmd.Parameters.AddWithValue("@dataset", dataset);
+            if (this.isUserCreated)
+            {
+                cmd.CommandText = String.Format("select ServerName, Databasename, 'turblib', minLim, maxLim" +
+                     "from ScratchInfo, datasets where datasets.name = '{0}'", dataset);
+            }
+            else
+            {
+                cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+                    "from {0}..{1} where DatasetName = @dataset " +
+                    "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                    "order by minLim", infodb, DBMapTable);
+                cmd.Parameters.AddWithValue("@dataset", dataset);
+            }
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
             {
@@ -327,6 +337,7 @@ namespace TurbulenceService
         public void selectServers(int dataset_id, int num_virtual_servers)
         {
             String dataset = DataInfo.findDataSetName(dataset_id);
+            this.isUserCreated = DataInfo.isUserCreated(dataset_id);
             String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
@@ -336,11 +347,19 @@ namespace TurbulenceService
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
-                "from {0}..{1} where DatasetName = @dataset " + 
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-                "order by minLim", infodb, DBMapTable);
-            cmd.Parameters.AddWithValue("@dataset", dataset);
+            if (this.isUserCreated)
+            {
+                cmd.CommandText = String.Format("select ServerName, Databasename, 'turblib', minLim, maxLim " +
+                     "from turbinfo..ScratchInfo, turbinfo..datasets where datasets.name = '{0}'", dataset);
+            }
+            else
+            {
+                cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+                    "from {0}..{1} where DatasetName = @dataset " +
+                    "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                    "order by minLim", infodb, DBMapTable);
+                cmd.Parameters.AddWithValue("@dataset", dataset);
+            }
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
             {
