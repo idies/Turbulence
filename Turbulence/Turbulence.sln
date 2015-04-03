@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseCutout", "DatabaseCutout\DatabaseCutout.csproj", "{4566BAF9-9FA2-42E5-B19B-556451B54631}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RESTfulWebServices", "RESTfulWebServices\RESTfulWebServices.csproj", "{59A2EFDB-866C-4246-A059-13DFEBC08FA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
