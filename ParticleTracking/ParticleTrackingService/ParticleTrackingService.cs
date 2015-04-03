@@ -26,136 +26,144 @@ namespace ParticleTracking
         SqlConnection localConn;
         TurbDataTable table;
         GetPositionWorker worker;
-        
+
         ConcurrentDictionary<int, SQLUtility.TrackingInputRequest> input;
-                
+
         private void AddRequestToMap(ref Dictionary<SQLUtility.TimestepZindexKey, List<int>> map, SQLUtility.TrackingInputRequest request,
             GetPositionWorker worker, long mask)
         {
-            long zindex = 0;
-            SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
-            HashSet<SQLUtility.TimestepZindexKey> atoms = new HashSet<SQLUtility.TimestepZindexKey>(); //NOTE: HashSet requires .Net 3.5
-            int X, Y, Z;
-
-            if (worker.spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
+            try
             {
-                // In this case we are computing the node on the grid, on which to center the computation, using rounding:
-                if (request.compute_predictor)
-                {
-                    X = LagInterpolation.CalcNodeWithRound(request.pos.x, worker.setInfo.Dx);
-                    Y = LagInterpolation.CalcNodeWithRound(request.pos.y, worker.setInfo.Dy);
-                    Z = LagInterpolation.CalcNodeWithRound(request.pos.z, worker.setInfo.Dz);
-                }
-                else
-                {
-                    X = LagInterpolation.CalcNodeWithRound(request.pre_pos.x, worker.setInfo.Dx);
-                    Y = LagInterpolation.CalcNodeWithRound(request.pre_pos.y, worker.setInfo.Dy);
-                    Z = LagInterpolation.CalcNodeWithRound(request.pre_pos.z, worker.setInfo.Dz);
-                }
+                long zindex = 0;
+                SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
+                HashSet<SQLUtility.TimestepZindexKey> atoms = new HashSet<SQLUtility.TimestepZindexKey>(); //NOTE: HashSet requires .Net 3.5
+                int X, Y, Z;
 
-                zindex = new Morton3D(Z, Y, X).Key & mask;
-                key.SetValues(request.timeStep, zindex);
-
-
-                if (table.PointInRange(X, Y, Z))
+                if (worker.spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
                 {
-                    if (!atoms.Contains(key))
+                    // In this case we are computing the node on the grid, on which to center the computation, using rounding:
+                    if (request.compute_predictor)
                     {
-                        atoms.Add(key);
+                        X = LagInterpolation.CalcNodeWithRound(request.pos.x, worker.setInfo.Dx);
+                        Y = LagInterpolation.CalcNodeWithRound(request.pos.y, worker.setInfo.Dy);
+                        Z = LagInterpolation.CalcNodeWithRound(request.pos.z, worker.setInfo.Dz);
                     }
-                    //if (!map.ContainsKey(key))
-                    //{
-                    //    map[key] = new List<int>();
-                    //}
-                    //map[key].Add(request.request);
-                    //request.numberOfCubes++;
-                }
-                else
-                {
-                    request.crossed_boundary = true;
-                    // If the request is not marked for evaluation do not add it to the map.
-                    if (!request.evaluate)
+                    else
                     {
-                        return;
+                        X = LagInterpolation.CalcNodeWithRound(request.pre_pos.x, worker.setInfo.Dx);
+                        Y = LagInterpolation.CalcNodeWithRound(request.pre_pos.y, worker.setInfo.Dy);
+                        Z = LagInterpolation.CalcNodeWithRound(request.pre_pos.z, worker.setInfo.Dz);
                     }
-                }
-            }
-            else
-            {
-                // In this case we are computing the node on the grid, on which to center the computation, using "floor":
-                if (request.compute_predictor)
-                {
-                    X = LagInterpolation.CalcNode(request.pos.x, worker.setInfo.Dx);
-                    Y = LagInterpolation.CalcNode(request.pos.y, worker.setInfo.Dy);
-                    Z = LagInterpolation.CalcNode(request.pos.z, worker.setInfo.Dz);
-                }
-                else
-                {
-                    X = LagInterpolation.CalcNode(request.pre_pos.x, worker.setInfo.Dx);
-                    Y = LagInterpolation.CalcNode(request.pre_pos.y, worker.setInfo.Dy);
-                    Z = LagInterpolation.CalcNode(request.pre_pos.z, worker.setInfo.Dz);
-                }
 
-                // For Lagrange Polynomial interpolation we need a cube of data 
-                int startz = Z - worker.KernelSize / 2 + 1, starty = Y - worker.KernelSize / 2 + 1, startx = X - worker.KernelSize / 2 + 1;
-                int endz = Z + worker.KernelSize / 2, endy = Y + worker.KernelSize / 2, endx = X + worker.KernelSize / 2;
+                    zindex = new Morton3D(Z, Y, X).Key & mask;
+                    key.SetValues(request.timeStep, zindex);
 
-                // we do not want a request to appear more than once in the list for an atom
-                // with the below logic we are going to check distinct atoms only
-                // we want to start at the start of a DB atom
-                startz = startz - ((startz % worker.setInfo.atomDim) + worker.setInfo.atomDim) % worker.setInfo.atomDim;
-                starty = starty - ((starty % worker.setInfo.atomDim) + worker.setInfo.atomDim) % worker.setInfo.atomDim;
-                startx = startx - ((startx % worker.setInfo.atomDim) + worker.setInfo.atomDim) % worker.setInfo.atomDim;
 
-                for (int z = startz; z <= endz; z += worker.setInfo.atomDim)
-                {
-                    for (int y = starty; y <= endy; y += worker.setInfo.atomDim)
+                    if (table.PointInRange(X, Y, Z))
                     {
-                        for (int x = startx; x <= endx; x += worker.setInfo.atomDim)
+                        if (!atoms.Contains(key))
                         {
-                            // Wrap the coordinates into the grid space
-                            int xi = ((x % worker.setInfo.GridResolutionX) + worker.setInfo.GridResolutionX) % worker.setInfo.GridResolutionX;
-                            int yi = ((y % worker.setInfo.GridResolutionY) + worker.setInfo.GridResolutionY) % worker.setInfo.GridResolutionY;
-                            int zi = ((z % worker.setInfo.GridResolutionZ) + worker.setInfo.GridResolutionZ) % worker.setInfo.GridResolutionZ;
+                            atoms.Add(key);
+                        }
+                        //if (!map.ContainsKey(key))
+                        //{
+                        //    map[key] = new List<int>();
+                        //}
+                        //map[key].Add(request.request);
+                        //request.numberOfCubes++;
+                    }
+                    else
+                    {
+                        request.crossed_boundary = true;
+                        // If the request is not marked for evaluation do not add it to the map.
+                        if (!request.evaluate)
+                        {
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    // In this case we are computing the node on the grid, on which to center the computation, using "floor":
+                    if (request.compute_predictor)
+                    {
+                        X = LagInterpolation.CalcNode(request.pos.x, worker.setInfo.Dx);
+                        Y = LagInterpolation.CalcNode(request.pos.y, worker.setInfo.Dy);
+                        Z = LagInterpolation.CalcNode(request.pos.z, worker.setInfo.Dz);
+                    }
+                    else
+                    {
+                        X = LagInterpolation.CalcNode(request.pre_pos.x, worker.setInfo.Dx);
+                        Y = LagInterpolation.CalcNode(request.pre_pos.y, worker.setInfo.Dy);
+                        Z = LagInterpolation.CalcNode(request.pre_pos.z, worker.setInfo.Dz);
+                    }
 
-                            zindex = new Morton3D(zi, yi, xi).Key & mask;
-                            key.SetValues(request.timeStep, zindex);
+                    // For Lagrange Polynomial interpolation we need a cube of data 
+                    int startz = Z - worker.KernelSize / 2 + 1, starty = Y - worker.KernelSize / 2 + 1, startx = X - worker.KernelSize / 2 + 1;
+                    int endz = Z + worker.KernelSize / 2, endy = Y + worker.KernelSize / 2, endx = X + worker.KernelSize / 2;
 
-                            if (table.PointInRange(xi, yi, zi))
+                    // we do not want a request to appear more than once in the list for an atom
+                    // with the below logic we are going to check distinct atoms only
+                    // we want to start at the start of a DB atom
+                    startz = startz - ((startz % worker.setInfo.atomDim) + worker.setInfo.atomDim) % worker.setInfo.atomDim;
+                    starty = starty - ((starty % worker.setInfo.atomDim) + worker.setInfo.atomDim) % worker.setInfo.atomDim;
+                    startx = startx - ((startx % worker.setInfo.atomDim) + worker.setInfo.atomDim) % worker.setInfo.atomDim;
+
+                    for (int z = startz; z <= endz; z += worker.setInfo.atomDim)
+                    {
+                        for (int y = starty; y <= endy; y += worker.setInfo.atomDim)
+                        {
+                            for (int x = startx; x <= endx; x += worker.setInfo.atomDim)
                             {
-                                if (!atoms.Contains(key))
+                                // Wrap the coordinates into the grid space
+                                int xi = ((x % worker.setInfo.GridResolutionX) + worker.setInfo.GridResolutionX) % worker.setInfo.GridResolutionX;
+                                int yi = ((y % worker.setInfo.GridResolutionY) + worker.setInfo.GridResolutionY) % worker.setInfo.GridResolutionY;
+                                int zi = ((z % worker.setInfo.GridResolutionZ) + worker.setInfo.GridResolutionZ) % worker.setInfo.GridResolutionZ;
+
+                                zindex = new Morton3D(zi, yi, xi).Key & mask;
+                                key.SetValues(request.timeStep, zindex);
+
+                                if (table.PointInRange(xi, yi, zi))
                                 {
-                                    atoms.Add(key);
+                                    if (!atoms.Contains(key))
+                                    {
+                                        atoms.Add(key);
+                                    }
+                                    //if (!map.ContainsKey(key))
+                                    //{
+                                    //    map[key] = new List<int>();
+                                    //}
+                                    //map[key].Add(request.request);
+                                    //request.numberOfCubes++;
                                 }
-                                //if (!map.ContainsKey(key))
-                                //{
-                                //    map[key] = new List<int>();
-                                //}
-                                //map[key].Add(request.request);
-                                //request.numberOfCubes++;
-                            }
-                            else
-                            {
-                                request.crossed_boundary = true;
-                                // If the request is not marked for evaluation do not add it to the map.
-                                if (!request.evaluate)
+                                else
                                 {
-                                    return;
+                                    request.crossed_boundary = true;
+                                    // If the request is not marked for evaluation do not add it to the map.
+                                    if (!request.evaluate)
+                                    {
+                                        return;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            foreach (SQLUtility.TimestepZindexKey atom in atoms)
-            {
-                if (!map.ContainsKey(atom))
+                foreach (SQLUtility.TimestepZindexKey atom in atoms)
                 {
-                    map[atom] = new List<int>();
+                    if (!map.ContainsKey(atom))
+                    {
+                        map[atom] = new List<int>();
+                    }
+                    map[atom].Add(request.request);
+                    request.numberOfCubes++;
                 }
-                map[atom].Add(request.request);
-                request.numberOfCubes++;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
             }
         }
 
@@ -176,7 +184,7 @@ namespace ParticleTracking
             // Load information about the requested dataset
             this.table = TurbDataTable.GetTableInfo(localServer, localDatabase, tableName, atomDim, localConn);
             this.tableName = String.Format("{0}.dbo.{1}", localDatabase, table.TableName);
-            
+
             // Instantiate a worker class
             worker = new GetPositionWorker(table,
                     (TurbulenceOptions.SpatialInterpolation)spatialInterp,
@@ -196,61 +204,94 @@ namespace ParticleTracking
 
         private void AddParticles(List<SQLUtility.TrackingInputRequest> particles)
         {
-            //Console.WriteLine("Adding particles");
-            if (input == null)
+            try
             {
-                input = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
-            }
+                //Console.WriteLine("Adding particles");
+                if (input == null)
+                {
+                    input = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
+                }
 
-            foreach (SQLUtility.TrackingInputRequest particle in particles)
+                foreach (SQLUtility.TrackingInputRequest particle in particles)
+                {
+                    AddOneParticle(particle);
+                }
+            }
+            catch (Exception ex)
             {
-                AddOneParticle(particle);
+                Console.WriteLine(ex);
+                throw ex;
             }
         }
 
         private void AddOneParticle(SQLUtility.TrackingInputRequest one_particle)
         {
-            if (input == null)
+            try
             {
-                input = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
-            }
-
-            if (input.ContainsKey(one_particle.request))
-            {
-                throw new Exception("Particle already exists in input dictionary!");
-            }
-            else
-            {
-                if (!input.TryAdd(one_particle.request, one_particle))
+                if (input == null)
                 {
-                    throw new Exception("Could not add input particle!");
+                    input = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
                 }
+
+                if (input.ContainsKey(one_particle.request))
+                {
+                    throw new Exception("Particle already exists in input dictionary!");
+                }
+                else
+                {
+                    if (!input.TryAdd(one_particle.request, one_particle))
+                    {
+                        throw new Exception("Could not add input particle!");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
             }
         }
 
         public void DoParticleTrackingWork(List<SQLUtility.TrackingInputRequest> particles)
         {
-            //Console.WriteLine("Starting to add particles!");
-            AddParticles(particles);
-            //Console.WriteLine("Added a list of particles");
-            IParticleTrackingServiceCallback callback_channel = OperationContext.Current.GetCallbackChannel<IParticleTrackingServiceCallback>();
-            Task worker = Task.Factory.StartNew(() => DoWork(callback_channel));
+            try
+            {
+                //Console.WriteLine("Starting to add particles!");
+                AddParticles(particles);
+                //Console.WriteLine("Added a list of particles");
+                IParticleTrackingServiceCallback callback_channel = OperationContext.Current.GetCallbackChannel<IParticleTrackingServiceCallback>();
+                Task worker = Task.Factory.StartNew(() => DoWork(callback_channel));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
+            }
         }
 
         public void DoParticleTrackingWorkOneParticle(SQLUtility.TrackingInputRequest one_particle)
         {
-            //Console.WriteLine("Adding one particle!");
-            AddOneParticle(one_particle);
-            //Console.WriteLine("Added one particle");
-            IParticleTrackingServiceCallback callback_channel = OperationContext.Current.GetCallbackChannel<IParticleTrackingServiceCallback>();
-            Task worker = Task.Factory.StartNew(() => DoWork(callback_channel));
+            try
+            {
+                //Console.WriteLine("Adding one particle!");
+                AddOneParticle(one_particle);
+                //Console.WriteLine("Added one particle");
+                IParticleTrackingServiceCallback callback_channel = OperationContext.Current.GetCallbackChannel<IParticleTrackingServiceCallback>();
+                //Task worker = Task.Factory.StartNew(() => DoWork(callback_channel));
+                DoWork(callback_channel);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
+            }
         }
 
         private void DoWork(IParticleTrackingServiceCallback callback_channel)
         {
             if (!working)
             {
-                Console.WriteLine("Starting to do work!");
+                //Console.WriteLine("Starting to do work @" + DateTime.Now);
                 if (localConn.State != ConnectionState.Open)
                 {
                     Console.WriteLine("local connection is not open, state is: " + localConn.State);
@@ -259,8 +300,8 @@ namespace ParticleTracking
                 {
                     working = true;
                     Dictionary<SQLUtility.TimestepZindexKey, List<int>> atoms_map = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>(); // Contains the database atoms to be retrieved from the DB
-                                                                                                                                               // and the input particles associated with each atom
-                                                                                                                                               // (identified by their request/particle id).
+                    // and the input particles associated with each atom
+                    // (identified by their request/particle id).
                     long mask = ~(long)(worker.DataTable.atomDim * worker.DataTable.atomDim * worker.DataTable.atomDim - 1);
                     SqlCommand cmd;
                     SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
@@ -323,7 +364,7 @@ namespace ParticleTracking
                                     particle.cubesRead++;
                                     worker.GetResult(blob, ref particle, timestep, basetime);
 
-                                    if (particle.done || (particle.crossed_boundary && particle.cubesRead == 
+                                    if (particle.done || (particle.crossed_boundary && particle.cubesRead ==
                                         GetPositionWorker.TIMESTEPS_TO_READ_WITH_INTERPOLATION * particle.numberOfCubes))
                                     {
                                         SQLUtility.TrackingInputRequest done_particle;
@@ -386,6 +427,7 @@ namespace ParticleTracking
                     throw ex;
                 }
                 working = false;
+                //Console.WriteLine("Stopped doing work @" + DateTime.Now);
             }
         }
     }

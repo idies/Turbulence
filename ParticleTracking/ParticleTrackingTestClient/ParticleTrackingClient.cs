@@ -5,6 +5,8 @@ using System.ServiceModel;
 using System.Threading;
 using ParticleTracking;
 
+using System.IO;
+
 using TurbulenceService;
 using Turbulence.SQLInterface;
 
@@ -26,8 +28,8 @@ namespace ParticleTrackingTestClient
 
         //for debugging:
         //--------------------------------
-        SQLUtility.TrackingInputRequest[] initial_particles;
-        ConcurrentDictionary<int, SQLUtility.TrackingInputRequest> particles_not_yet_finished;
+        //SQLUtility.TrackingInputRequest[] initial_particles;
+        //ConcurrentDictionary<int, SQLUtility.TrackingInputRequest> particles_not_yet_finished;
         //--------------------------------
 
         public void TestParticleTracking()
@@ -41,10 +43,10 @@ namespace ParticleTrackingTestClient
                 Random random = new Random();
                 TimeSpan total = new TimeSpan(0);
                 float dt = 0.001f;
-                float time_range = 50 * dt;
+                float time_range = 500 * dt;
                 float max_time = 2.56f;
                 float startTime = (float)random.NextDouble() * (max_time - time_range);
-                startTime = 2.394468f;
+                //startTime = 2.394468f;
                 float endTime = startTime + time_range;
                 int num_processes = 1;
                 DataInfo.DataSets dataset = DataInfo.DataSets.mhd1024;
@@ -54,29 +56,30 @@ namespace ParticleTrackingTestClient
 
                 SQLUtility.TrackingInputRequest[] particles;
                 CreatInput(startTime, endTime, dt, num_particles, out particles);
-
+                //CreatInputFromFile(startTime, endTime, dt, out particles);
+                num_particles = particles.Length;
 
                 //--------------------------------
-                initial_particles = particles;
-                particles_not_yet_finished = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
-                foreach (SQLUtility.TrackingInputRequest particle in particles)
-                {
-                    particles_not_yet_finished.TryAdd(particle.request, particle);
-                }
+                //initial_particles = particles;
+                //particles_not_yet_finished = new ConcurrentDictionary<int, SQLUtility.TrackingInputRequest>();
+                //foreach (SQLUtility.TrackingInputRequest particle in particles)
+                //{
+                //    particles_not_yet_finished.TryAdd(particle.request, particle);
+                //}
                 //--------------------------------
 
                 DateTime runningTime, runningTimeEnd;
                 runningTime = DateTime.Now;
 
                 List<SQLUtility.TrackingInputRequest>[] particles_per_node;
-                particles_per_node = new List<SQLUtility.TrackingInputRequest>[database.serverCount];                
+                particles_per_node = new List<SQLUtility.TrackingInputRequest>[database.serverCount];
                 Turbulence.TurbLib.TurbulenceOptions.GetKernelSize(spatialInterp, ref kernelSizeX, ref kernelSizeY, database.channel_grid, (int)Turbulence.SQLInterface.Worker.Workers.GetPosition);
                 kernelSizeZ = kernelSizeX;
                 DistributeParticles(particles, round, kernelSizeX, kernelSizeY, kernelSizeZ, particles_per_node);
 
                 factories = new DuplexChannelFactory<IParticleTrackingService>[database.serverCount];
                 channels = new IParticleTrackingService[database.serverCount];
-                
+
                 //TODO: Consider starting a new Task to handle callbacks from each node.
                 InstanceContext instanceContext = new InstanceContext(this);
                 for (int i = 0; i < database.serverCount; i++)
@@ -87,6 +90,9 @@ namespace ParticleTrackingTestClient
                     binding.OpenTimeout = new System.TimeSpan(10, 0, 0);
                     binding.ReceiveTimeout = new System.TimeSpan(10, 0, 0);
                     binding.SendTimeout = new System.TimeSpan(10, 0, 0);
+                    binding.MaxBufferPoolSize = 2147483647;
+                    binding.MaxBufferSize = 2147483647;
+                    binding.MaxReceivedMessageSize = 2147483647;
                     //TODO: change the address based on the server name
                     string servername = database.servers[i];
                     if (servername.Contains("_"))
@@ -95,7 +101,6 @@ namespace ParticleTrackingTestClient
                         String.Format("net.tcp://{0}.10g.sdss.pha.jhu.edu:8090/ParticleTrackingService", servername));
                     factories[i] = new DuplexChannelFactory<IParticleTrackingService>(instanceContext, binding, address);
                     channels[i] = factories[i].CreateChannel();
-                    Console.WriteLine("receive timeout" + binding.ReceiveTimeout);
                     channels[i].Init(database.servers[i], database.databases[i], (short)dataset, tableName, database.atomDim, (int)spatialInterp, development);
                     Console.WriteLine("called Init() on server {0}, database {1}", database.servers[i], database.databases[i]);
                 }
@@ -143,18 +148,57 @@ namespace ParticleTrackingTestClient
                 x = (float)(2 * Math.PI * rand.NextDouble());
                 y = (float)(2 * Math.PI * rand.NextDouble());
                 z = (float)(2 * Math.PI * rand.NextDouble());
-                //x = 2.626932f; //2.626932, 1.86579, 2.205185
-                //y = 1.86579f;
-                //z = 2.205185f;
+                //x = 2.542306f; //2.542306, 0.001126792, 4.74914
+                //y = 0.001126792f;
+                //z = 4.74914f;
                 int Z = database.GetIntLocZ(z, round);
                 int Y = database.GetIntLocY(y, round, kernelSizeY);
                 int X = database.GetIntLocX(x, round);
                 long zindex = new Morton3D(Z, Y, X).Key;
                 particles[i] = new SQLUtility.TrackingInputRequest(i, timestep, zindex, new Turbulence.TurbLib.DataTypes.Point3(x, y, z), new Turbulence.TurbLib.DataTypes.Point3(),
                     new Turbulence.TurbLib.DataTypes.Vector3(), startTime, endTime, dt, true, 0, false);
-                    //(i, new Turbulence.TurbLib.DataTypes.Point3(x, y, z), new Turbulence.TurbLib.DataTypes.Point3(), 0, 0, 0.4f, 0.001f, true, false, 0, 0);
+                //(i, new Turbulence.TurbLib.DataTypes.Point3(x, y, z), new Turbulence.TurbLib.DataTypes.Point3(), 0, 0, 0.4f, 0.001f, true, false, 0, 0);
 
                 Console.WriteLine(String.Format("x = {0}, y = {1}, z = {2}", x, y, z));
+            }
+        }
+
+        private void CreatInputFromFile(float startTime, float endTime, float dt, out SQLUtility.TrackingInputRequest[] particles)
+        {
+            float database_time = startTime / database.Dt;
+            int timestep = (int)Math.Round(database_time / database.TimeInc) * database.TimeInc + database.TimeOff;
+            //timestep = 0;
+
+            StreamReader reader = new StreamReader(File.OpenRead(@"C:\Users\kalin\Desktop\particles.txt"));
+            List<float> x_values = new List<float>();
+            List<float> y_values = new List<float>();
+            List<float> z_values = new List<float>();
+
+            string[] separator = new string[] { ", " };
+
+            while (!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                string[] values = line.Split(separator, StringSplitOptions.None);
+
+                float value;
+                float.TryParse(values[0], out value);
+                x_values.Add(value);
+                float.TryParse(values[1], out value);
+                y_values.Add(value);
+                float.TryParse(values[2], out value);
+                z_values.Add(value);
+            }
+
+            particles = new SQLUtility.TrackingInputRequest[x_values.Count];
+            for (int i = 0; i < x_values.Count; i++)
+            {
+                int Z = database.GetIntLocZ(z_values[i], round);
+                int Y = database.GetIntLocY(y_values[i], round, kernelSizeY);
+                int X = database.GetIntLocX(x_values[i], round);
+                long zindex = new Morton3D(Z, Y, X).Key;
+                particles[i] = new SQLUtility.TrackingInputRequest(i, timestep, zindex, new Turbulence.TurbLib.DataTypes.Point3(x_values[i], y_values[i], z_values[i]), new Turbulence.TurbLib.DataTypes.Point3(),
+                    new Turbulence.TurbLib.DataTypes.Vector3(), startTime, endTime, dt, true, 0, false);
             }
         }
 
@@ -174,8 +218,8 @@ namespace ParticleTrackingTestClient
                             Console.WriteLine("number of done particles is " + num_done_particles);
 
                             //--------------------------------
-                            SQLUtility.TrackingInputRequest finished_particle;
-                            particles_not_yet_finished.TryRemove(done_particles[i].request, out finished_particle);
+                            //SQLUtility.TrackingInputRequest finished_particle;
+                            //particles_not_yet_finished.TryRemove(done_particles[i].request, out finished_particle);
                             //--------------------------------
 
                             if (num_done_particles == num_particles)
@@ -189,8 +233,8 @@ namespace ParticleTrackingTestClient
                     }
                     else
                     {
-                        //Console.WriteLine("particle {0} at position: x = {1}, y = {2}, z = {3} has crossed boundaries", done_particles[i].request,
-                        //    done_particles[i].pos.x, done_particles[i].pos.y, done_particles[i].pos.z);
+                        //Console.WriteLine("particle {0} at position: x = {1}, y = {2}, z = {3} has crossed boundaries, evaluate is {4}", done_particles[i].request,
+                        //    done_particles[i].pos.x, done_particles[i].pos.y, done_particles[i].pos.z, done_particles[i].evaluate);
 
                         // Check if the particle was assigned for evaluation.
                         // If so, partial results are expected from a few nodes.
@@ -247,8 +291,8 @@ namespace ParticleTrackingTestClient
                                         Console.WriteLine("number of done particles is " + num_done_particles);
 
                                         //--------------------------------
-                                        SQLUtility.TrackingInputRequest finished_particle;
-                                        particles_not_yet_finished.TryRemove(done_particles[i].request, out finished_particle);
+                                        //SQLUtility.TrackingInputRequest finished_particle;
+                                        //particles_not_yet_finished.TryRemove(done_particles[i].request, out finished_particle);
 
                                         //--------------------------------
                                         if (num_done_particles == num_particles)
@@ -273,15 +317,19 @@ namespace ParticleTrackingTestClient
                 }
 
                 //--------------------------------
-                if (particles_not_yet_finished.Count < 100)
-                {
-                    Console.WriteLine("Particles that have not finished yet:");
-                    foreach (SQLUtility.TrackingInputRequest particle in particles_not_yet_finished.Values)
-                    {
-                        Console.WriteLine("{0}, {1}, {2}", particle.pos.x, particle.pos.y, particle.pos.z);
-                    }
-                    Console.WriteLine();
-                }
+                //if (particles_not_yet_finished.Count < 100)
+                //{
+                //    Console.WriteLine("Particles that have not finished yet:");
+                //    foreach (SQLUtility.TrackingInputRequest particle in particles_not_yet_finished.Values)
+                //    {
+                //        Console.WriteLine("{0}, {1}, {2}", particle.pos.x, particle.pos.y, particle.pos.z);
+                //    }
+                //    Console.WriteLine();
+                //}
+                //else
+                //{
+                //    Console.WriteLine("{0} particles that have not finished yet", particles_not_yet_finished.Count);
+                //}
                 //--------------------------------
             }
             catch (Exception ex)
@@ -306,108 +354,132 @@ namespace ParticleTrackingTestClient
 
         private void AssignParticleToMultipleNodes(SQLUtility.TrackingInputRequest input_particle, bool round, int kernelSizeZ, int kernelSizeY, int kernelSizeX)
         {
-            List<int> nodes = new List<int>(database.serverCount);
-            for (int i = 0; i < database.serverCount; i++)
+            try
             {
-                if (TestParticleForNode(input_particle, round, kernelSizeZ, kernelSizeY, kernelSizeX, i))
+                List<int> nodes = new List<int>(database.serverCount);
+                for (int i = 0; i < database.serverCount; i++)
                 {
-                    input_particle.numberOfNodes++;
-                    nodes.Add(i);
+                    if (TestParticleForNode(input_particle, round, kernelSizeZ, kernelSizeY, kernelSizeX, i))
+                    {
+                        input_particle.numberOfNodes++;
+                        nodes.Add(i);
+                    }
+                }
+
+                // Set the particle's evaluate flag, which indicates whether a particle that spans node boundaries should be evaluated.
+                if (input_particle.numberOfNodes > 1)
+                {
+                    input_particle.evaluate = true;
+                }
+                else
+                {
+                    input_particle.evaluate = false;
+                }
+
+                // NOTE: It's important to send the particle to each node only after we update the number of nodes it was assigned to.
+                foreach (int node in nodes)
+                {
+                    channels[node].DoParticleTrackingWorkOneParticle(input_particle);
                 }
             }
-
-            // Set the particle's evaluate flag, which indicates whether a particle that spans node boundaries should be evaluated.
-            if (input_particle.numberOfNodes > 1)
+            catch (Exception ex)
             {
-                input_particle.evaluate = true;
-            }
-            else
-            {
-                input_particle.evaluate = false;
-            }
-
-            // NOTE: It's important to send the particle to each node only after we update the number of nodes it was assigned to.
-            foreach (int node in nodes)
-            {
-                channels[node].DoParticleTrackingWorkOneParticle(input_particle);
+                Console.WriteLine(ex);
+                throw ex;
             }
         }
 
         private bool TestParticleForNode(SQLUtility.TrackingInputRequest input_particle, bool round, int kernelSizeZ, int kernelSizeY, int kernelSizeX, int node)
         {
-            int Z, Y, X;
-            if (input_particle.compute_predictor)
+            try
             {
-                Z = database.GetIntLocZ(input_particle.pos.z, round);
-                Y = database.GetIntLocY(input_particle.pos.y, round, kernelSizeY);
-                X = database.GetIntLocX(input_particle.pos.x, round);
-            }
-            else
-            {
-                Z = database.GetIntLocZ(input_particle.pre_pos.z, round);
-                Y = database.GetIntLocY(input_particle.pre_pos.y, round, kernelSizeY);
-                X = database.GetIntLocX(input_particle.pre_pos.x, round);
-            }
-            Morton3D zindex = new Morton3D(Z, Y, X);
-
-            int startz = database.GetKernelStart(Z, kernelSizeZ), starty = database.GetKernelStart(Y, kernelSizeY), startx = database.GetKernelStart(X, kernelSizeX);
-            int endz = startz + kernelSizeZ - 1, endy = starty + kernelSizeY - 1, endx = startx + kernelSizeX - 1;
-
-            // The last two conditions have to do with wrap around
-            // The beginning and end of each kernel may be outside of the grid space
-            // Due to periodicity in space these locations are going to be wrapped around
-            // Thus, we need to check if the points should be added to these servers
-            if ((database.serverBoundaries[node].startx <= startx && startx <= database.serverBoundaries[node].endx) ||
-                (database.serverBoundaries[node].startx <= endx && endx <= database.serverBoundaries[node].endx) ||
-                (startx < database.serverBoundaries[node].startx && database.serverBoundaries[node].endx < endx) ||
-                (startx + database.GridResolutionX <= database.serverBoundaries[node].endx) ||
-                (database.serverBoundaries[node].startx <= endx - database.GridResolutionX))
-            {
-                if ((database.serverBoundaries[node].starty <= starty && starty <= database.serverBoundaries[node].endy) ||
-                    (database.serverBoundaries[node].starty <= endy && endy <= database.serverBoundaries[node].endy) ||
-                    (starty < database.serverBoundaries[node].starty && database.serverBoundaries[node].endy < endy) ||
-                        (starty + database.GridResolutionY <= database.serverBoundaries[node].endy) ||
-                        (database.serverBoundaries[node].starty <= endy - database.GridResolutionY))
+                int Z, Y, X;
+                if (input_particle.compute_predictor)
                 {
-                    if ((database.serverBoundaries[node].startz <= startz && startz <= database.serverBoundaries[node].endz) ||
-                        (database.serverBoundaries[node].startz <= endz && endz <= database.serverBoundaries[node].endz) ||
-                        (startz < database.serverBoundaries[node].startz && database.serverBoundaries[node].endz < endz) ||
-                        (startz + database.GridResolutionZ <= database.serverBoundaries[node].endz) ||
-                        (database.serverBoundaries[node].startz <= endz - database.GridResolutionZ))
+                    Z = database.GetIntLocZ(input_particle.pos.z, round);
+                    Y = database.GetIntLocY(input_particle.pos.y, round, kernelSizeY);
+                    X = database.GetIntLocX(input_particle.pos.x, round);
+                }
+                else
+                {
+                    Z = database.GetIntLocZ(input_particle.pre_pos.z, round);
+                    Y = database.GetIntLocY(input_particle.pre_pos.y, round, kernelSizeY);
+                    X = database.GetIntLocX(input_particle.pre_pos.x, round);
+                }
+                Morton3D zindex = new Morton3D(Z, Y, X);
+
+                int startz = database.GetKernelStart(Z, kernelSizeZ), starty = database.GetKernelStart(Y, kernelSizeY), startx = database.GetKernelStart(X, kernelSizeX);
+                int endz = startz + kernelSizeZ - 1, endy = starty + kernelSizeY - 1, endx = startx + kernelSizeX - 1;
+
+                // The last two conditions have to do with wrap around
+                // The beginning and end of each kernel may be outside of the grid space
+                // Due to periodicity in space these locations are going to be wrapped around
+                // Thus, we need to check if the points should be added to these servers
+                if ((database.serverBoundaries[node].startx <= startx && startx <= database.serverBoundaries[node].endx) ||
+                    (database.serverBoundaries[node].startx <= endx && endx <= database.serverBoundaries[node].endx) ||
+                    (startx < database.serverBoundaries[node].startx && database.serverBoundaries[node].endx < endx) ||
+                    (startx + database.GridResolutionX <= database.serverBoundaries[node].endx) ||
+                    (database.serverBoundaries[node].startx <= endx - database.GridResolutionX))
+                {
+                    if ((database.serverBoundaries[node].starty <= starty && starty <= database.serverBoundaries[node].endy) ||
+                        (database.serverBoundaries[node].starty <= endy && endy <= database.serverBoundaries[node].endy) ||
+                        (starty < database.serverBoundaries[node].starty && database.serverBoundaries[node].endy < endy) ||
+                            (starty + database.GridResolutionY <= database.serverBoundaries[node].endy) ||
+                            (database.serverBoundaries[node].starty <= endy - database.GridResolutionY))
                     {
-                        return true;
+                        if ((database.serverBoundaries[node].startz <= startz && startz <= database.serverBoundaries[node].endz) ||
+                            (database.serverBoundaries[node].startz <= endz && endz <= database.serverBoundaries[node].endz) ||
+                            (startz < database.serverBoundaries[node].startz && database.serverBoundaries[node].endz < endz) ||
+                            (startz + database.GridResolutionZ <= database.serverBoundaries[node].endz) ||
+                            (database.serverBoundaries[node].startz <= endz - database.GridResolutionZ))
+                        {
+                            return true;
+                        }
                     }
                 }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
+            }
         }
 
         private void DistributeParticles(SQLUtility.TrackingInputRequest[] input_particles, bool round, int kernelSizeZ, int kernelSizeY, int kernelSizeX,
             List<SQLUtility.TrackingInputRequest>[] particles_per_node)
         {
-            for (int k = 0; k < input_particles.Length; k++)
+            try
             {
-                for (int i = 0; i < database.serverCount; i++)
+                for (int k = 0; k < input_particles.Length; k++)
                 {
-                    if (TestParticleForNode(input_particles[k], round, kernelSizeZ, kernelSizeY, kernelSizeX, i))
+                    for (int i = 0; i < database.serverCount; i++)
                     {
-                        input_particles[k].numberOfNodes++;
-                        if (input_particles[k].numberOfNodes > 1)
+                        if (TestParticleForNode(input_particles[k], round, kernelSizeZ, kernelSizeY, kernelSizeX, i))
                         {
-                            input_particles[k].evaluate = true;
-                        }
-                        else
-                        {
-                            input_particles[k].evaluate = false;
-                        }
+                            input_particles[k].numberOfNodes++;
+                            if (input_particles[k].numberOfNodes > 1)
+                            {
+                                input_particles[k].evaluate = true;
+                            }
+                            else
+                            {
+                                input_particles[k].evaluate = false;
+                            }
 
-                        if (particles_per_node[i] == null)
-                        {
-                            particles_per_node[i] = new List<SQLUtility.TrackingInputRequest>();
+                            if (particles_per_node[i] == null)
+                            {
+                                particles_per_node[i] = new List<SQLUtility.TrackingInputRequest>();
+                            }
+                            particles_per_node[i].Add(input_particles[k]);
                         }
-                        particles_per_node[i].Add(input_particles[k]);
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
             }
         }
     }
