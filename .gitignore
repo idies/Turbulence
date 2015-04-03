@@ -31,3 +31,6 @@ ParticleTracking/ParticleTrackingTestClient/app.config
 /Turbulence/DatabaseCutout/DatabaseCutout.csproj.user
 Turbulence/DatabaseCutout/obj/Debug/DatabaseCutout.csprojResolveAssemblyReference.cache
 Turbulence/DatabaseCutout/obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
+scripts/loadclr/loadclr-sue.txt
+scripts/loadclr/exec.sql
+scripts/loadclr/exec.log
