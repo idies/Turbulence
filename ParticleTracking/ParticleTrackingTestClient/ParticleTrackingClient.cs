@@ -6,6 +6,7 @@ using System.Threading;
 using ParticleTracking;
 
 using System.IO;
+using System.ServiceModel.Description;
 
 using TurbulenceService;
 using Turbulence.SQLInterface;
@@ -18,13 +19,15 @@ namespace ParticleTrackingTestClient
         IParticleTrackingService[] channels;
         Database database;
         ConcurrentDictionary<int, SQLUtility.TrackingInputRequest> partial_results;
-        int num_particles = 1000;
+        int num_particles = 10000;
         int num_done_particles = 0;
         bool round;
         int kernelSizeX;
         int kernelSizeY;
         int kernelSizeZ;
         ManualResetEvent doneEvent = new ManualResetEvent(false);
+
+        const int MAX_PARTICLES_PER_NODE = 200;
 
         //for debugging:
         //--------------------------------
@@ -51,7 +54,7 @@ namespace ParticleTrackingTestClient
                 int num_processes = 1;
                 DataInfo.DataSets dataset = DataInfo.DataSets.mhd1024;
                 string tableName = "velocity08";
-                database = new Database("turbinfo", true);
+                database = new Database("turbinfo", false);
                 database.Initialize(dataset, num_processes);
 
                 SQLUtility.TrackingInputRequest[] particles;
@@ -72,15 +75,14 @@ namespace ParticleTrackingTestClient
                 runningTime = DateTime.Now;
 
                 List<SQLUtility.TrackingInputRequest>[] particles_per_node;
-                particles_per_node = new List<SQLUtility.TrackingInputRequest>[database.serverCount];
+                particles_per_node = new List<SQLUtility.TrackingInputRequest>[database.serverCount];                
                 Turbulence.TurbLib.TurbulenceOptions.GetKernelSize(spatialInterp, ref kernelSizeX, ref kernelSizeY, database.channel_grid, (int)Turbulence.SQLInterface.Worker.Workers.GetPosition);
                 kernelSizeZ = kernelSizeX;
                 DistributeParticles(particles, round, kernelSizeX, kernelSizeY, kernelSizeZ, particles_per_node);
 
                 factories = new DuplexChannelFactory<IParticleTrackingService>[database.serverCount];
                 channels = new IParticleTrackingService[database.serverCount];
-
-                //TODO: Consider starting a new Task to handle callbacks from each node.
+                
                 InstanceContext instanceContext = new InstanceContext(this);
                 for (int i = 0; i < database.serverCount; i++)
                 {
@@ -93,13 +95,41 @@ namespace ParticleTrackingTestClient
                     binding.MaxBufferPoolSize = 2147483647;
                     binding.MaxBufferSize = 2147483647;
                     binding.MaxReceivedMessageSize = 2147483647;
-                    //TODO: change the address based on the server name
+                    System.Xml.XmlDictionaryReaderQuotas readerQuotas = new System.Xml.XmlDictionaryReaderQuotas();
+                    readerQuotas.MaxDepth = 1000000;
+                    readerQuotas.MaxArrayLength = 10000000;
+                    readerQuotas.MaxBytesPerRead = 2147483647;
+                    readerQuotas.MaxStringContentLength = 2147483647;
+                    binding.ReaderQuotas = readerQuotas;
+
+                    //NetTcpSecurity security = new NetTcpSecurity();
+                    //security.Mode = SecurityMode.None;
+                    //TcpTransportSecurity transport_security = new TcpTransportSecurity();
+                    //transport_security.ClientCredentialType = TcpClientCredentialType.None;
+                    //transport_security.ProtectionLevel = System.Net.Security.ProtectionLevel.None;
+                    //security.Transport = transport_security;
+                    //MessageSecurityOverTcp message_security = new MessageSecurityOverTcp();
+                    //message_security.ClientCredentialType = MessageCredentialType.None;
+                    //security.Message = message_security;
+                    //binding.Security = security;
+
                     string servername = database.servers[i];
                     if (servername.Contains("_"))
                         servername = database.servers[i].Remove(database.servers[i].IndexOf("_"));
                     EndpointAddress address = new EndpointAddress(
                         String.Format("net.tcp://{0}.10g.sdss.pha.jhu.edu:8090/ParticleTrackingService", servername));
                     factories[i] = new DuplexChannelFactory<IParticleTrackingService>(instanceContext, binding, address);
+                    
+                    foreach (OperationDescription op in factories[i].Endpoint.Contract.Operations)
+                    {
+                        DataContractSerializerOperationBehavior dataContractBehavior = op.Behaviors.Find<DataContractSerializerOperationBehavior>() as DataContractSerializerOperationBehavior;
+                        if (dataContractBehavior != null)
+                        {
+                            dataContractBehavior.MaxItemsInObjectGraph = 2147483647;
+                        }
+                    }
+
+                    factories[i].Open();
                     channels[i] = factories[i].CreateChannel();
                     channels[i].Init(database.servers[i], database.databases[i], (short)dataset, tableName, database.atomDim, (int)spatialInterp, development);
                     Console.WriteLine("called Init() on server {0}, database {1}", database.servers[i], database.databases[i]);
@@ -108,7 +138,20 @@ namespace ParticleTrackingTestClient
                 {
                     if (particles_per_node[i] != null && particles_per_node[i].Count > 0)
                     {
-                        channels[i].DoParticleTrackingWork(particles_per_node[i]);
+                        if (particles_per_node[i].Count > MAX_PARTICLES_PER_NODE)
+                        {
+                            for (int j = 0; j < particles_per_node[i].Count; j += MAX_PARTICLES_PER_NODE)
+                            {
+                                List<SQLUtility.TrackingInputRequest> part = particles_per_node[i].GetRange(j, Math.Min(MAX_PARTICLES_PER_NODE, particles_per_node[i].Count - j));
+                                channels[i].DoParticleTrackingWork(part);
+                            }
+                        }
+                        else
+                        {
+                            channels[i].DoParticleTrackingWork(particles_per_node[i]);
+                        }
+                        
+                        //channels[i].DoParticleTrackingWork(particles_per_node[i]);
                     }
                 }
                 Console.WriteLine("Finished particle distribution. Waiting for results.");
@@ -119,6 +162,7 @@ namespace ParticleTrackingTestClient
                 for (int i = 0; i < database.serverCount; i++)
                 {
                     channels[i].Finish();
+                    factories[i].Close();
                 }
             }
             catch (Exception ex)
@@ -157,9 +201,8 @@ namespace ParticleTrackingTestClient
                 long zindex = new Morton3D(Z, Y, X).Key;
                 particles[i] = new SQLUtility.TrackingInputRequest(i, timestep, zindex, new Turbulence.TurbLib.DataTypes.Point3(x, y, z), new Turbulence.TurbLib.DataTypes.Point3(),
                     new Turbulence.TurbLib.DataTypes.Vector3(), startTime, endTime, dt, true, 0, false);
-                //(i, new Turbulence.TurbLib.DataTypes.Point3(x, y, z), new Turbulence.TurbLib.DataTypes.Point3(), 0, 0, 0.4f, 0.001f, true, false, 0, 0);
 
-                Console.WriteLine(String.Format("x = {0}, y = {1}, z = {2}", x, y, z));
+                //Console.WriteLine(String.Format("x = {0}, y = {1}, z = {2}", x, y, z));
             }
         }
 

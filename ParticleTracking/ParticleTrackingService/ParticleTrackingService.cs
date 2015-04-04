@@ -19,13 +19,15 @@ namespace ParticleTracking
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Reentrant)]
     public class ParticleTrackingService : IParticleTrackingService
     {
-        volatile bool working = false;
+        //volatile bool working = false;
+        private static int working = 0;
         string localServer;
         string localDatabase;
         string tableName;
         SqlConnection localConn;
         TurbDataTable table;
         GetPositionWorker worker;
+        int number_tasks = 0;
 
         ConcurrentDictionary<int, SQLUtility.TrackingInputRequest> input;
 
@@ -190,7 +192,7 @@ namespace ParticleTracking
                     (TurbulenceOptions.SpatialInterpolation)spatialInterp,
                     TurbulenceOptions.TemporalInterpolation.PCHIP);
 
-            working = false;
+            System.Threading.Interlocked.Exchange(ref working, 0);
         }
 
 
@@ -260,7 +262,14 @@ namespace ParticleTracking
                 AddParticles(particles);
                 //Console.WriteLine("Added a list of particles");
                 IParticleTrackingServiceCallback callback_channel = OperationContext.Current.GetCallbackChannel<IParticleTrackingServiceCallback>();
-                Task worker = Task.Factory.StartNew(() => DoWork(callback_channel));
+                if (working == 0)
+                {
+                    Task worker = Task.Factory.StartNew(() => DoWork(callback_channel));
+                }
+                else
+                {
+                    DoWork(callback_channel);
+                }
             }
             catch (Exception ex)
             {
@@ -289,16 +298,16 @@ namespace ParticleTracking
 
         private void DoWork(IParticleTrackingServiceCallback callback_channel)
         {
-            if (!working)
+            if (0 == System.Threading.Interlocked.Exchange(ref working, 1))
             {
-                //Console.WriteLine("Starting to do work @" + DateTime.Now);
+                Console.WriteLine("Starting to do work @" + DateTime.Now);
                 if (localConn.State != ConnectionState.Open)
                 {
                     Console.WriteLine("local connection is not open, state is: " + localConn.State);
                 }
                 try
                 {
-                    working = true;
+                    //working = true;
                     Dictionary<SQLUtility.TimestepZindexKey, List<int>> atoms_map = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>(); // Contains the database atoms to be retrieved from the DB
                     // and the input particles associated with each atom
                     // (identified by their request/particle id).
@@ -426,8 +435,9 @@ namespace ParticleTracking
                     Console.WriteLine(ex);
                     throw ex;
                 }
-                working = false;
-                //Console.WriteLine("Stopped doing work @" + DateTime.Now);
+                //working = false;
+                System.Threading.Interlocked.Exchange(ref working, 0);
+                Console.WriteLine("Stopped doing work @" + DateTime.Now);
             }
         }
     }
