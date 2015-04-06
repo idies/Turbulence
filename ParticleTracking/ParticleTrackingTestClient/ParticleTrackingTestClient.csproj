@@ -40,14 +40,14 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Turbulence, Version=1.1.5506.32909, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Turbulence">
       <HintPath>..\..\Turbulence\Turbulence\bin\Release\Turbulence.dll</HintPath>
     </Reference>
     <Reference Include="TurbulenceWebServiceLibrary">
