@@ -15,10 +15,13 @@ create procedure [spAddUserDataset]
 	@x int, @y int, @z int,
 	@xwidth int, @ywidth int, @zwidth int,
 	@t int, 
-	@twidth int
+	@twidth int,
+	@isUniformGrid bit = 1
 
 as
 begin
+	--constant for now
+	--declare @ATOMSIZE int = 8
 
 	declare @minLim bigint
 	declare @maxLim bigint
@@ -28,7 +31,11 @@ begin
 	--get minLim and maxLim
 	--set @minLim = turblib.dbo.CreateMortonIndex(@z, @y, @x)
 	set @minLim = 0
-	set @maxLim = turblib.dbo.CreateMortonIndex (@zwidth, @ywidth, @xwidth)
+	set @maxLim = turblib.dbo.CreateMortonIndex (@zwidth-1, @ywidth-1, @xwidth-1) --&~(@ATOMSIZE*@ATOMSIZE*@ATOMSIZE-1)
+
+	--right now channelflow is only non-uniform dataset
+	if @sourceDatasetID	= 6
+		set @isUniformGrid = 0
 
 	--get info about source dataset
 	select @dt = dt, @timeinc = timeinc, @timeoff = timeoff 
@@ -61,7 +68,9 @@ begin
 	[thigh] [int] NULL,
 	[xhigh] [int] NULL,
 	[yhigh] [int] NULL,
-	[zhigh] [int] NULL)
+	[zhigh] [int] NULL,
+	[tstart] [int] null,
+	[isUniformGrid] bit null)
 
 	insert @t1 
 			([name]
@@ -78,7 +87,9 @@ begin
            ,[thigh]
            ,[xhigh]
            ,[yhigh]
-           ,[zhigh])
+           ,[zhigh]
+		   ,[tstart]
+		   ,[isUniformGrid])
 		values (
 			@name,
 			1,
@@ -91,7 +102,9 @@ begin
 			@thigh,
 			@xwidth,
 			@ywidth,
-			@zwidth )
+			@zwidth,
+			@t,
+			@isUniformGrid )
 
 		--select * from @t1
 
