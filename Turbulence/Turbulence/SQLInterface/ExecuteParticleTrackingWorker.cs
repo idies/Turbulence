@@ -71,7 +71,8 @@ public partial class StoredProcedures
 
         // Read input data
         bool all_done = false;
-        map = SQLUtility.ReadTempTableGetAtomsToRead_ParticleTracking(tempTable, worker, contextConn, input, inputSize, ref points_per_cube, ref all_done);
+        float endTime, dt;
+        map = SQLUtility.ReadTempTableGetAtomsToRead_ParticleTracking(tempTable, worker, contextConn, input, inputSize, ref points_per_cube, ref all_done, out endTime, out dt);
         //contextConn.Close();
 
         //endTime = DateTime.Now;
@@ -209,7 +210,7 @@ public partial class StoredProcedures
                                 throw new Exception("blob is NULL!");
 
                             point.cubesRead++;
-                            worker.GetResult(blob, ref point, timestep, basetime);
+                            worker.GetResult(blob, ref point, timestep, basetime, endTime, dt);
                         }
                     }
 

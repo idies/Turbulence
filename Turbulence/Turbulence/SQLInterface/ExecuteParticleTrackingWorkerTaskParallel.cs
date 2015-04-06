@@ -46,20 +46,32 @@ public partial class StoredProcedures
 
         //initialTimeStamp = startTime = DateTime.Now;
 
+        string localServerCleanName = localServer;
+        if (localServer.Contains("_"))
+            localServerCleanName = localServer.Remove(localServer.IndexOf("_"));            
+
         List<string> servers = new List<string>();
         List<string> databases = new List<string>();
         List<string> codeDatabase = new List<string>();
         List<ServerBoundaries> serverBoundaries = new List<ServerBoundaries>();
         List<SqlConnection> connections = new List<SqlConnection>();
 
+        SqlConnection contextConn;
+        contextConn = new SqlConnection("context connection=true");
+
         String cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", turbinfoServer, turbinfoDB);
         SqlConnection turbinfoConn = new SqlConnection(cString);
         turbinfoConn.Open();
         SqlCommand cmd = turbinfoConn.CreateCommand();
+        string DBMapTable = "DatabaseMap";
+        if (development == true)
+        {
+            DBMapTable = "DatabaseMapTest";
+        }
         cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
-            "from {0}..DatabaseMap where DatasetID = @datasetID " +
+            "from {0}..{1} where DatasetID = @datasetID " +
             "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-            "order by minLim", turbinfoDB);
+            "order by minLim", turbinfoDB, DBMapTable);
         cmd.Parameters.AddWithValue("@datasetID", datasetID);
         using (SqlDataReader reader = cmd.ExecuteReader())
         {
@@ -82,7 +94,15 @@ public partial class StoredProcedures
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
-                    connections.Add(new SqlConnection(String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, DBName)));
+                    if (serverName.CompareTo(localServerCleanName) == 0)
+                    {
+                        // We'll use the context connection in this case.
+                        connections.Add(contextConn);
+                    }
+                    else
+                    {
+                        connections.Add(new SqlConnection(String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, DBName)));
+                    }
                 }
             }
             else
@@ -92,12 +112,9 @@ public partial class StoredProcedures
         }
         turbinfoConn.Close();
 
-        SqlConnection contextConn;
-        contextConn = new SqlConnection("context connection=true");
         contextConn.Open();
-        
         // Load information about the requested dataset
-        TurbDataTable table = TurbDataTable.GetTableInfo(localServer, localDatabase, tableName, atomDim, contextConn);
+        TurbDataTable table = TurbDataTable.GetTableInfo(localServerCleanName, localDatabase, tableName, atomDim, contextConn);
 
         // Instantiate a worker class
         Turbulence.SQLInterface.workers.GetPositionWorker worker =
@@ -107,17 +124,20 @@ public partial class StoredProcedures
 
         float points_per_cube = 0;
 
-        Dictionary<SQLUtility.TimestepZindexKey, List<int>>[] map;
+        Dictionary<long, List<int>>[] map;
         Dictionary<int, SQLUtility.TrackingInputRequest> input = new Dictionary<int, SQLUtility.TrackingInputRequest>(inputSize);
 
         // Read input data
         bool all_done = false;
-        int initial_timestep;
+        int baseTimeStep;
+        int number_of_crossings = 0;
         if (temporalInterp == (int)TurbulenceOptions.TemporalInterpolation.None)
-            initial_timestep = SQLUtility.GetNearestTimestep(time, table);
+            baseTimeStep = SQLUtility.GetNearestTimestep(time, table);
         else
-            initial_timestep = SQLUtility.GetFlooredTimestep(time, table);
-        map = ReadTempTableGetAtomsToRead(tempTable, worker, contextConn, input, serverBoundaries, initial_timestep, time, endTime, dt);
+            baseTimeStep = SQLUtility.GetFlooredTimestep(time, table);
+        int nextTimeStep = baseTimeStep;
+        float nextTime = time;
+        map = ReadTempTableGetAtomsToRead(tempTable, worker, contextConn, input, serverBoundaries, ref number_of_crossings);
         cmd = new SqlCommand(String.Format(@"DELETE FROM {0}", tempTable), contextConn);
         try
         {
@@ -128,7 +148,7 @@ public partial class StoredProcedures
             throw new Exception(String.Format("Error deleting from temporary table.  [Inner Exception: {0}])",
                 e.ToString()));
         }
-        contextConn.Close();
+        //contextConn.Close();
 
         //endTime = DateTime.Now;
         //ReadTempTableGetCubesToRead += endTime - startTime;
@@ -165,10 +185,14 @@ public partial class StoredProcedures
         //cmd.CommandType = CommandType.Text;
         //cmd.ExecuteNonQuery();
 
+        SqlConnection standardConn;
+        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", localServer, localDatabase);
+        standardConn = new SqlConnection(connString);
+        standardConn.Open();
+
         record = new SqlDataRecord(GetRecordMetaData());
         SqlContext.Pipe.SendResultsStart(record);
 
-        SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
         SQLUtility.TrackingInputRequest point = new SQLUtility.TrackingInputRequest();
         // Bitmask to ignore low order bits of address
         long mask = ~(long)(worker.DataTable.atomDim * worker.DataTable.atomDim * worker.DataTable.atomDim - 1);
@@ -178,6 +202,10 @@ public partial class StoredProcedures
         if ((TurbulenceOptions.TemporalInterpolation)temporalInterp ==
             TurbulenceOptions.TemporalInterpolation.None)
         {
+            contextConn.Close();
+            contextConn.Dispose();
+            standardConn.Close();
+            standardConn.Dispose();
             map = null;
             input = null;
             rawdata = null;
@@ -195,7 +223,7 @@ public partial class StoredProcedures
             while (!all_done)
             {
                 all_done = true;
-                // Go through each server and request the data.
+                //Go through each server and request the data.
                 for (int s = 0; s < servers.Count; s++)
                 {
                     if (map[s].Count > 0)
@@ -204,38 +232,77 @@ public partial class StoredProcedures
                         {
                             connections[s].Open();
                         }
-                        
-                        tableName = String.Format("{0}.dbo.{1}", databases[s], table.TableName);
+
+                        //tableName = String.Format("{0}.dbo.{1}", localDatabase, table.TableName);
 
                         //Create a table to perform query via a JOIN
-                        string joinTable = SQLUtility.CreateTemporaryJoinTable(map[s].Keys, (TurbulenceOptions.TemporalInterpolation)temporalInterp, table.TimeInc, connections[s], points_per_cube);
+                        //string joinTable = SQLUtility.CreateTemporaryJoinTable(map[s].Keys, (TurbulenceOptions.TemporalInterpolation)temporalInterp, table.TimeInc, connections[s], points_per_cube);
+                        string joinTable;
+                        if (servers[s] == localServerCleanName)
+                        {
+                            joinTable = SQLUtility.CreateTemporaryJoinTable(map[s].Keys, standardConn, points_per_cube);
+                        }
+                        else
+                        {
+                            joinTable = SQLUtility.CreateTemporaryJoinTable(map[s].Keys, connections[s], points_per_cube);
+                        }
                         
-                        cmd = new SqlCommand(
-                            String.Format(@"SELECT {1}.basetime, {0}.timestep, {0}.zindex, {0}.data " +
-                                            "FROM {0}, {1} " +
-                                            "WHERE {0}.timestep = {1}.timestep AND {0}.zindex = {1}.zindex",
-                                      tableName, joinTable),
-                                      connections[s]);
+                        int timestep0 = baseTimeStep - table.TimeInc;
+                        int timestep1 = baseTimeStep;
+                        int timestep2 = baseTimeStep + table.TimeInc;
+                        int timestep3 = baseTimeStep + table.TimeInc * 2;
+
+                        tableName = string.Format("{0}.dbo.{1}", databases[s], table.TableName);
+
+                        string query = String.Format(@"declare @times table (timestep int not null) " +
+                                "insert @times values ({2}) " +
+                                "insert @times values ({3}) " +
+                                "insert @times values ({4}) " +
+                                "insert @times values ({5}) " +
+
+                                "select d.timestep, d.zindex, d.data " +
+                                "from @times as t, {0} as d, {1} as j " +
+                                "where d.timestep = t.timestep and d.zindex = j.zindex ",
+                          tableName, joinTable, timestep0, timestep1, timestep2, timestep3);
+
+                        //string query = String.Format(@"DECLARE @times table (timestep int NOT NULL) " +
+                        //        "INSERT @times VALUES ({2}) " +
+                        //        "INSERT @times VALUES ({3}) " +
+                        //        "INSERT @times VALUES ({4}) " +
+                        //        "INSERT @times VALUES ({5}) " +
+
+                        //        "SELECT d.timestep, d.zindex, d.data " +
+                        //        "FROM @times as t, {0} as d, {1} as j " +
+                        //        "WHERE d.timestep = t.timestep AND d.zindex = j.zindex ",
+                        //  tableName, joinTable, timestep0, timestep1, timestep2, timestep3);
+                        //for (int s = 0; s < servers.Count; s++)
+                        //{
+                        //    query += String.Format(@"UNION ALL " +
+                        //        "SELECT d.timestep, d.zindex, d.data " +
+                        //        "FROM @times as t, [{0}].[{1}].dbo.[{2}] as d, {3} as j " +
+                        //        "WHERE d.timestep = t.timestep AND d.zindex = j.zindex ", 
+                        //        servers[s], databases[s], table.TableName, joinTable);
+                        //}
+                        cmd = new SqlCommand(query, connections[s]);
                         cmd.CommandTimeout = 3600;
 
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())
                             {
-                                int basetime = reader.GetSqlInt32(0).Value;  // Base time
-                                int timestep = reader.GetSqlInt32(1).Value;  // Timestep returned
-                                long thisBlob = reader.GetSqlInt64(2).Value; // Blob returned
-                                key.SetValues(basetime, thisBlob);
+                                //int basetime = reader.GetSqlInt32(0).Value;  // Base time
+                                int timestepRead = reader.GetSqlInt32(0).Value;  // Timestep returned
+                                long thisBlob = reader.GetSqlInt64(1).Value; // Blob returned
                                 int bytesread = 0;
 
                                 while (bytesread < table.BlobByteSize)
                                 {
-                                    int bytes = (int)reader.GetBytes(3, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
+                                    int bytes = (int)reader.GetBytes(2, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
                                     bytesread += bytes;
                                 }
-                                blob.Setup(timestep, new Morton3D(thisBlob), rawdata);
+                                blob.Setup(timestepRead, new Morton3D(thisBlob), rawdata);
 
-                                foreach (int i in map[s][key])
+                                foreach (int i in map[s][thisBlob])
                                 {
                                     point = input[i];
 
@@ -245,7 +312,7 @@ public partial class StoredProcedures
                                         throw new Exception("blob is NULL!");
 
                                     point.cubesRead++;
-                                    worker.GetResult(blob, ref point, timestep, basetime);
+                                    worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime);
                                 }
                             }
                         }
@@ -281,7 +348,7 @@ public partial class StoredProcedures
                     input[input_point].cubesRead = 0;
                     input[input_point].numberOfCubes = 0;
                     input[input_point].lagInt = null;
-                    AddRequestToMap(ref map, input[input_point], worker, mask, serverBoundaries);
+                    AddRequestToMap(ref map, input[input_point], worker, mask, serverBoundaries, ref number_of_crossings);
                     all_done = false;
                 }
                 foreach (int done_point in done_points)
@@ -290,12 +357,19 @@ public partial class StoredProcedures
                     input.Remove(done_point);
                 }
                 done_points.Clear();
+
+                time = nextTime;
+                baseTimeStep = nextTimeStep;
             }
             // Encourage garbage collector to clean up.
             blob = null;
         }
         else
         {
+            contextConn.Close();
+            contextConn.Dispose();
+            standardConn.Close();
+            standardConn.Dispose();
             map = null;
             input = null;
             rawdata = null;
@@ -303,6 +377,14 @@ public partial class StoredProcedures
             throw new Exception("Unsupported TemporalInterpolation Type");
         }
 
+        SqlContext.Pipe.SendResultsEnd();
+
+        record = new SqlDataRecord(new SqlMetaData[] {
+            new SqlMetaData("number_of_crossings", SqlDbType.Int)
+        });
+        SqlContext.Pipe.SendResultsStart(record);
+        record.SetInt32(0, number_of_crossings);
+        SqlContext.Pipe.SendResultsRow(record);
         SqlContext.Pipe.SendResultsEnd();
 
         //endTime = DateTime.Now;
@@ -340,6 +422,10 @@ public partial class StoredProcedures
             map[i].Clear();
         }
 
+        //contextConn.Close();
+        //contextConn.Dispose();
+        standardConn.Close();
+        standardConn.Dispose();
         map = null;
         input = null;
         rawdata = null;
@@ -354,19 +440,18 @@ public partial class StoredProcedures
         // System.GC.Collect();
     }
 
-    private static Dictionary<SQLUtility.TimestepZindexKey, List<int>>[] ReadTempTableGetAtomsToRead(
+    private static Dictionary<long, List<int>>[] ReadTempTableGetAtomsToRead(
         string tempTable,
         Turbulence.SQLInterface.workers.GetPositionWorker worker,
         SqlConnection conn,
         Dictionary<int, SQLUtility.TrackingInputRequest> input,
         List<ServerBoundaries> serverBoundaries,
-        int timestep,
-        float time, float endTime, float dt)
+        ref int number_of_crossings)
     {
-        Dictionary<SQLUtility.TimestepZindexKey, List<int>>[] map = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>[serverBoundaries.Count];
+        Dictionary<long, List<int>>[] map = new Dictionary<long, List<int>>[serverBoundaries.Count];
         for (int i = 0; i < serverBoundaries.Count; i++)
         {
-            map[i] = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>();
+            map[i] = new Dictionary<long, List<int>>();
         }
 
         tempTable = SQLUtility.SanitizeTemporaryTable(tempTable);
@@ -391,19 +476,15 @@ public partial class StoredProcedures
             reqseq = reader.GetSqlInt32(0).Value;
             request = new SQLUtility.TrackingInputRequest(
                 reqseq,
-                timestep,
                 reader.GetSqlInt64(1).Value,
                 new Point3(reader.GetSqlSingle(2).Value, reader.GetSqlSingle(3).Value, reader.GetSqlSingle(4).Value),
                 new Point3(),
                 new Vector3(),
-                time,
-                endTime,
-                dt,
                 true);
 
             input[reqseq] = request;
 
-            AddRequestToMap(ref map, request, worker, mask, serverBoundaries);
+            AddRequestToMap(ref map, request, worker, mask, serverBoundaries, ref number_of_crossings);
         }
         reader.Close();
 
@@ -411,22 +492,17 @@ public partial class StoredProcedures
     }
 
     //TODO: Consider moving this method to the worker.
-    private static void AddRequestToMap(ref Dictionary<SQLUtility.TimestepZindexKey, List<int>>[] map, SQLUtility.TrackingInputRequest request,
+    private static void AddRequestToMap(ref Dictionary<long, List<int>>[] map, SQLUtility.TrackingInputRequest request,
         Turbulence.SQLInterface.workers.GetPositionWorker worker, long mask,
-        List<ServerBoundaries> serverBoundaries)
+        List<ServerBoundaries> serverBoundaries, ref int number_of_crossings)
     {
         long zindex = 0;
-        SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
 
         zindex = request.zindex & mask;
-        key.SetValues(request.timeStep, zindex);
 
         if (worker.spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
         {
-            zindex = request.zindex & mask;
-            key.SetValues(request.timeStep, zindex);
-
-            AddRequestToServerMap(ref map, request, zindex, key, serverBoundaries);
+            AddRequestToServerMap(ref map, request, zindex, serverBoundaries);
         }
         else
         {
@@ -455,6 +531,8 @@ public partial class StoredProcedures
             starty = starty - ((starty % worker.setInfo.atomDim) + worker.setInfo.atomDim) % worker.setInfo.atomDim;
             startx = startx - ((startx % worker.setInfo.atomDim) + worker.setInfo.atomDim) % worker.setInfo.atomDim;
 
+            int assigned_server = -1;
+            bool crossing = false;
             for (int z = startz; z <= endz; z += worker.setInfo.atomDim)
             {
                 for (int y = starty; y <= endy; y += worker.setInfo.atomDim)
@@ -467,34 +545,51 @@ public partial class StoredProcedures
                         int zi = ((z % worker.setInfo.GridResolutionZ) + worker.setInfo.GridResolutionZ) % worker.setInfo.GridResolutionZ;
 
                         zindex = new Morton3D(zi, yi, xi).Key & mask;
-                        key.SetValues(request.timeStep, zindex);
 
-                        AddRequestToServerMap(ref map, request, zindex, key, serverBoundaries);
+                        int server = AddRequestToServerMap(ref map, request, zindex, serverBoundaries);
+
+                        if (assigned_server != -1 && assigned_server != server)
+                        {
+                            crossing = true;
+                        }
+                        assigned_server = server;
                     }
                 }
+            }
+            if (crossing)
+            {
+                number_of_crossings++;
             }
         }
     }
 
-    private static void AddRequestToServerMap(ref Dictionary<SQLUtility.TimestepZindexKey, List<int>>[] map, 
+    private static int AddRequestToServerMap(ref Dictionary<long, List<int>>[] map, 
         SQLUtility.TrackingInputRequest request,
-        long zindex, SQLUtility.TimestepZindexKey key, 
+        long zindex,
         List<ServerBoundaries> serverBoundaries)
-    {
+    {                
+        //if (!map.ContainsKey(zindex))
+        //{
+        //    map[zindex] = new List<int>();
+        //}
+        //map[zindex].Add(request.request);
+        //request.numberOfCubes++;
+
         for (int i = 0; i < serverBoundaries.Count; i++)
         {
             //NOTE: We assume each node stores a contiguous range of zindexes.
             if (serverBoundaries[i].startKey <= zindex && zindex <= serverBoundaries[i].endKey)
             {
-                if (!map[i].ContainsKey(key))
+                if (!map[i].ContainsKey(zindex))
                 {
-                    map[i][key] = new List<int>();
+                    map[i][zindex] = new List<int>();
                 }
-                map[i][key].Add(request.request);
+                map[i][zindex].Add(request.request);
                 request.numberOfCubes++;
-                break;
+                return i;
             }
         }
+        return -1;
     }
 
     static void GenerateResultRowFinalPosition(SqlDataRecord record, SQLUtility.TrackingInputRequest temp_point)

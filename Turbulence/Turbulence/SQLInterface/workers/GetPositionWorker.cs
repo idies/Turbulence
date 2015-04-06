@@ -73,72 +73,72 @@ namespace Turbulence.SQLInterface.workers
         /// This methods should only need to be called when spatial interpolation is performed
         /// i.e. when kernelSize != 0
         /// </remarks>
-        public void GetAtomsForPoint(SQLUtility.TrackingInputRequest request, long mask, int pointsPerCubeEstimate, Dictionary<SQLUtility.TimestepZindexKey, List<int>> map, ref int total_points)
-        {
-            if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
-                throw new Exception("GetAtomsForPoint should only be called when spatial interpolation is performed!");
+        //public void GetAtomsForPoint(SQLUtility.TrackingInputRequest request, long mask, int pointsPerCubeEstimate, Dictionary<SQLUtility.TimestepZindexKey, List<int>> map, ref int total_points)
+        //{
+        //    if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
+        //        throw new Exception("GetAtomsForPoint should only be called when spatial interpolation is performed!");
 
-            int X, Y, Z;
-            if (request.compute_predictor)
-            {
-                X = LagInterpolation.CalcNode(request.pos.x, setInfo.Dx);
-                Y = LagInterpolation.CalcNode(request.pos.y, setInfo.Dx);
-                Z = LagInterpolation.CalcNode(request.pos.z, setInfo.Dx);
-            }
-            else
-            {
-                X = LagInterpolation.CalcNode(request.pre_pos.x, setInfo.Dx);
-                Y = LagInterpolation.CalcNode(request.pre_pos.y, setInfo.Dx);
-                Z = LagInterpolation.CalcNode(request.pre_pos.z, setInfo.Dx);
-            }
-            // For Lagrange Polynomial interpolation we need a cube of data 
+        //    int X, Y, Z;
+        //    if (request.compute_predictor)
+        //    {
+        //        X = LagInterpolation.CalcNode(request.pos.x, setInfo.Dx);
+        //        Y = LagInterpolation.CalcNode(request.pos.y, setInfo.Dx);
+        //        Z = LagInterpolation.CalcNode(request.pos.z, setInfo.Dx);
+        //    }
+        //    else
+        //    {
+        //        X = LagInterpolation.CalcNode(request.pre_pos.x, setInfo.Dx);
+        //        Y = LagInterpolation.CalcNode(request.pre_pos.y, setInfo.Dx);
+        //        Z = LagInterpolation.CalcNode(request.pre_pos.z, setInfo.Dx);
+        //    }
+        //    // For Lagrange Polynomial interpolation we need a cube of data 
 
-            int startz = Z - kernelSize / 2 + 1, starty = Y - kernelSize / 2 + 1, startx = X - kernelSize / 2 + 1;
-            int endz = Z + kernelSize / 2, endy = Y + kernelSize / 2, endx = X + kernelSize / 2;
+        //    int startz = Z - kernelSize / 2 + 1, starty = Y - kernelSize / 2 + 1, startx = X - kernelSize / 2 + 1;
+        //    int endz = Z + kernelSize / 2, endy = Y + kernelSize / 2, endx = X + kernelSize / 2;
 
-            // we do not want a request to appear more than once in the list for an atom
-            // with the below logic we are going to check distinct atoms only
-            // we want to start at the start of a DB atom
-            startz = startz - ((startz % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
-            starty = starty - ((starty % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
-            startx = startx - ((startx % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
+        //    // we do not want a request to appear more than once in the list for an atom
+        //    // with the below logic we are going to check distinct atoms only
+        //    // we want to start at the start of a DB atom
+        //    startz = startz - ((startz % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
+        //    starty = starty - ((starty % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
+        //    startx = startx - ((startx % setInfo.atomDim) + setInfo.atomDim) % setInfo.atomDim;
 
-            long zindex;
-            SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
+        //    long zindex;
+        //    SQLUtility.TimestepZindexKey key = new SQLUtility.TimestepZindexKey();
 
-            for (int z = startz; z <= endz; z += setInfo.atomDim)
-            {
-                for (int y = starty; y <= endy; y += setInfo.atomDim)
-                {
-                    for (int x = startx; x <= endx; x += setInfo.atomDim)
-                    {
-                        // Wrap the coordinates into the grid space
-                        int xi = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                        int yi = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                        int zi = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+        //    for (int z = startz; z <= endz; z += setInfo.atomDim)
+        //    {
+        //        for (int y = starty; y <= endy; y += setInfo.atomDim)
+        //        {
+        //            for (int x = startx; x <= endx; x += setInfo.atomDim)
+        //            {
+        //                // Wrap the coordinates into the grid space
+        //                int xi = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+        //                int yi = ((y % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+        //                int zi = ((z % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
 
-                        if (setInfo.PointInRange(xi, yi, zi))
-                        {
-                            zindex = new Morton3D(zi, yi, xi).Key & mask;
-                            key.SetValues(request.timeStep, zindex);
-                            if (!map.ContainsKey(key))
-                            {
-                                //map[zindex] = new List<int>(pointsPerCubeEstimate);
-                                map[key] = new List<int>();
-                            }
-                            //Debug.Assert(!map[zindex].Contains(request.request));
-                            map[key].Add(request.request);
-                            request.numberOfCubes++;
-                            total_points++;
-                        }
-                        else
-                        {
-                            request.crossed_boundary = true;
-                        }
-                    }
-                }
-            }
-        }
+        //                if (setInfo.PointInRange(xi, yi, zi))
+        //                {
+        //                    zindex = new Morton3D(zi, yi, xi).Key & mask;
+        //                    key.SetValues(request.timeStep, zindex);
+        //                    if (!map.ContainsKey(key))
+        //                    {
+        //                        //map[zindex] = new List<int>(pointsPerCubeEstimate);
+        //                        map[key] = new List<int>();
+        //                    }
+        //                    //Debug.Assert(!map[zindex].Contains(request.request));
+        //                    map[key].Add(request.request);
+        //                    request.numberOfCubes++;
+        //                    total_points++;
+        //                }
+        //                else
+        //                {
+        //                    request.crossed_boundary = true;
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
         public override double[] GetResult(TurbulenceBlob blob, SQLUtility.InputRequest input)
         {
@@ -150,7 +150,7 @@ namespace Turbulence.SQLInterface.workers
             throw new NotImplementedException();
         }
 
-        public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestep, int basetime)
+        public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestepRead, int basetime, float time, float endTime, float dt, ref int nextTimeStep, ref float nextTime)
         {
             double[] velocity = new double[3];
 
@@ -159,7 +159,7 @@ namespace Turbulence.SQLInterface.workers
 
             int timestepsForInterpolation;
 
-            float dt1 = Math.Abs(point.endTime - point.time);
+            float dt1 = Math.Abs(endTime - time);
 
             if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
             {
@@ -184,9 +184,9 @@ namespace Turbulence.SQLInterface.workers
                 if (point.compute_predictor)
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pos.x, point.pos.y, point.pos.z, ref point.lagInt);
-                    if (point.dt > 0)
+                    if (dt > 0)
                     {
-                        if (dt1 < point.dt)
+                        if (dt1 < dt)
                         {
                             if (dt1 < 0.00001)
                             {
@@ -194,12 +194,12 @@ namespace Turbulence.SQLInterface.workers
 
                             }
                             else
-                                point.dt = dt1;
+                                dt = dt1;
                         }
                     }
                     else
                     {
-                        if (dt1 < -point.dt)
+                        if (dt1 < -dt)
                         {
                             if (dt1 < 0.00001)
                             {
@@ -207,7 +207,7 @@ namespace Turbulence.SQLInterface.workers
 
                             }
                             else
-                                point.dt = -dt1;
+                                dt = -dt1;
                         }
                     }
                 }
@@ -216,32 +216,32 @@ namespace Turbulence.SQLInterface.workers
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pre_pos.x, point.pre_pos.y, point.pre_pos.z, ref point.lagInt);
                 }
 
-                if (timestep == timestep0)
+                if (timestepRead == timestep0)
                 {
-                    point.vel_inc.x += -(float)velocity[0] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
-                    point.vel_inc.y += -(float)velocity[1] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
-                    point.vel_inc.z += -(float)velocity[2] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (-1 + (point.time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.x += -(float)velocity[0] * dt * (time - time1) * (1 + (time - time1) * (-1 + (time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.y += -(float)velocity[1] * dt * (time - time1) * (1 + (time - time1) * (-1 + (time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.z += -(float)velocity[2] * dt * (time - time1) * (1 + (time - time1) * (-1 + (time - time2) / delta) / delta) / 2 / delta;
                     //point.result[r] += -result[r] * (time - time1) * (1 + (time - time1) * (-1 + (time - time2) / delta) / delta) / 2 / delta;
                 }
-                else if (timestep == timestep1)
+                else if (timestepRead == timestep1)
                 {
-                    point.vel_inc.x += (float)velocity[0] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
-                    point.vel_inc.y += (float)velocity[1] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
-                    point.vel_inc.z += (float)velocity[2] * point.dt * (1 + ((point.time - time1) * (point.time - time1) * (-2 + 3 * (point.time - time2) / delta) / 2 / delta / delta));
+                    point.vel_inc.x += (float)velocity[0] * dt * (1 + ((time - time1) * (time - time1) * (-2 + 3 * (time - time2) / delta) / 2 / delta / delta));
+                    point.vel_inc.y += (float)velocity[1] * dt * (1 + ((time - time1) * (time - time1) * (-2 + 3 * (time - time2) / delta) / 2 / delta / delta));
+                    point.vel_inc.z += (float)velocity[2] * dt * (1 + ((time - time1) * (time - time1) * (-2 + 3 * (time - time2) / delta) / 2 / delta / delta));
                     //point.result[r] += result[r] * (1 + ((time - time1) * (time - time1) * (-2 + 3 * (time - time2) / delta) / 2 / delta / delta));
                 }
-                else if (timestep == timestep2)
+                else if (timestepRead == timestep2)
                 {
-                    point.vel_inc.x += (float)velocity[0] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
-                    point.vel_inc.y += (float)velocity[1] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
-                    point.vel_inc.z += (float)velocity[2] * point.dt * (point.time - time1) * (1 + (point.time - time1) * (1 - 3 * (point.time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.x += (float)velocity[0] * dt * (time - time1) * (1 + (time - time1) * (1 - 3 * (time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.y += (float)velocity[1] * dt * (time - time1) * (1 + (time - time1) * (1 - 3 * (time - time2) / delta) / delta) / 2 / delta;
+                    point.vel_inc.z += (float)velocity[2] * dt * (time - time1) * (1 + (time - time1) * (1 - 3 * (time - time2) / delta) / delta) / 2 / delta;
                     //point.result[r] += result[r] * (time - time1) * (1 + (time - time1) * (1 - 3 * (time - time2) / delta) / delta) / 2 / delta;
                 }
-                else if (timestep == timestep3)
+                else if (timestepRead == timestep3)
                 {
-                    point.vel_inc.x += (float)velocity[0] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
-                    point.vel_inc.y += (float)velocity[1] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
-                    point.vel_inc.z += (float)velocity[2] * point.dt * (point.time - time1) * (point.time - time1) * (point.time - time2) / 2 / delta / delta / delta;
+                    point.vel_inc.x += (float)velocity[0] * dt * (time - time1) * (time - time1) * (time - time2) / 2 / delta / delta / delta;
+                    point.vel_inc.y += (float)velocity[1] * dt * (time - time1) * (time - time1) * (time - time2) / 2 / delta / delta / delta;
+                    point.vel_inc.z += (float)velocity[2] * dt * (time - time1) * (time - time1) * (time - time2) / 2 / delta / delta / delta;
                     //point.result[r] += result[r] * (time - time1) * (time - time1) * (time - time2) / 2 / delta / delta / delta;
                 }
             }
@@ -258,11 +258,6 @@ namespace Turbulence.SQLInterface.workers
                     point.pre_pos.x = point.pos.x + point.vel_inc.x;
                     point.pre_pos.y = point.pos.y + point.vel_inc.y;
                     point.pre_pos.z = point.pos.z + point.vel_inc.z;
-                    point.time += point.dt;
-                    if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
-                        point.timeStep = SQLUtility.GetNearestTimestep(point.time, setInfo);
-                    else
-                        point.timeStep = SQLUtility.GetFlooredTimestep(point.time, setInfo);
                     int X, Y, Z;
                     if (kernelSize == 0)
                     {
@@ -278,6 +273,12 @@ namespace Turbulence.SQLInterface.workers
                     }
                     point.zindex = new Morton3D(Z, Y, X);
                     point.compute_predictor = false;
+
+                    nextTime = time + dt;
+                    if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
+                        nextTimeStep = SQLUtility.GetNearestTimestep(nextTime, setInfo);
+                    else
+                        nextTimeStep = SQLUtility.GetFlooredTimestep(nextTime, setInfo);
                 }
                 else
                 {
@@ -307,6 +308,9 @@ namespace Turbulence.SQLInterface.workers
                         Z = LagInterpolation.CalcNode(point.pos.z, setInfo.Dz);
                     }
                     point.zindex = new Morton3D(Z, Y, X);
+
+                    nextTime = time;
+                    nextTimeStep = basetime;
                 }
             }
         }
