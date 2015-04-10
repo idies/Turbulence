@@ -160,6 +160,8 @@ namespace Turbulence.REST.Controllers
                         break;
                     case "rawvelocity":
                         result = service.GetRawVelocity(key, dataset, time, x, y, z, xwidth, ywidth, zwidth);
+                        int len = ((byte[])result).Length;
+                        log.SendMessage(log.CreateInfoMessage("*** GetRawVelocity result length: " + len));
                         break;
                     case "threshold":
                         result = service.GetThreshold(key, dataset, field, time, threshold, interpolation.Spatial, x, y, z, xwidth, ywidth, zwidth);
@@ -203,8 +205,23 @@ namespace Turbulence.REST.Controllers
 
                 if (result is byte[])
                 {
+                   
                     HttpResponseMessage response = Request.CreateResponse();
-                    Action<Stream, HttpContent, TransportContext> writeToStream = (stream, foo, bar) => { stream.Write((result as byte[]), 0, (result as byte[]).Length); stream.Close(); };
+                    Action<Stream, HttpContent, TransportContext> writeToStream = (stream, foo, bar) => {
+                        byte[] buf = result as byte[];
+                        //stream.Write(buf, 0, buf.Length);
+                        
+                        int i = 0;
+                        int length = 1024*1024;
+                        while (i < buf.Length) 
+                        {
+                            if (length > (buf.Length - i)) { length = buf.Length - i; }
+                            stream.Write(buf, i, length);
+                            i += length;
+                            //stream.Flush();
+                        }
+                        stream.Close();
+                    };
                     response.Content = new PushStreamContent(writeToStream, new MediaTypeHeaderValue("application/octet-stream"));
                     return response;
                 }
