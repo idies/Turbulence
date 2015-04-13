@@ -186,7 +186,7 @@ public partial class StoredProcedures
         //cmd.ExecuteNonQuery();
 
         SqlConnection standardConn;
-        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", localServer, localDatabase);
+        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", localServerCleanName, localDatabase);
         standardConn = new SqlConnection(connString);
         standardConn.Open();
 
