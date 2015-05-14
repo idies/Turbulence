@@ -105,9 +105,9 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HDF5DotNet, Version=1.8.9.0, Culture=neutral, PublicKeyToken=a4952c8df86d6e8c, processorArchitecture=x86">
+    <Reference Include="HDF5DotNet, Version=1.8.9.0, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Bin32\HDF5DotNet.dll</HintPath>
+      <HintPath>.\HDF5DotNet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
@@ -127,20 +127,11 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Bin32\hdf5dll.dll" />
-    <Content Include="Bin32\HDF5DotNet.dll" />
-    <Content Include="Bin32\hdf5_hldll.dll" />
-    <Content Include="Bin32\szip.dll" />
-    <Content Include="Bin32\zlib.dll" />
-    <Content Include="Bin64\hdf5dll.dll" />
-    <Content Include="Bin64\HDF5DotNet.dll" />
-    <Content Include="Bin64\hdf5_hldll.dll" />
-    <Content Include="Bin64\szip.dll" />
-    <Content Include="Bin64\zlib.dll" />
     <Content Include="download.aspx" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="HDF5DotNet.dll" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>

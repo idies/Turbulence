@@ -11,12 +11,63 @@ using Turbulence.TurbLib;
 using Turbulence.TurbLib.DataTypes;
 using Turbulence.SQLInterface;
 using TurbulenceService;
-
+using System.Threading;
+using System.Reflection;
+using System.Security.AccessControl;
+using System.Security.Principal;
 //
 namespace CutoutService
 {
+    class SingleGlobalInstance : IDisposable
+    {
+        public bool hasHandle = false;
+        Mutex mutex;
+
+        private void InitMutex()
+        {
+            string appGuid = ((GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), false).GetValue(0)).Value.ToString();
+            string mutexId = string.Format("Global\\{{{0}}}", appGuid);
+            mutex = new Mutex(false, mutexId);
+
+            var allowEveryoneRule = new MutexAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), MutexRights.FullControl, AccessControlType.Allow);
+            var securitySettings = new MutexSecurity();
+            securitySettings.AddAccessRule(allowEveryoneRule);
+            mutex.SetAccessControl(securitySettings);
+        }
+
+        public SingleGlobalInstance(int timeOut)
+        {
+            InitMutex();
+            try
+            {
+                if (timeOut < 0)
+                    hasHandle = mutex.WaitOne(Timeout.Infinite, false);
+                else
+                    hasHandle = mutex.WaitOne(timeOut, false);
+
+                if (hasHandle == false)
+                    throw new TimeoutException("Timeout waiting for exclusive access on SingleInstance");
+            }
+            catch (AbandonedMutexException)
+            {
+                hasHandle = true;
+            }
+        }
+
+
+        public void Dispose()
+        {
+            if (mutex != null)
+            {
+                if (hasHandle)
+                    mutex.ReleaseMutex();
+                mutex.Dispose();
+            }
+        }
+    }
     public partial class download : System.Web.UI.Page
     {
+        
         [DllImport("hdf5dll.dll")]
         public static extern unsafe int H5Pset_fapl_core(int fapl_id, ulong increment, uint backing_store);
         [DllImport("hdf5dll.dll")]
@@ -27,14 +78,15 @@ namespace CutoutService
         public static extern unsafe void free(void* memblock);
         [DllImport("msvcrt.dll")]
         public static extern unsafe void memcpy(void* dest, void* src, ulong count);
-
+         
         Database database = new Database("turbinfo", false);
         AuthInfo authInfo = new AuthInfo("turbinfo", false);
         Log log = new Log("turbinfo", false);
 
         //Maximum download size allowed
         long maxsize = 12L * 256L * 350L * 512L; //525MB
-
+        
+        //if (FileLoadException != null) throw FileLoadException;
         protected unsafe void Page_Load(object sender, EventArgs e)
         {
             //DateTime start = DateTime.Now;
@@ -132,324 +184,352 @@ namespace CutoutService
                 Response.End();
             }
 
-
-            try
-            {
-                filename = System.IO.Path.GetTempFileName();//+ dataset + "_" + xrange + "_" + yrange + "_" + zrange + ".h5";
-
-                H5.Open();
-
-                H5PropertyListId fapl = H5P.create(H5P.PropertyListClass.FILE_ACCESS);
-                H5Pset_fapl_core(fapl.Id, (ulong)1048576 * 16, (uint)0);
-
-                //Create a temp file and serve it to the user
-                H5FileId file = H5F.create(filename, H5F.CreateMode.ACC_TRUNC, new H5PropertyListId(H5P.Template.DEFAULT), fapl);
-                //H5FileId file = H5F.create(filename, H5F.CreateMode.ACC_TRUNC);
-                //Write header info into the HDF5 file
-                int[] start_data = { tlow, xlow, ylow, zlow };
-                int[] size_data = { tsize, xsize, ysize, zsize };
-                long[] vec4size = { 4 };
-                H5DataSpaceId vec4 = H5S.create_simple(1, vec4size);
-                H5DataSetId start_field = H5D.create(file, "_start", H5T.H5Type.NATIVE_INT, vec4);
-                H5DataTypeId intTypeId = H5T.copy(H5T.H5Type.NATIVE_INT);
-                H5D.write<int>(start_field, intTypeId, new H5Array<int>(start_data));
-
-                H5DataSetId size_field = H5D.create(file, "_size", H5T.H5Type.NATIVE_INT, vec4);
-                H5D.write<int>(size_field, intTypeId, new H5Array<int>(size_data));
-
-                H5D.close(size_field);
-                H5D.close(start_field);
-                H5S.close(vec4);
-
-                //Bitfield indicating which fields are present
-                long[] one = { 1 };
-                H5DataSpaceId singleval = H5S.create_simple(1, one);
-                int[] dsenum = { (int)dataset_enum };
-                int[] contents_data = { (fields.Contains("u") ? 0x01 : 0x00) |
-                                        (fields.Contains("p") ? 0x02 : 0x00) |
-                                        (fields.Contains("b") ? 0x04 : 0x00) |
-                                        (fields.Contains("a") ? 0x08 : 0x00) |
-                                        (fields.Contains("d") ? 0x16 : 0x00) };
-
-                //The enum of the dataset requested
-                H5DataSetId ds_field = H5D.create(file, "_dataset", H5T.H5Type.NATIVE_INT, singleval);
-
-                H5D.write<int>(ds_field, intTypeId, new H5Array<int>(dsenum));
-
-                H5DataSetId contents_field = H5D.create(file, "_contents", H5T.H5Type.NATIVE_INT, singleval);
-                H5D.write<int>(contents_field, intTypeId, new H5Array<int>(contents_data));
-
-                H5D.close(contents_field);
-                H5D.close(ds_field);
-                H5S.close(singleval);
-                H5T.close(intTypeId);
-
-                long size = (long)xsize * (long)ysize * (long)zsize * 3 * sizeof(float);
-                long[] datasize = { zsize, ysize, xsize, 3 };
-                H5DataTypeId dataType = H5T.copy(H5T.H5Type.NATIVE_FLOAT);
-                H5DataSpaceId dataspace = H5S.create_simple(4, datasize, datasize);
-
-                AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, xwidth * ywidth * zwidth);
-                int num_virtual_servers = 1;
-                database.Initialize(dataset_enum, num_virtual_servers);
-
-                int pieces = 1, dz = (int)datasize[0];
-
-                //If a single buffer exceeds 2gb, then split into multiple pieces
-                //if (size > 2000000000L)
-                if (size > 256000000L)
+            
+                try
                 {
-                    pieces = (int)Math.Ceiling((float)size / 256000000L);
 
-                    //Round up to nearest power of 2
-                    pieces--;
-                    pieces |= pieces >> 1;
-                    pieces |= pieces >> 2;
-                    pieces |= pieces >> 4;
-                    pieces |= pieces >> 8;
-                    pieces |= pieces >> 16;
-                    pieces++;
-                    dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
-                }
 
-                DataInfo.TableNames tableName;
-                int components;
-                string field;
-
-                if (fields.Contains("u"))
-                {
-                    components = 3;
-                    field = "u";
-
-                    tableName = DataInfo.getTableName(dataset_enum, field);
-                    object rowid = null;
-                    rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawVelocity,
-                        (int)TurbulenceOptions.SpatialInterpolation.None,
-                        (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
-
-                    if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
+                    filename = System.IO.Path.GetTempFileName();//+ dataset + "_" + xrange + "_" + yrange + "_" + zrange + ".h5";
+                    H5FileId file;
+                    H5DataTypeId intTypeId;
+                    /*System lock added due to threading issues with H5.Open and H5D.create*/
+                    /*Tested with 16 current connections 256x256x16 with 2 timesteps on SkyDev and it produced no errors*/
+                    using (new SingleGlobalInstance(1000))
                     {
-                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                        H5.Open();
+
+                        H5PropertyListId fapl = H5P.create(H5P.PropertyListClass.FILE_ACCESS);
+                        H5Pset_fapl_core(fapl.Id, (ulong)1048576 * 16, (uint)0);
+
+                        //Create a temp file and serve it to the user
+                        file = H5F.create(filename, H5F.CreateMode.ACC_TRUNC, new H5PropertyListId(H5P.Template.DEFAULT), fapl);
+                        //H5FileId file = H5F.create(filename, H5F.CreateMode.ACC_TRUNC);
+                        //Write header info into the HDF5 file
+                        int[] start_data = { tlow, xlow, ylow, zlow };
+                        int[] size_data = { tsize, xsize, ysize, zsize };
+                        long[] vec4size = { 4 };
+                        H5DataSpaceId vec4 = H5S.create_simple(1, vec4size);
+                        H5DataSetId start_field = H5D.create(file, "_start", H5T.H5Type.NATIVE_INT, vec4);
+                        intTypeId = H5T.copy(H5T.H5Type.NATIVE_INT);
+                        H5D.write<int>(start_field, intTypeId, new H5Array<int>(start_data));
+
+                        H5DataSetId size_field = H5D.create(file, "_size", H5T.H5Type.NATIVE_INT, vec4);
+                        H5D.write<int>(size_field, intTypeId, new H5Array<int>(size_data));
+
+                        H5D.close(size_field);
+                        H5D.close(start_field);
+                        H5S.close(vec4);
                     }
-                    else
+                    //Bitfield indicating which fields are present
+                    long[] one = { 1 };
+                    H5DataSpaceId singleval = H5S.create_simple(1, one);
+                    int[] dsenum = { (int)dataset_enum };
+                    int[] contents_data = { (fields.Contains("u") ? 0x01 : 0x00) |
+                                                (fields.Contains("p") ? 0x02 : 0x00) |
+                                                (fields.Contains("b") ? 0x04 : 0x00) |
+                                                (fields.Contains("a") ? 0x08 : 0x00) |
+                                                (fields.Contains("d") ? 0x16 : 0x00) };
+
+                    //The enum of the dataset requested
+                    H5DataSetId ds_field = H5D.create(file, "_dataset", H5T.H5Type.NATIVE_INT, singleval);
+
+                    H5D.write<int>(ds_field, intTypeId, new H5Array<int>(dsenum));
+
+                    H5DataSetId contents_field = H5D.create(file, "_contents", H5T.H5Type.NATIVE_INT, singleval);
+                    H5D.write<int>(contents_field, intTypeId, new H5Array<int>(contents_data));
+
+                    H5D.close(contents_field);
+                    H5D.close(ds_field);
+                    H5S.close(singleval);
+                    H5T.close(intTypeId);
+
+                    long size = (long)xsize * (long)ysize * (long)zsize * 3 * sizeof(float);
+                    long[] datasize = { zsize, ysize, xsize, 3 };
+                    H5DataTypeId dataType = H5T.copy(H5T.H5Type.NATIVE_FLOAT);
+                    H5DataSpaceId dataspace = H5S.create_simple(4, datasize, datasize);
+
+                    AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, xwidth * ywidth * zwidth);
+                    int num_virtual_servers = 1;
+                    database.Initialize(dataset_enum, num_virtual_servers);
+
+                    int pieces = 1, dz = (int)datasize[0];
+
+                    //If a single buffer exceeds 2gb, then split into multiple pieces
+                    //if (size > 2000000000L)
+                    if (size > 256000000L)
                     {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, 
-                            time_step, x_step, y_step, z_step, filter_width);
-                    }
+                        pieces = (int)Math.Ceiling((float)size / 256000000L);
 
-                    log.UpdateLogRecord(rowid, database.Bitfield);
-                    log.Reset();
-                }
-
-                if (fields.Contains("b"))
-                {
-                    components = 3;
-                    field = "b";
-                    
-                    tableName = DataInfo.getTableName(dataset_enum, field);
-                    object rowid = null;
-                    rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawMagnetic,
-                        (int)TurbulenceOptions.SpatialInterpolation.None,
-                        (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
-
-                    if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
-                    {
-                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
-                    }
-                    else
-                    {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, 
-                            time_step, x_step, y_step, z_step, filter_width);
-                    }
-
-                    log.UpdateLogRecord(rowid, database.Bitfield);
-                    log.Reset();
-                }
-
-                if (fields.Contains("a"))
-                {
-                    components = 3;
-                    field = "a";
-                    
-                    tableName = DataInfo.getTableName(dataset_enum, field);
-                    object rowid = null;
-                    rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPotential,
-                        (int)TurbulenceOptions.SpatialInterpolation.None,
-                        (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
-
-                    if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
-                    {
-                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
-                    }
-                    else
-                    {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, 
-                            time_step, x_step, y_step, z_step, filter_width);
+                        //Round up to nearest power of 2
+                        pieces--;
+                        pieces |= pieces >> 1;
+                        pieces |= pieces >> 2;
+                        pieces |= pieces >> 4;
+                        pieces |= pieces >> 8;
+                        pieces |= pieces >> 16;
+                        pieces++;
+                        dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
                     }
 
-                    log.UpdateLogRecord(rowid, database.Bitfield);
-                    log.Reset();
-                }
+                    DataInfo.TableNames tableName;
+                    int components;
+                    string field;
 
-                size = (long)xsize * (long)ysize * (long)zsize * 1 * sizeof(float);
-                datasize[3] = 1;
-                H5S.close(dataspace);
-                dataspace = H5S.create_simple(4, datasize, datasize);
-
-                //If a single buffer exceeds 2gb, then split into multiple pieces
-                //if (size > 2000000000L)
-                if (size > 256000000L)
-                {
-                    pieces = (int)Math.Ceiling((float)size / 256000000L);
-
-                    //Round up to nearest power of 2
-                    pieces--;
-                    pieces |= pieces >> 1;
-                    pieces |= pieces >> 2;
-                    pieces |= pieces >> 4;
-                    pieces |= pieces >> 8;
-                    pieces |= pieces >> 16;
-                    pieces++;
-                    dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
-                }
-
-                if (fields.Contains("p"))
-                {
-                    components = 1;
-                    field = "p";
-
-                    tableName = DataInfo.getTableName(dataset_enum, field);
-                    object rowid = null;
-                    rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPressure,
-                        (int)TurbulenceOptions.SpatialInterpolation.None,
-                        (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
-
-                    if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
+                    if (fields.Contains("u"))
                     {
-                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
-                    }
-                    else
-                    {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, 
-                            time_step, x_step, y_step, z_step, filter_width);
+                        components = 3;
+                        field = "u";
+
+                        tableName = DataInfo.getTableName(dataset_enum, field);
+                        object rowid = null;
+                        rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawVelocity,
+                            (int)TurbulenceOptions.SpatialInterpolation.None,
+                            (int)TurbulenceOptions.TemporalInterpolation.None,
+                           xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                        log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
+
+                        if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
+                        {
+                            GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                        }
+                        else
+                        {
+                            GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth,
+                                time_step, x_step, y_step, z_step, filter_width);
+                        }
+
+                        log.UpdateLogRecord(rowid, database.Bitfield);
+                        log.Reset();
                     }
 
-                    log.UpdateLogRecord(rowid, database.Bitfield);
-                    log.Reset();
-                }
-
-                if (fields.Contains("d"))
-                {
-                    components = 1;
-                    field = "d";
-
-                    tableName = DataInfo.getTableName(dataset_enum, field);
-                    object rowid = null;
-                    rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawDensity,
-                        (int)TurbulenceOptions.SpatialInterpolation.None,
-                        (int)TurbulenceOptions.TemporalInterpolation.None,
-                       xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
-                    log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
-
-                    if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
+                    if (fields.Contains("b"))
                     {
-                        GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                        components = 3;
+                        field = "b";
+
+                        tableName = DataInfo.getTableName(dataset_enum, field);
+                        object rowid = null;
+                        rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawMagnetic,
+                            (int)TurbulenceOptions.SpatialInterpolation.None,
+                            (int)TurbulenceOptions.TemporalInterpolation.None,
+                           xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                        log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
+
+                        if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
+                        {
+                            GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                        }
+                        else
+                        {
+                            GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth,
+                                time_step, x_step, y_step, z_step, filter_width);
+                        }
+
+                        log.UpdateLogRecord(rowid, database.Bitfield);
+                        log.Reset();
                     }
-                    else
+
+                    if (fields.Contains("a"))
                     {
-                        GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth, 
-                            time_step, x_step, y_step, z_step, filter_width);
+                        components = 3;
+                        field = "a";
+
+                        tableName = DataInfo.getTableName(dataset_enum, field);
+                        object rowid = null;
+                        rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPotential,
+                            (int)TurbulenceOptions.SpatialInterpolation.None,
+                            (int)TurbulenceOptions.TemporalInterpolation.None,
+                           xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                        log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
+
+                        if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
+                        {
+                            GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                        }
+                        else
+                        {
+                            GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth,
+                                time_step, x_step, y_step, z_step, filter_width);
+                        }
+
+                        log.UpdateLogRecord(rowid, database.Bitfield);
+                        log.Reset();
                     }
 
-                    log.UpdateLogRecord(rowid, database.Bitfield);
-                    log.Reset();
-                }
+                    size = (long)xsize * (long)ysize * (long)zsize * 1 * sizeof(float);
+                    datasize[3] = 1;
+                    H5S.close(dataspace);
+                    dataspace = H5S.create_simple(4, datasize, datasize);
 
-                H5S.close(dataspace);
-                H5T.close(dataType);
-                H5F.flush(file, H5F.Scope.GLOBAL);
-
-                GC.Collect();
-                ulong filesize;
-
-                Response.Clear();
-                Response.ClearContent();
-                Response.ClearHeaders();
-                //Prevent browser from displaying the content as an html page
-                Response.ContentType = "";
-
-                //Make the file pop up as a download
-                Response.AppendHeader("Content-Disposition", String.Format("attachment; filename=\"{0}.h5\"", dataset));
-
-                unsafe
-                {
-                    filesize = H5Fget_file_image(file.Id, null, 0);
-
-                    filebuff = (byte*)malloc(filesize);
-                    H5Fget_file_image(file.Id, filebuff, filesize);
-
-                    H5F.close(file);
-                    Response.AppendHeader("Content-length", filesize.ToString());
-                    Response.AppendHeader("X-ServerName", System.Environment.MachineName);
-
-                    //Send file piece by piece
-                    ulong stride = 256000000L;
-                    //ulong stride = 536870912;
-                    byte[] temp = new byte[stride];
-                    ulong parts = filesize / stride;
-                    for (ulong p = 0; p < parts; p++)
+                    //If a single buffer exceeds 2gb, then split into multiple pieces
+                    //if (size > 2000000000L)
+                    if (size > 256000000L)
                     {
+                        pieces = (int)Math.Ceiling((float)size / 256000000L);
+
+                        //Round up to nearest power of 2
+                        pieces--;
+                        pieces |= pieces >> 1;
+                        pieces |= pieces >> 2;
+                        pieces |= pieces >> 4;
+                        pieces |= pieces >> 8;
+                        pieces |= pieces >> 16;
+                        pieces++;
+                        dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
+                    }
+
+                    if (fields.Contains("p"))
+                    {
+                        components = 1;
+                        field = "p";
+
+                        tableName = DataInfo.getTableName(dataset_enum, field);
+                        object rowid = null;
+                        rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawPressure,
+                            (int)TurbulenceOptions.SpatialInterpolation.None,
+                            (int)TurbulenceOptions.TemporalInterpolation.None,
+                           xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                        log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
+
+                        if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
+                        {
+                            GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                        }
+                        else
+                        {
+                            GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth,
+                                time_step, x_step, y_step, z_step, filter_width);
+                        }
+
+                        log.UpdateLogRecord(rowid, database.Bitfield);
+                        log.Reset();
+                    }
+
+                    if (fields.Contains("d"))
+                    {
+                        components = 1;
+                        field = "d";
+
+                        tableName = DataInfo.getTableName(dataset_enum, field);
+                        object rowid = null;
+                        rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawDensity,
+                            (int)TurbulenceOptions.SpatialInterpolation.None,
+                            (int)TurbulenceOptions.TemporalInterpolation.None,
+                           xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null);
+                        log.UpdateRecordCount(auth.Id, tsize * xwidth * ywidth * zwidth);
+
+                        if (time_step == 1 && x_step == 1 && y_step == 1 && z_step == 1 && filter_width == 1)
+                        {
+                            GetRawData_(file, dataType, dataspace, field, pieces, dz, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth);
+                        }
+                        else
+                        {
+                            GetFilteredData_(file, dataType, dataspace, field, dataset_enum, tableName, components, tlow, thigh, xlow, ylow, zlow, xwidth, ywidth, zwidth,
+                                time_step, x_step, y_step, z_step, filter_width);
+                        }
+
+                        log.UpdateLogRecord(rowid, database.Bitfield);
+                        log.Reset();
+                    }
+
+                    H5S.close(dataspace);
+                    H5T.close(dataType);
+                    H5F.flush(file, H5F.Scope.GLOBAL);
+
+                    GC.Collect();
+                    ulong filesize;
+
+                    Response.Clear();
+                    Response.ClearContent();
+                    Response.ClearHeaders();
+                    //Prevent browser from displaying the content as an html page
+                    Response.ContentType = "";
+
+                    //Make the file pop up as a download
+                    Response.AppendHeader("Content-Disposition", String.Format("attachment; filename=\"{0}.h5\"", dataset));
+
+                    unsafe
+                    {
+                        filesize = H5Fget_file_image(file.Id, null, 0);
+
+                        filebuff = (byte*)malloc(filesize);
+                        H5Fget_file_image(file.Id, filebuff, filesize);
+
+                        H5F.close(file);
+                        Response.AppendHeader("Content-length", filesize.ToString());
+                        Response.AppendHeader("X-ServerName", System.Environment.MachineName);
+
+                        //Send file piece by piece
+                        ulong stride = 256000000L;
+                        //ulong stride = 536870912;
+                        /*Why do we allocate this much space for each request?*/
+                        /*
+                        byte[] temp = new byte[stride];
+                        ulong parts = filesize / stride;
+                        for (ulong p = 0; p < parts; p++)
+                        {
+                            fixed (byte* temp_ = temp)
+                                memcpy(temp_, filebuff + stride * p, stride);
+                            Response.BinaryWrite(temp);
+                            Response.Flush();
+                        }
+                         */
+                        /*No stride test */
+                        //byte[] temp = new byte[stride];
+                        byte[] temp = new byte[filesize];
                         fixed (byte* temp_ = temp)
-                            memcpy(temp_, filebuff + stride * p, stride);
+                            memcpy(temp_, filebuff, filesize);
                         Response.BinaryWrite(temp);
                         Response.Flush();
+                        ulong parts = 0;
+
+
+                        temp = null;
+
+                        if (filesize % stride > 0)
+                        {
+                            byte[] temp2 = new byte[filesize % stride];
+                            fixed (byte* temp_ = temp2)
+                                memcpy(temp_, filebuff + stride * parts, filesize % stride);
+                            Response.BinaryWrite(temp2);
+                            Response.Flush();
+                            temp2 = null;
+                        }
+                        free(filebuff);
                     }
-                    temp = null;
 
-                    if (filesize % stride > 0)
-                    {
-                        byte[] temp2 = new byte[filesize % stride];
-                        fixed (byte* temp_ = temp2)
-                            memcpy(temp_, filebuff + stride * parts, filesize % stride);
-                        Response.BinaryWrite(temp2);
-                        Response.Flush();
-                        temp2 = null;
-                    }
-                    free(filebuff);
-                }
+                    H5.Close();
 
-                H5.Close();
-
-                System.IO.File.Delete(filename);
-
-                //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\downloadPageTime.txt", true);
-                //time_log.WriteLine(DateTime.Now - start);
-                //time_log.Close();
-            }
-            catch (Exception ex)
-            {
-                // if we terminate prematurely, we'll leak all this RAM, and that's no good, now is it?
-                if (filebuff != null)
-                {
-                    free(filebuff);
-                }
-                if (!String.IsNullOrEmpty(filename) && System.IO.File.Exists(filename))
-                {
                     System.IO.File.Delete(filename);
+
+                    //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\downloadPageTime.txt", true);
+                    //time_log.WriteLine(DateTime.Now - start);
+                    //time_log.Close();
+
                 }
-                //Response.AddHeader("X-ServerName", System.Environment.MachineName);
-                Response.StatusCode = 500;
-                Response.Write("<font color=\"red\">Error! " + ex.Message.ToString() + "</font><br /><br />Details:<br />" + System.Environment.MachineName + "<br />" + ex.ToString()); 
-                Response.End();
-            }
+
+                catch (Exception ex)
+                {
+                    // if we terminate prematurely, we'll leak all this RAM, and that's no good, now is it?
+                    if (filebuff != null)
+                    {
+                        free(filebuff);
+                    }
+                    if (!String.IsNullOrEmpty(filename) && System.IO.File.Exists(filename))
+                    {
+                        System.IO.File.Delete(filename);
+                    }
+                    //Response.AddHeader("X-ServerName", System.Environment.MachineName);
+                    Response.StatusCode = 500;
+                    Response.Write("<font color=\"red\">Error! " + ex.Message.ToString() + "</font><br /><br />Details:<br />" + System.Environment.MachineName + "<br />" + ex.ToString());
+                    Response.End();
+                }
+                //finally
+                //{
+
+                //}
+                //mut.ReleaseMutex();
+            
         }
 
         private void CheckBoundaries(DataInfo.DataSets dataset, int tlow, int thigh, int xlow, int xhigh, int ylow, int yhigh, int zlow, int zhigh)
