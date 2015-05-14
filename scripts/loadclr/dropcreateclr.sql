@@ -12,8 +12,31 @@ DROP PROCEDURE [dbo].[GetFilteredCutout]
 DROP PROCEDURE [dbo].[GetStridedDataCutout]
 DROP PROCEDURE [dbo].[ExecuteTwoFieldsWorker]
 DROP PROCEDURE [dbo].[ExecuteTwoFieldsBoxFilterWorker]
+DROP PROCEDURE [dbo].[ExecuteParticleTrackingWorkerTaskParallel]
 DROP ASSEMBLY Turbulence 
 CREATE ASSEMBLY Turbulence FROM @DLL_Turbulence WITH PERMISSION_SET = UNSAFE 
+GO
+CREATE PROCEDURE [dbo].[ExecuteParticleTrackingWorkerTaskParallel] (
+	@turbinfoServer [nvarchar](4000),
+	@turbinfoDB [nvarchar](4000),
+	@localServer [nvarchar](4000),
+	@localDatabase [nvarchar](4000),
+	@datasetID [smallint],
+	@tableName [nvarchar](4000),
+	@atomDim [int],
+	@workerType [int],
+	@spatialInterp [int],
+	@temporalInterp [int],
+	@intpuSize [int],
+	@tempTable [nvarchar](4000),
+    @time real,
+    @endTime real,
+    @dt real,
+	@development [bit]
+) AS
+EXTERNAL NAME [Turbulence].[StoredProcedures].[ExecuteParticleTrackingWorkerTaskParallel]
+GO
+GRANT EXECUTE ON [dbo].[ExecuteParticleTrackingWorkerTaskParallel] TO [turbquery]
 GO
 CREATE PROCEDURE [dbo].[ExecuteGetPositionWorker] (
 	@serverName nvarchar(4000),

@@ -3,6 +3,7 @@ using System.Data;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using Turbulence.TurbLib;
 using Turbulence.TurbLib.DataTypes;
 using Turbulence.SQLInterface;
@@ -1920,127 +1921,6 @@ namespace TurbulenceService
             return records;
         }
 
-        private int GetPositionResults(IAsyncResult[] asyncRes, Point3[] points, Point3[] predictor, bool compute_predictor)
-        {
-            int records = 0;
-            bool[] encountered_particles = new bool[points.Length];
-            for (int s = 0; s < serverCount; s++)
-            {
-                if (connections[s] != null && datatables[s].Rows.Count > 0)
-                {
-                    SqlDataReader reader = sqlcmds[s].EndExecuteReader(asyncRes[s]);
-                    int id;
-                    while (reader.Read())
-                    {
-                        id = reader.GetSqlInt32(0).Value;
-                        if (compute_predictor)
-                        {
-                            if (!encountered_particles[id])
-                            {
-                                predictor[id] = new Point3(points[id].x, points[id].y, points[id].z);
-                                encountered_particles[id] = true;
-                            }
-                            predictor[id].x += reader.GetSqlSingle(1).Value;
-                            predictor[id].y += reader.GetSqlSingle(2).Value;
-                            predictor[id].z += reader.GetSqlSingle(3).Value;
-                        }
-                        else
-                        {
-                            if (!encountered_particles[id])
-                            {
-                                points[id].x = 0.5F * (points[id].x + predictor[id].x);
-                                points[id].y = 0.5F * (points[id].y + predictor[id].y);
-                                points[id].z = 0.5F * (points[id].z + predictor[id].z);
-                                encountered_particles[id] = true;
-                            }
-                            points[id].x += 0.5F * (reader.GetSqlSingle(1).Value);
-                            points[id].y += 0.5F * (reader.GetSqlSingle(2).Value);
-                            points[id].z += 0.5F * (reader.GetSqlSingle(3).Value);
-                        }
-                        records++;
-                    }
-                    reader.Close();
-                    datatables[s].Clear();
-                    count[s] = 0;
-                }
-            }
-            return records;
-        }
-
-        private int GetPositionResults(IAsyncResult[] asyncRes, TrackingInfo[] points)
-        {
-            bool[] encountered_particles = new bool[points.Length];
-            int records = 0;
-            for (int s = 0; s < serverCount; s++)
-            {
-                if (connections[s] != null && datatables[s].Rows.Count > 0)
-                {
-                    SqlDataReader reader = sqlcmds[s].EndExecuteReader(asyncRes[s]);
-                    int id;
-                    while (reader.Read())
-                    {
-                        id = reader.GetSqlInt32(0).Value;
-
-                        if (!encountered_particles[id])
-                        {
-                            points[id] = new TrackingInfo(
-                                new Point3(reader.GetSqlSingle(1).Value, reader.GetSqlSingle(2).Value, reader.GetSqlSingle(3).Value),
-                                new Point3(reader.GetSqlSingle(4).Value, reader.GetSqlSingle(5).Value, reader.GetSqlSingle(6).Value),
-                                reader.GetSqlInt32(10).Value,
-                                reader.GetSqlSingle(11).Value,
-                                reader.GetSqlSingle(12).Value,
-                                reader.GetSqlSingle(13).Value,
-                                reader.GetSqlBoolean(14).Value,
-                                reader.GetSqlBoolean(15).Value
-                                );
-                            encountered_particles[id] = true;
-                        }
-                        else
-                        {
-                            // If this point was already returned from another server
-                            // it means it was crossing the server boundaries.
-                            // Therefore, we just need to add the velocity increment to the predictor or corrector position, e.g.:
-                            // predictor = pos + vel * dt
-                            // when we have 2 srevers each computes predictor_i = pos + vel_i * dt
-                            // when we get the data from the first server we set predictor = pos + vel_0 * dt
-                            // from the second server we get vel_1 * dt and predictor += vel_1 * dt
-                            // which yields predictor = pos + vel_0 * dt + vel_1 * dt = pos + vel * dt
-                            if (!points[id].compute_predictor)
-                            {
-                                //The logic here is a little counter-intuitive. 
-                                //The point was assigned to multiple servers. 
-                                //Each server has performed the evaluation and has updated the compute_predictor flag. 
-                                //However, we need to add the velocity increments from the different servers either to the predictor or the corrector. 
-                                //Thus, if the compute_predictor flag is set to true it means the correct was computed 
-                                //and the velocity increment should be added to the corrector 
-                                //and vice versa if the compute_predictor flag is set to false it means the predictor was computed 
-                                //and the velocity increment should be added to the predictor.
-
-                                points[id].predictor.x += reader.GetSqlSingle(7).Value;
-                                points[id].predictor.y += reader.GetSqlSingle(8).Value;
-                                points[id].predictor.z += reader.GetSqlSingle(9).Value;
-                            }
-                            else
-                            {
-                                points[id].position.x += 0.5f * reader.GetSqlSingle(7).Value;
-                                points[id].position.y += 0.5f * reader.GetSqlSingle(8).Value;
-                                points[id].position.z += 0.5f * reader.GetSqlSingle(9).Value;
-                            }
-                        }
-
-                        records++;
-                    }
-                    reader.Close();
-                    datatables[s].Clear();
-                    count[s] = 0;
-                    // We may not be done!
-                    //connections[s].Close();
-                    //connections[s] = null;    
-                }
-            }
-            return records;
-        }
-
         private void GetRawResults(IAsyncResult[] asyncRes, byte[] result, int components,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
@@ -3417,14 +3297,118 @@ namespace TurbulenceService
             TurbulenceOptions.TemporalInterpolation temporal,
             Point3[] points, Point3[] predictor, bool compute_predictor, float dt)
         {
+            //bool[] encountered_particles = new bool[points.Length];
+            ConcurrentDictionary<int, bool> encountered_particles = new ConcurrentDictionary<int, bool>(serverCount, points.Length);
+            for (int i = 0; i < points.Length; i++)
+            {
+                encountered_particles[i] = false;
+            }
+            int numberOfCallbacksNotYetCompleted = 0;
+            ManualResetEvent doneEvent = new ManualResetEvent(false);
+            Exception exception = null;
 
-            IAsyncResult[] asyncRes;
-            //asyncRes = ExecuteGetPositionWorker(dataset,
-            //    Worker.Workers.GetPosition, time, spatial, temporal, compute_predictor, dt);
-            asyncRes = ExecuteMHDWorker(dataset,
-                (int)Worker.Workers.GetPosition, time, (int)spatial, (int)temporal, dt);
 
-            return GetPositionResults(asyncRes, points, predictor, compute_predictor);
+            for (int s = 0; s < serverCount; s++)
+            {
+                if (connections[s] != null && datatables[s].Rows.Count > 0)
+                {
+                    sqlcmds[s] = connections[s].CreateCommand();
+                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDWorker] @serverName, @dbname, @codedb, @dataset, "
+                                            + " @workerType, @blobDim, @time, "
+                                            + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
+                                            codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@dataset", dataset);
+                    sqlcmds[s].Parameters.AddWithValue("@workerType", (int)Worker.Workers.GetPosition);
+                    sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
+                    sqlcmds[s].Parameters.AddWithValue("@time", time);
+                    sqlcmds[s].Parameters.AddWithValue("@spatialInterp", spatial);
+                    sqlcmds[s].Parameters.AddWithValue("@temporalInterp", temporal);
+                    sqlcmds[s].Parameters.AddWithValue("@arg", dt);
+                    sqlcmds[s].Parameters.AddWithValue("@inputSize", count[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableName);
+                    sqlcmds[s].CommandTimeout = 3600;
+                    Interlocked.Increment(ref numberOfCallbacksNotYetCompleted);
+                    AsyncCallback callback = new AsyncCallback(result =>
+                    {
+                        HandleCallback(result, encountered_particles, points, predictor, compute_predictor, ref numberOfCallbacksNotYetCompleted, doneEvent, ref exception);
+                    });
+                    sqlcmds[s].BeginExecuteReader(callback, new Tuple<int, SqlCommand>(s, sqlcmds[s]));
+                }
+            }
+
+            doneEvent.WaitOne();
+            if (exception != null)
+                throw new Exception(exception.Message, exception.InnerException);
+            return 0;
+        }
+
+        public void HandleCallback(IAsyncResult asyncRes, ConcurrentDictionary<int, bool> encountered_particles, Point3[] points, Point3[] predictor, bool compute_predictor,
+            ref int numberOfCallbacksNotYetCompleted, ManualResetEvent doneEvent, ref Exception exception)
+        {
+            Tuple<int, SqlCommand> state = (Tuple<int, SqlCommand>)asyncRes.AsyncState;
+            int server_index = state.Item1;
+            try
+            {
+                if (compute_predictor)
+                {
+                    lock (predictor)
+                    {
+                        SqlDataReader reader = state.Item2.EndExecuteReader(asyncRes);
+                        int id;
+                        while (reader.Read())
+                        {
+                            id = reader.GetSqlInt32(0).Value;
+
+                            if (!encountered_particles[id])
+                            {
+                                predictor[id] = new Point3(points[id].x, points[id].y, points[id].z);
+                                encountered_particles[id] = true;
+                            }
+                            predictor[id].x += reader.GetSqlSingle(1).Value;
+                            predictor[id].y += reader.GetSqlSingle(2).Value;
+                            predictor[id].z += reader.GetSqlSingle(3).Value;
+                        }
+                        reader.Close();
+                        datatables[server_index].Clear();
+                        count[server_index] = 0;
+                    }
+                }
+                else
+                {
+                    lock (points)
+                    {
+                        SqlDataReader reader = state.Item2.EndExecuteReader(asyncRes);
+                        int id;
+                        while (reader.Read())
+                        {
+                            id = reader.GetSqlInt32(0).Value;
+
+                            if (!encountered_particles[id])
+                            {
+                                points[id].x = 0.5F * (points[id].x + predictor[id].x);
+                                points[id].y = 0.5F * (points[id].y + predictor[id].y);
+                                points[id].z = 0.5F * (points[id].z + predictor[id].z);
+                                encountered_particles[id] = true;
+                            }
+                            points[id].x += 0.5F * (reader.GetSqlSingle(1).Value);
+                            points[id].y += 0.5F * (reader.GetSqlSingle(2).Value);
+                            points[id].z += 0.5F * (reader.GetSqlSingle(3).Value);
+                        }
+                        reader.Close();
+                        datatables[server_index].Clear();
+                        count[server_index] = 0;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                exception = e;
+            }
+            if (Interlocked.Decrement(ref numberOfCallbacksNotYetCompleted) == 0)
+                doneEvent.Set();
         }
 
         public byte[] GetRawData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
