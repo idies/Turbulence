@@ -127,7 +127,6 @@
     <Content Include="instructionswebserv.aspx" />
     <Content Include="images\jpdf-qr.jpg" />
     <Content Include="matlabanalysistools.aspx" />
-    <Content Include="MHD1024-Vorticity.avi" />
     <Content Include="navbar.htm" />
     <Content Include="images\nsf.gif" />
     <Content Include="images\pdf-grad.jpg" />
