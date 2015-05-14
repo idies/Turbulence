@@ -499,9 +499,11 @@ namespace Website
                 case "GetMagneticField":
                 case "GetVectorPotential":
                 case "GetVelocityAndPressure":
-                case "GetPosition":
                 case "GetDensity":
                     flags = new string[] { "None", "Lag4", "Lag6", "Lag8", "M1Q4", "M2Q8", "M2Q14" };
+                    break;
+                case "GetPosition":
+                    flags = new string[] { "None", "Lag4", "Lag6", "Lag8" };
                     break;
                 case "GetPressureGradient":
                 case "GetVelocityGradient":

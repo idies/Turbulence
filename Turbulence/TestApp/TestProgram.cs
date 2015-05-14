@@ -57,7 +57,7 @@ namespace TestApp
                 //TestDensityHessian();
                 //ComputeDensityHessian();
                 //TestGetThreshold();
-                //return;
+                return;
 
                 turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
@@ -868,68 +868,212 @@ namespace TestApp
         {
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
-            DateTime runningTime;
-            float startTime = (float)random.NextDouble() * (2.048f - 0.5f);
-            float endTime = startTime + 0.5f;
-            int pointsize = 1000;
-            turbulence.Point3[] points = new turbulence.Point3[pointsize];
-            turbulence.Point3[] positions = new turbulence.Point3[pointsize];
-            turbulence.Point3[] positions2 = new turbulence.Point3[pointsize];
-            string authToken = "edu.jhu.pha.turbulence.testing-201406";
+            TimeSpan total = new TimeSpan(0);
+            string dataset = "mixing";
+            float dt = 0.016f;
+            float max_time = 40.44f;
+            //string dataset = "isotropic1024";
+            //float dt = 0.0008f;
+            //float max_time = 2.048f;
+            float time_range = 500 * dt;
+            turbulence.SpatialInterpolation spatial = turbulence.SpatialInterpolation.Lag4;
 
-            for (int i = 0; i < points.Length; i++)
+            //float startTime = (float)random.NextDouble() * (max_time - time_range);
+            //float endTime = startTime + time_range;
+            //long rowid = 0;
+            //int pointsize = 100000;
+            //turbulence.Point3[] points = new turbulence.Point3[pointsize];
+            //turbulence.Point3[] positions = new turbulence.Point3[pointsize];
+            //string authToken = "edu.jhu.pha.turbulence.testing-201406";
+            //Int16 interp = 0;
+
+            //points = GenerateWorkload(false, ref pointsize, ref rowid, ref interp, ref dt, ref startTime, ref endTime);
+            //if (interp == 0)
+            //{
+            //    spatial = turbulence.SpatialInterpolation.None;
+            //}
+            //else if (interp == 4)
+            //{
+            //    spatial = turbulence.SpatialInterpolation.Lag4;
+            //}
+            //else if (interp == 6)
+            //{
+            //    spatial = turbulence.SpatialInterpolation.Lag6;
+            //}
+            //else if (interp == 8)
+            //{
+            //    spatial = turbulence.SpatialInterpolation.Lag6;
+            //}
+            //endTime = startTime + 0.05f;
+            //dt = 0.001f;
+            //Console.WriteLine("rowid = {0}, records = {1}, interpolation: {2}, dt = {3}, start = {4}, end = {5}", rowid, pointsize, spatial, dt, startTime, endTime);
+
+            int num_runs = 3;
+            for (int run = 0; run < num_runs; run++)
             {
-                points[i] = new turbulence.Point3();
-                points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
-                points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
-                points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
-                //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
-                //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
-                //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+                float startTime = (float)random.NextDouble() * (max_time - time_range);
+                float endTime = startTime + time_range;
+                int pointsize = 10000;
+                turbulence.Point3[] points = new turbulence.Point3[pointsize];
+                turbulence.Point3[] positions = new turbulence.Point3[pointsize];
+                string authToken = "edu.jhu.pha.turbulence.testing-201406";
+
+                DateTime runningTime, runningTimeEnd;
+
+                float buffer_zone = 0.5f;
+
+                for (int i = 0; i < points.Length; i++)
+                {
+                    points[i] = new turbulence.Point3();
+                    points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
+                    points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
+                    points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
+                    
+                    //if (points[i].x - 0.0f < buffer_zone || (points[i].x - Math.PI < buffer_zone && points[i].x > Math.PI))
+                    //{
+                    //    points[i].x += buffer_zone;
+                    //}
+                    //if ((Math.PI - points[i].x < buffer_zone && points[i].x < Math.PI) || (2 * Math.PI - points[i].x < buffer_zone && points[i].x > Math.PI))
+                    //{
+                    //    points[i].x -= buffer_zone;
+                    //}
+                    
+                    //if (points[i].y - 0.0f < buffer_zone || (points[i].y - Math.PI < buffer_zone && points[i].y > Math.PI))
+                    //{
+                    //    points[i].y += buffer_zone;
+                    //}
+                    //if ((Math.PI - points[i].y < buffer_zone && points[i].y < Math.PI) || (2 * Math.PI - points[i].y < buffer_zone && points[i].y > Math.PI))
+                    //{
+                    //    points[i].y -= buffer_zone;
+                    //}
+                    
+                    //if (points[i].z - 0.0f < buffer_zone || (points[i].z - Math.PI < buffer_zone && points[i].z > Math.PI))
+                    //{
+                    //    points[i].z += buffer_zone;
+                    //}
+                    //if ((Math.PI - points[i].z < buffer_zone && points[i].z < Math.PI) || (2 * Math.PI - points[i].z < buffer_zone && points[i].z > Math.PI))
+                    //{
+                    //    points[i].z -= buffer_zone;
+                    //}
+                    //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
+                    //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+                    //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
+                }
+
+                service.Timeout = -1;
+                Console.WriteLine("Calling service");
+                
+                //runningTime = DateTime.Now;
+                //positions = service.GetPositionDBEvaluation(authToken, "isotropic1024", startTime, endTime, -0.001f, turbulence.SpatialInterpolation.Lag4, points);
+                //Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
+                //Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
+
+                runningTime = DateTime.Now;
+                positions = service.GetPosition(authToken, dataset, startTime, endTime, dt, spatial, points);
+                runningTimeEnd = DateTime.Now;
+                Console.WriteLine("Run {1}: Execution time: {0}", (runningTimeEnd - runningTime).TotalSeconds, run);
+                Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
+                total += runningTimeEnd - runningTime;
+
+                //for (int i = 0; i < points.Length; i++)
+                //{
+                //    if (Math.Abs(positions[i].x - positions2[i].x) > 0.0001f ||
+                //        Math.Abs(positions[i].y - positions2[i].y) > 0.0001f ||
+                //        Math.Abs(positions[i].z - positions2[i].z) > 0.0001f)
+                //        Console.WriteLine("Positions don't match!");
+                //}
             }
-
-            service.Timeout = -1;
-            Console.WriteLine("Calling service");
-
-            //for (int i = 0; i < points.Length; i++)
-            //{
-            //    points[i] = new turbulence.Point3();
-            //    points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
-            //    points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
-            //    points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
-            //    //points[i].x = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3); // restrict points to middle section of the first server
-            //    //points[i].y = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
-            //    //points[i].z = (float)(3.14 / 3 + random.NextDouble() * 3.14 / 3);
-            //}
-            //startTime = (float)random.NextDouble() * (2.048f - 0.5f);
-            //endTime = startTime + 0.5f;
-
-            points[0].x = 0.00696346f;
-            points[0].y = 2.231412f;
-            points[0].z = 1.12341235f;
-            endTime = 0.00056f;
-            startTime = 0.50566f;
-
-            runningTime = DateTime.Now;
-            //positions = service.GetPositionDBEvaluation(authToken, "isotropic1024", startTime, endTime, -0.001f, turbulence.SpatialInterpolation.Lag4, points);
-            Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
-            Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
-
-            runningTime = DateTime.Now;
-            positions2 = service.GetPosition(authToken, "isotropic1024", startTime, endTime, 0.001f, turbulence.SpatialInterpolation.Lag4, points);
-            Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
-            Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions2[0].x, positions2[0].y, positions2[0].z, startTime, endTime);
-
-            //for (int i = 0; i < points.Length; i++)
-            //{
-            //    if (Math.Abs(positions[i].x - positions2[i].x) > 0.0001f ||
-            //        Math.Abs(positions[i].y - positions2[i].y) > 0.0001f ||
-            //        Math.Abs(positions[i].z - positions2[i].z) > 0.0001f)
-            //        Console.WriteLine("Positions don't match!");
-            //}
-
+            Console.WriteLine("Avg. execution time: {0}", total.TotalSeconds / num_runs);
             Console.WriteLine("Press any key to continue.");
             Console.ReadLine();
+        }
+
+        static turbulence.Point3[] GenerateWorkload(bool use_rowid, ref int records, ref long rowid, ref Int16 spatial, ref float dt, ref float timestep, ref float endTimestep)
+        {
+            string connStringTurbinfo = String.Format("Data Source={0};Initial Catalog={1};Integrated Security=True", "gw01", "turbinfo_dev");
+            SqlConnection TurbinfoConn;
+            TurbinfoConn = new SqlConnection(connStringTurbinfo);
+            TurbinfoConn.Open();
+
+            String query;
+            if (use_rowid)
+            {
+                query = String.Format(@"SELECT TOP 1 rowid, records, access, spatial, dt, timestep, endTimestep " +
+                              "FROM {0} WHERE {0}.rowid = {1} " +
+                              "ORDER BY NEWID() ",
+                              "turbinfo_dev..particle_tracking_usage ", rowid);
+            }
+            else
+            {
+                query = String.Format(@"SELECT TOP 1 rowid, records, access, spatial, dt, timestep, endTimestep " +
+                              "FROM {0} WHERE {0}.records = {1} " +
+                              "ORDER BY NEWID() ",
+                              "turbinfo_dev..particle_tracking_usage ", records);
+            }
+            SqlCommand cmd = new SqlCommand(query, TurbinfoConn);
+
+            byte[] access = new byte[512];
+
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                do
+                {
+                    while (reader.Read())
+                    {
+                        rowid = reader.GetSqlInt64(0).Value;
+                        records = reader.GetSqlInt32(1).Value;
+                        int bytesread = 0;
+                        while (bytesread < 512)
+                        {
+                            int bytes = (int)reader.GetBytes(2, 0, access, bytesread, 512 - bytesread);
+                            bytesread += bytes;
+                        }
+                        spatial = reader.GetSqlInt16(3).Value;
+                        dt = reader.GetSqlSingle(4).Value;
+                        timestep = reader.GetSqlSingle(5).Value;
+                        endTimestep = reader.GetSqlSingle(6).Value;
+                    }
+                }
+                while (reader.NextResult());
+            }
+
+            List<long> indexes = GetCubesAccessed(access);
+
+            if (indexes.Count == 0)
+                throw new Exception("The access bitmap appears to be 0");
+
+            float dx = (float)(2.0 * Math.PI / 1024.0);
+
+            turbulence.Point3[] points = new turbulence.Point3[records];
+            for (int i = 0; i < records; i++)
+            {
+                points[i] = new turbulence.Point3();
+                int index = random.Next(indexes.Count);
+                //long zindex = indexes[index];
+                Morton3D zindex = new Morton3D(indexes[index]);
+                points[i].x = (float)(zindex.X * dx + random.NextDouble() * 8.0 * dx);
+                points[i].y = (float)(zindex.Y * dx + random.NextDouble() * 8.0 * dx);
+                points[i].z = (float)(zindex.Z * dx + random.NextDouble() * 8.0 * dx);
+            }
+
+            return points;
+        }
+
+        static List<long> GetCubesAccessed(byte[] access)
+        {
+            List<long> ret = new List<long>();
+            long zindex = 64 * 64 * 64;
+            for (int i = 0; i < access.Length; i++)
+            {
+                byte value = access[i];
+                for (int j = 0; j < 8; j++)
+                {
+                    if ((value & 1) == 1)
+                        ret.Add((i * 8 + j) * zindex);
+                    value >>= 1;
+                }
+            }
+            return ret;
         }
 
         public static bool testBlob() {
@@ -1655,6 +1799,7 @@ namespace TestApp
             float time_for_fine = 0.0047f;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
+            turbulence.Point3[] position;
             turbulence.Pressure[] pressure;
             turbulence.VelocityGradient[] gradient;
             turbulence.VelocityHessian[] hessian;
@@ -2356,6 +2501,19 @@ namespace TestApp
             CompareAndReport(points_above_threshold[0].value, expected_norm);
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("p={0}", points_above_threshold[0].value);
+
+            expected.x = 2.85833573f;
+            expected.y = 3.443399f;
+            expected.z = 1.34671152f;
+            startTime = DateTime.Now;
+            position = service.GetPosition(authToken, "isotropic1024", time, time + 0.05f, 0.001f, turbulence.SpatialInterpolation.Lag6, points);
+            stopTime = DateTime.Now;
+            result[0].x = position[0].x;
+            result[0].y = position[0].y;
+            result[0].z = position[0].z;
+            CompareAndReport(result[0], expected);
+            Console.WriteLine("Execution time: {0}", stopTime - startTime);
+            Console.WriteLine("x={0} y={1} z={2}", result[0].x, result[0].y, result[0].z);
         }
 
         public static void TestMHDDataset()
@@ -2367,6 +2525,7 @@ namespace TestApp
             float time = 0.364f;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
+            turbulence.Point3[] position;
             turbulence.Pressure[] pressure;
             turbulence.VelocityGradient[] gradient;
             turbulence.VelocityHessian[] hessian;
@@ -2998,6 +3157,19 @@ namespace TestApp
             CompareAndReport(points_above_threshold[0].value, expected_norm);
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("vel. norm={0}", points_above_threshold[0].value);
+
+            expected.x = 2.89843631f;
+            expected.y = 3.37422538f;
+            expected.z = 1.36187077f;
+            startTime = DateTime.Now;
+            position = service.GetPosition(authToken, "mhd1024", time, time + 0.05f, 0.001f, turbulence.SpatialInterpolation.Lag6, points);
+            stopTime = DateTime.Now;
+            result[0].x = position[0].x;
+            result[0].y = position[0].y;
+            result[0].z = position[0].z;
+            CompareAndReport(result[0], expected);
+            Console.WriteLine("Execution time: {0}", stopTime - startTime);
+            Console.WriteLine("x={0} y={1} z={2}", result[0].x, result[0].y, result[0].z);
         }
 
         public static void TestChannelDataset()
@@ -3568,6 +3740,7 @@ namespace TestApp
             float time = 5.0f;
             turbulence.Point3[] points = new turbulence.Point3[pointsize];
             turbulence.Vector3[] result;
+            turbulence.Point3[] position;
             turbulence.Pressure[] pressure;
             turbulence.Pressure[] density;
             turbulence.VelocityGradient[] gradient;
@@ -4331,6 +4504,19 @@ namespace TestApp
             CompareAndReport(points_above_threshold[0].value, expected_norm);
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("density norm={0}", points_above_threshold[0].value);
+
+            expected.x = 2.87693024f;
+            expected.y = 3.36940575f;
+            expected.z = 1.37394285f;
+            startTime = DateTime.Now;
+            position = service.GetPosition(authToken, "mixing", time, time + 0.05f, 0.001f, turbulence.SpatialInterpolation.Lag6, points);
+            stopTime = DateTime.Now;
+            result[0].x = position[0].x;
+            result[0].y = position[0].y;
+            result[0].z = position[0].z;
+            CompareAndReport(result[0], expected);
+            Console.WriteLine("Execution time: {0}", stopTime - startTime);
+            Console.WriteLine("x={0} y={1} z={2}", result[0].x, result[0].y, result[0].z);
         }
 
         private static void CompareAndReport(turbulence.Vector3 result, turbulence.Vector3 expected)
