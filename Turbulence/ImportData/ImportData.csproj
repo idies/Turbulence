@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ImportData</RootNamespace>
     <AssemblyName>ImportData</AssemblyName>
-    <StartupObject>ImportData.ImportMixingData</StartupObject>
+    <StartupObject>ImportData.ImportData</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileCacheRMHD.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DatabaseSetup.cs" />
     <Compile Include="FileCache.cs" />

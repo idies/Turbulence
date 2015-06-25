@@ -13,19 +13,19 @@ namespace ImportData
         int time_end = 0;    // Last time step to dataread
         string data_dir = @"H:\channel\";
         //string[] suffix = { "t04.s001.000" };
-        int headerSize = 192;
+        int headerSize = 0;
         string[] suffix = { "u", "v", "w" };
         string user = "kalin";
-        string dbname = "mixing";
+        string dbname = "rmhd01";
         //string dbname = "turbload";
-        string table = "velocity";
-        int[] resolution = { 1024, 1024, 1024 };
+        string table = "vel";
+        int[] resolution = { 2048, 2048, 2048 };
         long firstbox = 0;
-        long lastbox = new Morton3D(1020, 1020, 1020).Key;
-        int timeinc = 1;
+        long lastbox = new Morton3D(2040, 2040, 2040).Key;
+        int timeinc = 4;
         int timeoff = 0;
-        int components = -1;
-        int atomSize = 4;
+        int components = 2;
+        int atomSize = 8;
         int edge = 0;
         string serverName = "gw01";
         bool isDataLittleEndian = true;
@@ -34,25 +34,25 @@ namespace ImportData
         ImportData(long firstbox, long lastbox, int numProcs, int timeoff)
         {
             this.time_start = 0;  // First time step to dataread
-            this.time_end = 0;    // Last time step to dataread
-            this.data_dir = @"\\dss004\tdb_livescu\";
+            this.time_end = 36;    // Last time step to dataread
+            this.data_dir = @"";
             //string[] suffix = { "t04.s001.000" };
-            this.headerSize = 192;
-            this.suffix = new string[] { "u", "v", "w" };
+            this.headerSize = 0;
+            this.suffix = new string[] { "b" };
             this.user = "kalin";
-            this.dbname = "mixingdb01";
+            this.dbname = "rmhd08";
             //string dbname = "turbload";
-            this.table = "vel";
-            this.resolution = new int[] { 1023, 1023, 1023 };
-            this.timeinc = 1;
+            this.table = "mag";
+            this.resolution = new int[] { 2047, 2047, 2047 };
+            this.timeinc = 4;
             this.timeoff = timeoff;
-            this.atomSize = 4;
+            this.atomSize = 8;
             this.edge = 0;
-            this.serverName = "dsp048";
+            this.serverName = "gw15";
             this.isDataLittleEndian = true;
             this.firstbox = firstbox;
             this.lastbox = lastbox;
-            this.components = suffix.Length;
+            this.components = 2;
             this.numProcs = numProcs;
         }
 
@@ -64,6 +64,7 @@ namespace ImportData
         {
             long firstbox = -1, lastbox = -1;
             int numProcs = -1, timeoff = -1;
+            int time_start = -1, time_end = -1;
 
             if (args.Length == 4)
             {
@@ -79,6 +80,20 @@ namespace ImportData
                 timeoff = int.Parse(args[3]);
                 //serverName = args[8];
             }
+            else if (args.Length == 6)
+            {
+                //data_dir = args[0];
+                //table = args[1];
+                //timeinc = int.Parse(args[4]);
+                //timeoff = int.Parse(args[5]);
+                firstbox = long.Parse(args[0]);
+                lastbox = long.Parse(args[1]);
+                numProcs = int.Parse(args[2]);
+                time_start = int.Parse(args[3]);
+                time_end = int.Parse(args[4]);
+                timeoff = int.Parse(args[5]);
+                //serverName = args[8];
+            }
             else // (args.Length == 0)
             {
                 Console.WriteLine("Usage: ImportData <firstbox> <lastbox> <number of processes> <timeoff>");
@@ -89,9 +104,19 @@ namespace ImportData
             }
 
             ImportData importData = new ImportData(firstbox, lastbox, numProcs, timeoff);
+            if (time_start != -1)
+            {
+                importData.time_start = time_start;
+            }
+            if (time_end != -1)
+            {
+                importData.time_end = time_end;
+            }
             //importData.SequentialImport();
-            //importData.ParallelImport();
-            importData.ParallelImportUsingSharedMemory();
+            //For the RMHD data we use a parallel ingest process, where each processor reads its own data.
+            importData.ParallelImport();
+            //For other data sets we might have to use shared memory across processors.
+            //importData.ParallelImportUsingSharedMemory();
         }
 
         void SequentialImport()
@@ -159,7 +184,7 @@ namespace ImportData
                     startTime = DateTime.Now;
                     db.BulkCopy(table, turbDataReader);
                     span = DateTime.Now - startTime;
-                    Console.WriteLine("Date ingest took: {0}s", span.TotalSeconds);
+                    Console.WriteLine("Data ingest took: {0}s", span.TotalSeconds);
 
 
                     #region Code to be moved into a test suite...
@@ -221,13 +246,11 @@ namespace ImportData
 
         void ParallelImport()
         {
-            //Parallel.For(
-
             Console.WriteLine("Reading timestep {0} to {1} from {2}", time_start, time_end, data_dir);
 
             string cString = String.Format("server={0};database={1};Integrated Security=true;User ID={2}", serverName, dbname, user);
 
-            long inc = new Morton3D(0, 0, atomSize).Key;  // Address of 4 == "size" of a 4^3
+            long inc = new Morton3D(0, 0, atomSize).Key;  // Address of 8 == "size" of a 8^3
 
             Morton3D start = new Morton3D(firstbox);
             Morton3D end = new Morton3D(lastbox);
@@ -240,7 +263,8 @@ namespace ImportData
                 long dataSize = (long)(VirtualServerBoundaries[i].endx - VirtualServerBoundaries[i].startx + 1) *
                         (long)(VirtualServerBoundaries[i].endy - VirtualServerBoundaries[i].starty + 1) *
                         (long)(VirtualServerBoundaries[i].endz - VirtualServerBoundaries[i].startz + 1) *
-                        sizeof(double);
+                        components *
+                        sizeof(float);
 
                 int partitions = 1;
                 while (dataSize > int.MaxValue)
@@ -258,7 +282,7 @@ namespace ImportData
                     lastBoxes[p] = new Morton3D(PartitionBoundaries[p].endz - atomSize + 1, PartitionBoundaries[p].endy - atomSize + 1, PartitionBoundaries[p].endx - atomSize + 1);
                 }
 
-                FileCache cache = new FileCache(data_dir, suffix, resolution, headerSize);
+                FileCache cache = new FileCacheRMHD(data_dir, resolution, headerSize, components, suffix[0]);
 
                 Database db = new Database(cString);
                 db.EnableMinimalLoggin();
@@ -268,10 +292,6 @@ namespace ImportData
                 {
                     for (int p = 0; p < partitions; p++)
                     {
-                        // There is no data for z >= 512
-                        if (new Morton3D(firstBoxes[p]).Z >= 512)
-                            continue;
-
                         Console.WriteLine("Reading from blob #{0} to {1} for time {2}", new Morton3D(firstBoxes[p]).ToPrettyString(), new Morton3D(lastBoxes[p]).ToPrettyString(), timestep);
                         DateTime startTime = DateTime.Now;
                         //cache.readFiles(timestep, firstBoxes[p], lastBoxes[p], atomSize);
@@ -289,7 +309,7 @@ namespace ImportData
                         startTime = DateTime.Now;
                         db.BulkCopy(table, turbDataReader);
                         span = DateTime.Now - startTime;
-                        Console.WriteLine("Date ingest took: {0}s", span.TotalSeconds);
+                        Console.WriteLine("Data ingest took: {0}s", span.TotalSeconds);
                     }
                 }
                 TimeSpan runningTime = DateTime.Now - startRunTime;

@@ -11,10 +11,10 @@ namespace ImportData
     class DatabaseSetup
     {
         static string user = "kalin";
-        static string[] serverName = new string[] { "dsp048" };
+        static string[] serverName = new string[] { "gw15" };
         static string dbname = "turblib";
         static long[] range_start = { 0 };
-        static long[] range_end   = { 1073741312 };
+        static long[] range_end = { 2048L * 2048L * 2048L - 512L };
         static int numDBs = 8;
         static int numPartitions = 24;
         static int atomSize = 8;

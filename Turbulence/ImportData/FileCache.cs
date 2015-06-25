@@ -385,6 +385,11 @@ namespace ImportData
             Array.Copy(BitConverter.GetBytes(float_value), 0, destinationArray, destinationIndex, sizeof(float));
         }
 
+        public virtual bool GetEntireAtom(long zindex, byte[] destinationArray, int destinationIndex)
+        {
+            return false;
+        }
+
         protected virtual string GetFileName(float time, int component)
         {
             return String.Format(@"{0}n2048_d0.25_Ro0.002_{2:0000.0000}.{1}", data_dir, suffix[component], time);

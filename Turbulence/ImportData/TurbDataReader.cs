@@ -306,58 +306,65 @@ namespace ImportData
         ///       and data are needed from the wrapped around starting position of the volume
         private void ReadData()
         {
-            int[] corner = new Morton3D(datacounter).GetValues();
-
-            // lower (base) corner
-            int bz = (corner[0] - dataFormat.edge + resolution[0]) % resolution[0];
-            int by = (corner[1] - dataFormat.edge + resolution[1]) % resolution[1];
-            int bx = (corner[2] - dataFormat.edge + resolution[2]) % resolution[2];
-            // upper (end) corner
-            int ez = (corner[0] + dataFormat.length + dataFormat.edge) % resolution[0];
-            int ey = (corner[1] + dataFormat.length + dataFormat.edge) % resolution[1];
-            int ex = (corner[2] + dataFormat.length + dataFormat.edge) % resolution[2];
-
-            // Read data files required for full stripe of data
-            // cache.readFiles(timestep, dataFormat.start, dataFormat.end, dataFormat.length);
-            // cache.readFiles(timestep, datacounter, dataFormat.length);
-
-            //Console.WriteLine("Reading from {0},{1},{2} to {3},{4},{5}", bz, by, bx, ez, ey, ex);
             // We first store the SqlArray header at the beginning of the data atom
             Array.Copy(header, data, SqlArrayHeaderSize);
             int bufferOffset = SqlArrayHeaderSize; // current offset for writing data in local buffer
-            int side = dataFormat.length + dataFormat.edge + dataFormat.edge;
-            int dataread = 0;
-            for (int z = bz; z != ez; z = (z + 1) % resolution[0])
+            if (cache.GetEntireAtom(datacounter, data, bufferOffset))
             {
-                // adjusted z offset based on base of file cache
-                int zadj = (z + resolution[0] - cache.Base[0]) % resolution[0];
-                for (int y = by; y != ey; y = (y + 1) % resolution[1])
+            }
+            else
+            {
+                int[] corner = new Morton3D(datacounter).GetValues();
+
+                // lower (base) corner
+                int bz = (corner[0] - dataFormat.edge + resolution[0]) % resolution[0];
+                int by = (corner[1] - dataFormat.edge + resolution[1]) % resolution[1];
+                int bx = (corner[2] - dataFormat.edge + resolution[2]) % resolution[2];
+                // upper (end) corner
+                int ez = (corner[0] + dataFormat.length + dataFormat.edge) % resolution[0];
+                int ey = (corner[1] + dataFormat.length + dataFormat.edge) % resolution[1];
+                int ex = (corner[2] + dataFormat.length + dataFormat.edge) % resolution[2];
+
+                // Read data files required for full stripe of data
+                // cache.readFiles(timestep, dataFormat.start, dataFormat.end, dataFormat.length);
+                // cache.readFiles(timestep, datacounter, dataFormat.length);
+
+                //Console.WriteLine("Reading from {0},{1},{2} to {3},{4},{5}", bz, by, bx, ez, ey, ex);
+
+                int side = dataFormat.length + dataFormat.edge + dataFormat.edge;
+                int dataread = 0;
+                for (int z = bz; z != ez; z = (z + 1) % resolution[0])
                 {
-                    // adjusted y offset based on base of file cache
-                    int yadj = (y + resolution[1] - cache.Base[1]) % resolution[1];
-                    for (int x = bx; x != ex; x = (x + 1) % resolution[2])
+                    // adjusted z offset based on base of file cache
+                    int zadj = (z + resolution[0] - cache.Base[0]) % resolution[0];
+                    for (int y = by; y != ey; y = (y + 1) % resolution[1])
                     {
-                        // adjusted x offset based on base of file cache
-                        int xadj = (x + resolution[2] - cache.Base[2]) % resolution[2];
-                        //long fileoff = (zadj * resolution[2] * resolution[1] + yadj * resolution[2] + xadj) * cache.PointDataSize;
-                        for (int i = 0; i < components; i++)
+                        // adjusted y offset based on base of file cache
+                        int yadj = (y + resolution[1] - cache.Base[1]) % resolution[1];
+                        for (int x = bx; x != ex; x = (x + 1) % resolution[2])
                         {
-                            // NOTE: At the moment this function does not handle wrap-around when for example edge > 0
-                            //       and data are needed from the wrapped around starting position of the volume
-                            //cache.CopyData(fileoff, data, bufferOffset, pointDataSize, i);
-                            if (pointDataSize == cache.PointDataSize)
+                            // adjusted x offset based on base of file cache
+                            int xadj = (x + resolution[2] - cache.Base[2]) % resolution[2];
+                            //long fileoff = (zadj * resolution[2] * resolution[1] + yadj * resolution[2] + xadj) * cache.PointDataSize;
+                            for (int i = 0; i < components; i++)
                             {
-                                cache.CopyDataFromByteArray(zadj, yadj, xadj, data, bufferOffset, pointDataSize, i);
+                                // NOTE: At the moment this function does not handle wrap-around when for example edge > 0
+                                //       and data are needed from the wrapped around starting position of the volume
+                                //cache.CopyData(fileoff, data, bufferOffset, pointDataSize, i);
+                                if (pointDataSize == cache.PointDataSize)
+                                {
+                                    cache.CopyDataFromByteArray(zadj, yadj, xadj, data, bufferOffset, pointDataSize, i);
+                                }
+                                else
+                                {
+                                    cache.CopyDataFromByteArrayDoubleToFloat(zadj, yadj, xadj, data, bufferOffset, i);
+                                }
+                                if (BitConverter.IsLittleEndian != dataFormat.isDataLittleEndian)
+                                    Array.Reverse(data, bufferOffset, pointDataSize);
+                                //Console.WriteLine("value = {0}", System.BitConverter.ToSingle(data, bufferOffset));
+                                dataread += pointDataSize;
+                                bufferOffset += pointDataSize;
                             }
-                            else
-                            {
-                                cache.CopyDataFromByteArrayDoubleToFloat(zadj, yadj, xadj, data, bufferOffset, i);
-                            }
-                            if (BitConverter.IsLittleEndian != dataFormat.isDataLittleEndian)
-                                Array.Reverse(data, bufferOffset, pointDataSize);
-                            //Console.WriteLine("value = {0}", System.BitConverter.ToSingle(data, bufferOffset));
-                            dataread += pointDataSize;
-                            bufferOffset += pointDataSize;
                         }
                     }
                 }
