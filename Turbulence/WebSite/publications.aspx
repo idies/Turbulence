@@ -28,7 +28,7 @@
       </p>
 
 <ul>
-
+ 
 <li>
     <font face="Arial, Helvetica, sans-serif">Y. Li, E. Perlman, M.
     Wan, Y. Yang, R. Burns, C. Meneveau, R. Burns, S. Chen, A.
@@ -90,7 +90,15 @@ International Conference for High Performance Computing, Networking, Storage and
       
 <ul>      
 
-
+<li>
+    <font face="Arial, Helvetica, sans-serif">C.C. Lalescu, Y.K. Shi, G.L. Eyink, 
+    T.D. Drivas, E.T. Vishniac, and A. Lazarian
+     <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.115.025001" target="_blank">
+     Inertial-Range Reconnection in Magnetohydrodynamic Turbulence and in the Solar Wind
+     </a>
+     Phys. Rev. Lett. 115, 025001,  2015. (cover article)
+     </font>   
+</li>
 
 
 <li>

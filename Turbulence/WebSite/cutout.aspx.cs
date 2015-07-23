@@ -76,6 +76,31 @@ namespace Website
                 this.potential.Visible = true;
                 channel_grid_note.Visible = false;
             }
+            else if (dataset.SelectedValue.Equals("rmhd"))
+            {
+                dt.Text = "0.0025";
+                this.magnetic.Visible = true;
+                this.potential.Visible = false;                
+                this.pressure.Visible = false;
+                this.density.Visible = false;
+                channel_grid_note.Visible = false;
+                timestart_range.Text = "(0-10)";
+                timeend_range.Text = "(1-10)";
+                x_range.Text = "(0-2047)";
+                y_range.Text = "(0-2047)";
+                z_range.Text = "(0-2047)";
+                xend_range.Text = "(1-2048)";
+                yend_range.Text = "(1-2048)";
+                zend_range.Text = "(1-2048)";
+                min_time = 0;
+                max_time_range = 10;
+                min_x = 0;
+                max_x_range = 2048;
+                min_y = 0;
+                max_y_range = 2048;
+                min_z = 0;
+                max_z_range = 2048;
+            }
             else if (dataset.SelectedValue.Equals("isotropic1024fine"))
             {
                 dt.Text = "0.0002";

@@ -68,7 +68,7 @@ namespace DatabaseCutout
             }
 
             AuthToken token = null;
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=true;User ID=turbweb;Password=******;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=true;User ID=turbquery;Password=***REMOVED***;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();

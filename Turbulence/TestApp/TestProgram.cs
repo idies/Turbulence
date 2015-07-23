@@ -41,10 +41,10 @@ namespace TestApp
             {
                 //TestGetForce();
                 //TestMixingDataset();
-                AllTest();
+                //AllTest();
                 //TestGetBoxFilterGradient();
                 //TestAllDisks();
-                //TestGetRawData();
+                TestGetRawData();
                 //TestIsotropicFine();
                 //TestGetLaplacian();
                 //TestChannelFlowInterpolation();
@@ -672,7 +672,7 @@ namespace TestApp
             string authToken = "edu.jhu.pha.turbulence.testing-201406";
             DateTime startTime, stopTime;
             startTime = DateTime.Now;
-            data = service.GetRawVelocity(authToken, "mhd1024", 0.35f, 0, 0, 510, 1, 1, 2);
+            data = service.GetRawVelocity(authToken, "rmhd", 0.0f, 1024, 0, 0, 8, 8, 8);
             stopTime = DateTime.Now;
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("X={0} Y={1} Z={2}", BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));

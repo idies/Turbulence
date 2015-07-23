@@ -115,7 +115,7 @@ namespace CutoutService
 
             //Test validity of parameters given
             if (!System.Text.RegularExpressions.Regex.IsMatch(args_,
-                @"^/[a-zA-Z0-9_]+([-.][a-zA-Z0-9_]+)*/(isotropic1024fine|isotropic1024coarse|mhd1024|channel|mixing)/[upbad]{1,4}/\d+,\d+/\d+,\d+/\d+,\d+/\d+,\d+(/\d+,\d+,\d+,\d+(/\d+)?)?/?$"))
+                @"^/[a-zA-Z0-9_]+([-.][a-zA-Z0-9_]+)*/(isotropic1024fine|isotropic1024coarse|rmhd|mhd1024|channel|mixing)/[upbad]{1,4}/\d+,\d+/\d+,\d+/\d+,\d+/\d+,\d+(/\d+,\d+,\d+,\d+(/\d+)?)?/?$"))
             {
                 Response.StatusCode = 400;
                 Response.Write("Error: Bad request. URL should be in the format of /authToken/dataset/fields/time,timesteps/xlow,xwidth/ylow,ywidth/zlow,zwidth[/time_step,x_step,y_step,z_step/filterwidth]");
@@ -244,7 +244,10 @@ namespace CutoutService
                     H5T.close(intTypeId);
 
                     long size = (long)xsize * (long)ysize * (long)zsize * 3 * sizeof(float);
-                    long[] datasize = { zsize, ysize, xsize, 3 };
+                    int newcomponent = 3;
+                    /*This needs to be done better.  Currently RMHD has 2 components for both magnetic and velocity */
+                    if (dataset_enum == DataInfo.DataSets.rmhd) newcomponent = 2;
+                    long[] datasize = { zsize, ysize, xsize, newcomponent };
                     H5DataTypeId dataType = H5T.copy(H5T.H5Type.NATIVE_FLOAT);
                     H5DataSpaceId dataspace = H5S.create_simple(4, datasize, datasize);
 
@@ -278,6 +281,7 @@ namespace CutoutService
                     if (fields.Contains("u"))
                     {
                         components = 3;
+                        if (dataset_enum == DataInfo.DataSets.rmhd) components = 2;
                         field = "u";
 
                         tableName = DataInfo.getTableName(dataset_enum, field);
@@ -306,7 +310,7 @@ namespace CutoutService
                     {
                         components = 3;
                         field = "b";
-
+                        if (dataset_enum == DataInfo.DataSets.rmhd) components = 2;
                         tableName = DataInfo.getTableName(dataset_enum, field);
                         object rowid = null;
                         rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawMagnetic,
@@ -543,6 +547,13 @@ namespace CutoutService
                        !(xlow >= 0 && xhigh < 1024) ||
                        !(ylow >= 0 && yhigh < 1024) ||
                        !(zlow >= 0 && zhigh < 1024))
+                    { Response.Write("The requested region is out of bounds"); Response.End(); }
+                    break;
+                case DataInfo.DataSets.rmhd:
+                    if (!(tlow >= 0 && thigh < 11) ||
+                       !(xlow >= 0 && xhigh < 2049) ||
+                       !(ylow >= 0 && yhigh < 2049) ||
+                       !(zlow >= 0 && zhigh < 2049))
                     { Response.Write("The requested region is out of bounds"); Response.End(); }
                     break;
                 case DataInfo.DataSets.mixing:

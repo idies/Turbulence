@@ -86,7 +86,7 @@ namespace DatabaseCutout
                 byte[] rawdata = new byte[size];
                 string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
-                String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;User ID=turbquery;Password=*******;Connection Lifetime=7200", database.servers[s]);
+                String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;User ID=turbquery;Password=***REMOVED***;Connection Lifetime=7200", database.servers[s]);
                 SqlConnection connection = new SqlConnection(cString);
                 connection.Open();
                 sqlcmd = connection.CreateCommand();
