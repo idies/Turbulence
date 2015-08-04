@@ -50,7 +50,7 @@ namespace DatabaseCutout
             int[] serverZwidth = new int[serverCount];
             SqlCommand sqlcmd = new SqlCommand();
             SqlDataRecord record = new SqlDataRecord(new SqlMetaData("data", SqlDbType.VarBinary, -1)); 
-            long dlsize = DetermineSize("u", twidth, xwidth, ywidth, zwidth);
+            long dlsize = DetermineSize("u", twidth, xwidth/x_step, ywidth/y_step, zwidth/z_step);
             byte[] result = new byte[dlsize];
             if (fields.Contains("p"))
             {
@@ -72,36 +72,58 @@ namespace DatabaseCutout
             database.Initialize(dataset_enum, num_virtual_servers);
             database.selectServers(dataset_enum);
             database.development = false;
+            /*database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
+            serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step); */
             database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
-            serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
-
+            serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, 1,1,1);
             
             
             /*Now use the parameters to grab the data pieces*/
             for (int s = 0; s < serverCount; s++)
             {
                 
-                int size = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float);
+                int size = serverXwidth[s]/x_step * serverYwidth[s]/y_step * serverZwidth[s]/z_step * components * sizeof(float);
                 int readLength = size;
                 byte[] rawdata = new byte[size];
                 string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
-                String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;User ID=turbquery;Password=***REMOVED***;Connection Lifetime=7200", database.servers[s]);
+                String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200", database.servers[s]);
                 SqlConnection connection = new SqlConnection(cString);
                 connection.Open();
                 sqlcmd = connection.CreateCommand();
-                sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
-                                        + "@dataset, @blobDim, @timestep, @queryBox ",
-                                        database.codeDatabase[s]);
+                /*Check to see if we are striding/filtering or not*/
+                if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
+                {
+                    sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @database, @codedb, "
+                                         + "@turbinfodb, @datasetid, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                         database.codeDatabase[s]);
+                    sqlcmd.Parameters.AddWithValue("@turbinfodb", "turbinfo");
+                    sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+                    sqlcmd.Parameters.AddWithValue("@field", tablename.ToString());
+                    sqlcmd.Parameters.AddWithValue("@filter_width", filter_width);
+                    sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                    sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                    sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+
+                }
+                else
+                {
+                    sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
+                                            + "@dataset, @blobDim, @timestep, @queryBox ",
+                                            database.codeDatabase[s]);
+                    sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+                }
                 sqlcmd.Parameters.AddWithValue("@serverName", database.servers[s]);
                 sqlcmd.Parameters.AddWithValue("@database", database.databases[s]);
                 sqlcmd.Parameters.AddWithValue("@codedb", database.codeDatabase[s]);
-                sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+                
                 sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
                 sqlcmd.Parameters.AddWithValue("@timestep", tlow); /*Create timestep loop maybe later */
                 sqlcmd.Parameters.AddWithValue("@queryBox", queryBox);
                 sqlcmd.CommandTimeout = 3600;
+
                 SqlDataReader reader = sqlcmd.ExecuteReader();
+                
                 while (reader.Read())
                 {
                     int bytesread = 0;
@@ -117,24 +139,25 @@ namespace DatabaseCutout
                         bytesread += bytes;
                     }
                 }
-
+                /*
                 int sourceIndex = 0;
-                int destinationIndex0 = components * (serverX[s] - xlow + (serverY[s] -ylow) * xwidth + (serverZ[s] - zlow) * xwidth * ywidth) * sizeof(float);
+                int destinationIndex0 = components * (((serverX[s] - xlow)/x_step) + ((serverY[s] -ylow)/y_step) * xwidth + ((serverZ[s] - zlow)/z_step) * xwidth * ywidth) * sizeof(float);
                 int destinationIndex;
-                int length = serverXwidth[s] * components * sizeof(float);
-                for (int k = 0; k < serverZwidth[s]; k++)
+                int length = serverXwidth[s] * components * sizeof(float)/x_step;
+                for (int k = 0; k < serverZwidth[s]/z_step; k++)
                 {
-                    destinationIndex = destinationIndex0 + k * xwidth * ywidth * components * sizeof(float);
-                    for (int j = 0; j < serverYwidth[s]; j++)
+                    destinationIndex = destinationIndex0 + k * (xwidth/x_step) * (ywidth/y_step) * components * sizeof(float);
+                    for (int j = 0; j < serverYwidth[s]/y_step; j++)
                     { 
                         Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
                         
                         sourceIndex += length;
-                        destinationIndex += xwidth * components * sizeof(float);
+                        destinationIndex += xwidth * components * sizeof(float)/x_step;
                     }
                 }
-                // Populate the record
-                record.SetBytes(0, 0, result, 0, result.Length);
+                */
+                // Populate the record .  Note: TEST. we did result from above, but now trying to send the raw result.
+                record.SetBytes(0, 0, rawdata, 0, rawdata.Length);
                 // Send the record to the client.
                 SqlContext.Pipe.Send(record);
                 rawdata = null;
