@@ -48,7 +48,7 @@
 
       <p class="style23">Graduate students:</p>
       <ul class="style24">
-	    <li>Stephen Hamilton (Computer Science)</li>
+	    <li><a href="http://www.cs.jhu.edu/~stephenh/">Stephen Hamilton</a> (Computer Science)</li>
         <li><a href="http://me.jhu.edu/students/">Perry Johnson</a> (Mechanical Engineering)</li>
 	    <li><a href="http://www.cs.jhu.edu/~kalin">Kalin Kanov</a> (Computer Science)</li>
       </ul>      

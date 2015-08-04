@@ -40,6 +40,7 @@ namespace TurbulenceService
         private double dy;           // the grid separation in the y-dimension
         private double dz;           // the grid separation in the z-dimension
         public bool channel_grid;   // flag indicating if we are working with the non-uniform gird for the channel flow dataset
+        public bool rmhd;   // flag indicating if we are working with the rmhd 2048 dataset
         private GridPoints gridPointsY; // grid values for the non-uniform y dimension in the case of channel flow
         public float Dt;            // used for converting from floating point time to timestep values stored in the DB
         private int timeInc;         // time increment between timesteps stored in the DB
@@ -118,6 +119,14 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mhd1024:
+                case DataInfo.DataSets.rmhd:
+                    this.gridResolution = new int[] { 2048, 2048, 2048 };
+                    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
+                    this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
+                    this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
+                    
+                    rmhd = true;
+                    break;
                 case DataInfo.DataSets.mixing:
                     this.gridResolution = new int[] { 1024, 1024, 1024 };
                     this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
@@ -163,13 +172,14 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mhd1024:
+                case DataInfo.DataSets.rmhd:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.mixing:
                     this.atomDim = 8;
                     this.smallAtoms = true;
                     break;
                 default:
-                    throw new Exception("Invalid dataset specified!");
+                    throw new Exception("Invalid dataset specified!  Dataset: " + dataset);
             }
         }
 
@@ -188,6 +198,10 @@ namespace TurbulenceService
                 case DataInfo.DataSets.mhd1024:
                     this.Dt = 0.00025F;
                     this.timeInc = 10;
+                    break;
+                case DataInfo.DataSets.rmhd:
+                    this.Dt = 0.00025F;
+                    this.timeInc = 4;
                     break;
                 case DataInfo.DataSets.channel:
                     this.Dt = 0.0013F;
@@ -1159,8 +1173,19 @@ namespace TurbulenceService
             int bit;
             if (!channel_grid)
             {
-                bit = (int)(sfc / (long)(1 << 18));
+                if (rmhd)
+                {
+                    int num_x_regions = GridResolutionX / 128;
+                    int num_y_regions = GridResolutionY / 128;
+                     
+                    bit = sfc.X / 128 + sfc.Y / 128 * num_x_regions + sfc.Z / 128 * num_x_regions * num_y_regions;
+                }
+                else
+                {
+                    bit = (int)(sfc / (long)(1 << 18));
+                }
             }
+            
             else
             {
                 // The channel flow grid is divided into regions of 64x64x96.

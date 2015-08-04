@@ -172,7 +172,9 @@
             a<sub>v</sub> = &lt;&rho; u<sub>1</sub><sup>'</sup>&gt; &frasl; &lt;&rho;&gt;, turbulent Reynolds number, 
             Re<sub>t</sub> = k<sup>&tilde;2</sup> &frasl; &nu;&epsilon;, eddy turnover time,
             &tau; = k<sup>&tilde;</sup> &frasl; &epsilon;, kinetic energy dissipation, &epsilon;,
-            density variance and density-specific volume correlation can be found <a href="docs/hbdt/data1.txt" target="_blank">here</a>.</li>
+            density variance and density-specific volume correlation can be found <a href="docs/hbdt/data1.txt" target="_blank">here</a>.(Note: 
+			Until July 22, 2015, the time-history file that was posted on this site included the total kinetic energy instead of the Favre
+			turbulent kinetic energy.  The file posted since July 22, 2015 lists the Favre turbulent kinetic energy)</li>
         <li>Files with tables of the power spectra of density, 3 velocity components,
             and mass flux can be downloaded at the following times: <a href="docs/hbdt/spectra1.txt" target="_blank">6.56</a>, <a href="docs/hbdt/spectra2.txt" target="_blank">11.4</a>, 
             <a href="docs/hbdt/spectra3.txt" target="_blank">15.0</a>, <a href="docs/hbdt/spectra4.txt" target="_blank">20.0</a>,

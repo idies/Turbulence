@@ -21,7 +21,8 @@ namespace TurbulenceService
             isotropic1024coarse = 4,
             isotropic1024fine = 5,
             channel = 6,
-            mixing = 7
+            mixing = 7,
+            rmhd = 8
         }
 
         // TODO: This needs to be refactored. We probably don't want to keep track of
@@ -42,7 +43,8 @@ namespace TurbulenceService
             pr, //Isotropic Turb. DB Pressure table, Channel DB Pressure table
             isotropic1024fine_vel,
             isotropic1024fine_pr,
-            density // Mixing DB Density table
+            density, // Mixing DB Density table
+            mag // Magnetic field for RMHD
         }
 
         public static int getNumberComponents(TableNames tableName)
@@ -57,13 +59,15 @@ namespace TurbulenceService
                     return 3;
                 case TableNames.magnetic08:
                     return 3;
+                case TableNames.mag:
+                    return 2;
                 case TableNames.potential08:
                     return 3;
                 case TableNames.pr:
                     return 1;
                 case TableNames.pressure08:
                     return 1;
-                case TableNames.vel:
+                case TableNames.vel:                    
                     return 3;
                 case TableNames.velocity08:
                     return 3;
@@ -108,6 +112,13 @@ namespace TurbulenceService
                         return TableNames.pressure08;
                     else
                         throw new Exception("Invalid field specified!");
+                case DataSets.rmhd:
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                        return TableNames.vel;
+                    else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
+                        return TableNames.mag;
+                    else
+                        throw new Exception("Invalid field specified!");
                 case DataSets.mixing:
                     if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.vel;
@@ -144,6 +155,7 @@ namespace TurbulenceService
                                {"isotropic1024coarse", "isotropic1024coarse"},
                                {"isotropic1024fine", "isotropic1024fine"},
                                {"mhd1024coarse", "mhd1024"},
+                               {"rmhd", "rmhd"},
                                {"mhd1024", "mhd1024"},
                                {"channel", "channel"},
                                {"mixing", "mixing"}};
@@ -185,6 +197,10 @@ namespace TurbulenceService
                 return false;
             }
             else if (dataset == DataSets.mhd1024 && time > 2.5601F)
+            {
+                return false;
+            }
+            else if (dataset == DataSets.rmhd && time > 2.5601F)
             {
                 return false;
             }
