@@ -264,12 +264,12 @@ namespace Turbulence.SQLInterface.workers
                                         result[dest + 2] += (float)(c * GetDataItem(off + 2));
                                     }
                                     off5++;
-                                    dest += setInfo.Components;
                                 }
                                 off4 += xwidth;
                             }
                             off3 += x_y_plane_size;
                         }
+                        dest += setInfo.Components;
                     }
                 }
             }
