@@ -257,19 +257,19 @@ namespace Turbulence.SQLInterface.workers
                                 for (int kernel_x = lowx; kernel_x <= highx; kernel_x++)
                                 {
                                     off = off5 * (ulong)setInfo.Components;
-                                    result[dest] += (float)(c * GetDataItem(off5));
+                                    result[dest] += (float)(c * GetDataItem(off));
                                     if (setInfo.Components > 1)
                                     {
                                         result[dest + 1] += (float)(c * GetDataItem(off + 1));
                                         result[dest + 2] += (float)(c * GetDataItem(off + 2));
                                     }
                                     off5++;
+                                    dest += setInfo.Components;
                                 }
                                 off4 += xwidth;
                             }
                             off3 += x_y_plane_size;
                         }
-                        dest += setInfo.Components;
                     }
                 }
             }
