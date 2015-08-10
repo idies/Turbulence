@@ -240,10 +240,10 @@ namespace TurbulenceService {
                 case DataInfo.DataSets.mhd1024:
                     tableName = DataInfo.TableNames.velocity08;
                     break;
-                case DataInfo.DataSets.rmhd:
-                    tableName = DataInfo.TableNames.vel;
-                    components = 2;
-                    break;
+                //case DataInfo.DataSets.rmhd:
+                //    tableName = DataInfo.TableNames.vel;
+                //    components = 2;
+                //    break;
                 case DataInfo.DataSets.channel:
                     tableName = DataInfo.TableNames.vel;
                     break;

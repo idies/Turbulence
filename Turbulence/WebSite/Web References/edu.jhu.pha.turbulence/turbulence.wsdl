@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://turbulence.pha.jhu.edu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://turbulence.pha.jhu.edu/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://turbulence.pha.jhu.edu/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://turbulence.pha.jhu.edu/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://turbulence.pha.jhu.edu/">
       <s:element name="NullOp">
@@ -1994,10 +1994,10 @@
   </wsdl:binding>
   <wsdl:service name="TurbulenceService">
     <wsdl:port name="TurbulenceServiceSoap" binding="tns:TurbulenceServiceSoap">
-      <soap:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
     <wsdl:port name="TurbulenceServiceSoap12" binding="tns:TurbulenceServiceSoap12">
-      <soap12:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap12:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

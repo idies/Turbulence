@@ -2,7 +2,7 @@
 
 echo This script will load the Turbulence.dll assembly in to all DLMSDB nodes
 
-set dll="C:\Users\kalin\Documents\turbulence\Turbulence\Turbulence\bin\Release\Turbulence.dll"
+set dll="C:\Users\kalin\Documents\Turbulence-git\Turbulence\Turbulence\bin\Release\Turbulence.dll"
 
 echo -- Load Turbulence ASsembly > exec.sql
 echo USE turblib >> exec.sql

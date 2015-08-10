@@ -406,11 +406,30 @@ namespace Turbulence.TurbLib
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
                         0.04f, 0, 1014, 1, 1);
                 }
+                else if (dbName.Contains("rmhd"))
+                {
+                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                        tableName, blobDim, 0, 2, new string[] { "Ux", "Uy", "Uz" },
+                        0.00025f, 0, 36, 4, 0);
+                }
                 else
                 {
                     return new TurbDataTable(serverName, dbName, conn, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
                         0.0002f, -10, 10240, 10, 0);
+                }
+            }
+            else if (tableName.Equals("mag"))
+            {
+                if (dbName.Contains("rmhd"))
+                {
+                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                        tableName, blobDim, 0, 2, new string[] { "Ux", "Uy", "Uz" },
+                        0.00025f, 0, 36, 4, 0);
+                }
+                else
+                {
+                    throw new Exception("Invalid dataset and table combination!");
                 }
             }
             else if (tableName.Equals("velocity08"))

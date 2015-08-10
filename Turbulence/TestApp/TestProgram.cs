@@ -41,10 +41,10 @@ namespace TestApp
             {
                 //TestGetForce();
                 //TestMixingDataset();
-                //AllTest();
+                AllTest();
                 //TestGetBoxFilterGradient();
                 //TestAllDisks();
-                TestGetRawData();
+                //TestGetRawData();
                 //TestIsotropicFine();
                 //TestGetLaplacian();
                 //TestChannelFlowInterpolation();
@@ -57,6 +57,7 @@ namespace TestApp
                 //TestDensityHessian();
                 //ComputeDensityHessian();
                 //TestGetThreshold();
+                //ReadFileData();
                 return;
 
                 turbulence.TurbulenceService service = new turbulence.TurbulenceService();
@@ -671,19 +672,31 @@ namespace TestApp
 
             string authToken = "edu.jhu.pha.turbulence.testing-201406";
             DateTime startTime, stopTime;
+
             startTime = DateTime.Now;
-            data = service.GetRawVelocity(authToken, "rmhd", 0.0f, 1024, 0, 0, 8, 8, 8);
+            data = service.GetRawVelocity(authToken, "mhd1024", 0.0f, 504, 128, 128, 8, 8, 1);
             stopTime = DateTime.Now;
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("X={0} Y={1} Z={2}", BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
             Console.WriteLine("Press any key to continue.");
             Console.ReadLine();
 
-            startTime = DateTime.Now;
-            data = service.GetRawVelocity(authToken, "channel", 0.35f, 0, 0, 0, 2048, 10, 1536);
-            stopTime = DateTime.Now;
-            Console.WriteLine("Execution time: {0}", stopTime - startTime);
-            Console.WriteLine("X={0} Y={1} Z={2}", BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
+            //startTime = DateTime.Now;
+            //data = service.GetRawVelocity(authToken, "rmhd", 0.0f, 1016, 128, 128, 8, 8, 1);
+            //stopTime = DateTime.Now;
+            //for (int i = 0; i < data.Length; i += 2 * sizeof(float))
+            //{
+            //    Console.WriteLine("Execution time: {0}", stopTime - startTime);
+            //    Console.WriteLine("X={0} Y={1}", BitConverter.ToSingle(data, i), BitConverter.ToSingle(data, i + sizeof(float)));
+            //}
+            //Console.WriteLine("Press any key to continue.");
+            //Console.ReadLine();
+
+            //startTime = DateTime.Now;
+            //data = service.GetRawVelocity(authToken, "channel", 0.35f, 0, 0, 0, 2048, 10, 1536);
+            //stopTime = DateTime.Now;
+            //Console.WriteLine("Execution time: {0}", stopTime - startTime);
+            //Console.WriteLine("X={0} Y={1} Z={2}", BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));
             Console.WriteLine("Press any key to continue.");
             Console.ReadLine();
         }
@@ -869,13 +882,16 @@ namespace TestApp
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
 
             TimeSpan total = new TimeSpan(0);
-            string dataset = "mixing";
-            float dt = 0.016f;
-            float max_time = 40.44f;
+            string dataset = "mhd1024";
+            float dt = 0.001f;
+            float max_time = 2.56f; 
+            //string dataset = "mixing";
+            //float dt = 0.016f;
+            //float max_time = 40.44f;
             //string dataset = "isotropic1024";
             //float dt = 0.0008f;
             //float max_time = 2.048f;
-            float time_range = 500 * dt;
+            float time_range = 250 * dt;
             turbulence.SpatialInterpolation spatial = turbulence.SpatialInterpolation.Lag4;
 
             //float startTime = (float)random.NextDouble() * (max_time - time_range);
@@ -913,7 +929,7 @@ namespace TestApp
             {
                 float startTime = (float)random.NextDouble() * (max_time - time_range);
                 float endTime = startTime + time_range;
-                int pointsize = 10000;
+                int pointsize = 100000;
                 turbulence.Point3[] points = new turbulence.Point3[pointsize];
                 turbulence.Point3[] positions = new turbulence.Point3[pointsize];
                 string authToken = "edu.jhu.pha.turbulence.testing-201406";
@@ -1776,6 +1792,68 @@ namespace TestApp
         {
             string data_dir = @"\\dss004\tdb_livescu\";
             return String.Format(@"{0}rstrt.{1:0000}.bin", data_dir, time);
+        }
+
+        private static string GetRMHDFileName(int time, long zindex, string field)
+        {
+            if (zindex < 0x400000 || (zindex >= 0x800000 && zindex < 0xc00000))
+            {
+                return String.Format(@"T:\RMHD_{2}_t{0:x4}_z{1:x7}", time, zindex, field);
+            }
+            else
+            {
+                return String.Format(@"S:\RMHD_{2}_t{0:x4}_z{1:x7}", time, zindex, field);
+            }
+        }
+
+        public static void ReadFileData()
+        {
+            int blobDim = 8;
+            int components = 2;
+            int timestep = 0;
+            string field = "u";
+            int cubeSize = blobDim * blobDim * blobDim;
+            long zindex = 467141632;
+            long startOfFile = zindex / cubeSize & -262144;
+            long offset = (zindex - startOfFile * cubeSize) * components * sizeof(float);
+
+            byte[] atom = new byte[cubeSize * components * sizeof(float)];
+            try
+            {
+                string filename = GetRMHDFileName(timestep, startOfFile, field);
+                FileStream fs = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                if (File.Exists(filename))
+                {
+                    fs.Seek(offset, SeekOrigin.Begin);
+                    int n = fs.Read(atom, 0, cubeSize * components * sizeof(float));
+                }
+                else
+                {
+                    throw new System.IO.IOException(String.Format("File not found: {0}!", filename));
+                }
+                fs.Close();
+
+                int startIndex = 0;
+                for (int z = 0; z < blobDim; z++)
+                {
+                    for (int y = 0; y < blobDim; y++)
+                    {
+                        for (int x = 0; x < blobDim; x++)
+                        {
+                            for (int c = 0; c < components; c++)
+                            {
+                                Console.WriteLine("[{0}, {1}, {2}, {3}] = {4}", z, y, x, c, BitConverter.ToSingle(atom, startIndex));
+                                startIndex += sizeof(float);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: {0}\n Inner Exception: {1}", ex, ex.InnerException);
+            }
         }
 
         public static void AllTest()

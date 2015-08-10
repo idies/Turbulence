@@ -112,13 +112,13 @@ namespace TurbulenceService
                         return TableNames.pressure08;
                     else
                         throw new Exception("Invalid field specified!");
-                case DataSets.rmhd:
-                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
-                        return TableNames.vel;
-                    else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
-                        return TableNames.mag;
-                    else
-                        throw new Exception("Invalid field specified!");
+                //case DataSets.rmhd:
+                //    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                //        return TableNames.vel;
+                //    else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
+                //        return TableNames.mag;
+                //    else
+                //        throw new Exception("Invalid field specified!");
                 case DataSets.mixing:
                     if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.vel;

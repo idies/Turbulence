@@ -158,6 +158,8 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Content Include="vid3.aspx" />
+    <Content Include="vid4.aspx" />
     <None Include="Web References\edu.jhu.pha.turbulence\Point3.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -178,8 +180,6 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.disco" />
-    <Content Include="vid3.aspx" />
-    <Content Include="vid4.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2696,10 +2696,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://turbulence.pha.jhu.edu/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\edu.jhu.pha.turbulence\</RelPath>
-      <UpdateFromURL>http://test.turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

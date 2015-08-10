@@ -119,14 +119,6 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mhd1024:
-                case DataInfo.DataSets.rmhd:
-                    this.gridResolution = new int[] { 2048, 2048, 2048 };
-                    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
-                    this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
-                    this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
-                    
-                    rmhd = true;
-                    break;
                 case DataInfo.DataSets.mixing:
                     this.gridResolution = new int[] { 1024, 1024, 1024 };
                     this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
@@ -134,6 +126,14 @@ namespace TurbulenceService
                     this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
                     channel_grid = false;
                     break;
+                //case DataInfo.DataSets.rmhd:
+                //    this.gridResolution = new int[] { 2048, 2048, 2048 };
+                //    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
+                //    this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
+                //    this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
+                //    channel_grid = false;
+                //    rmhd = true;
+                //    break;
                 case DataInfo.DataSets.channel:
                     this.gridResolution = new int[] { 1536, 512, 2048 };
                     this.dx = (8.0 * Math.PI) / (double)this.GridResolutionX;
@@ -172,9 +172,9 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mhd1024:
-                case DataInfo.DataSets.rmhd:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.mixing:
+                //case DataInfo.DataSets.rmhd:
                     this.atomDim = 8;
                     this.smallAtoms = true;
                     break;
@@ -199,10 +199,6 @@ namespace TurbulenceService
                     this.Dt = 0.00025F;
                     this.timeInc = 10;
                     break;
-                case DataInfo.DataSets.rmhd:
-                    this.Dt = 0.00025F;
-                    this.timeInc = 4;
-                    break;
                 case DataInfo.DataSets.channel:
                     this.Dt = 0.0013F;
                     this.timeInc = 5;
@@ -213,6 +209,10 @@ namespace TurbulenceService
                     this.timeInc = 1;
                     this.timeOff = 1;
                     break;
+                //case DataInfo.DataSets.rmhd:
+                //    this.Dt = 0.0006F;
+                //    this.timeInc = 4;
+                //    break;
                 default:
                     throw new Exception("Invalid dataset specified!");
             }
@@ -308,7 +308,7 @@ namespace TurbulenceService
             string DBMapTable = "DatabaseMap";
             if (this.development == true)
             {
-                DBMapTable = "DatabaseMapTest";
+                //DBMapTable = "DatabaseMapTest";
             }
             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
                 "from {0}..{1} where DatasetName = @dataset " + 
@@ -1177,7 +1177,7 @@ namespace TurbulenceService
                 {
                     int num_x_regions = GridResolutionX / 128;
                     int num_y_regions = GridResolutionY / 128;
-                     
+
                     bit = sfc.X / 128 + sfc.Y / 128 * num_x_regions + sfc.Z / 128 * num_x_regions * num_y_regions;
                 }
                 else
@@ -1185,7 +1185,6 @@ namespace TurbulenceService
                     bit = (int)(sfc / (long)(1 << 18));
                 }
             }
-            
             else
             {
                 // The channel flow grid is divided into regions of 64x64x96.
@@ -3324,6 +3323,7 @@ namespace TurbulenceService
         {
             //bool[] encountered_particles = new bool[points.Length];
             ConcurrentDictionary<int, bool> encountered_particles = new ConcurrentDictionary<int, bool>(serverCount, points.Length);
+
             for (int i = 0; i < points.Length; i++)
             {
                 encountered_particles[i] = false;
@@ -3395,7 +3395,8 @@ namespace TurbulenceService
                             predictor[id].x += reader.GetSqlSingle(1).Value;
                             predictor[id].y += reader.GetSqlSingle(2).Value;
                             predictor[id].z += reader.GetSqlSingle(3).Value;
-                        }
+                        }                        
+
                         reader.Close();
                         datatables[server_index].Clear();
                         count[server_index] = 0;
@@ -3422,6 +3423,7 @@ namespace TurbulenceService
                             points[id].y += 0.5F * (reader.GetSqlSingle(2).Value);
                             points[id].z += 0.5F * (reader.GetSqlSingle(3).Value);
                         }
+
                         reader.Close();
                         datatables[server_index].Clear();
                         count[server_index] = 0;
