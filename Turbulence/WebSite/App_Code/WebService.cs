@@ -1471,7 +1471,7 @@ namespace TurbulenceService {
         }
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetPosition",
-        Description = @"FluidParticleTracking")]
+        Description = @"Fluid particle tracking using a task parallel evaluation approach inside the database engine.")]
         public Point3[] GetPosition(string authToken, string dataset, float StartTime, float EndTime,
             float dt, TurbulenceOptions.SpatialInterpolation spatialInterpolation,
             Point3[] points)
@@ -1484,7 +1484,7 @@ namespace TurbulenceService {
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
 
-            if (Math.Abs(EndTime - StartTime) - Math.Abs(dt) < -0.000001F)
+            if (Math.Abs(EndTime - StartTime) - Math.Abs(dt) < -0.000001)
                 throw new Exception(String.Format("The time step dt cannot be greater than the StartTime : EndTime range!"));
 
             object rowid = null;
@@ -1492,7 +1492,6 @@ namespace TurbulenceService {
             TurbulenceOptions.TemporalInterpolation temporalInterpolation = TurbulenceOptions.TemporalInterpolation.PCHIP;
 
             bool round;
-            float dt1, time;
             int integralSteps;
 
             rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetPosition,
@@ -1525,68 +1524,11 @@ namespace TurbulenceService {
             //(the computation has 2 steps for the second order Runge Kutta)
             log.UpdateRecordCount(auth.Id, 2 * (integralSteps + 1) * numParticles);
 
-            Point3[] predictor = new Point3[numParticles]; // This is either the predictor or the "modified" corrector 
-            //for (int i = 0; i < numParticles; i++)
-            //{
-            //    predictor[i] = new Point3(0, 0, 0);
-            //}
-
-            time = StartTime;
-            string tableName = DataInfo.getTableName(dataset_enum, "velocity").ToString();
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.mhd1024:
-                case DataInfo.DataSets.mixing:
-                    //DataInfo.TableNames tableName = DataInfo.TableNames.velocity08;
-                    //if (dataset_enum == DataInfo.DataSets.isotropic1024coarse || dataset_enum == DataInfo.DataSets.isotropic1024fine)
-                    //    tableName = DataInfo.TableNames.vel;
-                    //int worker = (int)Worker.Workers.GetMHDVelocity;
-
-                    for (int i = 0; i < integralSteps; i++)
-                    {
-                        //database.AddBulkParticles(points, round, spatialInterpolation, worker);
-                        database.AddBulkParticles(points, kernelSize, kernelSize, kernelSize, round, time);
-                        database.ExecuteGetPosition(tableName, time,
-                            spatialInterpolation, temporalInterpolation, points, predictor, true, dt);
-
-                        time = time + dt;
-                        //database.AddBulkParticles(predictor, round, spatialInterpolation, worker);
-                        database.AddBulkParticles(predictor, kernelSize, kernelSize, kernelSize, round, time);
-                        database.ExecuteGetPosition(tableName, time,
-                            spatialInterpolation, temporalInterpolation, points, predictor, false, dt);
-                    }
-
-                    dt1 = (float)(EndTime - (StartTime + integralSteps * dt));
-
-                    if ((StartTime > EndTime && dt1 <= -0.00001) || (StartTime < EndTime && dt1 >= 0.00001))
-                    {
-                        //database.AddBulkParticles(points, round, spatialInterpolation, worker);
-                        database.AddBulkParticles(points, kernelSize, kernelSize, kernelSize, round, time);
-                        database.ExecuteGetPosition(tableName, time,
-                            spatialInterpolation, temporalInterpolation, points, predictor, true, dt1);
-
-                        //database.AddBulkParticles(predictor, round, spatialInterpolation, worker);
-                        database.AddBulkParticles(predictor, kernelSize, kernelSize, kernelSize, round, time);
-                        database.ExecuteGetPosition(tableName, EndTime,
-                            spatialInterpolation, temporalInterpolation, points, predictor, false, dt1);
-                    }
-                    break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
-            }
+            database.AddBulkParticlesSingleServer(points, kernelSize, kernelSize, kernelSize, round, StartTime);
+            database.ExecuteGetPosition((short)dataset_enum, spatialInterpolation, TurbulenceOptions.TemporalInterpolation.PCHIP,
+                DataInfo.getTableName(dataset_enum, "velocity").ToString(), StartTime, EndTime, dt, points);
 
             database.Close();
-
-
-            //Point3[] positions = new Point3[ParticleNumber];
-
-            //for (int i = 0; i < ParticleNumber; i++)
-            //{
-            //    positions[i] = new Point3(result[i].x, result[i].y, result[i].z);
-            //}
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 

@@ -47,7 +47,6 @@ public partial class StoredProcedures
             connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
-        //contextConn = new SqlConnection(String.Format("Data Source={0};Initial Catalog={1};User ID=turbquery;Password=dHaGo9486sal;Pooling=false;", serverName, codedb));
         contextConn.Open();
 
         // Check temp table

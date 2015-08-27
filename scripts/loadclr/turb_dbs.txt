@@ -2,10 +2,6 @@ gw01
 gw02
 gw03
 gw04
-gw21
-gw22
-gw23
-gw24
 dsp048
 dsp084
 gw13

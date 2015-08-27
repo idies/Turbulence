@@ -889,9 +889,9 @@ namespace TestApp
             //float dt = 0.016f;
             //float max_time = 40.44f;
             //string dataset = "isotropic1024";
-            //float dt = 0.0008f;
+            //float dt = 0.001f;
             //float max_time = 2.048f;
-            float time_range = 250 * dt;
+            float time_range = 100 * dt;
             turbulence.SpatialInterpolation spatial = turbulence.SpatialInterpolation.Lag4;
 
             //float startTime = (float)random.NextDouble() * (max_time - time_range);
@@ -924,14 +924,15 @@ namespace TestApp
             //dt = 0.001f;
             //Console.WriteLine("rowid = {0}, records = {1}, interpolation: {2}, dt = {3}, start = {4}, end = {5}", rowid, pointsize, spatial, dt, startTime, endTime);
 
-            int num_runs = 3;
+            int num_runs = 1;
             for (int run = 0; run < num_runs; run++)
             {
                 float startTime = (float)random.NextDouble() * (max_time - time_range);
                 float endTime = startTime + time_range;
-                int pointsize = 100000;
+                int pointsize = 10000;
                 turbulence.Point3[] points = new turbulence.Point3[pointsize];
                 turbulence.Point3[] positions = new turbulence.Point3[pointsize];
+                turbulence.Point3[] positions2 = new turbulence.Point3[pointsize];
                 string authToken = "edu.jhu.pha.turbulence.testing-201406";
 
                 DateTime runningTime, runningTimeEnd;
@@ -983,6 +984,13 @@ namespace TestApp
                 //positions = service.GetPositionDBEvaluation(authToken, "isotropic1024", startTime, endTime, -0.001f, turbulence.SpatialInterpolation.Lag4, points);
                 //Console.WriteLine("Execution time: {0}", (DateTime.Now - runningTime).TotalSeconds);
                 //Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions[0].x, positions[0].y, positions[0].z, startTime, endTime);
+
+                //runningTime = DateTime.Now;
+                //positions2 = service.GetPositionOld(authToken, dataset, startTime, endTime, dt, spatial, points);
+                //runningTimeEnd = DateTime.Now;
+                //Console.WriteLine("Run {1}: Execution time: {0}", (runningTimeEnd - runningTime).TotalSeconds, run);
+                //Console.WriteLine("start time={3}, end time={4}, X={0} Y={1} Z={2}", positions2[0].x, positions2[0].y, positions2[0].z, startTime, endTime);
+                //total += runningTimeEnd - runningTime;
 
                 runningTime = DateTime.Now;
                 positions = service.GetPosition(authToken, dataset, startTime, endTime, dt, spatial, points);

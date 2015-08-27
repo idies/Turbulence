@@ -77,14 +77,12 @@ namespace Turbulence.SQLInterface
         public class TrackingInputRequest
         {
             public int request;
-            public int timeStep;
+            //public int timeStep;
             public long zindex;
             public Point3 pos;
             public Point3 pre_pos;
             public Vector3 vel_inc;
-            public float time;
-            public float endTime;
-            public float dt;
+            //public float time;
             public bool compute_predictor;
             public bool crossed_boundary;
             public bool done;
@@ -93,59 +91,23 @@ namespace Turbulence.SQLInterface
             public bool resultSent;
             public double[] lagInt;
 
-            public bool evaluate;
-            public int numberOfNodes;
-            public int numberOfNodeResults;
-
             public TrackingInputRequest() { }
 
-            public TrackingInputRequest(int request, int timeStep, long zindex,
-                Point3 pos, Point3 pre_pos, Vector3 vel,
-                float time, float endTime, float dt, bool flag)
+            public TrackingInputRequest(int request, long zindex,
+                Point3 pos, Point3 pre_pos, Vector3 vel, bool flag)
             {
                 this.request = request;
-                this.timeStep = timeStep;
+                //this.timeStep = timeStep;
                 this.zindex = zindex;
                 this.pos = pos;
                 this.pre_pos = pre_pos;
                 this.vel_inc = vel;
-                this.time = time;
-                this.endTime = endTime;
-                this.dt = dt;
+                //this.time = time;
                 this.compute_predictor = flag;
                 this.crossed_boundary = false;
                 this.done = false;
                 this.cubesRead = 0;
                 this.numberOfCubes = 0;
-                this.resultSent = false;
-                this.lagInt = null;
-
-                this.numberOfCubes = 0;
-                this.numberOfNodeResults = 0;
-                this.evaluate = true;
-            }
-
-            public TrackingInputRequest(int request, int timeStep, long zindex,
-                Point3 pos, Point3 pre_pos, Vector3 vel,
-                float time, float endTime, float dt, bool compute_predictor, int numberOfNodes, bool evaluate)
-            {
-                this.request = request;
-                this.timeStep = timeStep;
-                this.zindex = zindex;
-                this.pos = pos;
-                this.pre_pos = pre_pos;
-                this.vel_inc = vel;
-                this.time = time;
-                this.endTime = endTime;
-                this.dt = dt;
-                this.compute_predictor = compute_predictor;
-                this.crossed_boundary = false;
-                this.evaluate = evaluate;
-                this.done = false;
-                this.cubesRead = 0;
-                this.numberOfCubes = 0;
-                this.numberOfNodeResults = 0;
-                this.numberOfNodes = numberOfNodes;
                 this.resultSent = false;
                 this.lagInt = null;
             }
@@ -287,21 +249,6 @@ namespace Turbulence.SQLInterface
             return tableName;
         }
 
-        public static string SelectDistinctIntoTrackingTemporaryTable(string tempTable)
-        {
-            tempTable = SanitizeTemporaryTable(tempTable);
-            Random random = new Random();
-            string tableName = "#query" + random.Next(100000);
-
-            SqlConnection conn = new SqlConnection("context connection=true");
-            conn.Open();
-            SqlCommand cmd = new SqlCommand(String.Format("SELECT DISTINCT (zindex & 0xfffc0000) AS zindex, timestep AS timestep INTO {0} FROM {1}",
-                tableName, tempTable), conn);
-            int count = cmd.ExecuteNonQuery();
-            conn.Close();
-            return tableName;
-        }
-
         public static string CreateTemporaryJoinTable(ICollection<long> Keys,
             SqlConnection sqlConn, float points_per_cube)
         {
@@ -326,70 +273,6 @@ namespace Turbulence.SQLInterface
             }
 
             IDataReader dataReader = SQLInterface.JoinTableDataReader.GetReader(Keys, points_per_cube);
-
-            SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn);
-
-            // set the destination table name
-            bulkCopy.DestinationTableName = tableName;
-
-            // the batch size may have an effect on performance,
-            // the optimal value may need to be determined empirically
-            bulkCopy.BatchSize = 100000;
-            bulkCopy.BulkCopyTimeout = 3600;
-
-            try
-            {
-                bulkCopy.WriteToServer(dataReader);
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(String.Format("Could not write the temporary table to the server: {0}", ex.ToString()));
-            }
-            dataReader.Close();
-            //conn.Close();
-            return tableName;
-        }
-
-        public static string CreateTemporaryJoinTable(ICollection<TimestepZindexKey> Keys, TurbulenceOptions.TemporalInterpolation temporalInterpolation, int timeInc,
-            SqlConnection sqlConn, float points_per_cube)
-        {
-            //Random random = new Random();
-            //string tableName = "#query" + random.Next(100000);
-            string tableName = "##query" + Guid.NewGuid().ToString().Replace("-", "");
-
-            // Create the temporary table, in which the values are to be inserted
-            //SqlCommand command = new SqlCommand(String.Format("IF  EXISTS " +
-            //    "(SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'{0}') AND type in (N'U'))" +
-            //    "DROP TABLE {0} " +
-            //    "CREATE TABLE {0} (zindex bigint)", tableName), sqlConn);
-            if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
-            {
-                SqlCommand command = new SqlCommand(String.Format("CREATE TABLE {0} (basetime int, zindex bigint)", tableName), sqlConn);
-                try
-                {
-                    command.CommandTimeout = 3600;
-                    command.ExecuteNonQuery();
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(String.Format("Could not create temporary table: {0}", ex.ToString()));
-                }
-            }
-            else
-            {
-                SqlCommand command = new SqlCommand(String.Format("CREATE TABLE {0} (basetime int, zindex bigint, timestep int)", tableName), sqlConn);
-                try
-                {
-                    command.CommandTimeout = 3600;
-                    command.ExecuteNonQuery();
-                }
-                catch (System.Exception ex)
-                {
-                    throw new Exception(String.Format("Could not create temporary table: {0}", ex.ToString()));
-                }
-            }
-
-            IDataReader dataReader = SQLInterface.TrackingJoinTableDataReader.GetReader(Keys, points_per_cube, temporalInterpolation, timeInc);
 
             SqlBulkCopy bulkCopy = new SqlBulkCopy(sqlConn);
 
@@ -875,149 +758,6 @@ namespace Turbulence.SQLInterface
             }
             JoinTableDataReader.Close();
             return jointableName;
-        }
-
-        //same as above, but returns a different map and an array
-        public static Dictionary<SQLUtility.TimestepZindexKey, List<int>> ReadTempTableGetAtomsToRead_ParticleTracking(string tempTable,
-            Turbulence.SQLInterface.workers.GetPositionWorker worker,
-            SqlConnection conn,
-            Dictionary<int, TrackingInputRequest> input, int inputSize,
-            ref float points_per_cube, 
-            ref bool all_done)
-        {
-            Dictionary<SQLUtility.TimestepZindexKey, List<int>> map = new Dictionary<SQLUtility.TimestepZindexKey, List<int>>();
-            tempTable = SanitizeTemporaryTable(tempTable);
-            TrackingInputRequest request;
-
-            int total_points = 0;
-
-            // Bitmask to ignore low order bits of address
-            long mask = ~(long)(worker.DataTable.atomDim * worker.DataTable.atomDim * worker.DataTable.atomDim - 1);
-
-            //int halfKernel = worker.KernelSize / 2;
-            //int edgeRegion = worker.DataTable.EdgeRegion;
-
-            //long zindex = 0;
-            int result_size = worker.GetResultSize();
-            int reqseq = -1;
-            //TimestepZindexKey key = new TimestepZindexKey();
-
-            string query = "";
-            SqlCommand cmd;
-            query += String.Format("SELECT reqseq, timestep, zindex, x, y, z, pre_x, pre_y, pre_z, time, endTime, dt, compute_predictor FROM {0}", tempTable);
-            cmd = new SqlCommand(query, conn);
-            SqlDataReader reader = cmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                reqseq = reader.GetSqlInt32(0).Value;
-                request = new TrackingInputRequest(
-                    reqseq,
-                    reader.GetSqlInt32(1).Value,
-                    reader.GetSqlInt64(2).Value,
-                    new Point3(reader.GetSqlSingle(3).Value, reader.GetSqlSingle(4).Value, reader.GetSqlSingle(5).Value),
-                    new Point3(reader.GetSqlSingle(6).Value, reader.GetSqlSingle(7).Value, reader.GetSqlSingle(8).Value),
-                    new Vector3(),
-                    reader.GetSqlSingle(9).Value,
-                    reader.GetSqlSingle(10).Value,
-                    reader.GetSqlSingle(11).Value,
-                    reader.GetSqlBoolean(12).Value);
-
-                input[reqseq] = request;
-
-                total_points += AddRequestToMap(ref map, request, worker, mask);
-                if (request.crossed_boundary)
-                    all_done = true;
-                //if (halfKernel > edgeRegion)
-                //{
-                //    worker.GetAtomsForPoint(request, mask, 0, map, ref total_points);
-                //}
-                //else
-                //{
-                //    zindex = reader.GetSqlInt64(2).Value & mask;
-                //    key.SetValues(request.timeStep, zindex);
-
-                //    request.numberOfCubes = 1;
-                //    if (!map.ContainsKey(key))
-                //    {
-                //        map[key] = new List<int>();
-                //    }
-                //    map[key].Add(request.request);
-                //    total_points++;
-                //}
-            }
-            reader.Close();
-
-            points_per_cube = (float)total_points / map.Keys.Count;
-
-            return map;
-        }
-
-        // A method to add a new request to the given map. //
-        public static int AddRequestToMap(ref Dictionary<TimestepZindexKey, List<int>> map, TrackingInputRequest request,
-            Turbulence.SQLInterface.workers.GetPositionWorker worker, long mask)
-        {
-            int total_points = 0;
-            int halfKernel = worker.KernelSize / 2;
-            int edgeRegion = worker.DataTable.EdgeRegion;
-            long zindex = 0;
-            TimestepZindexKey key = new TimestepZindexKey();
-
-            if (halfKernel > edgeRegion)
-            {
-                worker.GetAtomsForPoint(request, mask, 0, map, ref total_points);
-            }
-            else
-            {
-                zindex = request.zindex & mask;
-                key.SetValues(request.timeStep, zindex);
-
-                request.numberOfCubes = 1;
-                if (!map.ContainsKey(key))
-                {
-                    map[key] = new List<int>();
-                }
-                map[key].Add(request.request);
-                total_points++;
-            }
-            return total_points;
-        }
-
-        public static InputRequest[] ReadTrackingTemporaryTable(string tempTable)
-        {
-            throw new NotImplementedException();
-            //tempTable = SanitizeTemporaryTable(tempTable);
-            //int length = GetTempTableLength(tempTable);
-            //InputRequest[] requests = new InputRequest[length];
-
-            //SqlConnection conn = new SqlConnection("context connection=true");
-            //conn.Open();
-            //SqlCommand cmd = new SqlCommand(
-            //    String.Format("SELECT reqseq, zindex, x, y, z, dt, nt, u1x, u1y, u1z, u2x, u2y, u2z FROM {0}", tempTable),
-            //    conn);
-            //SqlDataReader reader = cmd.ExecuteReader();
-
-            //int i = 0;
-            //while (reader.Read())
-            //{
-            //    requests[i] = new InputRequest(
-            //        reader.GetSqlInt32(0).Value,
-            //        reader.GetSqlInt64(1).Value,
-            //        reader.GetSqlSingle(2).Value,
-            //        reader.GetSqlSingle(3).Value,
-            //        reader.GetSqlSingle(4).Value,
-            //        reader.GetSqlSingle(5).Value,
-            //        reader.GetSqlInt32(6).Value,
-            //        new Vector3(reader.GetSqlSingle(7).Value, reader.GetSqlSingle(8).Value, reader.GetSqlSingle(9).Value),
-            //        new Vector3(reader.GetSqlSingle(10).Value, reader.GetSqlSingle(11).Value, reader.GetSqlSingle(12).Value)
-            //        );
-
-            //    i++;
-            //}
-            //reader.Close();
-            //conn.Close();
-
-            //return requests;
         }
 
 

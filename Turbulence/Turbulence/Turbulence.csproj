@@ -150,6 +150,7 @@
     <Compile Include="SciLib\Particle.cs" />
     <Compile Include="SciLib\TemporalInterpolation.cs" />
     <Compile Include="SQLInterface\CutoutDataReader.cs" />
+    <Compile Include="SQLInterface\ExecuteParticleTrackingWorkerTaskParallel.cs" />
     <Compile Include="SQLInterface\ExecuteTwoFieldsBoxFilterWorker.cs" />
     <Compile Include="SQLInterface\ExecuteTwoFieldsWorker.cs" />
     <Compile Include="SQLInterface\GetStridedDataCutout.cs" />
@@ -163,7 +164,6 @@
     <Compile Include="SQLInterface\ExecuteGetPositionWorker.cs" />
     <Compile Include="SQLInterface\GetDataCutout.cs" />
     <Compile Include="SQLInterface\TempTableDataReader.cs" />
-    <Compile Include="SQLInterface\ExecuteParticleTrackingWorker.cs" />
     <Compile Include="SQLInterface\ExecuteTurbulenceWorker.cs" />
     <Compile Include="SQLInterface\ExecuteMHDWorker.cs" />
     <Compile Include="SQLInterface\JoinTableDataReader.cs" />
