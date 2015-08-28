@@ -366,9 +366,11 @@ namespace CutoutService
 
                     size = (long)xsize * (long)ysize * (long)zsize * 1 * sizeof(float);
                     datasize[3] = 1;
-                    H5S.close(dataspace);
-                    dataspace = H5S.create_simple(4, datasize, datasize);
-
+                    using (new SingleGlobalInstance(1000))
+                    {
+                        H5S.close(dataspace);
+                        dataspace = H5S.create_simple(4, datasize, datasize);
+                    }
                     //If a single buffer exceeds 2gb, then split into multiple pieces
                     //if (size > 2000000000L)
                     if (size > 256000000L)
@@ -439,11 +441,12 @@ namespace CutoutService
                         log.UpdateLogRecord(rowid, database.Bitfield);
                         log.Reset();
                     }
-
-                    H5S.close(dataspace);
-                    H5T.close(dataType);
-                    H5F.flush(file, H5F.Scope.GLOBAL);
-
+                    using (new SingleGlobalInstance(1000))
+                    {
+                        H5S.close(dataspace);
+                        H5T.close(dataType);
+                        H5F.flush(file, H5F.Scope.GLOBAL);
+                    }
                     GC.Collect();
                     ulong filesize;
 
@@ -461,9 +464,12 @@ namespace CutoutService
                         filesize = H5Fget_file_image(file.Id, null, 0);
 
                         filebuff = (byte*)malloc(filesize);
-                        H5Fget_file_image(file.Id, filebuff, filesize);
+                        using (new SingleGlobalInstance(1000))
+                        {
+                            H5Fget_file_image(file.Id, filebuff, filesize);
 
-                        H5F.close(file);
+                            H5F.close(file);
+                        }
                         Response.AppendHeader("Content-length", filesize.ToString());
                         Response.AppendHeader("X-ServerName", System.Environment.MachineName);
 
@@ -505,9 +511,10 @@ namespace CutoutService
                         }
                         free(filebuff);
                     }
-
-                    H5.Close();
-
+                    using (new SingleGlobalInstance(1000))
+                    {
+                        H5.Close();
+                    }
                     System.IO.File.Delete(filename);
 
                     //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\downloadPageTime.txt", true);
