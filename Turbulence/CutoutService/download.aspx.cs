@@ -219,61 +219,65 @@ namespace CutoutService
                         H5D.close(size_field);
                         H5D.close(start_field);
                         H5S.close(vec4);
-                    }
-                    //Bitfield indicating which fields are present
-                    long[] one = { 1 };
-                    H5DataSpaceId singleval = H5S.create_simple(1, one);
-                    int[] dsenum = { (int)dataset_enum };
-                    int[] contents_data = { (fields.Contains("u") ? 0x01 : 0x00) |
+
+                        //Bitfield indicating which fields are present
+                        long[] one = { 1 };
+                        H5DataSpaceId singleval = H5S.create_simple(1, one);
+                        int[] dsenum = { (int)dataset_enum };
+                        int[] contents_data = { (fields.Contains("u") ? 0x01 : 0x00) |
                                                 (fields.Contains("p") ? 0x02 : 0x00) |
                                                 (fields.Contains("b") ? 0x04 : 0x00) |
                                                 (fields.Contains("a") ? 0x08 : 0x00) |
                                                 (fields.Contains("d") ? 0x16 : 0x00) };
 
-                    //The enum of the dataset requested
-                    H5DataSetId ds_field = H5D.create(file, "_dataset", H5T.H5Type.NATIVE_INT, singleval);
+                        //The enum of the dataset requested
+                        H5DataSetId ds_field = H5D.create(file, "_dataset", H5T.H5Type.NATIVE_INT, singleval);
 
-                    H5D.write<int>(ds_field, intTypeId, new H5Array<int>(dsenum));
+                        H5D.write<int>(ds_field, intTypeId, new H5Array<int>(dsenum));
 
-                    H5DataSetId contents_field = H5D.create(file, "_contents", H5T.H5Type.NATIVE_INT, singleval);
-                    H5D.write<int>(contents_field, intTypeId, new H5Array<int>(contents_data));
+                        H5DataSetId contents_field = H5D.create(file, "_contents", H5T.H5Type.NATIVE_INT, singleval);
+                        H5D.write<int>(contents_field, intTypeId, new H5Array<int>(contents_data));
 
-                    H5D.close(contents_field);
-                    H5D.close(ds_field);
-                    H5S.close(singleval);
-                    H5T.close(intTypeId);
-
-                    long size = (long)xsize * (long)ysize * (long)zsize * 3 * sizeof(float);
-                    int newcomponent = 3;
-                    /*This needs to be done better.  Currently RMHD has 2 components for both magnetic and velocity */
-                    if (dataset_enum == DataInfo.DataSets.rmhd) newcomponent = 2;
-                    long[] datasize = { zsize, ysize, xsize, newcomponent };
-                    H5DataTypeId dataType = H5T.copy(H5T.H5Type.NATIVE_FLOAT);
-                    H5DataSpaceId dataspace = H5S.create_simple(4, datasize, datasize);
-
-                    AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, xwidth * ywidth * zwidth);
-                    int num_virtual_servers = 1;
-                    database.Initialize(dataset_enum, num_virtual_servers);
-
-                    int pieces = 1, dz = (int)datasize[0];
-
-                    //If a single buffer exceeds 2gb, then split into multiple pieces
-                    //if (size > 2000000000L)
-                    if (size > 256000000L)
-                    {
-                        pieces = (int)Math.Ceiling((float)size / 256000000L);
-
-                        //Round up to nearest power of 2
-                        pieces--;
-                        pieces |= pieces >> 1;
-                        pieces |= pieces >> 2;
-                        pieces |= pieces >> 4;
-                        pieces |= pieces >> 8;
-                        pieces |= pieces >> 16;
-                        pieces++;
-                        dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
+                        H5D.close(contents_field);
+                        H5D.close(ds_field);
+                        H5S.close(singleval);
+                        H5T.close(intTypeId);
                     }
+                        long size = (long)xsize * (long)ysize * (long)zsize * 3 * sizeof(float);
+                        int newcomponent = 3;
+                        /*This needs to be done better.  Currently RMHD has 2 components for both magnetic and velocity */
+                        if (dataset_enum == DataInfo.DataSets.rmhd) newcomponent = 2;
+                        long[] datasize = { zsize, ysize, xsize, newcomponent };
+                        H5DataTypeId dataType;
+                        H5DataSpaceId dataspace;
+                        using (new SingleGlobalInstance(1000))
+                        {
+                           dataType = H5T.copy(H5T.H5Type.NATIVE_FLOAT);
+                           dataspace = H5S.create_simple(4, datasize, datasize);
+                        }
+                        int num_virtual_servers = 1;
+                        database.Initialize(dataset_enum, num_virtual_servers);
 
+                        int pieces = 1, dz = (int)datasize[0];
+
+                        //If a single buffer exceeds 2gb, then split into multiple pieces
+                        //if (size > 2000000000L)
+                        if (size > 256000000L)
+                        {
+                            pieces = (int)Math.Ceiling((float)size / 256000000L);
+
+                            //Round up to nearest power of 2
+                            pieces--;
+                            pieces |= pieces >> 1;
+                            pieces |= pieces >> 2;
+                            pieces |= pieces >> 4;
+                            pieces |= pieces >> 8;
+                            pieces |= pieces >> 16;
+                            pieces++;
+                            dz = (int)Math.Ceiling((float)zwidth / pieces / 8) * 8;
+                        }
+                    
+                    AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, xwidth * ywidth * zwidth);
                     DataInfo.TableNames tableName;
                     int components;
                     string field;
@@ -593,13 +597,20 @@ namespace CutoutService
             DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int components, int tlow, int thigh,
             int xlow, int ylow, int zlow, int xsize, int ysize, int zsize)
         {
-            H5PropertyListId H5P_DEFAULT = new H5PropertyListId(H5P.Template.DEFAULT);
+            H5PropertyListId H5P_DEFAULT;
+            using (new SingleGlobalInstance(1000))
+            {
+                H5P_DEFAULT = new H5PropertyListId(H5P.Template.DEFAULT);
+            }
 
             for (int t = tlow; t <= thigh; t++)
             {
                 DataInfo.verifyTimeInRange(dataset_enum, (float)t * database.Dt * database.TimeInc);
-
-                H5DataSetId datasetId = H5D.create(file, String.Format(field + "{0:00000}", t * 10), dataType, dataspace);
+                H5DataSetId datasetId;
+                using (new SingleGlobalInstance(1000))
+                {
+                    datasetId = H5D.create(file, String.Format(field + "{0:00000}", t * 10), dataType, dataspace);
+                }
 
                 for (int p = 0; p < pieces; p++)
                 {
@@ -614,12 +625,13 @@ namespace CutoutService
                         buffer_[f] = BitConverter.ToSingle(buffer, f * sizeof(float));
                     long[] start = { p * dz, 0, 0, 0 };
                     long[] count = { chunklen, ysize, xsize, components };
-
-                    H5DataSpaceId memspace = H5S.create_simple(4, count);
-
-                    H5S.selectHyperslab(dataspace, H5S.SelectOperator.SET, start, count);
-
-                    H5D.write<float>(datasetId, dataType, memspace, dataspace, H5P_DEFAULT, new H5Array<float>(buffer_));
+                    H5DataSpaceId memspace;
+                    using (new SingleGlobalInstance(1000))
+                    {
+                        memspace = H5S.create_simple(4, count);
+                        H5S.selectHyperslab(dataspace, H5S.SelectOperator.SET, start, count);
+                        H5D.write<float>(datasetId, dataType, memspace, dataspace, H5P_DEFAULT, new H5Array<float>(buffer_));
+                    }
 
                     //TODO: add a H5D.flush here
 
@@ -628,7 +640,10 @@ namespace CutoutService
                     //GC.Collect();
                 }
                 // TODO: Check for open objects here and close everything
-                H5D.close(datasetId);
+                using (new SingleGlobalInstance(1000))
+                {
+                    H5D.close(datasetId);
+                }
             }
         }
 
@@ -640,8 +655,11 @@ namespace CutoutService
             int xsize = (xwidth + xstep - 1) / xstep,
                 ysize = (ywidth + ystep - 1) / ystep,
                 zsize = (zwidth + zstep - 1) / zstep;
-
-            H5PropertyListId H5P_DEFAULT = new H5PropertyListId(H5P.Template.DEFAULT);
+            H5PropertyListId H5P_DEFAULT;
+                using (new SingleGlobalInstance(1000))
+                {
+                    H5P_DEFAULT = new H5PropertyListId(H5P.Template.DEFAULT);
+                }
 
             for (int t = tlow; t <= thigh; t += tstep)
             {
@@ -649,8 +667,11 @@ namespace CutoutService
 
                 byte[] buffer = database.GetFilteredData(dataset_enum, tableName, t * database.Dt * database.TimeInc, components, xlow, ylow, zlow, xwidth, ywidth, zwidth, 
                     xstep, ystep, zstep, filter_width);
-
-                H5DataSetId datasetId = H5D.create(file, String.Format(field + "{0:00000}", t * 10), dataType, dataspace);
+                H5DataSetId datasetId;
+                using (new SingleGlobalInstance(1000))
+                {
+                    datasetId = H5D.create(file, String.Format(field + "{0:00000}", t * 10), dataType, dataspace);
+                }
 
                 long chunksize = (long)xsize * (long)ysize * (long)zsize * (long)components;
                 float[] buffer_ = new float[chunksize];
@@ -659,20 +680,22 @@ namespace CutoutService
                 long[] start = { 0, 0, 0, 0 };
                 long[] count = { zsize, ysize, xsize, components };
 
-                H5DataSpaceId memspace = H5S.create_simple(4, count);
+                H5DataSpaceId memspace;
+                using (new SingleGlobalInstance(1000))
+                {
+                    memspace = H5S.create_simple(4, count);
+                    H5S.selectHyperslab(dataspace, H5S.SelectOperator.SET, start, count);
+                    H5D.write<float>(datasetId, dataType, memspace, dataspace, H5P_DEFAULT, new H5Array<float>(buffer_));
 
-                H5S.selectHyperslab(dataspace, H5S.SelectOperator.SET, start, count);
+                    //TODO: add a H5D.flush here
 
-                H5D.write<float>(datasetId, dataType, memspace, dataspace, H5P_DEFAULT, new H5Array<float>(buffer_));
+                    buffer_ = null;
+                    buffer = null;
+                    //GC.Collect();
 
-                //TODO: add a H5D.flush here
-
-                buffer_ = null;
-                buffer = null;
-                //GC.Collect();
-
-                // TODO: Check for open objects here and close everything
-                H5D.close(datasetId);
+                    // TODO: Check for open objects here and close everything
+                    H5D.close(datasetId);
+                }
             }
         }
 
