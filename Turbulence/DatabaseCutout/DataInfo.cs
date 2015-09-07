@@ -8,8 +8,7 @@ using System.Web;
 //using System.Web.UI.WebControls.WebParts;
 //using System.Web.UI.HtmlControls;
 
-namespace DatabaseCutout
-{
+
     /// <summary>
     /// Summary description for DataInfo
     /// </summary>
@@ -218,4 +217,3 @@ namespace DatabaseCutout
         }
 
     }
-}

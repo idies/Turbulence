@@ -10,8 +10,7 @@ using Turbulence.TurbLib.DataTypes;
 using Turbulence.SQLInterface;
 using System.Threading;
 
-namespace DatabaseCutout
-{
+
     /// <summary>
     /// Basic, naive, code for sending requests to database nodes.
     /// </summary>
@@ -213,7 +212,7 @@ namespace DatabaseCutout
         public void selectServers(DataInfo.DataSets dataset_enum)
         {
             String dataset = dataset_enum.ToString();
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -3629,4 +3628,3 @@ namespace DatabaseCutout
             return new Tuple<T, U>(item1, item2);
         }
     }
-}
