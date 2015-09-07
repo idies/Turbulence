@@ -3137,6 +3137,12 @@ namespace TurbulenceService
             ManualResetEvent doneEvent = new ManualResetEvent(false);
             Exception exception = null;
 
+            string executeStr = "ExecuteParticleTrackingWorkerTaskParallel"; //PJ 2015: call regular or channel flow worker
+            if ((DataInfo.DataSets)dataset == DataInfo.DataSets.channel)
+            {
+                executeStr = "ExecuteParticleTrackingChannelWorkerTaskParallel";
+            }
+
             string turbinfo_connectionString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
             string turbinfoServer = builder.DataSource;
@@ -3146,7 +3152,10 @@ namespace TurbulenceService
                 if (connections[s] != null && datatables[s].Rows.Count > 0)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteParticleTrackingWorkerTaskParallel] @turbinfoServer, @turbinfoDB, @localServer, @localDatabase, @datasetID, "
+
+                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].["
+                                                + executeStr + 
+                                                "] @turbinfoServer, @turbinfoDB, @localServer, @localDatabase, @datasetID, "
                                                 + "@tableName, @atomDim, @workerType, "
                                                 + " @spatialInterp, @temporalInterp, @inputSize, @tempTable, @time, @endTime, @dt, @development", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfoServer", turbinfoServer);

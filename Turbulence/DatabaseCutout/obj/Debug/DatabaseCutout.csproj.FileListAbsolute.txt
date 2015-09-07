@@ -1,0 +1,7 @@
+H:\codes\JHTDB\Turbulence\Turbulence\DatabaseCutout\bin\Debug\DatabaseCutout.dll
+H:\codes\JHTDB\Turbulence\Turbulence\DatabaseCutout\bin\Debug\DatabaseCutout.pdb
+H:\codes\JHTDB\Turbulence\Turbulence\DatabaseCutout\bin\Debug\Turbulence.dll
+H:\codes\JHTDB\Turbulence\Turbulence\DatabaseCutout\bin\Debug\Turbulence.pdb
+H:\codes\JHTDB\Turbulence\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.csprojResolveAssemblyReference.cache
+H:\codes\JHTDB\Turbulence\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.dll
+H:\codes\JHTDB\Turbulence\Turbulence\DatabaseCutout\obj\Debug\DatabaseCutout.pdb

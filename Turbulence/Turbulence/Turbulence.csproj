@@ -149,6 +149,7 @@
     <Compile Include="SciLib\LagInterpolation.cs" />
     <Compile Include="SciLib\Particle.cs" />
     <Compile Include="SciLib\TemporalInterpolation.cs" />
+    <Compile Include="SQLInterface\ExecuteParticleTrackingChannelWorkerTaskParallel.cs" />
     <Compile Include="SQLInterface\CutoutDataReader.cs" />
     <Compile Include="SQLInterface\ExecuteParticleTrackingWorkerTaskParallel.cs" />
     <Compile Include="SQLInterface\ExecuteTwoFieldsBoxFilterWorker.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="SQLInterface\JoinTableDataReader.cs" />
     <Compile Include="SQLInterface\TestExecuteBoxFilterWorker.cs" />
     <Compile Include="SQLInterface\TrackingJoinTableDataReader.cs" />
+    <Compile Include="SQLInterface\workers\GetChannelPositionWorker.cs" />
     <Compile Include="SQLInterface\workers\GetChannelSplinesWorker.cs" />
     <Compile Include="SQLInterface\workers\GetChannelQ.cs" />
     <Compile Include="SQLInterface\workers\GetQ.cs" />
