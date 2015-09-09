@@ -47,6 +47,12 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.XML" />
+    <Reference Include="Turbulence, Version=1.1.5718.26957, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>obj\sqlclr\Turbulence.dll</HintPath>
+      <Private>False</Private>
+      <SubType>SQLCLR</SubType>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthInfo.cs" />
@@ -67,10 +73,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Turbulence\Turbulence.csproj">
-      <Project>{CBE305D7-8868-4A9D-8885-5E67A8507C78}</Project>
-      <Name>Turbulence</Name>
-    </ProjectReference>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

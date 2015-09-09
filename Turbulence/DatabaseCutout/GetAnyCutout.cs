@@ -43,7 +43,7 @@ public partial class StoredProcedures
         
         SqlCommand sqlcmd = new SqlCommand();
         
-        long dlsize = DetermineSize("u", twidth, xwidth / x_step, ywidth / y_step, zwidth / z_step);
+        long dlsize = DetermineSize(fields, twidth, xwidth / x_step, ywidth / y_step, zwidth / z_step);
         byte[] result = new byte[dlsize];
         
 
