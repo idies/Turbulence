@@ -83,8 +83,8 @@ public partial class StoredProcedures
          
         database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
             serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step);
-        database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
-            serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, 1, 1, 1);
+        //database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
+         //   serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, 1, 1, 1);
 
 
         /*Now use the parameters to grab the data pieces*/
@@ -95,88 +95,92 @@ public partial class StoredProcedures
 
             int size = serverXwidth[s] / x_step * serverYwidth[s] / y_step * serverZwidth[s] / z_step * components * sizeof(float);
             int readLength = size;
-            byte[] rawdata = new byte[size];
-            string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
-                    serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
-            String cString = String.Format("Server={0};Database='turblib';Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200",
-                database.servers[s]);
-            SqlConnection connection = new SqlConnection(cString);
-            connection.Open();
-            sqlcmd = connection.CreateCommand();
-
-            /*Fix timestep for channel data */
-            if (dataset == "channel")
+            if (size > 0) /* Only connect to servers that have data for us */
             {
-                tlow = tlow * 5 + 132005;
-                thigh = thigh * 5 + 132005;
-            }
 
-            /*Check to see if we are striding/filtering or not*/
-            if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
-            {
-                sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @database, @codedb, "
-                                        + "@turbinfodb, @datasetid, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @queryBox ",
-                                        database.codeDatabase[s]);
-                sqlcmd.Parameters.AddWithValue("@turbinfodb", "turbinfo");
-                sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
-                sqlcmd.Parameters.AddWithValue("@field", tablename.ToString());
-                sqlcmd.Parameters.AddWithValue("@filter_width", filter_width);
-                sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
-                sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
-                sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                byte[] rawdata = new byte[size];
+                string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
+                        serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
+                String cString = String.Format("Server={0};Database='turblib';Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200",
+                    database.servers[s]);
+                SqlConnection connection = new SqlConnection(cString);
+                connection.Open();
+                sqlcmd = connection.CreateCommand();
 
-            }
-            else
-            {
-                sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
-                                        + "@dataset, @blobDim, @timestep, @queryBox ",
-                                        database.codeDatabase[s]);
-                sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
-            }
-            sqlcmd.Parameters.AddWithValue("@serverName", database.servers[s]);
-            sqlcmd.Parameters.AddWithValue("@database", database.databases[s]);
-            sqlcmd.Parameters.AddWithValue("@codedb", database.codeDatabase[s]);
-
-            sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
-            sqlcmd.Parameters.AddWithValue("@timestep", tlow);
-            sqlcmd.Parameters.AddWithValue("@queryBox", queryBox);
-            sqlcmd.CommandTimeout = 3600;
-
-            SqlDataReader reader = sqlcmd.ExecuteReader();
-
-            while (reader.Read())
-            {
-                int bytesread = 0;
-                while (bytesread < size)
+                /*Fix timestep for channel data */
+                if (dataset == "channel")
                 {
-                    if (size - bytesread > MAX_READ_LENGTH)
-                        readLength = MAX_READ_LENGTH;
-                    else
-                        readLength = size - bytesread;
-                    int bytes = (int)reader.GetBytes(0, bytesread, rawdata, bytesread, readLength);
-                    if (bytes <= 0)
-                        throw new Exception("Unexpected end of cutout!");
-                    bytesread += bytes;
+                    tlow = tlow * 5 + 132005;
+                    thigh = thigh * 5 + 132005;
                 }
-            }
-            int sourceIndex = 0;
-            int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
-            int destinationIndex;
-            int length = serverXwidth[s] * components * sizeof(float) / x_step;
-            for (int k = 0; k < serverZwidth[s] / z_step; k++)
-            {
-                destinationIndex = destinationIndex0 + k * (xwidth / x_step) * (ywidth / y_step) * components * sizeof(float);
-                for (int j = 0; j < serverYwidth[s] / y_step; j++)
+
+                /*Check to see if we are striding/filtering or not*/
+                if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
                 {
-                    Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
-                    sourceIndex += length;
-                    destinationIndex += xwidth * components * sizeof(float) / x_step;
+                    sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @database, @codedb, "
+                                            + "@turbinfodb, @datasetid, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                            database.codeDatabase[s]);
+                    sqlcmd.Parameters.AddWithValue("@turbinfodb", "turbinfo");
+                    sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+                    sqlcmd.Parameters.AddWithValue("@field", tablename.ToString());
+                    sqlcmd.Parameters.AddWithValue("@filter_width", filter_width);
+                    sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                    sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                    sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+
                 }
+                else
+                {
+                    sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
+                                            + "@dataset, @blobDim, @timestep, @queryBox ",
+                                            database.codeDatabase[s]);
+                    sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+                }
+                sqlcmd.Parameters.AddWithValue("@serverName", database.servers[s]);
+                sqlcmd.Parameters.AddWithValue("@database", database.databases[s]);
+                sqlcmd.Parameters.AddWithValue("@codedb", database.codeDatabase[s]);
+
+                sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                sqlcmd.Parameters.AddWithValue("@timestep", tlow);
+                sqlcmd.Parameters.AddWithValue("@queryBox", queryBox);
+                sqlcmd.CommandTimeout = 3600;
+
+                SqlDataReader reader = sqlcmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int bytesread = 0;
+                    while (bytesread < size)
+                    {
+                        if (size - bytesread > MAX_READ_LENGTH)
+                            readLength = MAX_READ_LENGTH;
+                        else
+                            readLength = size - bytesread;
+                        int bytes = (int)reader.GetBytes(0, bytesread, rawdata, bytesread, readLength);
+                        if (bytes <= 0)
+                            throw new Exception("Unexpected end of cutout!");
+                        bytesread += bytes;
+                    }
+                }
+                int sourceIndex = 0;
+                int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
+                int destinationIndex;
+                int length = serverXwidth[s] * components * sizeof(float) / x_step;
+                for (int k = 0; k < serverZwidth[s] / z_step; k++)
+                {
+                    destinationIndex = destinationIndex0 + k * (xwidth / x_step) * (ywidth / y_step) * components * sizeof(float);
+                    for (int j = 0; j < serverYwidth[s] / y_step; j++)
+                    {
+                        Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
+                        sourceIndex += length;
+                        destinationIndex += xwidth * components * sizeof(float) / x_step;
+                    }
+                }
+                rawdata = null;
+                reader.Close();
+                connection.Close();
+                connection = null;
             }
-            rawdata = null;
-            reader.Close();
-            connection.Close();
-            connection = null;
         }
         SqlDataRecord record = new SqlDataRecord(new SqlMetaData("data", SqlDbType.VarBinary, -1));        
         //SqlDataRecord record = new SqlDataRecord(new SqlMetaData("data", SqlDbType.VarBinary, -1));
