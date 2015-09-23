@@ -236,7 +236,7 @@ namespace Turbulence.SQLInterface.workers
                     // For channel flow, if corrector is out of domain, throw Exception
                     if (point.pos.y > 1.0f || point.pos.y < -1.0f)
                     {
-                        throw new Exception("Particle left domain on corrector step!");
+                        throw new Exception("Particle left domain on corrector step!\nx:"+point.pos.x.ToString()+"y:"+point.pos.y.ToString()+"z:"+point.pos.ToString());
                     }
 
                     point.compute_predictor = true;

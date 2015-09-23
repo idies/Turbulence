@@ -38,10 +38,10 @@ namespace Turbulence.SQLInterface.workers
             { this.kernelSize = 8; }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
             { this.kernelSize = 0; }
-            else
-            {
-                throw new Exception(String.Format("Invalid Spatial Interpolation Option: {0}", spatialInterp));
-            }
+            //else
+            //{
+            //    throw new Exception(String.Format("Invalid Spatial Interpolation Option: {0}", spatialInterp));
+            //}
         }
 
         public override SqlMetaData[] GetRecordMetaData()
