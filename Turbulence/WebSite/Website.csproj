@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -60,6 +61,7 @@
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.js" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.min.js" />
     <Content Include="citing.aspx" />
+    <Content Include="newcutout.aspx" />
     <Content Include="cutout.aspx" />
     <Content Include="datasets.aspx" />
     <Content Include="docs\channel\profiles.txt" />
@@ -154,6 +156,7 @@
     <Content Include="download\turblib-20150108.zip" />
     <Content Include="download\turbmat-20150108.tar.gz" />
     <Content Include="download\turbmat-20150108.zip" />
+    <None Include="papers\ByronPoF-2015.pdf" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

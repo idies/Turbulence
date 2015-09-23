@@ -4,8 +4,8 @@
 <head id="Head1" runat="server"><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
 
 <link href="bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <link href="turbulence.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
         function wait_message() {

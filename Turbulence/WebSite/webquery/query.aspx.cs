@@ -95,6 +95,12 @@ namespace Website
                     EndTimeRange.Text = "0.0 - 40.44";
                     DeltaTRange.Text = "DB dt = .04";
                 }
+                else if (dataset.SelectedValue.Equals("channel"))
+                {
+                    timerange.Text = "0.0 - 25.9935";
+                    EndTimeRange.Text = "0.0 - 25.9935";
+                    DeltaTRange.Text = "DB dt = .0065";
+                }
                 else
                 {
                     timerange.Text = "";
@@ -423,7 +429,8 @@ namespace Website
                 this.magneticEntry2.Enabled = false;
                 this.potentialEntry2.Enabled = false;
                 this.GetForce.Enabled = false;
-                this.GetPosition.Enabled = false;
+                //this.GetPosition.Enabled = false; Map to getchannelposition
+                this.GetPosition.Enabled = true;
                 this.GetBoxFilter.Enabled = false;
                 this.GetBoxFilterSGSscalar.Enabled = false;
                 this.GetBoxFilterSGSvector.Enabled = false;
@@ -435,7 +442,7 @@ namespace Website
                 this.GetDensity.Enabled = false;
                 this.GetDensityGradient.Enabled = false;
                 this.GetDensityHessian.Enabled = false;
-                if (method.SelectedValue.Equals("GetPosition") || method.SelectedValue.Contains("Filter") ||
+                if (method.SelectedValue.Contains("Filter") ||
                     method.SelectedValue.Contains("Magnetic") || method.SelectedValue.Contains("Vector"))
                 {
                     method.SelectedValue = "GetVelocity";
@@ -1294,8 +1301,15 @@ namespace Website
                     edu.jhu.pha.turbulence.Point3[] results;
                     float EndTimef = Convert.ToSingle(EndTime.Text);
                     float dtf = Convert.ToSingle(dt.Text);
-                    results = service.GetPosition(authToken,
-                        dataset.Text, timef, EndTimef, dtf, spatialv, points);
+                    //if (dataset.SelectedValue.Equals("isotropic1024fine")) {
+                    //    results = service.GetChannelPosition(authToken,
+                    //        dataset.Text, timef, EndTimef, dtf, spatialv, points);
+                    //}
+                    //else {
+                        results = service.GetPosition(authToken,
+                            dataset.Text, timef, EndTimef, dtf, spatialv, points);
+                    //}
+                        
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("x{0}y{0}z\r\n", delim);
