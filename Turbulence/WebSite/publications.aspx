@@ -90,6 +90,35 @@ International Conference for High Performance Computing, Networking, Storage and
       
 <ul>      
 
+
+<li>
+    <font face="Arial, Helvetica, sans-serif">J. M. Lawson and J. R. Dawson
+     <a href="http://dx.doi.org/10.1017/jfm.2015.452" target="_blank">
+     On velocity gradient dynamics and turbulent structure
+     </a>
+     Journal of Fluid Mechanics, Vol 780, October 2015, pp 60-98
+     </font>   
+</li>
+
+<li>
+    <font face="Arial, Helvetica, sans-serif">P. L. Johnson and C. Meneveau
+     <a href="http://dx.doi.org/10.1063/1.4928699" target="_blank">
+     Large-deviation joint statistics of the finite-time Lyapunov spectrum in isotropic turbulence
+     </a>
+     Physics of Fluids, Vol 27 No. 8, 2015.
+     </font>   
+</li>
+
+<li>
+    <font face="Arial, Helvetica, sans-serif">M. Byron, J. Einarsson, K. Gustavsson, G. Voth, B. Mehlig, and E. Variano
+     <a href="http://dx.doi.org/10.1063/1.4913501" target="_blank">
+     Shape-dependence of particle rotation in isotropic turbulence
+     </a>
+     Physics of Fluids, Vol 27 No. 3, 2015.
+     </font>   
+</li>
+
+
 <li>
     <font face="Arial, Helvetica, sans-serif">C.C. Lalescu, Y.K. Shi, G.L. Eyink, 
     T.D. Drivas, E.T. Vishniac, and A. Lazarian

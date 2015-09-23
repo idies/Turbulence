@@ -12,7 +12,7 @@
     <OutputType>Library</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>DatabaseCutout</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <SGenUseProxyTypes>false</SGenUseProxyTypes>
     <ConnectionString>
     </ConnectionString>
@@ -47,8 +47,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.XML" />
-    <Reference Include="Turbulence, Version=1.1.5718.26957, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Turbulence">
       <HintPath>obj\sqlclr\Turbulence.dll</HintPath>
       <Private>False</Private>
       <SubType>SQLCLR</SubType>
