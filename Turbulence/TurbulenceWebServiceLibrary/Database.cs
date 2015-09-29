@@ -3123,7 +3123,7 @@ namespace TurbulenceService
             return records;
         }
 
-        public int ExecuteGetPosition(short dataset,
+        public int ExecuteGetPosition(DataInfo.DataSets dataset,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             string tableName,
@@ -3136,11 +3136,15 @@ namespace TurbulenceService
             int number_of_crossings = 0;
             ManualResetEvent doneEvent = new ManualResetEvent(false);
             Exception exception = null;
-
-            string executeStr = "ExecuteParticleTrackingWorkerTaskParallel"; //PJ 2015: call regular or channel flow worker
-            if ((DataInfo.DataSets)dataset == DataInfo.DataSets.channel)
+            //*This is not what is being called for channel.  We need to find out why. */
+            string executeStr;
+            if (dataset == DataInfo.DataSets.channel)
             {
                 executeStr = "ExecuteParticleTrackingChannelWorkerTaskParallel";
+            }
+            else
+            {
+                executeStr = "ExecuteParticleTrackingWorkerTaskParallel"; //PJ 2015: call regular or channel flow worker
             }
 
             string turbinfo_connectionString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;

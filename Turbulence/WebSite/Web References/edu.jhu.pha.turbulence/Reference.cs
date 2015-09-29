@@ -26,7 +26,7 @@ namespace Website.edu.jhu.pha.turbulence {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.0.30319.34209")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Web.Services.WebServiceBindingAttribute(Name="TurbulenceServiceSoap", Namespace="http://turbulence.pha.jhu.edu/")]
+    [System.Web.Services.WebServiceBindingAttribute(Name="TurbulenceServiceSoap", Namespace="http://dev.turbulence.pha.jhu.edu/")]
     public partial class TurbulenceService : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
         private System.Threading.SendOrPostCallback NullOpOperationCompleted;
