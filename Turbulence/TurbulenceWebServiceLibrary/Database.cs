@@ -3136,7 +3136,7 @@ namespace TurbulenceService
             int number_of_crossings = 0;
             ManualResetEvent doneEvent = new ManualResetEvent(false);
             Exception exception = null;
-            //*This is not what is being called for channel.  We need to find out why. */
+             
             string executeStr;
             if (dataset == DataInfo.DataSets.channel)
             {

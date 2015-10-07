@@ -470,62 +470,7 @@ using System.Threading;
                 serverBoundaries = tempServerBoundaries;
             }
 
-            //if (dataset_enum == DataInfo.DataSets.isotropic1024coarse)
-            //{
-            //    codeDatabase = "turblib";
-
-            //    servers = new string[] { "gw01", "gw13", "gw02", "gw14", "blackbox5", "gw15", "gw12", "gw16" };
-            //    databases = new string[] { "turbdb101", "turbdb102", "turbdb103", "turbdb104", "turbdb105", "turbdb106", "turbdb107", "turbdb108" };
-
-            //    if (this.development == true)
-            //    {
-            //        codeDatabase = "turbdev";
-            //    }
-            //}
-            //else if (dataset_enum == DataInfo.DataSets.mhd1024)
-            //{
-            //    codeDatabase = "mhdlib"; //NOTE: Should be "mhdlib" when pushing to production                
-            //    servers = new string[] { "gw21", "gw22", "gw23", "gw24" };
-            //    databases = new string[] { "mhddb021", "mhddb022", "mhddb023", "mhddb024" };
-
-            //    if (this.development == true)
-            //    {
-            //        codeDatabase = "turbdev";
-            //    }
-            //}
-            //serverBoundaries = new ServerBoundaries[servers.Length];
-            //ServerBoundaries entireGrid = new ServerBoundaries(0, GridResolutionX - 1, 0, GridResolutionX - 1, 0, GridResolutionX - 1);
-            //serverBoundaries = entireGrid.getVirtualServerBoundaries(servers.Length);
-
-            //if (num_virtual_servers > 1)
-            //{
-            //    // Each virtual server will be responsible for some part of the data stored on the physical server
-            //    // We need to make sure that the data is partitioned according to the partitioning scheme (z-order)
-            //    // It is somewhat complicated as the data may not form a cube or occupy a contiguous region along the z-curve
-            //    if ((num_virtual_servers & (num_virtual_servers - 1)) != 0)
-            //        throw new Exception("The number of virtual servers must be a power of 2!");
-
-            //    string[] tempServers = new string[servers.Length * num_virtual_servers];
-            //    string[] tempDatabases = new string[servers.Length * num_virtual_servers];
-            //    ServerBoundaries[] tempServerBoundaries = new ServerBoundaries[servers.Length * num_virtual_servers];
-            //    ServerBoundaries[] VirtualServerBoundaries;
-            //    int currentServer = 0;
-            //    for (int i = 0; i < servers.Length; i++)
-            //    {
-            //        VirtualServerBoundaries = serverBoundaries[i].getVirtualServerBoundaries(num_virtual_servers);
-            //        for (int j = 0; j < num_virtual_servers; j++)
-            //        {
-            //            currentServer = i * num_virtual_servers + j;
-            //            tempServers[currentServer] = servers[i] + "_" + num_virtual_servers + "_" + j;
-            //            tempDatabases[currentServer] = databases[i];
-            //            tempServerBoundaries[currentServer] = VirtualServerBoundaries[j];
-            //        }
-            //    }
-
-            //    servers = tempServers;
-            //    databases = tempDatabases;
-            //    serverBoundaries = tempServerBoundaries;
-            //}
+            
 
             this.serverCount = servers.Count;
             this.connections = new SqlConnection[this.serverCount];
@@ -950,7 +895,8 @@ using System.Threading;
             start = query_start < server_start ? (server_start - query_start + stride - 1) / stride * stride + query_start : query_start;
             width = query_start + query_width <= server_end ? query_start + query_width - start : server_end + 1 - start;
             // Make the width be one larger than a multiple of the step.
-            width = (width - 1) / stride * stride + 1;
+            //I don't understand this, so we are going without it for now.
+            width = (width-1 ) / stride * stride + 1;
         }
 
         /// <summary>

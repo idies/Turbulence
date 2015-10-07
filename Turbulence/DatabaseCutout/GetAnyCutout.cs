@@ -43,7 +43,7 @@ public partial class StoredProcedures
         
         SqlCommand sqlcmd = new SqlCommand();
         
-        long dlsize = DetermineSize(fields, twidth, xwidth / x_step, ywidth / y_step, zwidth / z_step);
+        long dlsize = DetermineSize(fields, twidth, (xwidth+x_step-1) / x_step, (ywidth+y_step-1) / y_step, (zwidth+z_step-1) / z_step);
         byte[] result = new byte[dlsize];
         
 
@@ -71,7 +71,7 @@ public partial class StoredProcedures
         int num_virtual_servers = 1;
         database.Initialize(dataset_enum, num_virtual_servers);
 
-        int serverCount = database.servers.Count; //Placeholder for now.
+        int serverCount = database.servers.Count;  
         int[] serverX = new int[serverCount];
         int[] serverY = new int[serverCount];
         int[] serverZ = new int[serverCount];
@@ -93,7 +93,8 @@ public partial class StoredProcedures
         for (int s = 0; s < serverCount; s++)
         {
 
-            int size = serverXwidth[s] / x_step * serverYwidth[s] / y_step * serverZwidth[s] / z_step * components * sizeof(float);
+            int size;
+            size = ((serverXwidth[s] + x_step - 1) / x_step) * ((serverYwidth[s] + y_step - 1) / y_step) * ((serverZwidth[s]+z_step-1) / z_step) * components * sizeof(float);
             int readLength = size;
             if (size > 0) /* Only connect to servers that have data for us */
             {
@@ -166,16 +167,20 @@ public partial class StoredProcedures
                 int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
                 int destinationIndex;
                 int length = serverXwidth[s] * components * sizeof(float) / x_step;
-                for (int k = 0; k < serverZwidth[s] / z_step; k++)
+                for (int k = 0; k < serverZwidth[s] ; k += z_step)
                 {
                     destinationIndex = destinationIndex0 + k * (xwidth / x_step) * (ywidth / y_step) * components * sizeof(float);
-                    for (int j = 0; j < serverYwidth[s] / y_step; j++)
+                    for (int j = 0; j < serverYwidth[s]; j += y_step)
                     {
                         Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
                         sourceIndex += length;
-                        destinationIndex += xwidth * components * sizeof(float) / x_step;
+                        destinationIndex += xwidth*components*sizeof(float)/x_step;
+                        
                     }
                 }
+                
+                //int destinationIndex = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
+                //Array.Copy(rawdata, 0, result, destinationIndex0, size);
                 rawdata = null;
                 reader.Close();
                 connection.Close();
