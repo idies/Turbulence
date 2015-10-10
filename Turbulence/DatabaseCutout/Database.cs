@@ -895,7 +895,6 @@ using System.Threading;
             start = query_start < server_start ? (server_start - query_start + stride - 1) / stride * stride + query_start : query_start;
             width = query_start + query_width <= server_end ? query_start + query_width - start : server_end + 1 - start;
             // Make the width be one larger than a multiple of the step.
-            //I don't understand this, so we are going without it for now.
             width = (width-1 ) / stride * stride + 1;
         }
 
