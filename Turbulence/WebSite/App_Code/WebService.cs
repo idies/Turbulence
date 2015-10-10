@@ -23,7 +23,7 @@ namespace TurbulenceService {
          * Set to FALSE before production deployment
          * TODO: Automatic selection based on host name.
          */
-        public const bool DEVEL_MODE = false;
+        public const bool DEVEL_MODE = true;
         public const string infodb = "turbinfo";
 
         // batch scheduler queue
@@ -1483,7 +1483,7 @@ namespace TurbulenceService {
             DataInfo.verifyTimeInRange(dataset_enum, EndTime);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
-
+            
             if (Math.Abs(EndTime - StartTime) - Math.Abs(dt) < -0.000001)
                 throw new Exception(String.Format("The time step dt cannot be greater than the StartTime : EndTime range!"));
 
@@ -1525,7 +1525,7 @@ namespace TurbulenceService {
             log.UpdateRecordCount(auth.Id, 2 * (integralSteps + 1) * numParticles);
 
             database.AddBulkParticlesSingleServer(points, kernelSize, kernelSize, kernelSize, round, StartTime);
-            database.ExecuteGetPosition((short)dataset_enum, spatialInterpolation, TurbulenceOptions.TemporalInterpolation.PCHIP,
+            database.ExecuteGetPosition(dataset_enum, spatialInterpolation, TurbulenceOptions.TemporalInterpolation.PCHIP,
                 DataInfo.getTableName(dataset_enum, "velocity").ToString(), StartTime, EndTime, dt, points);
 
             database.Close();

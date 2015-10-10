@@ -1301,15 +1301,20 @@ namespace Website
                     edu.jhu.pha.turbulence.Point3[] results;
                     float EndTimef = Convert.ToSingle(EndTime.Text);
                     float dtf = Convert.ToSingle(dt.Text);
-                    //if (dataset.SelectedValue.Equals("isotropic1024fine")) {
-                    //    results = service.GetChannelPosition(authToken,
-                    //        dataset.Text, timef, EndTimef, dtf, spatialv, points);
-                    //}
-                    //else {
+                /*if (dataset.SelectedValue.Equals("channel"))
+                   {
+                        results = service.GetChannelPosition(authToken,
+                            dataset.Text, timef, EndTimef, dtf, spatialv, points);
+                    }
+                    else
+                    {
                         results = service.GetPosition(authToken,
                             dataset.Text, timef, EndTimef, dtf, spatialv, points);
-                    //}
-                        
+                    }
+                  */
+                results = service.GetPosition(authToken,
+                dataset.Text, timef, EndTimef, dtf, spatialv, points);
+                
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("x{0}y{0}z\r\n", delim);

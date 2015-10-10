@@ -43,7 +43,7 @@ public partial class StoredProcedures
         
         SqlCommand sqlcmd = new SqlCommand();
         
-        long dlsize = DetermineSize(fields, twidth, xwidth / x_step, ywidth / y_step, zwidth / z_step);
+        long dlsize = DetermineSize(fields, twidth, (xwidth+x_step-1) / x_step, (ywidth+y_step-1) / y_step, (zwidth+z_step-1) / z_step);
         byte[] result = new byte[dlsize];
         
 
@@ -71,7 +71,7 @@ public partial class StoredProcedures
         int num_virtual_servers = 1;
         database.Initialize(dataset_enum, num_virtual_servers);
 
-        int serverCount = database.servers.Count; //Placeholder for now.
+        int serverCount = database.servers.Count;  
         int[] serverX = new int[serverCount];
         int[] serverY = new int[serverCount];
         int[] serverZ = new int[serverCount];
@@ -85,15 +85,14 @@ public partial class StoredProcedures
             serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step);
         //database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
          //   serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, 1, 1, 1);
-
-
+        /*Update xwidth. This is required for reassembly when x is strided */
+        int destinationIndex;
         /*Now use the parameters to grab the data pieces*/
-
-
         for (int s = 0; s < serverCount; s++)
         {
 
-            int size = serverXwidth[s] / x_step * serverYwidth[s] / y_step * serverZwidth[s] / z_step * components * sizeof(float);
+            int size;
+            size = ((serverXwidth[s] + x_step - 1) / x_step) * ((serverYwidth[s] + y_step - 1) / y_step) * ((serverZwidth[s]+z_step-1) / z_step) * components * sizeof(float);
             int readLength = size;
             if (size > 0) /* Only connect to servers that have data for us */
             {
@@ -107,11 +106,11 @@ public partial class StoredProcedures
                 connection.Open();
                 sqlcmd = connection.CreateCommand();
 
-                /*Fix timestep for channel data */
+                /*Fix timestep offset for channel data */
                 if (dataset == "channel")
                 {
-                    tlow = tlow * 5 + 132005;
-                    thigh = thigh * 5 + 132005;
+                    tlow = tlow  + 132005;
+                    thigh = thigh + 132005;
                 }
 
                 /*Check to see if we are striding/filtering or not*/
@@ -163,19 +162,26 @@ public partial class StoredProcedures
                     }
                 }
                 int sourceIndex = 0;
-                int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
-                int destinationIndex;
-                int length = serverXwidth[s] * components * sizeof(float) / x_step;
-                for (int k = 0; k < serverZwidth[s] / z_step; k++)
+                //int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * ((xwidth) / x_step) + ((serverZ[s] - zlow) / z_step) * ((xwidth) / x_step) *( (ywidth) / y_step)) * sizeof(float);
+                int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * ((xwidth+x_step-1) / x_step) + ((serverZ[s] - zlow) / z_step) * ((xwidth+x_step-1) / x_step) * ((ywidth+y_step-1) / y_step)) * sizeof(float);
+                int c = 0;
+                int length = ((serverXwidth[s] + x_step - 1) / x_step) * sizeof(float) * components;
+                //int length = ((serverXwidth[s] * components * sizeof(float) ) / x_step)*((serverYwidth[s] * components * sizeof(float) ) / y_step);
+                for (int k = 0; k < serverZwidth[s] ; k +=z_step)
                 {
-                    destinationIndex = destinationIndex0 + k * (xwidth / x_step) * (ywidth / y_step) * components * sizeof(float);
-                    for (int j = 0; j < serverYwidth[s] / y_step; j++)
+                    destinationIndex = destinationIndex0 + c * ((ywidth+y_step-1) / y_step) * ((xwidth+x_step-1)/x_step) * components * sizeof(float);
+                    c++;
+                    for (int j = 0; j < serverYwidth[s]; j +=y_step)
                     {
                         Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
                         sourceIndex += length;
-                        destinationIndex += xwidth * components * sizeof(float) / x_step;
-                    }
-                }
+                        destinationIndex += components * sizeof(float)*((xwidth + x_step - 1) / x_step);                        
+                        
+                    }                                    
+                 }
+                
+                //int destinationIndex = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
+                //Array.Copy(rawdata, 0, result, destinationIndex0, size);
                 rawdata = null;
                 reader.Close();
                 connection.Close();
@@ -213,7 +219,7 @@ public partial class StoredProcedures
             case DataInfo.DataSets.isotropic1024coarse:
             case DataInfo.DataSets.isotropic1024fine:
             case DataInfo.DataSets.mhd1024:
-                if (!(tlow >= 0 && thigh <= 1025) ||
+                if (!(tlow >= 0 && thigh <= 1025*10) ||
                     !(xlow >= 0 && xhigh <= 1024) ||
                     !(ylow >= 0 && yhigh <= 1024) ||
                     !(zlow >= 0 && zhigh <= 1024))
@@ -227,7 +233,7 @@ public partial class StoredProcedures
                 { throw new Exception("The requested region is out of bounds"); }
                 break;
             case DataInfo.DataSets.channel:
-                if (!(tlow >= 0 && thigh <= 1997) ||
+                if (!(tlow >= 0 && thigh <= 1997*5) ||
                     !(xlow >= 0 && xhigh <= 2048) ||
                     !(ylow >= 0 && yhigh <= 512) ||
                     !(zlow >= 0 && zhigh <= 1536))
