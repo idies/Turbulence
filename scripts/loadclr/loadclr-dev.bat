@@ -14,15 +14,16 @@ set dll="H:\turbulence\Turbulence\Turbulence\bin\Release\Turbulence.dll"
 echo -- Load Turbulence Assembly > exec.sql
 echo USE turbdev >> exec.sql
 FileToHex.exe %dll% >> exec.sql
-
 type dropcreateclr.sql >> exec.sql
 
 REM echo Checking server versions...
-REM FOR /F %%i IN (turb_dbs.txt) DO osql -h-1 -E -S %%i -Q "select @@version"
+REM FOR /F %%i IN (turb_dbs_dev.txt) DO osql -h-1 -E -S %%i -Q "select @@version"
+
+REM For getanycutout
+set dll="H:\Turbulence\Turbulence\DatabaseCutout\bin\Release\DatabaseCutout.dll"
 
 echo Loading...
 echo Loading... > exec.log
-FOR /F %%i IN (turb_dbs.txt) DO osql -E -S %%i -i exec.sql >> exec.log
+FOR /F %%i IN (turb_dbs_dev.txt) DO osql -E -S %%i -i exec.sql >> exec.log
 
 echo Check exec.log for errors.
-

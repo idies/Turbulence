@@ -9,7 +9,7 @@ REM to be killed. If you are updating the production system, and are not
 REM changing the function signatures, please use alter.bat instead.
 REM
 
-set dll="C:\Users\kalin\Documents\turbulence\Turbulence\Turbulence\bin\Release\Turbulence.dll"
+set dll="..\..\Turbulence\Turbulence\bin\Release\Turbulence.dll"
 
 echo -- Load Turbulence Assembly > exec.sql
 echo USE turblib >> exec.sql

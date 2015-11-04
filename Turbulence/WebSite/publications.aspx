@@ -40,9 +40,10 @@
       <li>
 H.&nbsp;Yu, K.&nbsp;Kanov, E.&nbsp;Perlman, J.&nbsp;Graham, E.&nbsp;Frederix, R.&nbsp;Burns, A.&nbsp;Szalay,
   G.&nbsp;Eyink, and C.&nbsp;Meneveau.
- <a href="http://meeting.aps.org/Meeting/DFD11/Session/D12.5"  target="_blank">Studying lagrangian dynamics of turbulence using on-demand fluid
+ <a href="papers/Yuetal-JoT2012.pdf"  target="_blank">Studying lagrangian dynamics of turbulence using on-demand fluid
   particle tracking in a public turbulence database.</a>
- <em>Journal of Turbulence</em>, 13(12), 2012.
+ <em>Journal of Turbulence</em>, 13(12), 2012.  (© Taylor & Francis, see <a href="http://www.tandfonline.com/doi/abs/10.1080/14685248.2012.674643" target="_blank">
+    http://www.tandfonline.com/doi/abs/10.1080/14685248.2012.674643</a>)
 
 </li>
 <li>
@@ -51,11 +52,11 @@ H.&nbsp;Yu, K.&nbsp;Kanov, E.&nbsp;Perlman, J.&nbsp;Graham, E.&nbsp;Frederix, R.
             using a Database Cluster.</a> Supercomputing 2007 ACM, IEEE, </font> 
 </li>
 <li>
-J.&nbsp;Graham, K.&nbsp;Kanov, E.&nbsp;Givelberg, R.&nbsp;Burns, G.&nbsp;Eyink, A.&nbsp;Szalay, C.&nbsp;Meneveau,
-  M.K. Lee, N.&nbsp;Malaya, and R.D. Moser.
- <a href="http://meetings.aps.org/Meeting/DFD13/Event/202909"  target="_blank">A web-services accessible database for channel flow turbulence at
-  Re-tau= 1000.</a>
- <em>Bulletin of the American Physical Society</em>, 58, 2013.
+J. Graham, K. Kanov, X.I.A. Yang, M.K. Lee, N. Malaya, C.C. Lalescu, R. Burns, G. Eyink, A. Szalay, R.D. Moser. and C. Meneveau: 
+<a href="papers/Grahametal-JoT-2016.pdf"  target="_blank">
+A Web Services-accessible database of turbulent channel flow and its use for testing a new integral wall model for LES.
+</a> Journal of Turbulence 17 (1), 179-213, 2016.
+ 
 
 </li>        
 <li>

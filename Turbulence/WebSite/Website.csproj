@@ -60,7 +60,6 @@
     <Content Include="bootstrap-3.2.0-dist\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.js" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.min.js" />
-    <Content Include="citing.aspx" />
     <Content Include="newcutout.aspx" />
     <Content Include="cutout.aspx" />
     <Content Include="datasets.aspx" />
@@ -150,13 +149,32 @@
     <Content Include="template.aspx" />
     <Content Include="TimeSeries.txt" />
     <Content Include="turbulence.css" />
+    <Content Include="tutorial.aspx" />
     <Content Include="vid1.aspx" />
     <Content Include="vid2.aspx" />
     <Content Include="download\turblib-20150108.tar.gz" />
     <Content Include="download\turblib-20150108.zip" />
     <Content Include="download\turbmat-20150108.tar.gz" />
     <Content Include="download\turbmat-20150108.zip" />
-    <None Include="papers\ByronPoF-2015.pdf" />
+    <Content Include="papers\ByronPoF-2015.pdf" />
+    <Content Include="papers\Grahametal15.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="papers\Yuetal-JoT2012.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="papers\Grahametal-JoT-2016.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="download\JHTDB-Sample-assignment-2015.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="download\JHTDB-Sample-assignment-scripts.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="download\JHTDB-Sample-assignment-SolutionSet.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -2671,16 +2689,16 @@
     <None Include="images\nsf_logo.png.r11013" />
     <None Include="images\turb-background.jpg.r0" />
     <None Include="images\turb-background.jpg.r11013" />
-    <None Include="papers\APS2007-JHU-Database.pdf" />
-    <None Include="papers\getPosition-Yuetal2012-preprint.pdf" />
-    <None Include="papers\kanov_sc2011.pdf" />
-    <None Include="papers\kanov_sc2012.pdf" />
-    <None Include="papers\Lietal-JHUdatabase2008.pdf" />
-    <None Include="papers\liu_ribeiro_sspr2010.pdf" />
-    <None Include="papers\sc06-poster-ericp.pdf" />
-    <None Include="papers\turb-sc07.pdf" />
-    <None Include="papers\wang_sc10.pdf" />
-    <None Include="papers\wang_sc10.ppt" />
+    <Content Include="papers\APS2007-JHU-Database.pdf" />
+    <Content Include="papers\getPosition-Yuetal2012-preprint.pdf" />
+    <Content Include="papers\kanov_sc2011.pdf" />
+    <Content Include="papers\kanov_sc2012.pdf" />
+    <Content Include="papers\Lietal-JHUdatabase2008.pdf" />
+    <Content Include="papers\liu_ribeiro_sspr2010.pdf" />
+    <Content Include="papers\sc06-poster-ericp.pdf" />
+    <Content Include="papers\turb-sc07.pdf" />
+    <Content Include="papers\wang_sc10.pdf" />
+    <Content Include="papers\wang_sc10.ppt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TurbulenceWebServiceLibrary\TurbulenceWebServiceLibrary.csproj">
