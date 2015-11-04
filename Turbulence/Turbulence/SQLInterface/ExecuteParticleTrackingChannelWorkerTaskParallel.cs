@@ -563,7 +563,12 @@ public partial class StoredProcedures
                     {
                         // Wrap the coordinates into the grid space
                         int xi = ((x % worker.setInfo.GridResolutionX) + worker.setInfo.GridResolutionX) % worker.setInfo.GridResolutionX;
+                        // shouldn't need to wrap in y
                         int yi = ((y % worker.setInfo.GridResolutionY) + worker.setInfo.GridResolutionY) % worker.setInfo.GridResolutionY;
+                        if (yi != y)
+                        {
+                            continue; // no need to add request to server map
+                        }
                         int zi = ((z % worker.setInfo.GridResolutionZ) + worker.setInfo.GridResolutionZ) % worker.setInfo.GridResolutionZ;
 
                         zindex = new Morton3D(zi, yi, xi).Key & mask;

@@ -196,7 +196,23 @@ namespace Turbulence.SQLInterface.workers
                     // For channel predictor, if it goes out of domain, stick it to the wall
                     point.pre_pos.x = point.pos.x + point.vel_inc.x; 
                     point.pre_pos.y = Math.Max(Math.Min(point.pos.y + point.vel_inc.y, 1.0f), -1.0f);
+                    //point.pre_pos.y = point.pos.y + point.vel_inc.y;
                     point.pre_pos.z = point.pos.z + point.vel_inc.z;
+
+                    // For channel flow, if predictor is out of domain, throw Exception
+                    /*
+                    if (point.pos.y > 1.0 || point.pos.y < -0.999999)
+                    {
+                        bool condition = point.pos.y < -1.000000000000000000000000001;
+                        throw new Exception("Particle left domain on predictor step!\nx:"
+                            + (point.pos.x + 0.45 * endTime).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
+                            + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
+                            + "\nZ-index:" + point.zindex.ToString()
+                            + "\nx:" + (point.pre_pos.x + 0.45 * endTime).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
+                            + "\ndvx:" + (point.vel_inc.x + 0.45 * endTime).ToString() + "dvy:" + point.vel_inc.y.ToString() + "dvz:" + point.vel_inc.z.ToString()
+                            + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString());
+                    }
+                    */
                     
                     //int X, Y, Z;
                     int X = setInfo.CalcNodeX(point.pre_pos.x, spatialInterp);
@@ -234,9 +250,17 @@ namespace Turbulence.SQLInterface.workers
                     point.pos.z = (point.pos.z + point.pre_pos.z + point.vel_inc.z) * 0.5f;
 
                     // For channel flow, if corrector is out of domain, throw Exception
-                    if (point.pos.y > 1.0f || point.pos.y < -1.0f)
+                    if (point.pos.y > 1.0 || point.pos.y < -1.0)
                     {
-                        throw new Exception("Particle left domain on corrector step!\nx:"+point.pos.x.ToString()+"y:"+point.pos.y.ToString()+"z:"+point.pos.ToString());
+                        bool condition = point.pos.y < -1.0;
+                        throw new Exception("Particle left domain on corrector step!\nx:"
+                            +(point.pos.x+0.45*endTime).ToString()+"y:"+point.pos.y.ToString()+"z:"+point.pos.z.ToString()
+                            +"\nCondition:"+condition.ToString()+"\nConnection:"+point.numberOfCubes.ToString()
+                            +"\nZ-index:"+point.zindex.ToString()
+                            + "\nx:"+(point.pre_pos.x + 0.45 * endTime).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
+                            +"\ndvx:"+(point.vel_inc.x + 0.45 * endTime).ToString()+"dvy:" + point.vel_inc.y.ToString()+"dvz:"+point.vel_inc.z.ToString()
+                            + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString()
+                            + "\nfull server:" + this.full.ToString());
                     }
 
                     point.compute_predictor = true;
