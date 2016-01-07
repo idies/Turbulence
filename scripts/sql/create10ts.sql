@@ -1,0 +1,133 @@
+USE [master]
+GO
+
+/****** Object:  Database [sue10timesteps]    Script Date: 12/16/2015 3:18:41 PM ******/
+CREATE DATABASE [sue10timesteps] ON  PRIMARY 
+( NAME = N'PRIMARY', FILENAME = N'C:\data\data1\sql_db\sue10timesteps_PRIMARY.mdf' , SIZE = 10MB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB ), 
+ FILEGROUP [FG01] 
+( NAME = N'turbdb101_FG01', FILENAME = N'C:\data\data1\sql_db\sue10timesteps_FG01.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG02] 
+( NAME = N'turbdb101_FG02', FILENAME = N'C:\data\data2\sql_db\sue10timesteps_FG02.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG03] 
+( NAME = N'turbdb101_FG03', FILENAME = N'C:\data\data3\sql_db\sue10timesteps_FG03.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG04] 
+( NAME = N'turbdb101_FG04', FILENAME = N'C:\data\data4\sql_db\sue10timesteps_FG04.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG05] 
+( NAME = N'turbdb101_FG05', FILENAME = N'C:\data\data1\sql_db\sue10timesteps_FG05.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG06] 
+( NAME = N'turbdb101_FG06', FILENAME = N'C:\data\data2\sql_db\sue10timesteps_FG06.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG07] 
+( NAME = N'turbdb101_FG07', FILENAME = N'C:\data\data3\sql_db\sue10timesteps_FG07.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG08] 
+( NAME = N'turbdb101_FG08', FILENAME = N'C:\data\data4\sql_db\sue10timesteps_FG08.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG09] 
+( NAME = N'turbdb101_FG09', FILENAME = N'C:\data\data1\sql_db\sue10timesteps_FG09.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG10] 
+( NAME = N'turbdb101_FG10', FILENAME = N'C:\data\data2\sql_db\sue10timesteps_FG10.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG11] 
+( NAME = N'turbdb101_FG11', FILENAME = N'C:\data\data3\sql_db\sue10timesteps_FG11.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG12] 
+( NAME = N'turbdb101_FG12', FILENAME = N'C:\data\data4\sql_db\sue10timesteps_FG12.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG13] 
+( NAME = N'turbdb101_FG13', FILENAME = N'C:\data\data1\sql_db\sue10timesteps_FG13.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG14] 
+( NAME = N'turbdb101_FG14', FILENAME = N'C:\data\data2\sql_db\sue10timesteps_FG14.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG15] 
+( NAME = N'turbdb101_FG15', FILENAME = N'C:\data\data3\sql_db\sue10timesteps_FG15.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG16] 
+( NAME = N'turbdb101_FG16', FILENAME = N'C:\data\data4\sql_db\sue10timesteps_FG16.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB )
+ LOG ON 
+( NAME = N'turbdb101_log', FILENAME = N'C:\data\data5\sql_db\sue10timesteps_log.ldf' , SIZE = 100MB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+GO
+
+--ALTER DATABASE [sue10timesteps] SET COMPATIBILITY_LEVEL = 100
+--GO
+
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [sue10timesteps].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+
+ALTER DATABASE [sue10timesteps] SET ANSI_NULL_DEFAULT OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET ANSI_NULLS OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET ANSI_PADDING OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET ANSI_WARNINGS OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET ARITHABORT OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET AUTO_CLOSE OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET AUTO_SHRINK OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET AUTO_UPDATE_STATISTICS ON 
+GO
+
+ALTER DATABASE [sue10timesteps] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET CURSOR_DEFAULT  GLOBAL 
+GO
+
+ALTER DATABASE [sue10timesteps] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET NUMERIC_ROUNDABORT OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET QUOTED_IDENTIFIER OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET RECURSIVE_TRIGGERS OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET  DISABLE_BROKER 
+GO
+
+ALTER DATABASE [sue10timesteps] SET AUTO_UPDATE_STATISTICS_ASYNC ON 
+GO
+
+ALTER DATABASE [sue10timesteps] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET TRUSTWORTHY OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET ALLOW_SNAPSHOT_ISOLATION ON 
+GO
+
+ALTER DATABASE [sue10timesteps] SET PARAMETERIZATION SIMPLE 
+GO
+
+ALTER DATABASE [sue10timesteps] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET HONOR_BROKER_PRIORITY OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET RECOVERY FULL 
+GO
+
+ALTER DATABASE [sue10timesteps] SET  MULTI_USER 
+GO
+
+ALTER DATABASE [sue10timesteps] SET PAGE_VERIFY CHECKSUM  
+GO
+
+ALTER DATABASE [sue10timesteps] SET DB_CHAINING OFF 
+GO
+
+ALTER DATABASE [sue10timesteps] SET  READ_ONLY 
+GO
+
+
