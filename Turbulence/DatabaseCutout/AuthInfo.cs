@@ -8,8 +8,7 @@ using Turbulence.TurbLib.DataTypes;
 using Turbulence.SQLInterface;
 
 
-namespace DatabaseCutout
-{
+
 
     public class AuthInfo
     {
@@ -68,7 +67,7 @@ namespace DatabaseCutout
             }
 
             AuthToken token = null;
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=true;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = "Server=gw01;Database=turbinfo;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -92,4 +91,4 @@ namespace DatabaseCutout
         }
 
     }
-}
+

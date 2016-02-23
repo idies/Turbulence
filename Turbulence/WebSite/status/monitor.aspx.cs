@@ -356,6 +356,54 @@ namespace Website
             return dt;
         }
 
+        public DataTable BetaCutoutServiceTest()
+        {
+            Random random = new Random();
+            DataTable dt = new DataTable("BetaCutoutServiceTest");
+            dt.Columns.Add("Test");
+            dt.Columns.Add("Result");
+            dt.Columns.Add("Time");
+
+            bool pass;
+            string test;
+
+            DateTime startTime;
+
+            // Error test
+            pass = false;
+            test = "Beta Data Cutout Test";
+            startTime = DateTime.Now;
+            try
+            {
+                // Make a request for a small file (single point) from the cutout service
+                string baseUrl = "http://dsp033.pha.jhu.edu/";
+                String dlurl = String.Format(baseUrl + "jhtdb/getcutout/{0}/{1}/{2}/{3},{4}/{5},{6}/{7},{8}/{9},{10}/",
+                    Server.UrlEncode("edu.jhu.pha.turbulence-monitor"), "mhd1024", "u", 0, 1, 0, 1, 0, 1, 0, 1);
+                WebRequest request = WebRequest.Create(dlurl);
+                WebResponse response = request.GetResponse();
+                using (Stream responseStream = response.GetResponseStream())
+                {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead = responseStream.Read(buffer, 0, 4096);
+                    while (bytesRead > 0)
+                    {
+                        bytesRead = responseStream.Read(buffer, 0, 4096);
+                    }
+                }
+
+                pass = true;
+            }
+            catch (Exception e)
+            {
+                reportError(test, e);
+                pass = false;
+            }
+            dt.Rows.Add(test, pass, DateTime.Now - startTime);
+
+            return dt;
+        }
+
+
         protected void Page_Load(object sender, EventArgs e)
         {
             errortext.Text = "";
@@ -366,7 +414,7 @@ namespace Website
             {
                 throw new Exception("This page may not be run from outside JHU.");
             }
-
+            
             dbstatusgrid.DataSource = testNodes();
             dbstatusgrid.DataBind();
 
@@ -375,6 +423,10 @@ namespace Website
 
             cutoutstatusgrid.DataSource = CutoutServiceTest();
             cutoutstatusgrid.DataBind();
+            
+            
+            betacutoutstatusgrid.DataSource = BetaCutoutServiceTest();
+            betacutoutstatusgrid.DataBind();
 
             // Something set an error.  Change status code.
             if (error)

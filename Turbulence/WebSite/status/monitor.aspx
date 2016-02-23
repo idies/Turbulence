@@ -52,6 +52,19 @@
     <HeaderStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
 </asp:datagrid>
 
+<h1>Beta Cutout Service Test</h1>
+<asp:datagrid ID="betacutoutstatusgrid" runat="server" CellPadding="4" 
+    ForeColor="#333333" GridLines="None" >
+    <FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
+    <EditItemStyle BackColor="#7C6F57" />
+    <SelectedItemStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
+    <PagerStyle BackColor="#666666" ForeColor="White" HorizontalAlign="Center" />
+    <AlternatingItemStyle BackColor="White" />
+    <ItemStyle BackColor="#E3EAEB" />
+    <HeaderStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
+</asp:datagrid>
+
+
 <asp:Literal ID="errorheader" runat="server" Visible="false"><hr /><h1>Error Details</h1></asp:Literal>
 <asp:Literal ID="errortext" runat="server"></asp:Literal>
 <br />

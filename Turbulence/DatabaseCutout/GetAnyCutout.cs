@@ -9,7 +9,6 @@ using Turbulence.SQLInterface;
 using Turbulence.TurbLib.DataTypes;
 
 
-
 public partial class StoredProcedures
 {
 
@@ -17,6 +16,8 @@ public partial class StoredProcedures
     public static void GetAnyCutout(
         string dataset,
         string fields,
+        string authToken,
+        string ipaddr,
         int tlow,
         int xlow,
         int ylow,
@@ -40,7 +41,8 @@ public partial class StoredProcedures
         int yhigh = ylow + ywidth;
         int zhigh = zlow + zwidth;
         int components;
-        
+        AuthInfo authInfo = new AuthInfo("turbinfo", false);
+        Log log = new Log("turbinfo", false);
         SqlCommand sqlcmd = new SqlCommand();
         
         long dlsize = DetermineSize(fields, twidth, (xwidth+x_step-1) / x_step, (ywidth+y_step-1) / y_step, (zwidth+z_step-1) / z_step);
@@ -64,10 +66,17 @@ public partial class StoredProcedures
         Database database = new Database("turbinfo", false);
         DataInfo.TableNames tablename;
         tablename = DataInfo.getTableName(dataset_enum, fields);
+        /* Verify user auth token */
+        AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, xwidth * ywidth * zwidth);
 
+        //CheckBoundaries(dataset_enum, tlow, thigh, xlow, xhigh, ylow, yhigh, zlow, zhigh);
+        object rowid = null;
+        rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawVelocity,
+            (int)TurbulenceOptions.SpatialInterpolation.None,
+            (int)TurbulenceOptions.TemporalInterpolation.None,
+           xwidth * ywidth * zwidth, tlow * database.Dt * database.TimeInc, thigh * database.Dt * database.TimeInc, null, ipaddr);
+        log.UpdateRecordCount(auth.Id, twidth * xwidth * ywidth * zwidth);
 
-        CheckBoundaries(dataset_enum, tlow, thigh, xlow, xhigh, ylow, yhigh, zlow, zhigh);
-        
         int num_virtual_servers = 1;
         database.Initialize(dataset_enum, num_virtual_servers);
 
@@ -184,6 +193,10 @@ public partial class StoredProcedures
                 //int destinationIndex = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
                 //Array.Copy(rawdata, 0, result, destinationIndex0, size);
                 rawdata = null;
+                /*Update log record*/
+                log.UpdateLogRecord(rowid, database.Bitfield);
+                log.Reset();
+
                 reader.Close();
                 connection.Close();
                 connection = null;
@@ -217,10 +230,18 @@ public partial class StoredProcedures
     {
         switch (dataset)
         {
-            case DataInfo.DataSets.isotropic1024coarse:
+            
             case DataInfo.DataSets.isotropic1024fine:
             case DataInfo.DataSets.mhd1024:
                 if (!(tlow >= 0 && thigh <= 1025*10) ||
+                    !(xlow >= 0 && xhigh <= 1024) ||
+                    !(ylow >= 0 && yhigh <= 1024) ||
+                    !(zlow >= 0 && zhigh <= 1024))
+                { throw new Exception("The requested region is out of bounds"); }
+                break;
+            case DataInfo.DataSets.isotropic1024coarse:
+                /* Adding 100 timesteps to coarse */
+                if (!(tlow >= 0 && thigh <= 1125 * 10) ||
                     !(xlow >= 0 && xhigh <= 1024) ||
                     !(ylow >= 0 && yhigh <= 1024) ||
                     !(zlow >= 0 && zhigh <= 1024))

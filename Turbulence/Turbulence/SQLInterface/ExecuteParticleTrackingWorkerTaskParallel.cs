@@ -289,44 +289,48 @@ public partial class StoredProcedures
                         //}
                         cmd = new SqlCommand(query, connections[s]);
                         cmd.CommandTimeout = 3600;
-
+                        
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
-                            while (reader.Read())
-                            {
-                                //int basetime = reader.GetSqlInt32(0).Value;  // Base time
-                                int timestepRead = reader.GetSqlInt32(0).Value;  // Timestep returned
-                                long thisBlob = reader.GetSqlInt64(1).Value; // Blob returned
-                                int bytesread = 0;
-
-                                while (bytesread < table.BlobByteSize)
+                            
+                                while (reader.Read())
                                 {
-                                    int bytes = (int)reader.GetBytes(2, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
-                                    bytesread += bytes;
+                                    //int basetime = reader.GetSqlInt32(0).Value;  // Base time
+                                    int timestepRead = reader.GetSqlInt32(0).Value;  // Timestep returned
+                                    long thisBlob = reader.GetSqlInt64(1).Value; // Blob returned
+                                    int bytesread = 0;
+
+                                    while (bytesread < table.BlobByteSize)
+                                    {
+                                        int bytes = (int)reader.GetBytes(2, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
+                                        bytesread += bytes;
+                                    }
+                                    blob.Setup(timestepRead, new Morton3D(thisBlob), rawdata);
+                                    //endTimer = DateTime.Now;
+                                    //IOTime += endTimer - startTimer;
+                                    //startTimer = endTimer;
+
+                                    foreach (int i in map[s][thisBlob])
+                                    {
+                                        point = input[i];
+
+                                        if (worker == null)
+                                            throw new Exception("worker is NULL!");
+                                        if (blob == null)
+                                            throw new Exception("blob is NULL!");
+
+                                        point.cubesRead++;
+                                        worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime);
+                                    }
+
+                                    //endTimer = DateTime.Now;
+                                    //computeTime += endTimer - startTimer;
+                                    //startTimer = endTimer;
                                 }
-                                blob.Setup(timestepRead, new Morton3D(thisBlob), rawdata);
-                                //endTimer = DateTime.Now;
-                                //IOTime += endTimer - startTimer;
-                                //startTimer = endTimer;
-
-                                foreach (int i in map[s][thisBlob])
-                                {
-                                    point = input[i];
-
-                                    if (worker == null)
-                                        throw new Exception("worker is NULL!");
-                                    if (blob == null)
-                                        throw new Exception("blob is NULL!");
-
-                                    point.cubesRead++;
-                                    worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime);
-                                }
-
-                                //endTimer = DateTime.Now;
-                                //computeTime += endTimer - startTimer;
-                                //startTimer = endTimer;
-                            }
+                           
                         }
+
+                       
 
                         cmd = new SqlCommand(String.Format(@"DROP TABLE tempdb..{0}", joinTable), connections[s]);
                         try

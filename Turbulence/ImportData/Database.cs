@@ -53,9 +53,14 @@ namespace ImportData
         /// <summary>
         /// Get the partition limits for the given slice and partition number
         /// </summary>
+        /// We are hardcoding instead.
+        /// 
         public void GetPartLimits(int sliceNum, int partitionNum, ref long minLim, ref long maxLim)
         {
-            SqlCommand cmd = new SqlCommand(
+            minLim = 0;
+            maxLim = 7516192768;
+            
+            /*SqlCommand cmd = new SqlCommand(
                 String.Format("select minLim, maxLim from turblib.dbo.PartLimits08 where sliceNum = {0} and partitionNum = {1}", sliceNum, partitionNum),
                 sqlcon);
             using (SqlDataReader reader = cmd.ExecuteReader())
@@ -64,6 +69,7 @@ namespace ImportData
                 minLim = reader.GetInt64(0);
                 maxLim = reader.GetInt64(1);
             }
+             */ 
         }
 
         /// <summary>

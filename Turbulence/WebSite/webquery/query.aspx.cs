@@ -1730,7 +1730,7 @@ namespace Website
             catch (Exception e)
             {
                 output.Text = "";
-                error.Text = "<hr/><h2 style=\".red\">Error!</h2><pre>" + e.ToString() + "</pre>";
+                error.Text = "<hr/><h2 style=\".red\">Error!</h2><pre>" + e.ToString() +"</pre>";
             }
         }
 
