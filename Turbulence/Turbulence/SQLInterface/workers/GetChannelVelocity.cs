@@ -310,7 +310,7 @@ namespace Turbulence.SQLInterface.workers
         }
         public int GetStencilEndY(int y, int kernelSize)
         {
-            return weights_y.GetStencilEnd(y, kernelSize);
+            return weights_y.GetStencilEnd(y);
         }
 
     }
