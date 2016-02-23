@@ -441,6 +441,24 @@ namespace Turbulence.SQLInterface.workers
             return dt;
         }
 
+        // PJ 2016: part of bug fix, get the right stencil for channel
+        public int GetStencilStartX(int x, int kernelSize)
+        {
+            return turbulence_worker.GetStencilStartX(x, kernelSize);
+        }
+        public int GetStencilStartY(int y, int kernelSize)
+        {
+            return turbulence_worker.GetStencilStartY(y, kernelSize);
+        }
+        public int GetStencilStartZ(int z, int kernelSize)
+        {
+            return turbulence_worker.GetStencilStartZ(z, kernelSize);
+        }
+        public int GetStencilEndY(int y, int kernelSize)
+        {
+            return turbulence_worker.GetStencilEndY(y, kernelSize);
+        }
+
     }
 
 }

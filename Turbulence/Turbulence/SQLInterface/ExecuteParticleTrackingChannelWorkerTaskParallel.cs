@@ -522,9 +522,10 @@ public partial class StoredProcedures
         }
         else
         {
-            int X, Y, Z;
+            int X, Y, Z; float yp;
             if (request.compute_predictor)
             {
+                yp = request.pos.y;
                 //X = LagInterpolation.CalcNode(request.pos.x, worker.setInfo.Dx);
                 //Y = LagInterpolation.CalcNode(request.pos.y, worker.setInfo.Dy);
                 //Z = LagInterpolation.CalcNode(request.pos.z, worker.setInfo.Dz);
@@ -534,6 +535,7 @@ public partial class StoredProcedures
             }
             else
             {
+                yp = request.pre_pos.y;
                 //X = LagInterpolation.CalcNode(request.pre_pos.x, worker.setInfo.Dx);
                 //Y = LagInterpolation.CalcNode(request.pre_pos.y, worker.setInfo.Dy);
                 //Z = LagInterpolation.CalcNode(request.pre_pos.z, worker.setInfo.Dz);
@@ -541,10 +543,16 @@ public partial class StoredProcedures
                 Y = worker.setInfo.CalcNodeY(request.pre_pos.y, worker.spatialInterp);
                 Z = worker.setInfo.CalcNodeZ(request.pre_pos.z, worker.spatialInterp);
             }
-            // For Lagrange Polynomial interpolation we need a cube of data 
-
-            int startz = Z - worker.KernelSize / 2 + 1, starty = Y - worker.KernelSize / 2 + 1, startx = X - worker.KernelSize / 2 + 1;
-            int endz = Z + worker.KernelSize / 2, endy = Y + worker.KernelSize / 2, endx = X + worker.KernelSize / 2;
+            // For Lagrange Polynomial interpolation we need a cube of data
+            //int startz = Z - worker.KernelSize / 2 + 1, starty = Y - worker.KernelSize / 2 + 1, startx = X - worker.KernelSize / 2 + 1;
+            //int endz = Z + worker.KernelSize / 2, endy = Y + worker.KernelSize / 2, endx = X + worker.KernelSize / 2;
+            // PJ 2016 bug fix: getting the correct stencil for channel
+            int startz = worker.GetStencilStartZ(Z, worker.KernelSize);
+            int starty = worker.GetStencilStartY(Y, worker.KernelSize);
+            int startx = worker.GetStencilStartX(X, worker.KernelSize);
+            int endz = startz + worker.KernelSize - 1;
+            int endy = worker.GetStencilEndY(Y, worker.KernelSize);
+            int endx = startx + worker.KernelSize - 1;
 
             // we do not want a request to appear more than once in the list for an atom
             // with the below logic we are going to check distinct atoms only

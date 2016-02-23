@@ -1,0 +1,1032 @@
+USE [master]
+GO
+
+/****** Object:  Database [ts5to9]    Script Date: 12/16/2015 3:18:41 PM ******/
+CREATE DATABASE [ts5to9] ON  PRIMARY 
+( NAME = N'PRIMARY', FILENAME = N'C:\data\data9\sql_db\ts5to9_PRIMARY.mdf' , SIZE = 10MB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB ), 
+ FILEGROUP [FG01] 
+( NAME = N'ts5to9_FG01', FILENAME = N'C:\data\data9\sql_db\ts5to9_FG01.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG02] 
+( NAME = N'ts5to9_FG02', FILENAME = N'C:\data\data10\sql_db\ts5to9_FG02.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG03] 
+( NAME = N'ts5to9_FG03', FILENAME = N'C:\data\data11\sql_db\ts5to9_FG03.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG04] 
+( NAME = N'ts5to9_FG04', FILENAME = N'C:\data\data12\sql_db\ts5to9_FG04.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG05] 
+( NAME = N'ts5to9_FG05', FILENAME = N'C:\data\data9\sql_db\ts5to9_FG05.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG06] 
+( NAME = N'ts5to9_FG06', FILENAME = N'C:\data\data10\sql_db\ts5to9_FG06.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG07] 
+( NAME = N'ts5to9_FG07', FILENAME = N'C:\data\data11\sql_db\ts5to9_FG07.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG08] 
+( NAME = N'ts5to9_FG08', FILENAME = N'C:\data\data12\sql_db\ts5to9_FG08.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG09] 
+( NAME = N'ts5to9_FG09', FILENAME = N'C:\data\data9\sql_db\ts5to9_FG09.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG10] 
+( NAME = N'ts5to9_FG10', FILENAME = N'C:\data\data10\sql_db\ts5to9_FG10.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG11] 
+( NAME = N'ts5to9_FG11', FILENAME = N'C:\data\data11\sql_db\ts5to9_FG11.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG12] 
+( NAME = N'ts5to9_FG12', FILENAME = N'C:\data\data12\sql_db\ts5to9_FG12.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG13] 
+( NAME = N'ts5to9_FG13', FILENAME = N'C:\data\data9\sql_db\ts5to9_FG13.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG14] 
+( NAME = N'ts5to9_FG14', FILENAME = N'C:\data\data10\sql_db\ts5to9_FG14.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG15] 
+( NAME = N'ts5to9_FG15', FILENAME = N'C:\data\data11\sql_db\ts5to9_FG15.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB ), 
+ FILEGROUP [FG16] 
+( NAME = N'ts5to9_FG16', FILENAME = N'C:\data\data12\sql_db\ts5to9_FG16.ndf' , SIZE = 2 GB , MAXSIZE = UNLIMITED, FILEGROWTH = 50MB )
+ LOG ON 
+( NAME = N'ts5to9_log', FILENAME = N'C:\data\data9\sql_db\ts5to9_log.ldf' , SIZE = 100MB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+GO
+
+--ALTER DATABASE [ts5to9] SET COMPATIBILITY_LEVEL = 100
+--GO
+
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [ts5to9].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+
+ALTER DATABASE [ts5to9] SET ANSI_NULL_DEFAULT OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET ANSI_NULLS OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET ANSI_PADDING OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET ANSI_WARNINGS OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET ARITHABORT OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET AUTO_CLOSE OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET AUTO_SHRINK OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET AUTO_UPDATE_STATISTICS ON 
+GO
+
+ALTER DATABASE [ts5to9] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET CURSOR_DEFAULT  GLOBAL 
+GO
+
+ALTER DATABASE [ts5to9] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET NUMERIC_ROUNDABORT OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET QUOTED_IDENTIFIER OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET RECURSIVE_TRIGGERS OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET  DISABLE_BROKER 
+GO
+
+ALTER DATABASE [ts5to9] SET AUTO_UPDATE_STATISTICS_ASYNC ON 
+GO
+
+ALTER DATABASE [ts5to9] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET TRUSTWORTHY OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET ALLOW_SNAPSHOT_ISOLATION ON 
+GO
+
+ALTER DATABASE [ts5to9] SET PARAMETERIZATION SIMPLE 
+GO
+
+ALTER DATABASE [ts5to9] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET HONOR_BROKER_PRIORITY OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET RECOVERY SIMPLE 
+GO
+
+ALTER DATABASE [ts5to9] SET  MULTI_USER 
+GO
+
+ALTER DATABASE [ts5to9] SET PAGE_VERIFY CHECKSUM  
+GO
+
+ALTER DATABASE [ts5to9] SET DB_CHAINING OFF 
+GO
+
+ALTER DATABASE [ts5to9] SET  READ_WRITE 
+GO
+
+
+use [ts5to9]
+
+/****** Object:  PartitionFunction [zindexPFN]    Script Date: 12/16/2015 3:29:43 PM ******/
+CREATE PARTITION FUNCTION [zindexPFN](bigint) AS RANGE LEFT FOR VALUES (8388607, 16777215, 25165823, 33554431, 41943039, 50331647, 58720255, 67108863, 75497471, 83886079, 92274687, 100663295, 109051903, 117440511, 125829119)
+GO
+
+
+/****** Object:  PartitionScheme [zindexPartScheme]    Script Date: 12/16/2015 3:29:49 PM ******/
+CREATE PARTITION SCHEME [zindexPartScheme] AS PARTITION [zindexPFN] TO ([FG01], [FG02], [FG03], [FG04], [FG05], [FG06], [FG07], [FG08], [FG09], [FG10], [FG11], [FG12], [FG13], [FG14], [FG15], [FG16])
+GO
+
+
+
+/****** Object:  Table [dbo].[PartLimits08]    Script Date: 12/16/2015 3:34:50 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[PartLimits08](
+	[sliceNum] [int] NULL,
+	[partitionNum] [int] NULL,
+	[minLim] [bigint] NULL,
+	[maxLim] [bigint] NULL,
+	[ordinal] [int] IDENTITY(1,1) NOT NULL
+) ON [PRIMARY]
+
+GO
+/****** Object:  Table [dbo].[pr]    Script Date: 12/16/2015 3:34:50 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [zindexPartScheme]([zindex])
+) ON [zindexPartScheme]([zindex])
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_01]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_01](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_1] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG01]
+) ON [FG01]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_02]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_02](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_2] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG02]
+) ON [FG02]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_03]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_03](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_3] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG03]
+) ON [FG03]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_04]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_04](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_4] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG04]
+) ON [FG04]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_05]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_05](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_5] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG05]
+) ON [FG05]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_06]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_06](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_6] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG06]
+) ON [FG06]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_07]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_07](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_7] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG07]
+) ON [FG07]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_08]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_08](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_8] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG08]
+) ON [FG08]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_09]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_09](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_9] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG09]
+) ON [FG09]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_10]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_10](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_10] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG10]
+) ON [FG10]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_11]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_11](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_11] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG11]
+) ON [FG11]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_12]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_12](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_12] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG12]
+) ON [FG12]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_13]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_13](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_13] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG13]
+) ON [FG13]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_14]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_14](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_14] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG14]
+) ON [FG14]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_15]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_15](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_15] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG15]
+) ON [FG15]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[pr_16]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[pr_16](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](2072) NOT NULL,
+ CONSTRAINT [pk_pr_16] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG16]
+) ON [FG16]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel]    Script Date: 12/16/2015 3:34:51 PM
+
+drop table vel
+
+ ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [zindexPartScheme]([zindex])
+) ON [zindexPartScheme]([zindex])
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_01]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_01](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_1] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG01]
+) ON [FG01]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_02]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_02](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_2] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG02]
+) ON [FG02]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_03]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_03](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_3] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG03]
+) ON [FG03]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_04]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_04](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_4] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG04]
+) ON [FG04]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_05]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_05](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_5] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG05]
+) ON [FG05]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_06]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_06](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_6] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG06]
+) ON [FG06]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_07]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_07](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_7] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG07]
+) ON [FG07]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_08]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_08](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_8] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG08]
+) ON [FG08]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_09]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_09](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_9] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG09]
+) ON [FG09]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_10]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_10](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_10] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG10]
+) ON [FG10]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_11]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_11](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_11] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG11]
+) ON [FG11]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_12]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_12](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_12] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG12]
+) ON [FG12]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_13]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_13](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_13] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG13]
+) ON [FG13]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_14]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_14](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_14] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG14]
+) ON [FG14]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_15]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_15](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_15] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG15]
+) ON [FG15]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[vel_16]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[vel_16](
+	[timestep] [int] NOT NULL,
+	[zindex] [bigint] NOT NULL,
+	[data] [varbinary](6168) NOT NULL,
+ CONSTRAINT [pk_vel_16] PRIMARY KEY CLUSTERED 
+(
+	[timestep] ASC,
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [FG16]
+) ON [FG16]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[zindex]    Script Date: 12/16/2015 3:34:51 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[zindex](
+	[X] [int] NULL,
+	[Y] [int] NULL,
+	[Z] [int] NULL,
+	[zindex] [bigint] NOT NULL,
+ CONSTRAINT [pk_zindex] PRIMARY KEY CLUSTERED 
+(
+	[zindex] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = ON, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+/****** Object:  Index [zindex_x_y_z]    Script Date: 12/16/2015 3:34:51 PM ******/
+CREATE NONCLUSTERED INDEX [zindex_x_y_z] ON [dbo].[zindex]
+(
+	[X] ASC,
+	[Y] ASC,
+	[Z] ASC
+)
+INCLUDE ( 	[zindex]) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[pr_01]  WITH CHECK ADD  CONSTRAINT [ck_pr1] CHECK  (([zindex]<=(8388607)))
+GO
+ALTER TABLE [dbo].[pr_01] CHECK CONSTRAINT [ck_pr1]
+GO
+ALTER TABLE [dbo].[pr_02]  WITH CHECK ADD  CONSTRAINT [ck_pr2] CHECK  (([zindex]>=(8388608) AND [zindex]<=(16777215)))
+GO
+ALTER TABLE [dbo].[pr_02] CHECK CONSTRAINT [ck_pr2]
+GO
+ALTER TABLE [dbo].[pr_03]  WITH CHECK ADD  CONSTRAINT [ck_pr3] CHECK  (([zindex]>=(16777216) AND [zindex]<=(25165823)))
+GO
+ALTER TABLE [dbo].[pr_03] CHECK CONSTRAINT [ck_pr3]
+GO
+ALTER TABLE [dbo].[pr_04]  WITH CHECK ADD  CONSTRAINT [ck_pr4] CHECK  (([zindex]>=(25165824) AND [zindex]<=(33554431)))
+GO
+ALTER TABLE [dbo].[pr_04] CHECK CONSTRAINT [ck_pr4]
+GO
+ALTER TABLE [dbo].[pr_05]  WITH CHECK ADD  CONSTRAINT [ck_pr5] CHECK  (([zindex]>=(33554432) AND [zindex]<=(41943039)))
+GO
+ALTER TABLE [dbo].[pr_05] CHECK CONSTRAINT [ck_pr5]
+GO
+ALTER TABLE [dbo].[pr_06]  WITH CHECK ADD  CONSTRAINT [ck_pr6] CHECK  (([zindex]>=(41943040) AND [zindex]<=(50331647)))
+GO
+ALTER TABLE [dbo].[pr_06] CHECK CONSTRAINT [ck_pr6]
+GO
+ALTER TABLE [dbo].[pr_07]  WITH CHECK ADD  CONSTRAINT [ck_pr7] CHECK  (([zindex]>=(50331648) AND [zindex]<=(58720255)))
+GO
+ALTER TABLE [dbo].[pr_07] CHECK CONSTRAINT [ck_pr7]
+GO
+ALTER TABLE [dbo].[pr_08]  WITH CHECK ADD  CONSTRAINT [ck_pr8] CHECK  (([zindex]>=(58720256) AND [zindex]<=(67108863)))
+GO
+ALTER TABLE [dbo].[pr_08] CHECK CONSTRAINT [ck_pr8]
+GO
+ALTER TABLE [dbo].[pr_09]  WITH CHECK ADD  CONSTRAINT [ck_pr9] CHECK  (([zindex]>=(67108864) AND [zindex]<=(75497471)))
+GO
+ALTER TABLE [dbo].[pr_09] CHECK CONSTRAINT [ck_pr9]
+GO
+ALTER TABLE [dbo].[pr_10]  WITH CHECK ADD  CONSTRAINT [ck_pr10] CHECK  (([zindex]>=(75497472) AND [zindex]<=(83886079)))
+GO
+ALTER TABLE [dbo].[pr_10] CHECK CONSTRAINT [ck_pr10]
+GO
+ALTER TABLE [dbo].[pr_11]  WITH CHECK ADD  CONSTRAINT [ck_pr11] CHECK  (([zindex]>=(83886080) AND [zindex]<=(92274687)))
+GO
+ALTER TABLE [dbo].[pr_11] CHECK CONSTRAINT [ck_pr11]
+GO
+ALTER TABLE [dbo].[pr_12]  WITH CHECK ADD  CONSTRAINT [ck_pr12] CHECK  (([zindex]>=(92274688) AND [zindex]<=(100663295)))
+GO
+ALTER TABLE [dbo].[pr_12] CHECK CONSTRAINT [ck_pr12]
+GO
+ALTER TABLE [dbo].[pr_13]  WITH CHECK ADD  CONSTRAINT [ck_pr13] CHECK  (([zindex]>=(100663296) AND [zindex]<=(109051903)))
+GO
+ALTER TABLE [dbo].[pr_13] CHECK CONSTRAINT [ck_pr13]
+GO
+ALTER TABLE [dbo].[pr_14]  WITH CHECK ADD  CONSTRAINT [ck_pr14] CHECK  (([zindex]>=(109051904) AND [zindex]<=(117440511)))
+GO
+ALTER TABLE [dbo].[pr_14] CHECK CONSTRAINT [ck_pr14]
+GO
+ALTER TABLE [dbo].[pr_15]  WITH CHECK ADD  CONSTRAINT [ck_pr15] CHECK  (([zindex]>=(117440512) AND [zindex]<=(125829119)))
+GO
+ALTER TABLE [dbo].[pr_15] CHECK CONSTRAINT [ck_pr15]
+GO
+ALTER TABLE [dbo].[pr_16]  WITH CHECK ADD  CONSTRAINT [ck_pr16] CHECK  (([zindex]>=(125829120)))
+GO
+ALTER TABLE [dbo].[pr_16] CHECK CONSTRAINT [ck_pr16]
+GO
+ALTER TABLE [dbo].[vel_01]  WITH CHECK ADD  CONSTRAINT [ck_vel1] CHECK  (([zindex]<=(8388607)))
+GO
+ALTER TABLE [dbo].[vel_01] CHECK CONSTRAINT [ck_vel1]
+GO
+ALTER TABLE [dbo].[vel_02]  WITH CHECK ADD  CONSTRAINT [ck_vel2] CHECK  (([zindex]>=(8388608) AND [zindex]<=(16777215)))
+GO
+ALTER TABLE [dbo].[vel_02] CHECK CONSTRAINT [ck_vel2]
+GO
+ALTER TABLE [dbo].[vel_03]  WITH CHECK ADD  CONSTRAINT [ck_vel3] CHECK  (([zindex]>=(16777216) AND [zindex]<=(25165823)))
+GO
+ALTER TABLE [dbo].[vel_03] CHECK CONSTRAINT [ck_vel3]
+GO
+ALTER TABLE [dbo].[vel_04]  WITH CHECK ADD  CONSTRAINT [ck_vel4] CHECK  (([zindex]>=(25165824) AND [zindex]<=(33554431)))
+GO
+ALTER TABLE [dbo].[vel_04] CHECK CONSTRAINT [ck_vel4]
+GO
+ALTER TABLE [dbo].[vel_05]  WITH CHECK ADD  CONSTRAINT [ck_vel5] CHECK  (([zindex]>=(33554432) AND [zindex]<=(41943039)))
+GO
+ALTER TABLE [dbo].[vel_05] CHECK CONSTRAINT [ck_vel5]
+GO
+ALTER TABLE [dbo].[vel_06]  WITH CHECK ADD  CONSTRAINT [ck_vel6] CHECK  (([zindex]>=(41943040) AND [zindex]<=(50331647)))
+GO
+ALTER TABLE [dbo].[vel_06] CHECK CONSTRAINT [ck_vel6]
+GO
+ALTER TABLE [dbo].[vel_07]  WITH CHECK ADD  CONSTRAINT [ck_vel7] CHECK  (([zindex]>=(50331648) AND [zindex]<=(58720255)))
+GO
+ALTER TABLE [dbo].[vel_07] CHECK CONSTRAINT [ck_vel7]
+GO
+ALTER TABLE [dbo].[vel_08]  WITH CHECK ADD  CONSTRAINT [ck_vel8] CHECK  (([zindex]>=(58720256) AND [zindex]<=(67108863)))
+GO
+ALTER TABLE [dbo].[vel_08] CHECK CONSTRAINT [ck_vel8]
+GO
+ALTER TABLE [dbo].[vel_09]  WITH CHECK ADD  CONSTRAINT [ck_vel9] CHECK  (([zindex]>=(67108864) AND [zindex]<=(75497471)))
+GO
+ALTER TABLE [dbo].[vel_09] CHECK CONSTRAINT [ck_vel9]
+GO
+ALTER TABLE [dbo].[vel_10]  WITH CHECK ADD  CONSTRAINT [ck_vel10] CHECK  (([zindex]>=(75497472) AND [zindex]<=(83886079)))
+GO
+ALTER TABLE [dbo].[vel_10] CHECK CONSTRAINT [ck_vel10]
+GO
+ALTER TABLE [dbo].[vel_11]  WITH CHECK ADD  CONSTRAINT [ck_vel11] CHECK  (([zindex]>=(83886080) AND [zindex]<=(92274687)))
+GO
+ALTER TABLE [dbo].[vel_11] CHECK CONSTRAINT [ck_vel11]
+GO
+ALTER TABLE [dbo].[vel_12]  WITH CHECK ADD  CONSTRAINT [ck_vel12] CHECK  (([zindex]>=(92274688) AND [zindex]<=(100663295)))
+GO
+ALTER TABLE [dbo].[vel_12] CHECK CONSTRAINT [ck_vel12]
+GO
+ALTER TABLE [dbo].[vel_13]  WITH CHECK ADD  CONSTRAINT [ck_vel13] CHECK  (([zindex]>=(100663296) AND [zindex]<=(109051903)))
+GO
+ALTER TABLE [dbo].[vel_13] CHECK CONSTRAINT [ck_vel13]
+GO
+ALTER TABLE [dbo].[vel_14]  WITH CHECK ADD  CONSTRAINT [ck_vel14] CHECK  (([zindex]>=(109051904) AND [zindex]<=(117440511)))
+GO
+ALTER TABLE [dbo].[vel_14] CHECK CONSTRAINT [ck_vel14]
+GO
+ALTER TABLE [dbo].[vel_15]  WITH CHECK ADD  CONSTRAINT [ck_vel15] CHECK  (([zindex]>=(117440512) AND [zindex]<=(125829119)))
+GO
+ALTER TABLE [dbo].[vel_15] CHECK CONSTRAINT [ck_vel15]
+GO
+ALTER TABLE [dbo].[vel_16]  WITH CHECK ADD  CONSTRAINT [ck_vel16] CHECK  (([zindex]>=(125829120)))
+GO
+ALTER TABLE [dbo].[vel_16] CHECK CONSTRAINT [ck_vel16]
+GO
