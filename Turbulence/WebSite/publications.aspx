@@ -42,7 +42,7 @@ H.&nbsp;Yu, K.&nbsp;Kanov, E.&nbsp;Perlman, J.&nbsp;Graham, E.&nbsp;Frederix, R.
   G.&nbsp;Eyink, and C.&nbsp;Meneveau.
  <a href="papers/Yuetal-JoT2012.pdf"  target="_blank">Studying lagrangian dynamics of turbulence using on-demand fluid
   particle tracking in a public turbulence database.</a>
- <em>Journal of Turbulence</em>, 13(12), 2012.  (© Taylor & Francis, see <a href="http://www.tandfonline.com/doi/abs/10.1080/14685248.2012.674643" target="_blank">
+ <em>Journal of Turbulence</em>, 13(12), 2012.  (&copy; Taylor & Francis, see <a href="http://www.tandfonline.com/doi/abs/10.1080/14685248.2012.674643" target="_blank">
     http://www.tandfonline.com/doi/abs/10.1080/14685248.2012.674643</a>)
 
 </li>
@@ -53,9 +53,9 @@ H.&nbsp;Yu, K.&nbsp;Kanov, E.&nbsp;Perlman, J.&nbsp;Graham, E.&nbsp;Frederix, R.
 </li>
 <li>
 J. Graham, K. Kanov, X.I.A. Yang, M.K. Lee, N. Malaya, C.C. Lalescu, R. Burns, G. Eyink, A. Szalay, R.D. Moser. and C. Meneveau: 
-<a href="papers/Grahametal-JoT-2016.pdf"  target="_blank">
+<a href="papers/Grahametal-JoT-2016-preprint.pdf"  target="_blank">
 A Web Services-accessible database of turbulent channel flow and its use for testing a new integral wall model for LES.
-</a> Journal of Turbulence 17 (1), 179-213, 2016.
+</a> Journal of Turbulence 17 (2), 181-215, 2016.  (&copy; Taylor & Francis, see <a href="http://www.tandfonline.com/doi/pdf/10.1080/14685248.2015.1088656" target="_blank">http://www.tandfonline.com/doi/pdf/10.1080/14685248.2015.1088656</a>)
  
 
 </li>        

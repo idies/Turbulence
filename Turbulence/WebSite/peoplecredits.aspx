@@ -50,12 +50,11 @@
       <ul class="style24">
 	    <li><a href="http://www.cs.jhu.edu/~stephenh/">Stephen Hamilton</a> (Computer Science)</li>
         <li><a href="http://me.jhu.edu/students/">Perry Johnson</a> (Mechanical Engineering)</li>
-	    <li><a href="http://www.cs.jhu.edu/~kalin">Kalin Kanov</a> (Computer Science)</li>
       </ul>      
 
       <p class="style23">Postdocs and senior research associates:</p>
       <ul class="style24">
-	    <li><a href="http://www.ams.jhu.edu/~clalesc1/">Cristian Constantin Lalescu</a> (Applied Math and Statistics)</li>
+	    
         <li>Jin Lee</li>
 	    
       </ul>      
@@ -93,6 +92,8 @@
         <li><a href="http://perso.ens-lyon.fr/laurent.chevillard/">Laurent Chevillard</a></li>
         <li><a href="http://skysrv.pha.jhu.edu/~givelberg/">Ed Givelberg</a> (Physics and Astronomy)</li>        
         <li>Jason Graham</li>
+        <li><a href="http://www.cs.jhu.edu/~kalin">Kalin Kanov</a> (Computer Science)</li>
+        <li><a href="http://www.ams.jhu.edu/~clalesc1/">Cristian Constantin Lalescu</a> (Applied Math and Statistics)</li>
         <li><a href="http://yi-li.staff.shef.ac.uk/">Yi Li</a></li>
         <li><a href="http://www.cs.jhu.edu/~eric/">Eric Perlman</a></li>        
         <li><a href="http://web.physics.udel.edu/about/directory/research-scientist/minping-wan">Minping Wan</li>

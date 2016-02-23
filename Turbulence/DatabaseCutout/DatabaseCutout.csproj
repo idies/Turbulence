@@ -58,6 +58,7 @@
     <Compile Include="Database.cs" />
     <Compile Include="DataInfo.cs" />
     <Compile Include="GetAnyCutout.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

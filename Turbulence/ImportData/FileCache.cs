@@ -18,11 +18,11 @@ namespace ImportData
         protected byte[][] data;
 
         protected string data_dir = "";
-        protected string[] suffix = { "u", "v", "w" };
+        protected string[] suffix = { "u", "p" };
         protected long headerSize = 192;
         // the resolution as [z,y,x]
         // the file stores a replicated point on each end
-        protected int[] resolution = { 513, 2049, 2049 };
+        protected int[] resolution = { 1025, 1025, 1025 };
         protected int[] cache_dimensions;
         protected int components = 3;
         protected long firstbox = -1;

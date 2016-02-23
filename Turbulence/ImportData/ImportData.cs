@@ -11,48 +11,48 @@ namespace ImportData
     {
         int time_start = 0;  // First time step to dataread
         int time_end = 0;    // Last time step to dataread
-        string data_dir = @"H:\channel\";
+        string data_dir = @"c:\globus\";
         //string[] suffix = { "t04.s001.000" };
         int headerSize = 0;
-        string[] suffix = { "u", "v", "w" };
-        string user = "kalin";
-        string dbname = "rmhd01";
+        string[] suffix = { "vel", "pressure" };
+        string user = "shamilto";
+        string dbname = "turbdb109";
         //string dbname = "turbload";
         string table = "vel";
-        int[] resolution = { 2048, 2048, 2048 };
+        int[] resolution = { 1024, 1024, 1024 };
         long firstbox = 0;
-        long lastbox = new Morton3D(2040, 2040, 2040).Key;
-        int timeinc = 4;
-        int timeoff = 0;
-        int components = 2;
+        long lastbox = new Morton3D(1024, 1024, 1024).Key;
+        int timeinc = 10;
+        int timeoff = 10250;
+        int components = 3;
         int atomSize = 8;
         int edge = 0;
-        string serverName = "gw01";
+        string serverName = "tdg-vm";
         bool isDataLittleEndian = true;
         int numProcs = 2;
 
         ImportData(long firstbox, long lastbox, int numProcs, int timeoff)
         {
-            this.time_start = 0;  // First time step to dataread
-            this.time_end = 36;    // Last time step to dataread
+            this.time_start = 15050;  // First time step to dataread
+            this.time_end = 15060;    // Last time step to dataread
             this.data_dir = @"";
             //string[] suffix = { "t04.s001.000" };
             this.headerSize = 0;
-            this.suffix = new string[] { "b" };
-            this.user = "kalin";
-            this.dbname = "rmhd08";
+            this.suffix = new string[] { "vel" };
+            this.user = "stephen";
+            this.dbname = "turbdb109";
             //string dbname = "turbload";
-            this.table = "mag";
-            this.resolution = new int[] { 2047, 2047, 2047 };
+            this.table = "pressure";
+            this.resolution = new int[] { 1023, 1023, 1023 };
             this.timeinc = 4;
             this.timeoff = timeoff;
             this.atomSize = 8;
             this.edge = 0;
-            this.serverName = "gw15";
+            this.serverName = "tdg-vm";
             this.isDataLittleEndian = true;
             this.firstbox = firstbox;
             this.lastbox = lastbox;
-            this.components = 2;
+            this.components = 3;
             this.numProcs = numProcs;
         }
 
@@ -163,8 +163,8 @@ namespace ImportData
             {
                 for (int p = 0; p < partitions; p++)
                 {
-                    // There is no data for z >= 512
-                    if (new Morton3D(firstBoxes[p]).Z >= 512)
+                    // There is no data for z >= 1024
+                    if (new Morton3D(firstBoxes[p]).Z >= 1024)
                         continue;
 
                     Console.WriteLine("Reading from blob #{0} to {1} for time {2}", new Morton3D(firstBoxes[p]).ToPrettyString(), new Morton3D(lastBoxes[p]).ToPrettyString(), timestep);
@@ -282,7 +282,7 @@ namespace ImportData
                     lastBoxes[p] = new Morton3D(PartitionBoundaries[p].endz - atomSize + 1, PartitionBoundaries[p].endy - atomSize + 1, PartitionBoundaries[p].endx - atomSize + 1);
                 }
 
-                FileCache cache = new FileCacheRMHD(data_dir, resolution, headerSize, components, suffix[0]);
+                FileCache cache = new FileCacheIso(data_dir, resolution, headerSize, components, suffix[0]);
 
                 Database db = new Database(cString);
                 db.EnableMinimalLoggin();

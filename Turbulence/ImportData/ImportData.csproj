@@ -8,9 +8,9 @@
     <ProjectGuid>{E598F83D-D3CA-46DF-B152-1D45EDD844FB}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ImportData</RootNamespace>
-    <AssemblyName>ImportData</AssemblyName>
-    <StartupObject>ImportData.ImportData</StartupObject>
+    <RootNamespace>IsoImportData</RootNamespace>
+    <AssemblyName>IsoImportData</AssemblyName>
+    <StartupObject>IsoImportData.IsoImportData</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -66,13 +66,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileCacheRMHD.cs" />
+    <Compile Include="ImportData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="IsoDatabase.cs" />
+    <Compile Include="FileCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FileCacheIso.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="DatabaseSetup.cs" />
-    <Compile Include="FileCache.cs" />
     <Compile Include="FileCacheMixing.cs" />
     <Compile Include="ImportMixingData.cs" />
-    <Compile Include="ImportData.cs" />
+    <Compile Include="IsoFileCache.cs" />
+    <Compile Include="IsoImport.cs" />
+    <Compile Include="IsoTurbDataReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerSelection.cs" />
     <Compile Include="TurbDataReader.cs">

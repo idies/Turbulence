@@ -11,28 +11,32 @@ namespace ImportData
 {
     class ImportChannelFlowData
     {
-        int time_start = 142005;    // First time step to dataread 142700
-        int time_end = 152015;      // Last time step to dataread  (db01 has pr up to 147000)
-        //string data_dir = @"\\dss005\tdbchannel\tdb-chunk-9\";
-        string data_dir = @"\\dss005\tdbchannel\tdb-channel-remaining\";
+        //int time_start = 142005;    // First time step to dataread 142700
+        //int time_end = 152015;      // Last time step to dataread  (db01 has pr up to 147000)
+        int time_start = 135005;
+        int time_end = 136000;
+        string data_dir = @"\\dss005\tdbchannel\tdb-chunk-4\";
+        //string data_dir = @"\\dss005\tdbchannel\tdb-channel-remaining\";
         //string data_dir = @"H:\channel\";
-        string user = "kalin";
+        string user = "shamilto";
         string db_prefix = "channeldb";
         string staging_db = "stagingdb";
         int[] resolution = { 1535, 511, 2047 };
         //long[] range_start = { 0,         536870912, 1073741824, 1610612736, 4294967296, 5368709120 };
         //long[] range_end   = { 268434944, 805305856, 1342176768, 1879047680, 4563402240, 5637144064 };
+        //This is all of them.
         long[] range_start = { 0,         134217728, 536870912, 671088640, 1073741824, 1207959552, 1610612736, 1744830464, 4294967296, 4429185024, 5368709120, 5502926848 };
         long[] range_end   = { 134217216, 268434944, 671088128, 805305856, 1207959040, 1342176768, 1744829952, 1879047680, 4429184512, 4563402240, 5502926336, 5637144064 };
+        
         int timeinc = 5;
         int timeoff = 0;
         int atomSize = 8;
         string dataset = "vel";
-        string serverName = "dsp085";
+        string serverName = "dsp087";
         //string serverName = "gwwn1";
         bool isDataLittleEndian = true;
-        int first_range = 0;
-        int last_range = 2;
+        int first_range = 9;
+        int last_range = 9;
         //int last_range = range_start.Length - 1;
         int rounds = 1; //2;
         int numProcs = 24; //12;
@@ -58,7 +62,7 @@ namespace ImportData
             //import.TestSequentialReadParallelCopy();
             //import.TestAsyncReadParallelCopy();
             import.ParallelIngestSequentialRead();
-            Console.WriteLine("Total running time {0} s.", (DateTime.Now - start).TotalSeconds);
+            Console.WriteLine("Total running time {0} s. (Component: {1})", (DateTime.Now - start).TotalSeconds, import.dataset);
             H5.Close();
 
             //Console.WriteLine("Press any key to continue!");
