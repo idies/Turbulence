@@ -14,6 +14,7 @@ DROP PROCEDURE [dbo].[ExecuteTwoFieldsWorker]
 DROP PROCEDURE [dbo].[ExecuteTwoFieldsBoxFilterWorker]
 DROP PROCEDURE [dbo].[ExecuteParticleTrackingWorkerTaskParallel]
 DROP PROCEDURE [dbo].[ExecuteParticleTrackingChannelWorkerTaskParallel]
+DROP PROCEDURE [dbo].[GetAnyCutout]
 
 DROP ASSEMBLY Turbulence 
 CREATE ASSEMBLY Turbulence FROM @DLL_Turbulence WITH PERMISSION_SET = UNSAFE 

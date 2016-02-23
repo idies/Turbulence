@@ -1,12 +1,1 @@
-gw01
-gw02
-gw03
-gw04
-dsp048
-dsp084
-gw13
-dsp085
-dsp087
-dsp089
-dsp089\SQL2014
-dsp090
+gw15

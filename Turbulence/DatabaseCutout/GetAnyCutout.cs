@@ -87,6 +87,12 @@ public partial class StoredProcedures
          //   serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, 1, 1, 1);
         /*Update xwidth. This is required for reassembly when x is strided */
         int destinationIndex;
+        /*Fix timestep offset for channel data */
+        if (dataset == "channel")
+        {
+            tlow = tlow + 132005;
+            thigh = thigh + 132005;
+        }
         /*Now use the parameters to grab the data pieces*/
         for (int s = 0; s < serverCount; s++)
         {
@@ -106,12 +112,7 @@ public partial class StoredProcedures
                 connection.Open();
                 sqlcmd = connection.CreateCommand();
 
-                /*Fix timestep offset for channel data */
-                if (dataset == "channel")
-                {
-                    tlow = tlow  + 132005;
-                    thigh = thigh + 132005;
-                }
+                
 
                 /*Check to see if we are striding/filtering or not*/
                 if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
@@ -233,7 +234,7 @@ public partial class StoredProcedures
                 { throw new Exception("The requested region is out of bounds"); }
                 break;
             case DataInfo.DataSets.channel:
-                if (!(tlow >= 0 && thigh <= 1997*5) ||
+                if (!(tlow >= 0 && thigh <= 4000*5) ||
                     !(xlow >= 0 && xhigh <= 2048) ||
                     !(ylow >= 0 && yhigh <= 512) ||
                     !(zlow >= 0 && zhigh <= 1536))

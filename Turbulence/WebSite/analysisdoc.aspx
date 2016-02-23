@@ -144,7 +144,7 @@
             <tr><td class="newStyle2">GetPosition</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
-            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetBoxFilter</td>
