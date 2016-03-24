@@ -40,7 +40,7 @@
     <p>
     Microsoft <a href="http://msdn.microsoft.com/vstudio/">Visual Studio</a> 2005 and later will automatically generate interfaces to web services.</p>
   
-    <p>To add Web Reference, right click on a project in the Solution Explorer, choose "Add Web Reference...",
+    <p>To add Web Reference, right click on a project in the Solution Explorer, choose "Add Service Reference...",
     and specify the URL <code>http://turbulence.pha.jhu.edu/service/turbulence.asmx</code>.  
     </font></p>
   
@@ -50,21 +50,37 @@
     <p class="code">
     <strong>C#</strong><br />
     <code>
-    Random random = new Random();<br />
-    edu.jhu.pha.turbulence.TurbulenceService service = new edu.jhu.pha.turbulence.TurbulenceService();<br />
-    edu.jhu.pha.turbulence.Point3[] points = new edu.jhu.pha.turbulence.Point3[10];<br />
-    edu.jhu.pha.turbulence.Vector3[] output;<br />
-    for (int i = 0; i < points.Length; i++) {<br />
-    &nbsp;&nbsp;points[i] = new edu.jhu.pha.turbulence.Point3();<br />
-    &nbsp;&nbsp;points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);<br />
-    &nbsp;&nbsp;points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);<br />
-    &nbsp;&nbsp;points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);<br />
-    }<br />
-    output = service.GetVelocity("jhu.edu.pha.turbulence.testing-200711", "isotropic1024fine", 0.0024f,
-    turbulence.SpatialInterpolation.Lag6, turbulence.TemporalInterpolation.None, points);<br />
-    for (int r = 0; r < results.Length; r++) {<br />
-    &nbsp;&nbsp;Console.WriteLine("X={0} Y={0} Z={0}", output[r].x, output[r].y, output[r].z);<br />
-    }<br />
+    using edu.jhu.pha.turbulence <br />
+    {<br />
+    &nbsp;Random random = new Random();<br />
+    &nbsp;var service = new TurbulenceServiceSoapClient();<br />
+    &nbsp;var points = new Point3[10];<br />
+    &nbsp;Vector3[] output;<br />
+    &nbsp;for (int i = 0; i < points.Length; i++) {<br />
+    &nbsp;&nbsp;&nbsp;points[i] = new Point3();<br />
+    &nbsp;&nbsp;&nbsp;points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);<br />
+    &nbsp;&nbsp;&nbsp;points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);<br />
+    &nbsp;&nbsp;&nbsp;points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);<br />
+    &nbsp;}<br />
+    &nbsp;output = service.GetVelocity("jhu.edu.pha.turbulence.testing-200711", "isotropic1024fine", 0.0024f,
+    &nbsp;turbulence.SpatialInterpolation.Lag6, turbulence.TemporalInterpolation.None, points);<br />
+    &nbsp;for (int r = 0; r < output.Length; r++) {<br />
+    &nbsp;&nbsp;&nbsp;Console.WriteLine("X={0} Y={1} Z={2}", output[r].x, output[r].y, output[r].z);<br />
+    &nbsp;}<br />
+    }
+    </code>
+    <br />
+    Also in your App.config file in your project, you may want to increase the default size from 64k to something like 64M. 
+    <br />
+
+    In order to do so, place the following in your App.config file:  <br />
+    <code>
+         &lt;bindings&gt;<br />
+         &nbsp;&nbsp;   &lt;basicHttpBinding&gt;<br />
+              &nbsp;&nbsp; &lt;binding name="TurbulenceServiceSoap" <br />
+                        &nbsp;&nbsp;&nbsp; maxReceivedMessageSize="67108864" /&gt;<br />
+           &nbsp;&nbsp; &lt;/basicHttpBinding&gt;<br />
+        &lt;/bindings&gt;<br />
     </code>
     </p>  
     

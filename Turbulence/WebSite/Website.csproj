@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="analysisdoc.aspx" />
+    <Content Include="announcements.aspx" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap-theme.css" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap-theme.min.css" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap.css" />
@@ -66,6 +67,7 @@
     <Content Include="bootstrap-3.2.0-dist\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.js" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.min.js" />
+    <Content Include="citing.aspx" />
     <Content Include="newcutout.aspx" />
     <Content Include="cutout.aspx" />
     <Content Include="datasets.aspx" />
@@ -215,9 +217,11 @@
     </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="webquery\query.aspx" />
     <Content Include="webquery\sampledata.txt" />
@@ -236,6 +240,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="announcements.aspx.cs">
+      <DependentUpon>announcements.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="announcements.aspx.designer.cs">
+      <DependentUpon>announcements.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Code\WebService.cs">
       <SubType>Component</SubType>
     </Compile>

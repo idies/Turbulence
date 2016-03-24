@@ -23,7 +23,7 @@ namespace TurbulenceService {
          * Set to FALSE before production deployment
          * TODO: Automatic selection based on host name.
          */
-        public const bool DEVEL_MODE = true;
+        public const bool DEVEL_MODE = false;
         public const string infodb = "turbinfo";
 
         // batch scheduler queue

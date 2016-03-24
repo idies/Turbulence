@@ -28,7 +28,8 @@
       </p>
 
 <ul>
- 
+
+
 <li>
     <font face="Arial, Helvetica, sans-serif">Y. Li, E. Perlman, M.
     Wan, Y. Yang, R. Burns, C. Meneveau, R. Burns, S. Chen, A.
@@ -91,6 +92,13 @@ International Conference for High Performance Computing, Networking, Storage and
       
 <ul>      
 
+<li><font face="Arial, Helvetica, sans-serif">
+   P. L. Johnson and C. Meneveau, 
+   <a href="http://dx.doi.org/10.1103/PhysRevE.93.033118" target="_blank">
+   Large-deviation statistics of vorticity stretching in isotropic turbulence, Physical Review E, Vol. 93, 033118, 2016.
+   </a>
+   </font>
+</li>
 
 <li>
     <font face="Arial, Helvetica, sans-serif">J. M. Lawson and J. R. Dawson

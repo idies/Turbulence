@@ -56,8 +56,13 @@
       </blockquote>  
       <p >For articles that use the channel flow data, we suggest also including:</p>
       <blockquote>
-        <p>J. Graham, M. Lee, N. Malaya, R.D. Moser, G. Eyink, C. Meneveau, K. Kanov, R. Burns &amp; A. Szalay, &quot;Turbulent channel flow data set&quot;
-(2013), available at <a href="http://turbulence.pha.jhu.edu/docs/README-CHANNEL.pdf">http://turbulence.pha.jhu.edu/docs/README-CHANNEL.pdf</a> </p>
+        <p>
+        J. Graham, K. Kanov, X.I.A. Yang, M.K. Lee, N. Malaya, C.C. Lalescu, R. Burns, G. Eyink, A. Szalay, R.D. Moser. and C. Meneveau: 
+<a href="papers/Grahametal-JoT-2016-preprint.pdf"  target="_blank">
+A Web Services-accessible database of turbulent channel flow and its use for testing a new integral wall model for LES.
+</a> Journal of Turbulence 17 (2), 181-215, 2016.  (&copy; Taylor & Francis, see <a href="http://www.tandfonline.com/doi/pdf/10.1080/14685248.2015.1088656" target="_blank">http://www.tandfonline.com/doi/pdf/10.1080/14685248.2015.1088656</a>)
+ 
+        </p>
       </blockquote>  
       <p >For articles that use the mhd flow data, we suggest also including:</p>
       <blockquote>
