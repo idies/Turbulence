@@ -78,7 +78,7 @@ begin
 		[timestep] ASC,
 		[zindex] ASC
 	)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
-	ON ['+@fgname+']'
+	ON ['+@fgname+'])'
 
 	print @sql
 	print @newline
@@ -105,14 +105,14 @@ begin
 
 	if (@count = 1) --first partition, only max lim
 	begin
-		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]<='+cast(@maxLim as nvarchar)+')))'
+		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]<='+cast(@maxLim as nvarchar)+'))'
 	end
 	else if (@count = @npart)
 	begin
-		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar)+')))'
+		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar)+'))'
 	end
 	else --last partition, only min lim
-		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar) + ' AND [zindex]<='+cast(@maxLim as nvarchar)+')))'
+		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar) + ' AND [zindex]<='+cast(@maxLim as nvarchar)+'))'
 
 	--add with check
 	set @sql = @sql + '; ALTER TABLE  [dbo].['+@tablename+'] CHECK CONSTRAINT  [ck_'+@tablename+']'

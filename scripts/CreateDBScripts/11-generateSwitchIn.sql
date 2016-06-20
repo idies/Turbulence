@@ -1,5 +1,5 @@
 /*
-	90-generateSwitchIn.sql
+	11-generateSwitchIn.sql
 	S.Werner 6/20/2016
 
 	This script generates switch in statements for pressure or velocity tables.
