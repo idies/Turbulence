@@ -59,6 +59,7 @@ IMPORTANT!!!!!
 --Also, this script assumes that there will be 2 db's per machine, 
 --the first DB (turbdb201 for example) will be spread over 4 data1-data4
 --and the second DB (turbdb202 for example) will be spread over data5-data8
+--THIS MAY TAKE A WHILE TO RUN!  adding all these files sometimes takes up to an hour (!!)
 
 This script does not run the statements, just generates them.
 Copy and paste into new SSMS window to execute.
