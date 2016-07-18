@@ -83,7 +83,7 @@ set @sql = 'create partition function zindexPFN(bigint) as range left for values
 
 print '--==================================================================================================================
 
-PARTITON FUNCTION
+-- PARTITON FUNCTION
 
 '
 print @sql
