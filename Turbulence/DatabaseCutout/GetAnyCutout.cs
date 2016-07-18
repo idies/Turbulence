@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -71,6 +71,10 @@ public partial class StoredProcedures
 
         //CheckBoundaries(dataset_enum, tlow, thigh, xlow, xhigh, ylow, yhigh, zlow, zhigh);
         object rowid = null;
+        if (authToken == "edu.jhu.pha.turbulence-monitor")
+        {
+            log.devmode = true; //This makes sure we don't log the monitoring service.
+        }
         rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawVelocity,
             (int)TurbulenceOptions.SpatialInterpolation.None,
             (int)TurbulenceOptions.TemporalInterpolation.None,
@@ -78,6 +82,12 @@ public partial class StoredProcedures
         log.UpdateRecordCount(auth.Id, twidth * xwidth * ywidth * zwidth);
 
         int num_virtual_servers = 1;
+        /*Fix timestep offset for channel data */
+        if (dataset == "channel")
+        {
+            tlow = tlow + 132005;
+            thigh = thigh + 132005;
+        }
         database.Initialize(dataset_enum, num_virtual_servers);
 
         int serverCount = database.servers.Count;  
@@ -87,21 +97,19 @@ public partial class StoredProcedures
         int[] serverXwidth = new int[serverCount];
         int[] serverYwidth = new int[serverCount];
         int[] serverZwidth = new int[serverCount];
+        int[] serverTmin = new int[serverCount];
+        int[] serverTmax = new int[serverCount];
+
         database.selectServers(dataset_enum);
         database.development = false;
          
         database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
-            serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step);
+            serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step, tlow, twidth); //Added time for temporal server location
         //database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
          //   serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, 1, 1, 1);
         /*Update xwidth. This is required for reassembly when x is strided */
         int destinationIndex;
-        /*Fix timestep offset for channel data */
-        if (dataset == "channel")
-        {
-            tlow = tlow + 132005;
-            thigh = thigh + 132005;
-        }
+
         /*Now use the parameters to grab the data pieces*/
         for (int s = 0; s < serverCount; s++)
         {

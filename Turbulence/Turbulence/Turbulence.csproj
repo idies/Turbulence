@@ -12,10 +12,8 @@
     <AssemblyName>Turbulence</AssemblyName>
     <RootNamespace>Turbulence</RootNamespace>
     <PermissionLevel>3</PermissionLevel>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
+    <FileUpgradeFlags>40</FileUpgradeFlags>
+    <UpgradeBackupLocation>H:\Turbulence\Turbulence\Turbulence\Backup\</UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>

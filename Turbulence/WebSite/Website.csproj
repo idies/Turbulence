@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -20,6 +20,12 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,6 +36,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PublishDatabases>false</PublishDatabases>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -38,17 +46,16 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -56,6 +63,11 @@
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Turbulence, Version=1.1.6018.24659, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Turbulence\bin\Debug\Turbulence.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="analysisdoc.aspx" />
@@ -69,7 +81,7 @@
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.min.js" />
     <Content Include="citing.aspx" />
     <Content Include="newcutout.aspx" />
-    <Content Include="cutout.aspx" />
+    <Content Include="oldcutout.aspx" />
     <Content Include="datasets.aspx" />
     <Content Include="docs\channel\profiles.txt" />
     <Content Include="docs\channel\re-tau.txt" />
@@ -186,6 +198,7 @@
     <Content Include="papers\Grahametal-JoT-2016-preprint.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\Profile1.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -250,12 +263,12 @@
     <Compile Include="App_Code\WebService.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="cutout.aspx.cs">
-      <DependentUpon>cutout.aspx</DependentUpon>
+    <Compile Include="oldcutout.aspx.cs">
+      <DependentUpon>oldcutout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="cutout.aspx.designer.cs">
-      <DependentUpon>cutout.aspx</DependentUpon>
+    <Compile Include="oldcutout.aspx.designer.cs">
+      <DependentUpon>oldcutout.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -2724,10 +2737,6 @@
     <ProjectReference Include="..\TurbulenceWebServiceLibrary\TurbulenceWebServiceLibrary.csproj">
       <Project>{6D341D06-801B-4B24-97E5-EE21C52F46C6}</Project>
       <Name>TurbulenceWebServiceLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Turbulence\Turbulence.csproj">
-      <Project>{CBE305D7-8868-4A9D-8885-5E67A8507C78}</Project>
-      <Name>Turbulence</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

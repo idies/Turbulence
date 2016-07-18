@@ -21,7 +21,7 @@ namespace TurbulenceService
     /// </remarks>
     public class Database
     {
-        string infodb;
+        public string infodb;
         protected int[] gridResolution; // Dimensions of the entire grid given az [z,y,x]
         public int atomDim;                // length of side of a single data atom
         public List<string> servers;       // name of each server (resolved via web.config)
@@ -73,6 +73,8 @@ namespace TurbulenceService
         public Database(string infodb, bool development)
         {
             this.infodb = infodb;
+            /*Update infodb to one that is currently accepting requests*/
+            //this.infodb = GetTurbinfoServer();  This is the infodb, not the server that holds infodb.  Do this elsewhere
             this.servers = new List<string>(8);
             this.databases = new List<string>(8);
             this.codeDatabase = new List<string>(8);
@@ -218,7 +220,40 @@ namespace TurbulenceService
             }
         }
 
+        /// Rotates through all known infodbs for redundancy.
+        public String GetTurbinfoServer()
+        {
+            /*This is used to cycle through the turbinfo servers in case one goes down */
+            List<String> turbinfoservers = new List<String>();
+            //turbinfoservers.Add("dsp033"); /*No SQL server here, just a test*/
+            turbinfoservers.Add("sciserver02"); /*Using this for testing...remove for production*/
+            turbinfoservers.Add("gw01");
+            turbinfoservers.Add("gw02");
+            turbinfoservers.Add("gw03");
+            turbinfoservers.Add("gw04");
+            /* Now get a good connection in order of what was provided */
+            foreach (var server in turbinfoservers)
+            {
+                //Console.WriteLine("trying server {0}", server);
+                /*Using a short timeout on this connection just to find a server that responds quickly */
+                String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200; Connection Timeout=2", server);
+                using (var l_oConnection = new SqlConnection(cString))
+                {
+                    try
+                    {
+                        l_oConnection.Open();
+                        return server;
+                    }
+                    catch (SqlException)
+                    {
+                        Console.WriteLine("Trying next server");
+                    }
+                }
+            }
+            /*If all else fails, go back to gw01*/
+            return "gw01";
 
+        }
         /// <summary>
         /// Initialize servers, connections and input data tables.
         /// </summary>
@@ -226,6 +261,8 @@ namespace TurbulenceService
         public void selectServers(DataInfo.DataSets dataset_enum)
         {
             String dataset = dataset_enum.ToString();
+            /* Here we need to test the infodb, and use the backup server if the infodb isn't available */
+
             String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
@@ -261,7 +298,9 @@ namespace TurbulenceService
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
+                    int minTime = 0; //placeholder
+                    int maxTime = 0;
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
             else
@@ -301,7 +340,7 @@ namespace TurbulenceService
         public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers)
         {            
             String dataset = dataset_enum.ToString();
-            String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
+            String cString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -336,7 +375,9 @@ namespace TurbulenceService
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
+                    int minTime = 0; // (long)(time / dt); //This may not be correct.  Verify this.
+                    int maxTime = 1; // (long)(endTime / dt);
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
             else
@@ -444,7 +485,8 @@ namespace TurbulenceService
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
+                    int minTime = 0; int maxTime = 0; //placeholder 
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
             else

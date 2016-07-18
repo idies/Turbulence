@@ -11,7 +11,7 @@ namespace ImportData
     {
         int time_start = 0;  // First time step to dataread
         int time_end = 0;    // Last time step to dataread
-        string data_dir = @"c:\globus\";
+        string data_dir = @"z:\";
         //string[] suffix = { "t04.s001.000" };
         int headerSize = 0;
         string[] suffix = { "vel", "pressure" };
@@ -27,7 +27,7 @@ namespace ImportData
         int components = 3;
         int atomSize = 8;
         int edge = 0;
-        string serverName = "tdg-vm";
+        string serverName = "dsp012";
         bool isDataLittleEndian = true;
         int numProcs = 2;
 
@@ -42,13 +42,13 @@ namespace ImportData
             this.user = "stephen";
             this.dbname = "turbdb109";
             //string dbname = "turbload";
-            this.table = "pressure";
+            this.table = "vel";
             this.resolution = new int[] { 1023, 1023, 1023 };
             this.timeinc = 4;
             this.timeoff = timeoff;
             this.atomSize = 8;
             this.edge = 0;
-            this.serverName = "tdg-vm";
+            this.serverName = "dsp012";
             this.isDataLittleEndian = true;
             this.firstbox = firstbox;
             this.lastbox = lastbox;
@@ -129,7 +129,7 @@ namespace ImportData
 
             Morton3D start = new Morton3D(firstbox);
             Morton3D end = new Morton3D(lastbox);
-            ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1);
+            ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1, 0, 0);
 
             long dataSize = (long)(serverBoundaries.endx - serverBoundaries.startx + 1) *
                     (long)(serverBoundaries.endy - serverBoundaries.starty + 1) *
@@ -255,7 +255,8 @@ namespace ImportData
             Morton3D start = new Morton3D(firstbox);
             Morton3D end = new Morton3D(lastbox);
 
-            ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1);
+            ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1, 0, 0); //0 for min and max time.  Check this later.
+
             ServerBoundaries[] VirtualServerBoundaries = serverBoundaries.getVirtualServerBoundaries(numProcs);
 
             Parallel.For(0, numProcs, i =>
@@ -334,7 +335,7 @@ namespace ImportData
             Morton3D start = new Morton3D(firstbox);
             Morton3D end = new Morton3D(lastbox);
 
-            ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1);
+            ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1, 0, 0);
 
             long dataSize = (long)(serverBoundaries.endx - serverBoundaries.startx + 1) *
                     (long)(serverBoundaries.endy - serverBoundaries.starty + 1) *

@@ -25,7 +25,7 @@ declare @count int
 --===========================================
 -- SET THIS!
 --===========================================
-set @tablename = 'vel'
+set @tablename = 'pr'
 
 
 -------------------------------------------
@@ -47,10 +47,11 @@ begin
 
 	set @sql = 'ALTER TABLE ' + @switchtable +'
 				SWITCH TO ' + @tablename +'
-				PARTITON ' + cast(@count as nvarchar)
+				PARTITION ' + cast(@count as nvarchar)
 
 	print @sql
 	print @newline
+	set @count = @count + 1
 end
 
 

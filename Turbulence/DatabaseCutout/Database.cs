@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using System.Text;
 using System.Data;
 using System.Configuration;
@@ -204,6 +204,39 @@ using System.Threading;
             }
         }
 
+        public String GetTurbinfoServer()
+        {
+            /*This is used to cycle through the turbinfo servers in case one goes down */
+            List<String> turbinfoservers = new List<String>();
+            //turbinfoservers.Add("dsp033"); /*No SQL server here, just a test*/
+            turbinfoservers.Add("sciserver02");
+            turbinfoservers.Add("gw01");
+            turbinfoservers.Add("gw02");
+            turbinfoservers.Add("gw03");
+            turbinfoservers.Add("gw04");
+            /* Now get a good connection in order of what was provided */
+            foreach (var server in turbinfoservers)
+            {
+                //Console.WriteLine("trying server {0}", server);
+                /*Using a short timeout on this connection just to find a server that responds quickly */
+                String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200; Connection Timeout=2", server);                
+                using (var l_oConnection = new SqlConnection(cString))
+                {
+                    try
+                    {
+                        l_oConnection.Open();
+                        return server;
+                    }
+                    catch (SqlException)
+                    {
+                        Console.WriteLine("Trying next server");
+                    }
+                }
+            }
+            /*If all else fails, go back to gw01*/
+            return "gw01";
+
+        }
 
         /// <summary>
         /// Initialize servers, connections and input data tables.
@@ -212,7 +245,11 @@ using System.Threading;
         public void selectServers(DataInfo.DataSets dataset_enum)
         {
             String dataset = dataset_enum.ToString();
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            //String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            //Sciserver testing.
+            String turbinfoserver = "sciserver02";
+            turbinfoserver = GetTurbinfoServer();
+            String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200", turbinfoserver);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -221,7 +258,7 @@ using System.Threading;
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
                 "from {0}..{1} where DatasetName = @dataset " +
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
                 "order by minLim", infodb, DBMapTable);
@@ -247,7 +284,9 @@ using System.Threading;
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
+                    int minTime = reader.GetInt32(5);
+                    int maxTime = reader.GetInt32(6);
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
             else
@@ -287,7 +326,8 @@ using System.Threading;
         public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers)
         {
             String dataset = dataset_enum.ToString();
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            //String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = "Server=sciserver02;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -296,7 +336,7 @@ using System.Threading;
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
                 "from {0}..{1} where DatasetName = @dataset " +
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
                 "order by minLim", infodb, DBMapTable);
@@ -322,7 +362,9 @@ using System.Threading;
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
+                    int minTime = reader.GetInt32(5);
+                    int maxTime = reader.GetInt32(6);
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
             else
@@ -395,7 +437,9 @@ using System.Threading;
         public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers, int worker)
         {
             String dataset = dataset_enum.ToString();
-            String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            /* Server is hardcoded below.  We need to find a better way to make this work.  At a minimum two servers, one being a fallback. */
+            //String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = "Server=sciserver02;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -404,7 +448,7 @@ using System.Threading;
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
                 "from {0}..{1} where DatasetName = @dataset " +
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
                 "order by minLim", infodb, DBMapTable);
@@ -430,7 +474,9 @@ using System.Threading;
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
+                    int minTime = reader.GetInt32(5);
+                    int maxTime = reader.GetInt32(6);
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
             else
@@ -784,7 +830,7 @@ using System.Threading;
         }
 
         public void GetServerParameters4RawData(int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
-            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
+            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth, int T, int Twidth, int[] serverT, int[] serverTwidth)
         {
             for (int i = 0; i < this.serverCount; i++)
             {
@@ -831,6 +877,15 @@ using System.Threading;
                             if (serverZ[i] != test_start || serverZwidth[i] != test_width)
                                 throw new Exception("Values are not equal!");
 
+                            serverT[i] = T < serverBoundaries[i].minTime ? serverBoundaries[i].minTime : T;
+                            if (T + Twidth <= serverBoundaries[i].maxTime)
+                                serverTwidth[i] = T + Twidth - serverT[i];
+                            else
+                                serverTwidth[i] = serverBoundaries[i].maxTime + 1 - serverT[i];
+                            GetServerParameters(T, Twidth, serverBoundaries[i].minTime, serverBoundaries[i].maxTime, ref test_start, ref test_width);
+                            if (serverT[i] != test_start || serverTwidth[i] != test_width)
+                                throw new Exception("Values are not equal!");
+
                             //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
                             Morton3D access;
                             for (int x_i = serverX[i] & (-64); x_i <= serverX[i] + serverXwidth[i] - atomDim; x_i += 64)
@@ -852,13 +907,15 @@ using System.Threading;
 
         public void GetServerParameters4RawData(int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth,
-            int x_stride, int y_stride, int z_stride)
+            int x_stride, int y_stride, int z_stride, int T, int Twidth)
         {
             for (int i = 0; i < this.serverCount; i++)
             {
-                if (X + Xwidth > serverBoundaries[i].startx && X <= serverBoundaries[i].endx)
-                    if (Y + Ywidth > serverBoundaries[i].starty && Y <= serverBoundaries[i].endy)
-                        if (Z + Zwidth > serverBoundaries[i].startz && Z <= serverBoundaries[i].endz)
+            if (X + Xwidth > serverBoundaries[i].startx && X <= serverBoundaries[i].endx)
+                if (Y + Ywidth > serverBoundaries[i].starty && Y <= serverBoundaries[i].endy)
+                    if (Z + Zwidth > serverBoundaries[i].startz && Z <= serverBoundaries[i].endz)
+                    {
+                        if (T + Twidth > serverBoundaries[i].minTime && T <= serverBoundaries[i].maxTime)
                         {
                             // If we have no workload for this server yet... create a connection
                             if (this.connections[i] == null)
@@ -885,7 +942,9 @@ using System.Threading;
                                         SetBit(access);
                                     }
                         }
-            }
+                     }
+                    
+                    }
         }
 
         private void GetServerParameters(int query_start, int query_width, int server_start, int server_end, ref int start, ref int width, int stride)
@@ -3119,7 +3178,7 @@ using System.Threading;
             DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             double threshold,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
+            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, 
             List<ThresholdInfo> result)
         {
             int[] serverX = new int[serverCount];
@@ -3128,17 +3187,19 @@ using System.Threading;
             int[] serverXwidth = new int[serverCount];
             int[] serverYwidth = new int[serverCount];
             int[] serverZwidth = new int[serverCount];
-
+            int[] serverT = new int[serverCount];
+            int[] serverTwidth = new int[serverCount];
             float t = time / Dt;
             int timestep = (int)Math.Round(t / timeInc) * timeInc + timeOff;
-
+            //Looks like we only have one timstep, so leave the twidth to one.
+            int Twidth = 1;
             //if (channel_grid)
             //{
             //    X = (int)Math.Round(X - 0.45 * time / dx);
             //    X = ((X % GridResolutionX) + GridResolutionX) % GridResolutionX;
             //}
 
-            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
+            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, timestep, Twidth, serverT, serverTwidth);
 
             IAsyncResult[] asyncRes = ExecuteGetThreshold(dataset_enum, tableName.ToString(), worker, timestep, (int)spatial, threshold,
                 serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
@@ -3155,14 +3216,16 @@ using System.Threading;
             int[] serverX = new int[serverCount];
             int[] serverY = new int[serverCount];
             int[] serverZ = new int[serverCount];
+            int[] serverT = new int[serverCount];
             int[] serverXwidth = new int[serverCount];
             int[] serverYwidth = new int[serverCount];
             int[] serverZwidth = new int[serverCount];
+            int[] serverTwidth = new int[serverCount];
 
             float t = time / Dt;
             int timestep = (int)Math.Round(t / timeInc) * timeInc + timeOff;
-
-            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
+            int Twidth = 1;
+            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, timestep, Twidth, serverT, serverTwidth);
 
             IAsyncResult[] asyncRes = ExecuteGetPDF(dataset_enum, tableName.ToString(), worker, timestep, (int)spatial, binSize, numberOfBins,
                 serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, arg);
@@ -3417,14 +3480,16 @@ using System.Threading;
             int[] serverX = new int[serverCount];
             int[] serverY = new int[serverCount];
             int[] serverZ = new int[serverCount];
+            int[] serverT = new int[serverCount];
             int[] serverXwidth = new int[serverCount];
             int[] serverYwidth = new int[serverCount];
             int[] serverZwidth = new int[serverCount];
+            int[] serverTwidth = new int[serverCount];
 
             float t = time / Dt;
             int timestep = (int)Math.Round(t / timeInc) * timeInc + timeOff;
-
-            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
+            int Twidth = 1; //We are only querying one timestep
+            GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, timestep, Twidth, serverT, serverTwidth);
 
             //DateTime start = DateTime.Now;
             ExecuteGetRawData(tableName.ToString(),
@@ -3440,7 +3505,7 @@ using System.Threading;
 
         public byte[] GetFilteredData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
-            int x_stride, int y_stride, int z_stride, int filter_width)
+            int x_stride, int y_stride, int z_stride, int filter_width, int T, int Twidth)
         {
             IAsyncResult[] asyncRes;
 
@@ -3458,6 +3523,8 @@ using System.Threading;
             int[] serverXwidth = new int[serverCount];
             int[] serverYwidth = new int[serverCount];
             int[] serverZwidth = new int[serverCount];
+            int[] serverT = new int[serverCount];
+            int[] serverTwidth = new int[serverCount];
 
             float t = time / Dt;
             int timestep = (int)Math.Round(t / timeInc) * timeInc + timeOff;
@@ -3469,7 +3536,7 @@ using System.Threading;
             Zwidth = (Zwidth - 1) / z_stride * z_stride + 1;
 
             GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth,
-                x_stride, y_stride, z_stride);
+                x_stride, y_stride, z_stride, T, Twidth);
 
             if (filter_width == 1)
             {

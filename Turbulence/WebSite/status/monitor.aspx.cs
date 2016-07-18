@@ -309,6 +309,8 @@ namespace Website
         /// <summary>
         /// Perform a test of the data cutout service.
         /// </summary>
+        /// 
+        /* Old cutout service is decomissioned
         public DataTable CutoutServiceTest()
         {
             Random random = new Random();
@@ -355,6 +357,8 @@ namespace Website
 
             return dt;
         }
+         * 
+         */ 
 
         public DataTable BetaCutoutServiceTest()
         {
@@ -371,7 +375,7 @@ namespace Website
 
             // Error test
             pass = false;
-            test = "Beta Data Cutout Test";
+            test = "Data Cutout Test";
             startTime = DateTime.Now;
             try
             {
@@ -421,8 +425,8 @@ namespace Website
             wsstatusgrid.DataSource = webServiceTest();
             wsstatusgrid.DataBind();
 
-            cutoutstatusgrid.DataSource = CutoutServiceTest();
-            cutoutstatusgrid.DataBind();
+            //cutoutstatusgrid.DataSource = CutoutServiceTest();
+            //cutoutstatusgrid.DataBind();
             
             
             betacutoutstatusgrid.DataSource = BetaCutoutServiceTest();
