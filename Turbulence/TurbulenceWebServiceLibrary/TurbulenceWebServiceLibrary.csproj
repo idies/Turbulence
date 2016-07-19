@@ -72,10 +72,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Turbulence, Version=1.1.6018.24659, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Turbulence\bin\Debug\Turbulence.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthInfo.cs" />
@@ -88,6 +84,12 @@
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadForceData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Turbulence\Turbulence.csproj">
+      <Project>{CBE305D7-8868-4A9D-8885-5E67A8507C78}</Project>
+      <Name>Turbulence</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -22,7 +22,7 @@ namespace TurbulenceService
         /// </summary>
         public class AuthToken
         {
-            public string name;
+            string name;
             int id;
             int limit;
 
@@ -37,7 +37,7 @@ namespace TurbulenceService
         }
         
         public AuthInfo(string infodb, bool devmode)
-        {            
+        {
             this.infodb = infodb;
             this.devmode = devmode;
         }
@@ -68,7 +68,7 @@ namespace TurbulenceService
             }
 
             AuthToken token = null;
-            String cString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();

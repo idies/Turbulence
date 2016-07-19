@@ -129,10 +129,8 @@ namespace ImportData
                 {
                     Morton3D start = new Morton3D(range_start[range]);
                     Morton3D end = new Morton3D(range_end[range]);
-                    int minTime = (timestep);
-                    int maxTime = 1; //Verify this!
 
-                    ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1, minTime, maxTime);
+                    ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1);
                     ServerBoundaries[] VirtualServerBoundaries = serverBoundaries.getVirtualServerBoundaries(numProcs);
 
                     Parallel.For(0, numProcs, proc =>

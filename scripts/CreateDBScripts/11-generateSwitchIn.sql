@@ -48,8 +48,10 @@ begin
 	set @sql = 'ALTER TABLE ' + @switchtable +'
 				SWITCH TO ' + @tablename +'
 				PARTITION ' + cast(@count as nvarchar)
+
 	print @sql
 	print @newline
+
 	set @count = @count + 1
 end
 

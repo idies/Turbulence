@@ -112,7 +112,7 @@ International Conference for High Performance Computing, Networking, Storage and
 <li>
     <font face="Arial, Helvetica, sans-serif">P. L. Johnson and C. Meneveau
      <a href="http://dx.doi.org/10.1063/1.4928699" target="_blank">
-     Large-deviation` joint statistics of the finite-time Lyapunov spectrum in isotropic turbulence
+     Large-deviation joint statistics of the finite-time Lyapunov spectrum in isotropic turbulence
      </a>
      Physics of Fluids, Vol 27 No. 8, 2015.
      </font>   

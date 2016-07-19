@@ -13,7 +13,7 @@ namespace TurbulenceService
     public class Log
     {
         DateTime start;
-        public bool devmode;
+        bool devmode;
         string logdb;
 
         public Log(string logdb, bool devmode)

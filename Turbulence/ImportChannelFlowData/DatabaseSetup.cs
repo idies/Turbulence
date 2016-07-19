@@ -372,7 +372,7 @@ namespace ImportData
                 Morton3D start = new Morton3D(range_start[range]);
                 Morton3D end = new Morton3D(range_end[range]);
 
-                ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1, 0, 0);
+                ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1);
                 ServerBoundaries[] VirtualServerBoundaries = serverBoundaries.getVirtualServerBoundaries(numDBsPerRange);
                 for (int i = 0; i < numDBsPerRange; i++)
                 {

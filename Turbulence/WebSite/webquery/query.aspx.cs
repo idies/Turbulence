@@ -471,7 +471,7 @@ namespace Website
                 this.potentialEntry.Enabled = false;
                 this.magneticEntry2.Enabled = false;
                 this.potentialEntry2.Enabled = false;
-                this.GetForce.Enabled = false;
+                this.GetForce.Enabled = true;
                 this.GetPosition.Enabled = true;
                 this.GetBoxFilter.Enabled = true;
                 this.GetBoxFilterSGSscalar.Enabled = true;

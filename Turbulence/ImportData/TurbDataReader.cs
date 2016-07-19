@@ -116,8 +116,8 @@ namespace ImportData
             {
                 this.work[i] = (dataFormat.start + dataFormat.inc * i);
             }
-            IComparer myCOmparer = new MortonZOrderCompare();
-            Array.Sort(work, myCOmparer);
+            //IComparer myCOmparer = new MortonZOrderCompare();
+            //Array.Sort(work, myCOmparer);
             //cache = new FileCache(data_dir, suffix, resolution);
             this.cache = cache;
         }

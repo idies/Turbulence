@@ -25,8 +25,6 @@ namespace TurbulenceService {
          */
         public const bool DEVEL_MODE = false;
         public const string infodb = "turbinfo";
-        public const string infodbmirror = "turbinfomirror";
-        //public const string infodb = "turbinfo_test";
 
         // batch scheduler queue
         public static BatchWorkerQueue batchQueue = null;
@@ -37,9 +35,9 @@ namespace TurbulenceService {
 
         public TurbulenceService()
         {
-            database = new Database(infodb, DEVEL_MODE); /*Infodb gets overwritten now by checking what server is available.  Look at getturbinfodb in database.cs */
-            authInfo = new AuthInfo(database.infodb, DEVEL_MODE); /*Use the infodb grabbed from the database instantiation. */
-            log = new Log(database.infodb, DEVEL_MODE);
+            database = new Database(infodb, DEVEL_MODE);
+            authInfo = new AuthInfo(infodb, DEVEL_MODE);
+            log = new Log(infodb, DEVEL_MODE);
         }
 
         ~TurbulenceService()
@@ -74,10 +72,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -125,10 +119,7 @@ namespace TurbulenceService {
 
             bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
-            if (auth.name == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
+
             rowid = log.CreateLog(auth.Id, dataset, worker,
                 (int)spatialInterpolation,
                 (int)temporalInterpolation,
@@ -158,10 +149,6 @@ namespace TurbulenceService {
             }
 
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -228,10 +215,6 @@ namespace TurbulenceService {
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
@@ -289,10 +272,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Pressure[] result = new Pressure[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -355,10 +334,6 @@ namespace TurbulenceService {
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
@@ -411,10 +386,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -447,10 +418,6 @@ namespace TurbulenceService {
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
@@ -497,10 +464,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -533,10 +496,6 @@ namespace TurbulenceService {
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
@@ -583,10 +542,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Pressure[] result = new Pressure[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -638,10 +593,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -694,10 +645,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             PressureHessian[] result = new PressureHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -758,10 +705,6 @@ namespace TurbulenceService {
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
@@ -812,10 +755,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
 
@@ -930,10 +869,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3P[] result = new Vector3P[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -975,10 +910,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             VelocityGradient[] result = new VelocityGradient[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1024,10 +955,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             VelocityGradient[] result = new VelocityGradient[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1062,10 +989,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             VelocityGradient[] result = new VelocityGradient[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1102,10 +1025,6 @@ namespace TurbulenceService {
 
             bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
-            if (auth.name == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
                 (int)spatialInterpolation,
@@ -1127,10 +1046,6 @@ namespace TurbulenceService {
             Point3[] points)
         {            
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1196,10 +1111,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             PressureHessian[] result = new PressureHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1276,10 +1187,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             VelocityHessian[] result = new VelocityHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1325,10 +1232,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             VelocityHessian[] result = new VelocityHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1363,10 +1266,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             VelocityHessian[] result = new VelocityHessian[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1413,10 +1312,7 @@ namespace TurbulenceService {
 
             bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
-            if (auth.name == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
+
             rowid = log.CreateLog(auth.Id, dataset, worker,
                 (int)spatialInterpolation,
                 (int)temporalInterpolation,
@@ -1438,10 +1334,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1485,10 +1377,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1523,10 +1411,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             Vector3[] result = new Vector3[points.Length];
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
@@ -1573,10 +1457,7 @@ namespace TurbulenceService {
 
             bool IsChannelGrid = dataset_enum == DataInfo.DataSets.channel ? true : false;
             TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
-            if (auth.name == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
+
             rowid = log.CreateLog(auth.Id, dataset, worker,
                 (int)spatialInterpolation,
                 (int)temporalInterpolation,
@@ -1596,10 +1477,6 @@ namespace TurbulenceService {
             Point3[] points)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             DataInfo.verifyTimeInRange(dataset_enum, StartTime);
@@ -1665,10 +1542,6 @@ namespace TurbulenceService {
         {
             int num_virtual_servers = 4;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             if (dataset_enum == DataInfo.DataSets.channel)
@@ -1752,10 +1625,6 @@ namespace TurbulenceService {
             object rowid;
 
             InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
 
             if ((tableName1 == tableName2) && (DataInfo.getNumberComponents(tableName1) == 3))
             {
@@ -1790,10 +1659,7 @@ namespace TurbulenceService {
             DataInfo.TableNames tableName1;
             DataInfo.TableNames tableName2;
             object rowid;
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
+
             InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
 
             if ((tableName1 != tableName2) && (DataInfo.getNumberComponents(tableName1) == 3) && (DataInfo.getNumberComponents(tableName2) == 3))
@@ -1829,10 +1695,7 @@ namespace TurbulenceService {
             DataInfo.TableNames tableName1;
             DataInfo.TableNames tableName2;
             object rowid;
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
+
             InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
 
             if (DataInfo.getNumberComponents(tableName1) == DataInfo.getNumberComponents(tableName2))
@@ -1874,10 +1737,7 @@ namespace TurbulenceService {
             DataInfo.TableNames tableName1;
             DataInfo.TableNames tableName2;
             object rowid;
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
+
             InitializeSGSMethod(authToken, time, points, field, ref worker, ref dataset, ref filterwidth, out tableName1, out tableName2, out rowid);
 
             if ((DataInfo.getNumberComponents(tableName1) == DataInfo.getNumberComponents(tableName2)) && (DataInfo.getNumberComponents(tableName1) == 1))
@@ -1909,10 +1769,6 @@ namespace TurbulenceService {
         {
             int num_virtual_servers = 4;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             if (dataset_enum == DataInfo.DataSets.channel)
@@ -1972,10 +1828,6 @@ namespace TurbulenceService {
         {
             int num_virtual_servers = 4;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             if (dataset_enum == DataInfo.DataSets.channel)
@@ -2048,10 +1900,6 @@ namespace TurbulenceService {
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
-            if (authToken == "edu.jhu.pha.turbulence-monitor")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
             dataset = DataInfo.findDataSet(dataset);
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 4;

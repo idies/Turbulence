@@ -94,9 +94,8 @@ namespace ImportData
             {
                 Morton3D start = new Morton3D(range_start[range]);
                 Morton3D end = new Morton3D(range_end[range]);
-                //Not sure how to get time here.
-                int minTime = 0; int maxTime = 1;
-                ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1, minTime, maxTime);
+
+                ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1);
                 ServerBoundaries[] VirtualServerBoundaries = serverBoundaries.getVirtualServerBoundaries(numDBsPerRange);
                 for (int i = 0; i < numDBsPerRange; i++)
                 {
