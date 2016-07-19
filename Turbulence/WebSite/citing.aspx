@@ -66,8 +66,13 @@ A Web Services-accessible database of turbulent channel flow and its use for tes
       </blockquote>  
       <p >For articles that use the mhd flow data, we suggest also including:</p>
       <blockquote>
-        <p>H. Aluie, G. Eyink, E. Vishniac, S. Chen K. Kanov, R. Burns, C. Meneveau, A. Szalay, &quot;Forced MHD turbulence data set&quot; (2013), available at 
-        <a href="http://turbulence.pha.jhu.edu/docs/README-MHD.pdf">http://turbulence.pha.jhu.edu/docs/README-MHD.pdf</a> </p>
+      <p>
+  G.&nbsp;Eyink, E.&nbsp;Vishniac, C.&nbsp;Lalescu, K.&nbsp;Aluie, H.and&nbsp;Kanov, K.&nbsp;B&uuml;rger,
+  R.&nbsp;Burns, C.&nbsp;Meneveau, and A.&nbsp;Szalay.
+ <a href="http://www.nature.com/nature/journal/v497/n7450/full/nature12128.html"  target="_blank">Flux-freezing breakdown in high-conductivity magnetohydrodynamic
+  turbulence.</a>
+ <em>Nature</em>, 497(7450):466-469, 2013.
+      </p>
       </blockquote>   
       <p >For articles that use the mixing flow data, we suggest also including:</p>
       <blockquote>
