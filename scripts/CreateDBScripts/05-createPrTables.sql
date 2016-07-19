@@ -98,6 +98,7 @@ begin
 	--normally you wouldn't put a check constraint that allows both boundaries, (one side would be > and the other side wold be <= or vice versa)
 	--but i can't remember which one is which for turbulence, i'll fix this eventually but this works for now.
 	-- i think it should be > minLim and <= maxLim but need to double check, will fix
+	--
 
 
 
