@@ -261,9 +261,11 @@ namespace TurbulenceService
         public void selectServers(DataInfo.DataSets dataset_enum)
         {
             String dataset = dataset_enum.ToString();
-            /* Here we need to test the infodb, and use the backup server if the infodb isn't available */
+            
 
-            String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
+            //String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
+            /*We use the new select server function to get the first available server */
+            String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200; Connection Timeout=30", GetTurbinfoServer());
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -375,8 +377,8 @@ namespace TurbulenceService
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    int minTime = 0; // (long)(time / dt); //This may not be correct.  Verify this.
-                    int maxTime = 1; // (long)(endTime / dt);
+                    int minTime = (int)(timeInc/Dt); // (long)(time / dt); //This may not be correct.  Verify this.
+                    int maxTime = (int)(endTime/Dt); // (long)(endTime / dt);
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }

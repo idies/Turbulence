@@ -37,8 +37,8 @@ namespace TurbulenceService {
 
         public TurbulenceService()
         {
-            database = new Database(infodb, DEVEL_MODE); /*Infodb gets overwritten now by checking what server is available.  Look at getturbinfodb in database.cs */
-            authInfo = new AuthInfo(database.infodb, DEVEL_MODE); /*Use the infodb grabbed from the database instantiation. */
+            database = new Database(infodb, DEVEL_MODE);  
+            authInfo = new AuthInfo(database.infodb, DEVEL_MODE); 
             log = new Log(database.infodb, DEVEL_MODE);
         }
 
