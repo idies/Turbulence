@@ -30,7 +30,7 @@ select @nPart = max(partitionNum)
 --=======================
 -- create partitioned table
 --======================
-
+/*
 set @createPartitionedTable = 'CREATE TABLE [dbo].[pr](
 	[timestep] [int] NOT NULL,
 	[zindex] [bigint] NOT NULL,
@@ -46,6 +46,9 @@ set @createPartitionedTable = 'CREATE TABLE [dbo].[pr](
 print @createPartitionedTable
 print @newline
 print @newline
+
+
+*/
 
 declare @count int
 set @count = 1
@@ -67,6 +70,9 @@ begin
 	--==============================
 	-- create switch tables
 	--==============================
+	
+	/*
+
 	set @sql = 'CREATE TABLE [dbo].['+@tablename +'](
 			[timestep] [int] NOT NULL,
 			[zindex] [bigint] NOT NULL,
@@ -81,6 +87,7 @@ begin
 	print @sql
 	print @newline
 	
+	*/
 	
 	--===============================
 	-- add check constraint
@@ -99,7 +106,7 @@ begin
 	--but i can't remember which one is which for turbulence, i'll fix this eventually but this works for now.
 	-- i think it should be > minLim and <= maxLim but need to double check, will fix
 
-
+	set @tablename = 'pr_' + RIGHT('00'+rtrim(CAST(@count as nvarchar)),2)
 
 	if (@count = 1) --first partition, only max lim
 	begin

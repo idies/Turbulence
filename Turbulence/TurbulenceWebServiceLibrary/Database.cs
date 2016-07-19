@@ -378,7 +378,7 @@ namespace TurbulenceService
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
                     int minTime = (int)(timeInc/Dt); // (long)(time / dt); //This may not be correct.  Verify this.
-                    int maxTime = (int)(endTime/Dt); // (long)(endTime / dt);
+                    int maxTime = (int)(timeInc/Dt)+1; // (long)(endTime / dt);
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }

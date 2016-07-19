@@ -51,6 +51,7 @@ begin
 
 	print @sql
 	print @newline
+
 	set @count = @count + 1
 end
 

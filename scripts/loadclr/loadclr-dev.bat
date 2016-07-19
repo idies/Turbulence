@@ -9,10 +9,10 @@ REM to be killed. If you are updating the production system, and are not
 REM changing the function signatures, please use alter.bat instead.
 REM
 
-set dll="H:\turbulence\Turbulence\Turbulence\bin\x64\Debug\Turbulence.dll"
+set dll="H:\turbulence\Turbulence\Turbulence\bin\Release\Turbulence.dll"
 
 echo -- Load Turbulence Assembly > exec.sql
-echo USE turblib >> exec.sql
+echo USE turbdev >> exec.sql
 FileToHex.exe %dll% >> exec.sql
 type dropcreateclr.sql >> exec.sql
 
@@ -20,7 +20,7 @@ REM echo Checking server versions...
 REM FOR /F %%i IN (turb_dbs_dev.txt) DO osql -h-1 -E -S %%i -Q "select @@version"
 
 REM For getanycutout
-REM set dll="H:\Turbulence\Turbulence\DatabaseCutout\bin\Debug\DatabaseCutout.dll"
+set dll="H:\Turbulence\Turbulence\DatabaseCutout\bin\Release\DatabaseCutout.dll"
 
 echo Loading...
 echo Loading... > exec.log

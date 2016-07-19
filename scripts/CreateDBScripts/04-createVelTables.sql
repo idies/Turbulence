@@ -61,6 +61,7 @@ begin
 	select @minLim=minLim, @maxLim=maxLim
 	from PartLimits208
 	where sliceNum=@sliceNum
+	and PartitionNum = @count
 
 	set @tablename = 'vel_' + RIGHT('00'+rtrim(CAST(@count as nvarchar)),2)
 	set @fgname = 'FG'+ RIGHT('00'+rtrim(CAST(@count as nvarchar)),2)
@@ -102,20 +103,16 @@ begin
 	-- i think it should be > minLim and <= maxLim but need to double check, will fix
 
 
-
 	if (@count = 1) --first partition, only max lim
 	begin
-		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]<='+cast(@maxLim as nvarchar)+'))'
+		set @sql='ALTER TABLE [dbo].['+@tablename+'] ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]<='+cast(@maxLim as nvarchar)+' and [zindex] is not null))'
 	end
 	else if (@count = @npart)
 	begin
-		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar)+'))'
+		set @sql='ALTER TABLE [dbo].['+@tablename+'] ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar)+' and [zindex] is not null))'
 	end
 	else --last partition, only min lim
-		set @sql='ALTER TABLE [dbo].['+@tablename+'] WITH CHECK ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar) + ' AND [zindex]<='+cast(@maxLim as nvarchar)+'))'
-
-	--add with check
-	set @sql = @sql + '; ALTER TABLE  [dbo].['+@tablename+'] CHECK CONSTRAINT  [ck_'+@tablename+']'
+		set @sql='ALTER TABLE [dbo].['+@tablename+'] ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar) + ' AND [zindex]<='+cast(@maxLim as nvarchar)+' and [zindex] is not null))'
 
 
 	print @sql

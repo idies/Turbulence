@@ -12,14 +12,14 @@
     <OutputType>Library</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>DatabaseCutout</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <SGenUseProxyTypes>false</SGenUseProxyTypes>
     <ConnectionString>
     </ConnectionString>
     <TargetFrameworkProfile />
     <PermissionLevel>3</PermissionLevel>
     <FileUpgradeFlags>40</FileUpgradeFlags>
-    <UpgradeBackupLocation>H:\Turbulence\Turbulence\Backup7\</UpgradeBackupLocation>
+    <UpgradeBackupLocation>H:\Turbulence\Turbulence\Backup8\DatabaseCutout\</UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

@@ -371,7 +371,7 @@ namespace ImportData
             {
                 Morton3D start = new Morton3D(range_start[range]);
                 Morton3D end = new Morton3D(range_end[range]);
-
+                /* Note we put 0, 0 for the time boundaries.  Not sure if this is right, but it helps it compile for now */
                 ServerBoundaries serverBoundaries = new ServerBoundaries(start.X, end.X + atomSize - 1, start.Y, end.Y + atomSize - 1, start.Z, end.Z + atomSize - 1, 0, 0);
                 ServerBoundaries[] VirtualServerBoundaries = serverBoundaries.getVirtualServerBoundaries(numDBsPerRange);
                 for (int i = 0; i < numDBsPerRange; i++)

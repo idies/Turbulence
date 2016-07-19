@@ -64,8 +64,7 @@
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
-    <Reference Include="Turbulence, Version=1.1.6018.24659, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Turbulence">
       <HintPath>..\Turbulence\bin\Debug\Turbulence.dll</HintPath>
     </Reference>
   </ItemGroup>

@@ -330,10 +330,8 @@ namespace Turbulence.TurbLib.DataTypes
         public int endz;
         public long startKey;
         public long endKey;
-        public int minTime;
-        public int maxTime;
 
-        public ServerBoundaries(Morton3D firstKey, Morton3D lastKey, int minTime, int maxTime)
+        public ServerBoundaries(Morton3D firstKey, Morton3D lastKey)
         {
             this.startx = firstKey.X;
             this.starty = firstKey.Y;
@@ -343,11 +341,9 @@ namespace Turbulence.TurbLib.DataTypes
             this.endz = lastKey.Z;
             this.startKey = firstKey;
             this.endKey = lastKey;
-            this.minTime = minTime;
-            this.maxTime = maxTime;
         }
 
-        public ServerBoundaries(Morton3D firstBox, Morton3D lastBox, int minTime, int maxTime, int atomDim)
+        public ServerBoundaries(Morton3D firstBox, Morton3D lastBox, int atomDim)
         {
             this.startx = firstBox.X;
             this.starty = firstBox.Y;
@@ -356,12 +352,10 @@ namespace Turbulence.TurbLib.DataTypes
             this.endy = lastBox.Y + atomDim - 1;
             this.endz = lastBox.Z + atomDim - 1;
             this.startKey = firstBox;
-            this.minTime = minTime;
-            this.maxTime = maxTime;
             this.endKey = new Morton3D(endz, endy, endx);
         }
 
-        public ServerBoundaries(int startx, int endx, int starty, int endy, int startz, int endz, int minTime, int maxTime)
+        public ServerBoundaries(int startx, int endx, int starty, int endy, int startz, int endz)
         {
             this.startx = startx;
             this.endx = endx;
@@ -371,8 +365,6 @@ namespace Turbulence.TurbLib.DataTypes
             this.endz = endz;
             this.startKey = new Morton3D(startz, starty, startx);
             this.endKey = new Morton3D(endz, endy, endx);
-            this.minTime = minTime;
-            this.maxTime = maxTime;
         }
 
         /// <summary>
@@ -404,8 +396,8 @@ namespace Turbulence.TurbLib.DataTypes
                     Queue<ServerBoundaries> tempQueue = new Queue<ServerBoundaries>();
                     foreach (ServerBoundaries SB in tempServerBoundaries)
                     {
-                        ServerBoundaries bottomHalf = new ServerBoundaries(SB.startx, SB.endx, SB.starty, SB.endy, SB.startz, SB.startz + Zresolution - 1, minTime, maxTime);
-                        ServerBoundaries topHalf = new ServerBoundaries(SB.startx, SB.endx, SB.starty, SB.endy, SB.startz + Zresolution, SB.endz, minTime, maxTime);
+                        ServerBoundaries bottomHalf = new ServerBoundaries(SB.startx, SB.endx, SB.starty, SB.endy, SB.startz, SB.startz + Zresolution - 1);
+                        ServerBoundaries topHalf = new ServerBoundaries(SB.startx, SB.endx, SB.starty, SB.endy, SB.startz + Zresolution, SB.endz);
                         tempQueue.Enqueue(bottomHalf);
                         tempQueue.Enqueue(topHalf);
                     }
@@ -418,8 +410,8 @@ namespace Turbulence.TurbLib.DataTypes
                     Queue<ServerBoundaries> tempQueue = new Queue<ServerBoundaries>();
                     foreach (ServerBoundaries SB in tempServerBoundaries)
                     {
-                        ServerBoundaries frontHalf = new ServerBoundaries(SB.startx, SB.endx, SB.starty, SB.starty + Yresolution - 1, SB.startz, SB.endz, minTime, maxTime);
-                        ServerBoundaries rearHalf = new ServerBoundaries(SB.startx, SB.endx, SB.starty + Yresolution, SB.endy, SB.startz, SB.endz, minTime, maxTime);
+                        ServerBoundaries frontHalf = new ServerBoundaries(SB.startx, SB.endx, SB.starty, SB.starty + Yresolution - 1, SB.startz, SB.endz);
+                        ServerBoundaries rearHalf = new ServerBoundaries(SB.startx, SB.endx, SB.starty + Yresolution, SB.endy, SB.startz, SB.endz);
                         tempQueue.Enqueue(frontHalf);
                         tempQueue.Enqueue(rearHalf);
                     }
@@ -432,8 +424,8 @@ namespace Turbulence.TurbLib.DataTypes
                     Queue<ServerBoundaries> tempQueue = new Queue<ServerBoundaries>();
                     foreach (ServerBoundaries SB in tempServerBoundaries)
                     {
-                        ServerBoundaries leftHalf = new ServerBoundaries(SB.startx, SB.startx + Xresolution - 1, SB.starty, SB.endy, SB.startz, SB.endz, minTime, maxTime);
-                        ServerBoundaries rightHalf = new ServerBoundaries(SB.startx + Xresolution, SB.endx, SB.starty, SB.endy, SB.startz, SB.endz, minTime, maxTime);
+                        ServerBoundaries leftHalf = new ServerBoundaries(SB.startx, SB.startx + Xresolution - 1, SB.starty, SB.endy, SB.startz, SB.endz);
+                        ServerBoundaries rightHalf = new ServerBoundaries(SB.startx + Xresolution, SB.endx, SB.starty, SB.endy, SB.startz, SB.endz);
                         tempQueue.Enqueue(leftHalf);
                         tempQueue.Enqueue(rightHalf);
                     }

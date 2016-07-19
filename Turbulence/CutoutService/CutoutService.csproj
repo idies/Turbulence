@@ -20,6 +20,11 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -130,6 +135,10 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Turbulence, Version=1.1.6018.24659, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Turbulence\bin\Debug\Turbulence.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="download.aspx" />
@@ -159,10 +168,6 @@
     <ProjectReference Include="..\TurbulenceWebServiceLibrary\TurbulenceWebServiceLibrary.csproj">
       <Project>{6D341D06-801B-4B24-97E5-EE21C52F46C6}</Project>
       <Name>TurbulenceWebServiceLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Turbulence\Turbulence.csproj">
-      <Project>{CBE305D7-8868-4A9D-8885-5E67A8507C78}</Project>
-      <Name>Turbulence</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
