@@ -93,7 +93,9 @@ public partial class StoredProcedures
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim)));
+                    int minTime = (int)(time/dt); //This may not be correct.  Verify this.
+                    int maxTime = (int)(endTime/dt);
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                     if (serverName.CompareTo(localServerCleanName) == 0)
                     {
                         // We'll use the context connection in this case.
