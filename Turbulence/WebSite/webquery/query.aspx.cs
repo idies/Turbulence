@@ -73,8 +73,8 @@ namespace Website
                 spatialRow.Visible = true;
                 if (dataset.SelectedValue.Equals("isotropic1024coarse"))
                 {
-                    timerange.Text = "0.0 - 2.048";
-                    EndTimeRange.Text = "0.0 - 2.048";
+                    timerange.Text = "0.0 - 10.048";
+                    EndTimeRange.Text = "0.0 - 10.048";
                     DeltaTRange.Text = "DB dt = .002";
                 }
                 else if (dataset.SelectedValue.Equals("isotropic1024fine"))
@@ -205,7 +205,7 @@ namespace Website
                 QueryText.InnerText = "Query a region";
                 if (dataset.SelectedValue.Equals("isotropic1024coarse"))
                 {
-                    timerange.Text = "0.0 - 2.048";
+                    timerange.Text = "0.0 - 10.048";
                 }
                 else if (dataset.SelectedValue.Equals("isotropic1024fine"))
                 {
@@ -296,7 +296,7 @@ namespace Website
             this.velocityEntry2.Enabled = true;
             if (dataset.SelectedValue.Equals("isotropic1024coarse"))
             {
-                timerange.Text = "0.0 - 2.048<br/>dt = .002";
+                timerange.Text = "0.0 - 10.048<br/>dt = .002";
                 this.GetMagneticField.Enabled = false;
                 this.GetMagneticFieldGradient.Enabled = false;
                 this.GetMagneticFieldHessian.Enabled = false;

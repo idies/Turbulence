@@ -1,0 +1,30 @@
+H:\Turbulence\Turbulence\ImportData\bin\Debug2>isoimportdatapr z:\snapshots_3\ pr 30110 55100 10 0 0 134217216 1
+Reading timestep 30110 to 55100 from z:\snapshots_3\
+Going with 16 processors, startz = 0 endz = 504
+Partitions: 1
+
+15050-15100 z:\
+15110-20410 z:\snapshots\
+20420-30100 z:\snapshots_2\
+30110-55100 z:\snapshots_3\
+
+db firstbox lastbox
+202 134217728 268434944
+203 268435456 402652672
+204 402653184 536870400
+205 536870912 671088128
+206 671088640 805305856
+207 805306368 939523584
+208 939524096 1073741312
+
+202 1016 504 504
+203 504 1016 504
+204 1016 1016 504
+205 504 504 1016
+206 1016 504 1016
+207 504 1016 1016
+208 1016 1016 1016
+
+
+H:\Turbulence\Turbulence\ImportData\bin\Debug2>isoimportdatapr z:\snapshots_3\ pr 30110 55100 10 0 0 134217216 1
+

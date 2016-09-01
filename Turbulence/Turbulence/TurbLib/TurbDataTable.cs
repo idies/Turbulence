@@ -324,7 +324,7 @@ namespace Turbulence.TurbLib
         {
             if (serverBoundaries.startx <= x && x <= serverBoundaries.endx)
                 if (serverBoundaries.starty <= y && y <= serverBoundaries.endy)
-                    if (serverBoundaries.startz <= z && z <= serverBoundaries.endz)
+                    if (serverBoundaries.startz <= z && z <= serverBoundaries.endz)                        
                         return true;
             return false;
         }

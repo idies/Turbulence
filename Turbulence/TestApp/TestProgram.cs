@@ -41,10 +41,10 @@ namespace TestApp
             {
                 //TestGetForce();
                 //TestMixingDataset();
-                AllTest();
+                //AllTest();
                 //TestGetBoxFilterGradient();
                 //TestAllDisks();
-                //TestGetRawData();
+                TestGetRawData();
                 //TestIsotropicFine();
                 //TestGetLaplacian();
                 //TestChannelFlowInterpolation();
@@ -674,7 +674,7 @@ namespace TestApp
             DateTime startTime, stopTime;
 
             startTime = DateTime.Now;
-            data = service.GetRawVelocity(authToken, "mhd1024", 0.0f, 504, 128, 128, 8, 8, 1);
+            data = service.GetRawVelocity(authToken, "isotropic1024coarse", 2.06f, 0, 600, 600, 1, 1, 1);
             stopTime = DateTime.Now;
             Console.WriteLine("Execution time: {0}", stopTime - startTime);
             Console.WriteLine("X={0} Y={1} Z={2}", BitConverter.ToSingle(data, 0), BitConverter.ToSingle(data, 4), BitConverter.ToSingle(data, 8));

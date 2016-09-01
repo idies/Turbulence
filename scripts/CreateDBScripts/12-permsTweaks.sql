@@ -22,3 +22,9 @@ exec sp_changedbowner 'sa'
 
 use turblib
 exec sp_changedbowner 'sa' 
+
+use turbdev
+EXEC sp_change_users_login 'Auto_Fix', 'turbquery'
+
+use turblib
+EXEC sp_change_users_login 'Auto_Fix', 'turbquery'

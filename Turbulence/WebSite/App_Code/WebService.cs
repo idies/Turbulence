@@ -1709,7 +1709,7 @@ namespace TurbulenceService {
             int worker = (int)Worker.Workers.GetMHDBoxFilter;
 
             //database.AddBulkParticles(points, filter_width, round);
-            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker);
+            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker, time);
 
             rowid = log.CreateLog(auth.Id, dataset, worker, 0, 0,
                points.Length, time, null, null);
@@ -1944,7 +1944,7 @@ namespace TurbulenceService {
 
             database.Initialize(dataset_enum, num_virtual_servers);
             
-            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker);
+            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker, time);
 
             rowid = log.CreateLog(auth.Id, dataset, worker, 0, 0,
                points.Length, time, null, null);
@@ -2025,7 +2025,7 @@ namespace TurbulenceService {
 
             // TODO: Summed Volumes technique is not yet implemented for the computation of the filtered gradient
             //worker = database.AddBulkParticlesFiltering(points, filter_width, round, worker);
-            database.AddBulkParticlesFiltering(points, kernelSize, round, worker);
+            database.AddBulkParticlesFiltering(points, kernelSize, round, worker, time);
 
             if (worker == (int)Worker.Workers.GetMHDBoxFilterGradient)
             {

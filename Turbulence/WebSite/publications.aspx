@@ -92,6 +92,11 @@ International Conference for High Performance Computing, Networking, Storage and
       
 <ul>      
 
+    <li><font face="Arial, Helvetica, sans-serif">
+         Alain Pumir, Haitao Xu and Eric D. Siggia (2016). <a href="http://dx.doi.org/10.1017/jfm.2016.529">Small-scale anisotropy in turbulent boundary layers.</a> Journal of Fluid Mechanics, 804, pp 5-23 doi:10.1017/jfm.2016.529
+    </font>
+        </li>
+
 <li><font face="Arial, Helvetica, sans-serif">
    P. L. Johnson and C. Meneveau, 
    <a href="http://dx.doi.org/10.1103/PhysRevE.93.033118" target="_blank">

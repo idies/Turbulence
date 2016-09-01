@@ -88,7 +88,7 @@ namespace TurbulenceService
 
 				// insert points into temp table
 				// bool round = aquery.spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None ? true : false;
-				database.AddBulkParticlesBatch(totalAdded, ret, aquery.round, aquery.kernelSize);
+				database.AddBulkParticlesBatch(totalAdded, ret, aquery.round, aquery.kernelSize, time);
                 totalAdded += ret.Length;
 			}
 			database.DoBulkInsertBatch();

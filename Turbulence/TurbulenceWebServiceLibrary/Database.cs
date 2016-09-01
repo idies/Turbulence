@@ -274,9 +274,9 @@ namespace TurbulenceService
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
                 "from {0}..{1} where DatasetName = @dataset " + 
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -300,8 +300,8 @@ namespace TurbulenceService
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    int minTime = 0; //placeholder
-                    int maxTime = 0;
+                    int minTime = reader.GetSqlInt32(5).Value;
+                    int maxTime = reader.GetSqlInt32(6).Value;
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
@@ -351,9 +351,9 @@ namespace TurbulenceService
             {
                 //DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
                 "from {0}..{1} where DatasetName = @dataset " + 
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -377,8 +377,9 @@ namespace TurbulenceService
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    int minTime = (int)(timeInc/Dt); // (long)(time / dt); //This may not be correct.  Verify this.
-                    int maxTime = (int)(timeInc/Dt)+1; // (long)(endTime / dt);
+                    int minTime = reader.GetSqlInt32(5).Value; 
+                    int maxTime = reader.GetSqlInt32(6).Value;
+                    /* All servers are added, and then ones in range are selected from this list later */
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
@@ -461,9 +462,9 @@ namespace TurbulenceService
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
                 "from {0}..{1} where DatasetName = @dataset " +
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -487,7 +488,8 @@ namespace TurbulenceService
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    int minTime = 0; int maxTime = 0; //placeholder 
+                    int minTime = reader.GetSqlInt32(5).Value;
+                    int maxTime = reader.GetSqlInt32(6).Value;
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                 }
             }
@@ -908,6 +910,12 @@ namespace TurbulenceService
                             if (T + Twidth > serverBoundaries[i].minTime && T <= serverBoundaries[i].maxTime)
                             {
                                 // If we have no workload for this server yet... create a connection
+                                //Write this to log so we see what is going on...
+                                System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\shamilto\\Desktop\\rawcall.txt", true);
+                                file.WriteLine("boundary = {0}, {1}, {2}, {3}", X, Y, Z, T);
+                                file.WriteLine("Timerange = {0}-{1}", serverBoundaries[i].minTime, serverBoundaries[i].maxTime);
+                                file.Close();
+
                                 if (this.connections[i] == null)
                                 {
                                     string server_name = this.servers[i];
@@ -952,30 +960,38 @@ namespace TurbulenceService
                     if (Y + Ywidth > serverBoundaries[i].starty && Y <= serverBoundaries[i].endy)
                         if (Z + Zwidth > serverBoundaries[i].startz && Z <= serverBoundaries[i].endz)
                         {
-                            // If we have no workload for this server yet... create a connection
-                            if (this.connections[i] == null)
+                            if (T + Twidth > serverBoundaries[i].minTime && T <= serverBoundaries[i].maxTime)
                             {
-                                string server_name = this.servers[i];
-                                if (server_name.Contains("_"))
-                                    server_name = server_name.Remove(server_name.IndexOf("_"));
-                                String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                                    server_name, databases[i], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
-                                this.connections[i] = new SqlConnection(cString);
-                                this.connections[i].Open();
-                            }
-                            GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], x_stride);
-                            GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref serverY[i], ref serverYwidth[i], y_stride);
-                            GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i], z_stride);
+                                // If we have no workload for this server yet... create a connection
+                                if (this.connections[i] == null)
+                                {
+                                    System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\shamilto\\Desktop\\rawcall.txt", true);
+                                    file.WriteLine("boundary = {0}, {1}, {2}, {3}", X, Y, Z, T);
+                                    file.WriteLine("Timerange = {0}-{1}", serverBoundaries[i].minTime, serverBoundaries[i].maxTime);
+                                    file.Close();
 
-                            //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
-                            Morton3D access;
-                            for (int x_i = serverX[i] & (-64); x_i <= serverX[i] + serverXwidth[i] - atomDim; x_i += 64)
-                                for (int y_i = serverY[i] & (-64); y_i <= serverY[i] + serverYwidth[i] - atomDim; y_i += 64)
-                                    for (int z_i = serverZ[i] & (-64); z_i <= serverZ[i] + serverZwidth[i] - atomDim; z_i += 64)
-                                    {
-                                        access = new Morton3D(z_i, y_i, x_i);
-                                        SetBit(access);
-                                    }
+                                    string server_name = this.servers[i];
+                                    if (server_name.Contains("_"))
+                                        server_name = server_name.Remove(server_name.IndexOf("_"));
+                                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
+                                        server_name, databases[i], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                                    this.connections[i] = new SqlConnection(cString);
+                                    this.connections[i].Open();
+                                }
+                                GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], x_stride);
+                                GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref serverY[i], ref serverYwidth[i], y_stride);
+                                GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i], z_stride);
+                            
+                                //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
+                                Morton3D access;
+                                for (int x_i = serverX[i] & (-64); x_i <= serverX[i] + serverXwidth[i] - atomDim; x_i += 64)
+                                    for (int y_i = serverY[i] & (-64); y_i <= serverY[i] + serverYwidth[i] - atomDim; y_i += 64)
+                                        for (int z_i = serverZ[i] & (-64); z_i <= serverZ[i] + serverZwidth[i] - atomDim; z_i += 64)
+                                        {
+                                            access = new Morton3D(z_i, y_i, x_i);
+                                            SetBit(access);
+                                        }
+                            }
                         }
             }
         }
@@ -1243,7 +1259,7 @@ namespace TurbulenceService
             bitfield[off] |= (byte)(1 << (bit % 8));
         }
 
-        public void AddWorkloadTrackingPointToMultipleServers(int id, float zp, float yp, float xp, TrackingInfo point, bool round, int kernelSize)
+        public void AddWorkloadTrackingPointToMultipleServers(int id, float zp, float yp, float xp, TrackingInfo point, bool round, int kernelSize, float time)
         {
             int Z = GetIntLocZ(zp, round);
             int Y = GetIntLocY(yp, round, kernelSize);
@@ -1252,7 +1268,8 @@ namespace TurbulenceService
 
             int startz = Z - kernelSize / 2 + 1, starty = Y - kernelSize / 2 + 1, startx = X - kernelSize / 2 + 1;
             int endz = Z + kernelSize / 2, endy = Y + kernelSize / 2, endx = X + kernelSize / 2;
-
+            //Convert time for server
+            int t = (int)(time / this.Dt);
             // The last two conditions have to do with wrap around
             // The beginning and end of each kernel may be outside of the grid space
             // Due to periodicity in space these locations are going to be wrapped around
@@ -1276,8 +1293,12 @@ namespace TurbulenceService
                             (startz < serverBoundaries[i].startz && serverBoundaries[i].endz < endz) ||
                             (startz + GridResolutionZ <= serverBoundaries[i].endz) ||
                             (serverBoundaries[i].startz <= endz - GridResolutionZ))
-                        {
-                            InsertIntoTrackingTempTable(i, id, zindex, point);
+                        {//Added due to temporal boundaries of servers
+                            if (serverBoundaries[i].minTime <= t && serverBoundaries[i].maxTime >= t)
+                            {
+
+                                InsertIntoTrackingTempTable(i, id, zindex, point);
+                            }
                         }
                     }
                 }
@@ -1288,41 +1309,49 @@ namespace TurbulenceService
         /// Adds a workload point to multiple servers for exection
         /// depening on the spatial partitioning of the data
         /// </summary>
-        public void AddWorkloadPointToMultipleServers(int id, float zp, float yp, float xp, bool round, int kernelSizeZ, int kernelSizeY, int kernelSizeX)
+        public void AddWorkloadPointToMultipleServers(int id, float zp, float yp, float xp, bool round, int kernelSizeZ, int kernelSizeY, int kernelSizeX, float time)
         {
             int Z = GetIntLocZ(zp, round);
             int Y = GetIntLocY(yp, round, kernelSizeY);
             int X = GetIntLocX(xp, round);
             Morton3D zindex = new Morton3D(Z, Y, X);
+            //Convert time for server
+            int t = (int)(time/this.Dt);
 
             int startz = GetKernelStart(Z, kernelSizeZ), starty = GetKernelStart(Y, kernelSizeY), startx = GetKernelStart(X, kernelSizeX);
             int endz = startz + kernelSizeZ - 1, endy = starty + kernelSizeY - 1, endx = startx + kernelSizeX - 1;
-
+            //write out time for testing
+            //string debugtxt = "Time for point: " + t.ToString();
+            //System.IO.File.WriteAllText(@"c:\users\shamilto\weboutput.txt", debugtxt);
             // The last two conditions have to do with wrap around
             // The beginning and end of each kernel may be outside of the grid space
             // Due to periodicity in space these locations are going to be wrapped around
             // Thus, we need to check if the points should be added to these servers
             for (int i = 0; i < this.serverCount; i++)
-            {
-                if ((serverBoundaries[i].startx <= startx && startx <= serverBoundaries[i].endx) ||
-                    (serverBoundaries[i].startx <= endx && endx <= serverBoundaries[i].endx) ||
-                    (startx < serverBoundaries[i].startx && serverBoundaries[i].endx < endx) ||
-                    (startx + GridResolutionX <= serverBoundaries[i].endx) ||
-                    (serverBoundaries[i].startx <= endx - GridResolutionX))
-                {
-                    if ((serverBoundaries[i].starty <= starty && starty <= serverBoundaries[i].endy) ||
-                        (serverBoundaries[i].starty <= endy && endy <= serverBoundaries[i].endy) ||
-                        (starty < serverBoundaries[i].starty && serverBoundaries[i].endy < endy) ||
-                            (starty + GridResolutionY <= serverBoundaries[i].endy) ||
-                            (serverBoundaries[i].starty <= endy - GridResolutionY))
+            {   //Added due to temporal boundaries of servers
+                if (serverBoundaries[i].minTime <= t && serverBoundaries[i].maxTime >= t)
                     {
-                        if ((serverBoundaries[i].startz <= startz && startz <= serverBoundaries[i].endz) ||
-                            (serverBoundaries[i].startz <= endz && endz <= serverBoundaries[i].endz) ||
-                            (startz < serverBoundaries[i].startz && serverBoundaries[i].endz < endz) ||
-                            (startz + GridResolutionZ <= serverBoundaries[i].endz) ||
-                            (serverBoundaries[i].startz <= endz - GridResolutionZ))
+                    if ((serverBoundaries[i].startx <= startx && startx <= serverBoundaries[i].endx) ||
+                        (serverBoundaries[i].startx <= endx && endx <= serverBoundaries[i].endx) ||
+                        (startx < serverBoundaries[i].startx && serverBoundaries[i].endx < endx) ||
+                        (startx + GridResolutionX <= serverBoundaries[i].endx) ||
+                        (serverBoundaries[i].startx <= endx - GridResolutionX))
+                    {
+                        if ((serverBoundaries[i].starty <= starty && starty <= serverBoundaries[i].endy) ||
+                            (serverBoundaries[i].starty <= endy && endy <= serverBoundaries[i].endy) ||
+                            (starty < serverBoundaries[i].starty && serverBoundaries[i].endy < endy) ||
+                                (starty + GridResolutionY <= serverBoundaries[i].endy) ||
+                                (serverBoundaries[i].starty <= endy - GridResolutionY))
                         {
-                            InsertIntoTempTable(i, id, zindex, zp, yp, xp, true);
+                            if ((serverBoundaries[i].startz <= startz && startz <= serverBoundaries[i].endz) ||
+                                (serverBoundaries[i].startz <= endz && endz <= serverBoundaries[i].endz) ||
+                                (startz < serverBoundaries[i].startz && serverBoundaries[i].endz < endz) ||
+                                (startz + GridResolutionZ <= serverBoundaries[i].endz) ||
+                                (serverBoundaries[i].startz <= endz - GridResolutionZ))
+                            {
+
+                                InsertIntoTempTable(i, id, zindex, zp, yp, xp, true);
+                            }
                         }
                     }
                 }
@@ -1339,7 +1368,7 @@ namespace TurbulenceService
         /// Each server has all of the data along x
         /// </remarks>
         public void AddWorkloadPointToMultipleServersFiltering(int id, float zp, float yp, float xp, bool round, int kernelSize,
-            Point3[] serverMin, Point3[] serverMax)
+            Point3[] serverMin, Point3[] serverMax, float time)
         {
             int Z = GetIntLocZ(zp, round);
             int Y = GetIntLocY(yp, round, kernelSize);
@@ -1354,75 +1383,78 @@ namespace TurbulenceService
             endx = ((endx % GridResolutionX) + GridResolutionX) % GridResolutionX;
             endy = ((endy % GridResolutionY) + GridResolutionY) % GridResolutionY;
             endz = ((endz % GridResolutionZ) + GridResolutionZ) % GridResolutionZ;
-
+            int t = (int)(time / this.Dt);
             // The last two conditions have to do with wrap around
             // The beginning and end of each kernel may be outside of the grid space
             // Due to periodicity in space these locations are going to be wrapped around
             // Thus, we need to check if the points should be added to these servers
             for (int i = 0; i < this.serverCount; i++)
-            {
-                if ((serverBoundaries[i].startx <= startx && startx <= serverBoundaries[i].endx) ||
+            {//Added due to temporal boundaries of servers
+                if (serverBoundaries[i].minTime <= t && serverBoundaries[i].maxTime >= t)
+                {
+                    if ((serverBoundaries[i].startx <= startx && startx <= serverBoundaries[i].endx) ||
                     (serverBoundaries[i].startx <= endx && endx <= serverBoundaries[i].endx) ||
                     (startx < serverBoundaries[i].startx && serverBoundaries[i].endx < endx) ||
                     (startx < serverBoundaries[i].startx && endx < startx) ||
                     (endx < startx && serverBoundaries[i].endx < endx))
-                {
-                    if ((serverBoundaries[i].starty <= starty && starty <= serverBoundaries[i].endy) ||
-                        (serverBoundaries[i].starty <= endy && endy <= serverBoundaries[i].endy) ||
-                        (starty < serverBoundaries[i].starty && serverBoundaries[i].endy < endy) ||
-                        (starty < serverBoundaries[i].starty && endy < starty) ||
-                        (endy < starty && serverBoundaries[i].endy < endy))
                     {
-                        if ((serverBoundaries[i].startz <= startz && startz <= serverBoundaries[i].endz) ||
-                            (serverBoundaries[i].startz <= endz && endz <= serverBoundaries[i].endz) ||
-                            (startz < serverBoundaries[i].startz && serverBoundaries[i].endz < endz) ||
-                            (startz < serverBoundaries[i].startz && endz < startz) ||
-                            (endz < startz && serverBoundaries[i].endz < endz))
+                        if ((serverBoundaries[i].starty <= starty && starty <= serverBoundaries[i].endy) ||
+                            (serverBoundaries[i].starty <= endy && endy <= serverBoundaries[i].endy) ||
+                            (starty < serverBoundaries[i].starty && serverBoundaries[i].endy < endy) ||
+                            (starty < serverBoundaries[i].starty && endy < starty) ||
+                            (endy < starty && serverBoundaries[i].endy < endy))
                         {
-                            InsertIntoTempTable(i, id, zindex, zp, yp, xp, true);
-                            if (serverMin[i].x > startx)
-                                if (startx >= serverBoundaries[i].startx)
-                                    serverMin[i].x = startx;
-                                else
+                            if ((serverBoundaries[i].startz <= startz && startz <= serverBoundaries[i].endz) ||
+                                (serverBoundaries[i].startz <= endz && endz <= serverBoundaries[i].endz) ||
+                                (startz < serverBoundaries[i].startz && serverBoundaries[i].endz < endz) ||
+                                (startz < serverBoundaries[i].startz && endz < startz) ||
+                                (endz < startz && serverBoundaries[i].endz < endz))
+                            {
+                                InsertIntoTempTable(i, id, zindex, zp, yp, xp, true);
+                                if (serverMin[i].x > startx)
+                                    if (startx >= serverBoundaries[i].startx)
+                                        serverMin[i].x = startx;
+                                    else
+                                        serverMin[i].x = serverBoundaries[i].startx;
+                                else if (startx > serverBoundaries[i].endx && startx > endx)
                                     serverMin[i].x = serverBoundaries[i].startx;
-                            else if (startx > serverBoundaries[i].endx && startx > endx)
-                                serverMin[i].x = serverBoundaries[i].startx;
-                            if (serverMin[i].y > starty)
-                                if (starty >= serverBoundaries[i].starty)
-                                    serverMin[i].y = starty;
-                                else
+                                if (serverMin[i].y > starty)
+                                    if (starty >= serverBoundaries[i].starty)
+                                        serverMin[i].y = starty;
+                                    else
+                                        serverMin[i].y = serverBoundaries[i].starty;
+                                else if (starty > serverBoundaries[i].endy && starty > endy)
                                     serverMin[i].y = serverBoundaries[i].starty;
-                            else if (starty > serverBoundaries[i].endy && starty > endy)
-                                serverMin[i].y = serverBoundaries[i].starty;
-                            if (serverMin[i].z > startz)
-                                if (startz >= serverBoundaries[i].startz)
-                                    serverMin[i].z = startz;
-                                else
+                                if (serverMin[i].z > startz)
+                                    if (startz >= serverBoundaries[i].startz)
+                                        serverMin[i].z = startz;
+                                    else
+                                        serverMin[i].z = serverBoundaries[i].startz;
+                                else if (startz > serverBoundaries[i].endz && startz > endz)
                                     serverMin[i].z = serverBoundaries[i].startz;
-                            else if (startz > serverBoundaries[i].endz && startz > endz)
-                                serverMin[i].z = serverBoundaries[i].startz;
 
-                            if (serverMax[i].x < endx)
-                                if (endx <= serverBoundaries[i].endx)
-                                    serverMax[i].x = endx;
-                                else
+                                if (serverMax[i].x < endx)
+                                    if (endx <= serverBoundaries[i].endx)
+                                        serverMax[i].x = endx;
+                                    else
+                                        serverMax[i].x = serverBoundaries[i].endx;
+                                else if (endx < serverBoundaries[i].startx && endx < startx)
                                     serverMax[i].x = serverBoundaries[i].endx;
-                            else if (endx < serverBoundaries[i].startx && endx < startx)
-                                serverMax[i].x = serverBoundaries[i].endx;
-                            if (serverMax[i].y < endy)
-                                if (endy <= serverBoundaries[i].endy)
-                                    serverMax[i].y = endy;
-                                else
+                                if (serverMax[i].y < endy)
+                                    if (endy <= serverBoundaries[i].endy)
+                                        serverMax[i].y = endy;
+                                    else
+                                        serverMax[i].y = serverBoundaries[i].endy;
+                                else if (endy < serverBoundaries[i].starty && endy < starty)
                                     serverMax[i].y = serverBoundaries[i].endy;
-                            else if (endy < serverBoundaries[i].starty && endy < starty)
-                                serverMax[i].y = serverBoundaries[i].endy;
-                            if (serverMax[i].z < endz)
-                                if (endz <= serverBoundaries[i].endz)
-                                    serverMax[i].z = endz;
-                                else
+                                if (serverMax[i].z < endz)
+                                    if (endz <= serverBoundaries[i].endz)
+                                        serverMax[i].z = endz;
+                                    else
+                                        serverMax[i].z = serverBoundaries[i].endz;
+                                else if (endz < serverBoundaries[i].startz && endz < startz)
                                     serverMax[i].z = serverBoundaries[i].endz;
-                            else if (endz < serverBoundaries[i].startz && endz < startz)
-                                serverMax[i].z = serverBoundaries[i].endz;
+                            }
                         }
                     }
                 }
@@ -1472,7 +1504,7 @@ namespace TurbulenceService
                 {
                     points[i].x -= 0.45f * time;
                 }
-                AddWorkloadPointToMultipleServers(i, points[i].z, points[i].y, points[i].x, round, kernelSizeZ, kernelSizeY, kernelSizeX);
+                AddWorkloadPointToMultipleServers(i, points[i].z, points[i].y, points[i].x, round, kernelSizeZ, kernelSizeY, kernelSizeX, time);
             }
 
             DoBulkInsert();
@@ -1485,7 +1517,7 @@ namespace TurbulenceService
         /// <param name="points">Points</param>
         /// <param name="round">True for round, false for floor</param>
         /// <returns>Return the worker type that should be used.</returns>
-        public int AddBulkParticlesFiltering(Point3[] points, int kernelSize, bool round, int worker)
+        public int AddBulkParticlesFiltering(Point3[] points, int kernelSize, bool round, int worker, float time)
         {
             //long full = new Morton3D(0, 0, DIM).Key; 
             //long full = new Morton3D(DIM - 1, DIM - 1, DIM - 1) + 1;
@@ -1522,7 +1554,7 @@ namespace TurbulenceService
 
             for (int i = 0; i < points.Length; i++)
             {
-                AddWorkloadPointToMultipleServersFiltering(i, points[i].z, points[i].y, points[i].x, round, kernelSize, serverMin, serverMax);
+                AddWorkloadPointToMultipleServersFiltering(i, points[i].z, points[i].y, points[i].x, round, kernelSize, serverMin, serverMax, time);
             }
 
             DoBulkInsert();
@@ -1578,7 +1610,7 @@ namespace TurbulenceService
         /// </summary>
         /// <param name="points">Points</param>
         /// <param name="round">True for round, false for floor</param>
-        public void AddBulkParticlesBatch(int basei, Point3[] points, bool round, int kernelSize)
+        public void AddBulkParticlesBatch(int basei, Point3[] points, bool round, int kernelSize, float time)
         {
             //long full = new Morton3D(0, 0, DIM).Key; 
             long full = new Morton3D(GridResolutionX - 1, GridResolutionX - 1, GridResolutionX - 1) + 1;
@@ -1603,7 +1635,7 @@ namespace TurbulenceService
 
             for (int i = 0; i < points.Length; i++)
             {
-                AddWorkloadPointToMultipleServers(basei + i, points[i].z, points[i].y, points[i].x, round, kernelSize, kernelSize, kernelSize);
+                AddWorkloadPointToMultipleServers(basei + i, points[i].z, points[i].y, points[i].x, round, kernelSize, kernelSize, kernelSize, time);
             }
 
             DoBulkInsert();
@@ -1627,7 +1659,7 @@ namespace TurbulenceService
                 int Y = GetIntLocY(points[i].y, round, kernelSizeY);
                 int X = GetIntLocX(points[i].x, round);
                 Morton3D zindex = new Morton3D(Z, Y, X);
-
+                int t = (int)(time / this.Dt);
                 //TODO: Flag is for debuggin purposes only
                 bool flag = false;
                 for (int s = 0; s < this.serverCount; s++)
@@ -1638,13 +1670,16 @@ namespace TurbulenceService
                         {
                             if ((serverBoundaries[s].startz <= Z && Z <= serverBoundaries[s].endz))
                             {
-                                InsertIntoTempTable(s, i, zindex, points[i].z, points[i].y, points[i].x, true);
-
-                                if (flag)
+                                if (serverBoundaries[s].minTime <= t && t <= serverBoundaries[s].maxTime)
                                 {
-                                    throw new Exception("Particle assigned to more than one server!");
+                                    InsertIntoTempTable(s, i, zindex, points[i].z, points[i].y, points[i].x, true);
+
+                                    if (flag)
+                                    {
+                                        throw new Exception("Particle assigned to more than one server!");
+                                    }
+                                    flag = true;
                                 }
-                                flag = true;
                             }
                         }
                     }
