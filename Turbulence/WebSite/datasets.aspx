@@ -5,7 +5,7 @@
 <head><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
 
 <link href="bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="Scripts/jquery.min.js"></script>
 <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <link href="turbulence.css" rel="stylesheet" type="text/css" />
 </head>

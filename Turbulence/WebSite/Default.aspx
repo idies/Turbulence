@@ -8,7 +8,7 @@
 <head><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
 
 <link href="bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript" src="Scripts/jquery.min.js"></script>
 <script  type="text/javascript" src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <link href="turbulence.css" rel="stylesheet" type="text/css" />
 </head>
@@ -75,13 +75,10 @@
           JHTDB project is funded by the US <a href="http://www.nsf.gov/">National
           Science Foundation</a> <a href="http://www.nsf.gov/"><img src="images/nsf.jpg" width="40"  border="0" /></a>.</font></p>
       <p align="center"><font size="2" color="red">Questions and comments?
-            turbulence&#64;pha&#46;jhu&#46;edu</font></p>
+            <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a></font></p>
       <p align="center"><span class="style13">
       <asp:Literal ID="tracked" runat="server"></asp:Literal>
   points queried</span></p>
-      <p align="center"><font size="2" color="red">Please excuse our dust as
-          we continue to develop this site. JHTDB is on-line
-          but may periodcally be unavailable as we continue to add functionalities.</font></p>
     
 </div>
 <div id="rightcolumn"> 

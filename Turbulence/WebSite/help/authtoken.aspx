@@ -6,7 +6,7 @@
 <head><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
 
 <link href="../bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="Scripts/jquery.min.js"></script>
 <script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <link href="../turbulence.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
@@ -49,7 +49,7 @@ The current testing identifier is: <br />
 
 <h3>Get a Group/Individual Identifier</h3>
 
-<p>Please send an e-mail to turbulence&#64;pha&#46;jhu&#46;edu with a short description on your intended use of the database.</p>
+<p>Please send an e-mail to <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a> with a short description on your intended use of the database.</p>
 
     
 </div>

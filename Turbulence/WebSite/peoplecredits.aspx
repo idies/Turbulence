@@ -6,7 +6,7 @@
 <head><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
 
 <link href="bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="Scripts/jquery.min.js"></script>
 <script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
 <link href="turbulence.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
@@ -42,6 +42,7 @@
         <li><a href="http://www.me.jhu.edu/meneveau/">Charles Meneveau</a> (Mechanical Engineering)</li>
         <li><a href="http://www.sdss.jhu.edu/~szalay/">Alex Szalay</a> (Physics and Astronomy)</li>
         <li><a href="http://me.jhu.edu/faculty/tamer-zaki/">Tamer Zaki</a> (Mechanical Engineering)</li>
+        <li><a href="http://physics-astronomy.jhu.edu/directory/ethan-vishniac/">Ethan Vishniac</a> (Physics and Astronomy)</li>
       </ul>      
 
           
@@ -68,7 +69,7 @@
         <li><a href="https://www.ices.utexas.edu/people/344/">Robert D. Moser</a></li>
         <li>Jesus Pulido</li>
         <li><a href="http://public.lanl.gov/livescu/">Daniel Livescu</a></li>
-        <li><a href="http://www.physics.mcmaster.ca/?page=Minibio_new.php?ID=86#page=Profile">Ethan Vishniac</a> (McMaster University, Canada)</li>
+        
 
       </ul> 
 

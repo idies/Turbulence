@@ -349,7 +349,7 @@ namespace TurbulenceService
             string DBMapTable = "DatabaseMap";
             if (this.development == true)
             {
-                //DBMapTable = "DatabaseMapTest";
+                DBMapTable = "DatabaseMapTest";
             }
             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
                 "from {0}..{1} where DatasetName = @dataset " + 
@@ -911,11 +911,11 @@ namespace TurbulenceService
                             {
                                 // If we have no workload for this server yet... create a connection
                                 //Write this to log so we see what is going on...
-                                System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\shamilto\\Desktop\\rawcall.txt", true);
+                                /*System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\shamilto\\Desktop\\rawcall.txt", true);
                                 file.WriteLine("boundary = {0}, {1}, {2}, {3}", X, Y, Z, T);
                                 file.WriteLine("Timerange = {0}-{1}", serverBoundaries[i].minTime, serverBoundaries[i].maxTime);
                                 file.Close();
-
+                                */
                                 if (this.connections[i] == null)
                                 {
                                     string server_name = this.servers[i];
@@ -3237,9 +3237,11 @@ namespace TurbulenceService
             string turbinfo_connectionString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
             string turbinfoServer = builder.DataSource;
-
+            string msg;
+            int last_s = 0;
             for (int s = 0; s < serverCount; s++)
             {
+                last_s = s; /* Used for error messages below */
                 if (connections[s] != null && datatables[s].Rows.Count > 0)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
@@ -3278,7 +3280,15 @@ namespace TurbulenceService
             doneEvent.WaitOne();
 
             if (exception != null)
-                throw new Exception(exception.Message, exception.InnerException);
+            {
+                msg = exception.Message + "\n SQL parameters: " + tempTableName + " " + tableName;
+                for (int s = 0; s < serverCount; s++)
+                {
+                    msg = msg + " Server num " + s + "Command: " + sqlcmds[s] + "\n SQL parameters: " + servers[s] + " " + tableName + " " + databases[s] + " " + dataset +"\n";
+                }
+                throw new Exception(msg, exception.InnerException);
+            }
+
             return 0;
         }
 

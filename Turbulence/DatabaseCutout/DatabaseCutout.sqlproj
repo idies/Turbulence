@@ -21,7 +21,7 @@
     <OutputType>Database</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
     <AssemblyName>DatabaseCutout</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <ConnectionString>
     </ConnectionString>
     <TargetFrameworkProfile />
@@ -29,7 +29,7 @@
     <FileUpgradeFlags>40</FileUpgradeFlags>
     <UpgradeBackupLocation>H:\Turbulence\Turbulence\Backup7\</UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql120DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql100DatabaseSchemaProvider</DSP>
     <Name>DatabaseCutout</Name>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{7ffe9ea8-1be3-4444-bc31-03159ff65bdf}</ProjectGuid>

@@ -39,6 +39,9 @@ public partial class StoredProcedures
         float dt,
         bool development)
     {
+
+        /* For debugging, this shows the sql statement*/
+
         //TimeSpan IOTime = new TimeSpan(0), preProcessTime = new TimeSpan(0), resultTime = new TimeSpan(0),
         //    MemoryTime = new TimeSpan(0), resultSendingTime = new TimeSpan(0),
         //    ReadTempTableGetCubesToRead = new TimeSpan(0), GetCubesForEachPoint = new TimeSpan(0);
@@ -68,7 +71,7 @@ public partial class StoredProcedures
         {
             DBMapTable = "DatabaseMapTest";
         }
-        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
             "from {0}..{1} where DatasetID = @datasetID " +
             "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
             "order by minLim", turbinfoDB, DBMapTable);
@@ -91,10 +94,10 @@ public partial class StoredProcedures
                     {
                         codeDatabase.Add("turbdev");
                     }
-                    int minLim = reader.GetInt32(3);
-                    int maxLim = reader.GetInt32(4);
-                    int minTime = (int)(time / dt); //This may not be correct.  Verify this.
-                    int maxTime = (int)(endTime / dt);
+                    long minLim = reader.GetSqlInt64(3).Value;
+                    long maxLim = reader.GetSqlInt64(4).Value;
+                    int minTime = reader.GetInt32(5);
+                    int maxTime = reader.GetInt32(6);
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                     if (serverName.CompareTo(localServerCleanName) == 0)
                     {
@@ -109,7 +112,12 @@ public partial class StoredProcedures
             }
             else
             {
-                throw new Exception("Invalid dataset specified.");
+                string sql = cmd.CommandText;
+                foreach (SqlParameter p in cmd.Parameters)
+                {
+                    sql = sql.Replace(p.ParameterName, p.Value.ToString());
+                }
+                throw new Exception("Invalid dataset specified. Generated sql was: " + sql);
             }
         }
         turbinfoConn.Close();

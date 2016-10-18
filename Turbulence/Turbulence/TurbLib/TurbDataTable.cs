@@ -416,7 +416,7 @@ namespace Turbulence.TurbLib
                 {
                     return new TurbDataTable(serverName, dbName, conn, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0002f, -10, 10240, 10, 0);
+                        0.0002f, -10, 50240, 10, 0);
                 }
             }
             else if (tableName.Equals("mag"))

@@ -144,7 +144,7 @@ namespace Turbulence.SQLInterface
         protected void GetCutout(short datasetID, string turbinfodb, int timestep)
         {
             SqlConnection turbInfoConn = new SqlConnection(
-                String.Format("Server=gw01;Database={0};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", turbinfodb));
+                String.Format("Server=sciserver02;Database={0};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", turbinfodb));
             turbInfoConn.Open();
             SqlConnection sqlConn;
 
@@ -183,9 +183,10 @@ namespace Turbulence.SQLInterface
                             SqlCommand cmd = turbInfoConn.CreateCommand();
                             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
                                 "from {0}..DatabaseMap where DatasetID = @datasetID " +
-                                "and minLim <= @zindex and maxLim >= @zindex", turbinfodb);
+                                "and minLim <= @zindex and maxLim >= @zindex and minTime <= @timestep and maxTime >= @timestep", turbinfodb);
                             cmd.Parameters.AddWithValue("@datasetID", datasetID);
                             cmd.Parameters.AddWithValue("@zindex", zindex);
+                            cmd.Parameters.AddWithValue("@timestep", timestep);
                             cmd.CommandTimeout = 600;
                             SqlDataReader reader = cmd.ExecuteReader();
                             if (!reader.HasRows)

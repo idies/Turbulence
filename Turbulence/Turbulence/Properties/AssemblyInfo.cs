@@ -11,7 +11,7 @@ using System.Data.Sql;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Johns Hopkins University")]
 [assembly: AssemblyProduct("Turbulence")]
-[assembly: AssemblyCopyright("Copyright © Johns Hopkins University 2010")]
+[assembly: AssemblyCopyright("Copyright © Johns Hopkins University 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
@@ -26,5 +26,6 @@ using System.Data.Sql;
 //
 // You can specify all the values or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.1.*")]
+[assembly: AssemblyVersion("1.2.*")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
 

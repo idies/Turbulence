@@ -68,7 +68,7 @@ public partial class StoredProcedures
         {
             DBMapTable = "DatabaseMapTest";
         }
-        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim " +
+        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
             "from {0}..{1} where DatasetID = @datasetID " +
             "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
             "order by minLim", turbinfoDB, DBMapTable);
@@ -93,8 +93,8 @@ public partial class StoredProcedures
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    int minTime = (int)(time/dt); //This may not be correct.  Verify this.
-                    int maxTime = (int)(endTime/dt);
+                    int minTime = reader.GetInt32(5);
+                    int maxTime = reader.GetInt32(6);
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                     if (serverName.CompareTo(localServerCleanName) == 0)
                     {
