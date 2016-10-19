@@ -48,14 +48,15 @@ namespace Website
             List<string> databases = new List<string>(24);
             List<string> codeDatabases = new List<string>(24);
             List<long> zindex = new List<long>(24);
-
+            List<int> mintime = new List<int>(24);
+            List<int> maxtime = new List<int>(24);
             Random random = new Random();
 
             String cString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
-            cmd.CommandText = "select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, min(minLim) as minLim, max(maxLim) as maxLim " +
+            cmd.CommandText = "select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, min(minLim) as minLim, max(maxLim) as maxLim, min(minTime) as minTime, max(maxTime) as maxTime " +
                 "from turbinfo..DatabaseMap " +
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName";
             SqlDataReader reader = cmd.ExecuteReader();
@@ -68,6 +69,11 @@ namespace Website
                     codeDatabases.Add(reader.GetString(2));
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
+                    int minTime = reader.GetSqlInt32(5).Value;
+                    int maxTime = reader.GetSqlInt32(6).Value;
+                    mintime.Add(minTime);
+                    maxtime.Add(maxTime);
+
                     zindex.Add(minLim + (long)(random.NextDouble() * (maxLim - minLim)));
                 }
             }
@@ -126,7 +132,7 @@ namespace Website
                             cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
                             ret = cmd.ExecuteScalar();
                             cmd.CommandText = String.Format("SELECT * FROM [{0}].[dbo].[vel] AS v " +
-                                " WHERE v.zindex = (@zindex & -512) AND timestep = 0", databases[i]);
+                                " WHERE v.zindex = (@zindex & -512) AND timestep = {1}", databases[i], mintime[i]);
                             cmd.Parameters.AddWithValue("@zindex", zindex[i]);
                             ret = cmd.ExecuteReader();
 

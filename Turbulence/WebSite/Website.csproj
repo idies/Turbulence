@@ -160,6 +160,7 @@
     <Content Include="service\turbulence.asmx" />
     <Content Include="Spectra-MHD.txt" />
     <Content Include="images\spectrum.jpg" />
+    <Content Include="spectrum.txt" />
     <Content Include="status\monitor.aspx" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />

@@ -143,8 +143,9 @@ namespace Turbulence.SQLInterface
 
         protected void GetCutout(short datasetID, string turbinfodb, int timestep)
         {
+            string turbinfoserver = "gw01"; //This shouldn't be hardcoded.  Replace with server selector in the future.
             SqlConnection turbInfoConn = new SqlConnection(
-                String.Format("Server=sciserver02;Database={0};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", turbinfodb));
+                String.Format("Server={0};Database={1};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", turbinfoserver, turbinfodb));
             turbInfoConn.Open();
             SqlConnection sqlConn;
 

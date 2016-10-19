@@ -47,7 +47,7 @@
         <li> Energy is injected by keeping constant the total
         energy in shells such that |k| is less or equal to 2. </li>
         <li> After the simulation has reached a statistical
-          stationary state, 1,024 frames of data with 3 velocity components and
+          stationary state, 5,024 frames of data with 3 velocity components and
           pressure are stored in the database. Extra time frames at the beginning
           and at the end have been added to be used for temporal-interpolations. </li>
         <li>The Taylor-scale Reynolds
@@ -55,7 +55,7 @@
         433</~
         433.</li>
         <li>There is one dataset (&quot;coarse&quot;)
-            with 1024 timesteps available, for time t between 0 and 2.048 (the
+            with 5028 timesteps available, for time t between 0 and 10.056 (the
             frames are stored at every 10 time-steps of the DNS). Intermediate
             times can be queried using temporal-interpolation. </li>
         <li>There is another dataset (&quot;fine&quot;) that 
@@ -65,6 +65,9 @@
             of the total kinetic energy and Taylor-scale Reynolds number as function
             of time can be downloaded from this <a href="ener_Re_time.txt" target="_blank">text
             file</a>. </li>
+          <li>
+            Radial spectrum E(k) averaged over time can be downloaded from this <a href="spectrum.txt" target="_blank">text file</a>.
+          </li>
       </ul>      
         <p align="left" class="style20">
             2. Forced MHD turbulence:</p>

@@ -91,6 +91,36 @@ International Conference for High Performance Computing, Networking, Storage and
       </p> 
       
 <ul>      
+    <li><font face="Arial, Helvetica, sans-serif">
+         P. L. Johnson and C. Meneveau<a href="http://dx.doi.org/10.1017/jfm.2016.551">A closure for Lagrangian velocity gradient evolution in turbulence using recent-deformation mapping of initially Gaussian fields</a>, Journal of Fluid Mechanics, Vol. 804, pp 387-419, 2016.
+    </font>
+        </li>
+
+    <li><font face="Arial, Helvetica, sans-serif">
+         A. Lozano-Durán, M. Holzner and J. Jiménez (2016). <a href="http://dx.doi.org/10.1017/jfm.2016.504">Multiscale analysis of the topological invariants in the logarithmic region of turbulent channels at a friction Reynolds number of 932. Journal of Fluid Mechanics</a>, 803, pp 356-394 doi:10.1017/jfm.2016.504
+    </font>
+        </li>
+
+    <li><font face="Arial, Helvetica, sans-serif">
+         Wang, Z., Gao, Q., Wang, C. et al., <a href="http://dx.doi.org/10.1007/s00348-016-2189-6">An irrotation correction on pressure gradient and orthogonal-path integration for PIV-based pressure reconstruction</a>, Exp Fluids (2016) 57: 104. doi:10.1007/s00348-016-2189-6
+    </font>
+        </li>
+
+    <li><font face="Arial, Helvetica, sans-serif">
+         Alain Pumir, Haitao Xu, Eberhard Bodenschatz, and Rainer Grauer, <a href="http://dx.doi.org/10.1103/PhysRevLett.116.124502">Single-Particle Motion and Vortex Stretching in Three-Dimensional Turbulent Flows</a>, Physical Review Letters, 116, 124502, doi:10.1103/PhysRevLett.116.124502
+    </font>
+        </li>
+
+    <li><font face="Arial, Helvetica, sans-serif">
+         J.-B. Chapelier, G. Lodato, A. Jameson, <a href="http://www.sciencedirect.com/science/article/pii/S0045793016300512">A study on the numerical dissipation of the Spectral Difference method for freely decaying and wall-bounded turbulence</a>, Computers & Fluids, doi:10.1016/j.compfluid.2016.03.006
+    </font>
+        </li>
+
+    <li><font face="Arial, Helvetica, sans-serif">
+         Elsinga, G. E. and Marusic, I., <a href="http://dx.doi.org/10.1063/1.4939471">The anisotropic structure of turbulence and its energy spectrum</a>, Physics of Fluids, 28, 011701 (2016), doi:http://dx.doi.org/10.1063/1.4939471
+    </font>
+        </li>
+
 
     <li><font face="Arial, Helvetica, sans-serif">
          Alain Pumir, Haitao Xu and Eric D. Siggia (2016). <a href="http://dx.doi.org/10.1017/jfm.2016.529">Small-scale anisotropy in turbulent boundary layers.</a> Journal of Fluid Mechanics, 804, pp 5-23 doi:10.1017/jfm.2016.529
@@ -104,7 +134,10 @@ International Conference for High Performance Computing, Networking, Storage and
    </a>
    </font>
 </li>
-
+    <li><font face="Arial, Helvetica, sans-serif">
+         Fang, L. and Bos, W. J. T. and Jin, G. D., <a href="http://dx.doi.org/10.1063/1.4936140">Short-time evolution of Lagrangian velocity gradient correlations in isotropic turbulence</a>, Physics of Fluids, 27, 125102 (2015), doi:10.1063/1.4936140
+    </font>
+        </li>
 <li>
     <font face="Arial, Helvetica, sans-serif">J. M. Lawson and J. R. Dawson
      <a href="http://dx.doi.org/10.1017/jfm.2015.452" target="_blank">
