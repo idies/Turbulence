@@ -77,7 +77,7 @@ namespace Turbulence.SQLInterface
         public class TrackingInputRequest
         {
             public int request;
-            //public int timeStep;
+            public int timeStep;
             public long zindex;
             public Point3 pos;
             public Point3 pre_pos;

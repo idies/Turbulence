@@ -48,7 +48,9 @@ public partial class StoredProcedures
         //DateTime startTimer, endTimer, initialTimeStamp;
 
         //initialTimeStamp = startTimer = DateTime.Now;
-
+        //Hack to get only servers that are within the timerange.
+        int mintime = (int)(time / dt);
+        int maxtime = (int)(endTime / dt);
         string localServerCleanName = localServer;
         if (localServer.Contains("_"))
             localServerCleanName = localServer.Remove(localServer.IndexOf("_"));            
@@ -73,8 +75,9 @@ public partial class StoredProcedures
         }
         cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
             "from {0}..{1} where DatasetID = @datasetID " +
+            " and minTime <= {2} and maxTime >= {3} " +
             "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-            "order by minLim", turbinfoDB, DBMapTable);
+            "order by minLim", turbinfoDB, DBMapTable, mintime, maxtime);
         cmd.Parameters.AddWithValue("@datasetID", datasetID);
         using (SqlDataReader reader = cmd.ExecuteReader())
         {
@@ -147,7 +150,8 @@ public partial class StoredProcedures
             baseTimeStep = SQLUtility.GetFlooredTimestep(time, table);
         int nextTimeStep = baseTimeStep;
         float nextTime = time;
-        map = ReadTempTableGetAtomsToRead(tempTable, worker, contextConn, input, serverBoundaries, ref number_of_crossings);
+        
+        map = ReadTempTableGetAtomsToRead(tempTable, worker, contextConn, input, serverBoundaries, ref number_of_crossings, baseTimeStep);
         cmd = new SqlCommand(String.Format(@"DELETE FROM {0}", tempTable), contextConn);
         try
         {
@@ -229,10 +233,11 @@ public partial class StoredProcedures
             // We process the results from the database as they come out, and then calculate PCHIP at the end
 
             TurbulenceBlob blob = new TurbulenceBlob(table);
-
+            int failcounter = 0;
             while (!all_done)
             {
                 all_done = true;
+                failcounter++;
                 //Go through each server and request the data.
                 for (int s = 0; s < servers.Count; s++)
                 {
@@ -373,8 +378,8 @@ public partial class StoredProcedures
                     input[input_point].cubesRead = 0;
                     input[input_point].numberOfCubes = 0;
                     input[input_point].lagInt = null;
-                    AddRequestToMap(ref map, input[input_point], worker, mask, serverBoundaries, ref number_of_crossings);
-                    all_done = false;
+                    AddRequestToMap(ref map, input[input_point], worker, mask, serverBoundaries, ref number_of_crossings, input[input_point].timeStep);
+                    if (failcounter < 6000) all_done = false; //failsafe to prevent infinite looping.
                 }
                 foreach (int done_point in done_points)
                 {
@@ -470,7 +475,8 @@ public partial class StoredProcedures
         SqlConnection conn,
         Dictionary<int, SQLUtility.TrackingInputRequest> input,
         List<ServerBoundaries> serverBoundaries,
-        ref int number_of_crossings)
+        ref int number_of_crossings,
+        int timestep)
     {
         Dictionary<long, List<int>>[] map = new Dictionary<long, List<int>>[serverBoundaries.Count];
         for (int i = 0; i < serverBoundaries.Count; i++)
@@ -507,8 +513,9 @@ public partial class StoredProcedures
                 true);
 
             input[reqseq] = request;
+            input[reqseq].timeStep = timestep; //This is for the extended isotropic where servers contain different timesteps. 
 
-            AddRequestToMap(ref map, request, worker, mask, serverBoundaries, ref number_of_crossings);
+            AddRequestToMap(ref map, request, worker, mask, serverBoundaries, ref number_of_crossings, request.timeStep);
         }
         reader.Close();
 
@@ -518,7 +525,7 @@ public partial class StoredProcedures
     //TODO: Consider moving this method to the worker.
     private static void AddRequestToMap(ref Dictionary<long, List<int>>[] map, SQLUtility.TrackingInputRequest request,
         Turbulence.SQLInterface.workers.GetPositionWorker worker, long mask,
-        List<ServerBoundaries> serverBoundaries, ref int number_of_crossings)
+        List<ServerBoundaries> serverBoundaries, ref int number_of_crossings, int timestep)
     {
         long zindex = 0;
 
@@ -526,7 +533,7 @@ public partial class StoredProcedures
 
         if (worker.spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
         {
-            AddRequestToServerMap(ref map, request, zindex, serverBoundaries);
+            AddRequestToServerMap(ref map, request, zindex, serverBoundaries, timestep);
         }
         else
         {
@@ -570,7 +577,7 @@ public partial class StoredProcedures
 
                         zindex = new Morton3D(zi, yi, xi).Key & mask;
 
-                        int server = AddRequestToServerMap(ref map, request, zindex, serverBoundaries);
+                        int server = AddRequestToServerMap(ref map, request, zindex, serverBoundaries, request.timeStep);
 
                         if (assigned_server != -1 && assigned_server != server)
                         {
@@ -590,7 +597,7 @@ public partial class StoredProcedures
     private static int AddRequestToServerMap(ref Dictionary<long, List<int>>[] map, 
         SQLUtility.TrackingInputRequest request,
         long zindex,
-        List<ServerBoundaries> serverBoundaries)
+        List<ServerBoundaries> serverBoundaries, int timestep)
     {                
         //if (!map.ContainsKey(zindex))
         //{
@@ -601,8 +608,8 @@ public partial class StoredProcedures
 
         for (int i = 0; i < serverBoundaries.Count; i++)
         {
-            //NOTE: We assume each node stores a contiguous range of zindexes.
-            if (serverBoundaries[i].startKey <= zindex && zindex <= serverBoundaries[i].endKey)
+            //NOTE: We assume each node stores a contiguous range of zindexes.  --Only add those that have the correct timesteps from isotropic extension ssh 2016
+            if (serverBoundaries[i].startKey <= zindex && zindex <= serverBoundaries[i].endKey && serverBoundaries[i].minTime <= timestep && serverBoundaries[i].maxTime >= timestep)
             {
                 if (!map[i].ContainsKey(zindex))
                 {

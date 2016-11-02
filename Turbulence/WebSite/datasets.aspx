@@ -47,7 +47,7 @@
         <li> Energy is injected by keeping constant the total
         energy in shells such that |k| is less or equal to 2. </li>
         <li> After the simulation has reached a statistical
-          stationary state, 5,024 frames of data with 3 velocity components and
+          stationary state, 5,028 frames of data with 3 velocity components and
           pressure are stored in the database. Extra time frames at the beginning
           and at the end have been added to be used for temporal-interpolations. </li>
         <li>The Taylor-scale Reynolds

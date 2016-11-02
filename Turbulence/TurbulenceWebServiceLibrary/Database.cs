@@ -226,7 +226,7 @@ namespace TurbulenceService
             /*This is used to cycle through the turbinfo servers in case one goes down */
             List<String> turbinfoservers = new List<String>();
             //turbinfoservers.Add("dsp033"); /*No SQL server here, just a test*/
-            turbinfoservers.Add("sciserver02"); /*Using this for testing...remove for production*/
+            //turbinfoservers.Add("sciserver02"); /*Using this for testing...remove for production*/
             turbinfoservers.Add("gw01");
             turbinfoservers.Add("gw02");
             turbinfoservers.Add("gw03");
@@ -1631,6 +1631,7 @@ namespace TurbulenceService
                 serverBoundaries[i].endy = last_zindex.Y;
                 serverBoundaries[i].startz = first_zindex.Z;
                 serverBoundaries[i].endz = last_zindex.Z;
+                
             }
 
             for (int i = 0; i < points.Length; i++)
@@ -3278,7 +3279,7 @@ namespace TurbulenceService
             }
 
             doneEvent.WaitOne();
-
+            
             if (exception != null)
             {
                 msg = exception.Message + "\n SQL parameters: " + tempTableName + " " + tableName;
@@ -3287,6 +3288,25 @@ namespace TurbulenceService
                     msg = msg + " Server num " + s + "Command: " + sqlcmds[s] + "\n SQL parameters: " + servers[s] + " " + tableName + " " + databases[s] + " " + dataset +"\n";
                 }
                 throw new Exception(msg, exception.InnerException);
+            }
+            else //For debugging we are writing the commands to a file
+            {
+                msg = "\n SQL parameters: " + tempTableName + " " + tableName;
+                for (int s = 0; s < serverCount; s++)
+                {
+                    if (connections[s] != null && datatables[s].Rows.Count > 0)
+                    {
+                        string query = sqlcmds[s].CommandText;
+
+                        foreach (SqlParameter p in sqlcmds[s].Parameters)
+                        {
+                            query = query.Replace(p.ParameterName, p.Value.ToString());
+                        }
+                        msg = msg + " Server num " + s + "Command: " + query + "\n SQL parameters: " + servers[s] + " " + tableName + " " + databases[s] + " " + dataset + "\n";
+                    }
+                }
+                System.IO.File.WriteAllText(@"c:\www\sqloutput-turb.log", msg);
+                
             }
 
             return 0;
