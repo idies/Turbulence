@@ -132,7 +132,7 @@ namespace Website
                             cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
                             ret = cmd.ExecuteScalar();
                             cmd.CommandText = String.Format("SELECT * FROM [{0}].[dbo].[vel] AS v " +
-                                " WHERE v.zindex = (@zindex & -512) AND timestep = {1}", databases[i], mintime[i]);
+                                " WHERE v.zindex = (@zindex & -512) AND timestep = {1}", databases[i], (maxtime[i]));
                             cmd.Parameters.AddWithValue("@zindex", zindex[i]);
                             ret = cmd.ExecuteReader();
 
@@ -175,7 +175,7 @@ namespace Website
                         if (((SqlDataReader)ret).HasRows)
                             dataCheck = true;
                         else
-                            throw new Exception(String.Format("No rows returned from database {0} for slice number {1}!", databases[i], zindex[i]));
+                            throw new Exception(String.Format("No rows returned from database {0} for slice number {1}, dataset: {2}!", databases[i], zindex[i], databases[i]));
 
                         simpleCLR = true;
 

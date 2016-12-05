@@ -91,6 +91,11 @@ International Conference for High Performance Computing, Networking, Storage and
       </p> 
       
 <ul>      
+
+    <li><font face="Arial, Helvetica, sans-serif">
+         F. Candelier, J. Einarsson, and B. Mehlig, <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.117.204501">Angular Dynamics of a Small Particle in Turbulence</a>, Physical Review Letters, 117, 204501, doi:10.1103/PhysRevLett.117.204501</font>
+        </li>
+    
     <li><font face="Arial, Helvetica, sans-serif">
          P. L. Johnson and C. Meneveau<a href="http://dx.doi.org/10.1017/jfm.2016.551">A closure for Lagrangian velocity gradient evolution in turbulence using recent-deformation mapping of initially Gaussian fields</a>, Journal of Fluid Mechanics, Vol. 804, pp 387-419, 2016.
     </font>

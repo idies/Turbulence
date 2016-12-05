@@ -501,7 +501,6 @@ public partial class StoredProcedures
                 true);
 
             input[reqseq] = request;
-            
 
             AddChannelRequestToMap(ref map, request, worker, mask, serverBoundaries, ref number_of_crossings);
         }

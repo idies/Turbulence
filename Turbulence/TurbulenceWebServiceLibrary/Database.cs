@@ -1084,6 +1084,8 @@ namespace TurbulenceService
                 newRow["y"] = y;
                 newRow["z"] = z;
                 datatables[server].Rows.Add(newRow);
+                //string msg = "Added row to server: " + server + " Server name: " + servers[server] + " X: " + x + " Y: " + y + " Z: " + z;
+                ///System.IO.File.WriteAllText(@"c:\www\sqloutput-turb4.log", msg);
 
                 //TODO: Need to enable logging and make it work for the channel flow DB.
                 SetBit(sfc); // Logging
@@ -1674,12 +1676,19 @@ namespace TurbulenceService
                                 if (serverBoundaries[s].minTime <= t && t <= serverBoundaries[s].maxTime)
                                 {
                                     InsertIntoTempTable(s, i, zindex, points[i].z, points[i].y, points[i].x, true);
-
+                                    //string msg = "particle added to server: " + servers[s] + " time: " + serverBoundaries[s].maxTime + "min: " + serverBoundaries[s].minTime; ;
+                                    //System.IO.File.WriteAllText(@"c:\www\sqloutput-turb3.log", msg);
                                     if (flag)
                                     {
                                         throw new Exception("Particle assigned to more than one server!");
                                     }
                                     flag = true;
+                                }
+                                else
+                                {
+                                    //Server doesn't contain timestep.  
+                                    string msg = "Server doesn't contain timestep: " + servers[s] + " time: " + serverBoundaries[s].maxTime + "min: " + serverBoundaries[s].minTime;
+                                    //System.IO.File.WriteAllText(@"c:\www\sqloutput-turb2.log", msg);
                                 }
                             }
                         }
@@ -3275,6 +3284,8 @@ namespace TurbulenceService
                         HandleCallback(result, points, ref numberOfCallbacksNotYetCompleted, ref number_of_crossings, doneEvent, ref exception);
                     });
                     sqlcmds[s].BeginExecuteReader(callback, new Tuple<int, SqlCommand>(s, sqlcmds[s]));
+                    string outputmsg = "Ran query on server number " + s + " servername: " + servers[s] + " time: " + time + " db: " + databases[s];
+                    //System.IO.File.WriteAllText(@"c:\www\sqloutput-turb5.log", outputmsg);
                 }
             }
 
@@ -3304,8 +3315,12 @@ namespace TurbulenceService
                         }
                         msg = msg + " Server num " + s + "Command: " + query + "\n SQL parameters: " + servers[s] + " " + tableName + " " + databases[s] + " " + dataset + "\n";
                     }
+                    else if (connections[s] != null && datatables[s].Rows.Count ==0)
+                    {
+                        msg = msg + "\n Connection not null, but rows 0: " + servers[s];
+                    }
                 }
-                System.IO.File.WriteAllText(@"c:\www\sqloutput-turb.log", msg);
+                //System.IO.File.WriteAllText(@"c:\www\sqloutput-turb.log", msg);
                 
             }
 
