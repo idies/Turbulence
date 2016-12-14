@@ -85,7 +85,10 @@ namespace Turbulence.SQLInterface.workers
 
             int timestepsForInterpolation;
 
-            float dt1 = Math.Abs(endTime - time);
+            float dt1 = Math.Abs(endTime - time);        // PJ 12/14/16, "time" has a different value than during predictor step!
+            float dt2 = Math.Abs(endTime - (time - dt)); // PJ 12/14/16, need to know timestep size for last corrector step
+            // This won't do it, since dt is wrong if the last time step is not dt, which is the whole point of why we need this
+            // Fundamental problem: We don't have access to what the "time" or "dt" variable was during the predictor step
 
             if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
             {
@@ -113,38 +116,64 @@ namespace Turbulence.SQLInterface.workers
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pos.x, point.pos.y, point.pos.z, ref point.lagInt);
 
-
-                }
-                else
-                {
-                    velocity = turbulence_worker.CalcLagInterpolation(blob, point.pre_pos.x, point.pre_pos.y, point.pre_pos.z, ref point.lagInt);
-                }
-
-                /* This used to only happen when point.compute_predictor.  We took it out since it should be adjusted for predictor and corrector steps */
-                if (dt > 0)
-                {
-                    if (dt1 < dt)
+                    /* For last predictor step, dt = dt1 */
+                    if (dt > 0)
                     {
-                        if (dt1 < 0.00001 && point.compute_predictor)
+                        if (dt1 < dt)
                         {
-                            throw new Exception("This shouldn't happen!");
-
+                            if (dt1 < 0.00001 && point.compute_predictor)
+                            {
+                                throw new Exception("This shouldn't happen!");
+    
+                            }
+                            else
+                                dt = dt1;
                         }
-                        else
-                            dt = dt1;
+                    }
+                    else
+                    {
+                        if (dt1 < -dt)
+                        {
+                            if (dt1 < 0.00001 && point.compute_predictor)
+                            {
+                                throw new Exception("This shouldn't happen!");
+    
+                            }
+                            else
+                                dt = -dt1;
+                        }
                     }
                 }
                 else
                 {
-                    if (dt1 < -dt)
-                    {
-                        if (dt1 < 0.00001 && point.compute_predictor)
-                        {
-                            throw new Exception("This shouldn't happen!");
+                    velocity = turbulence_worker.CalcLagInterpolation(blob, point.pre_pos.x, point.pre_pos.y, point.pre_pos.z, ref point.lagInt);
 
+                    /* For last corrector step, dt = dt2 */
+                    if (dt > 0)
+                    {
+                        if (dt1 < dt)
+                        {
+                            if (dt1 < 0.00001 && point.compute_predictor)
+                            {
+                                throw new Exception("This shouldn't happen!");
+    
+                            }
+                            else
+                                dt = dt1;
                         }
-                        else
-                            dt = -dt1;
+                    }
+                    else
+                    {
+                        if (dt1 < -dt)
+                        {
+                            if (dt1 < 0.00001 && point.compute_predictor)
+                            {
+                                throw new Exception("This shouldn't happen!");
+    
+                            }
+                            else
+                                dt = -dt1;
+                        }
                     }
                 }
 
