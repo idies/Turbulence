@@ -222,9 +222,15 @@ public partial class StoredProcedures
 
             TurbulenceBlob blob = new TurbulenceBlob(table);
             int failsafe = 0;
+            int norowcount = 0;
             while (!all_done)
             {
                 all_done = true;
+                failsafe = failsafe + 1; /*Just to prevent a server lockup */
+                if (failsafe > 100000)
+                {
+                    throw new Exception("Looped too many times, aborting.  Failsafe = "  + failsafe.ToString() + " Time is " + time.ToString() + " Norowcount = " + norowcount.ToString());
+                }
                 //Go through each server and request the data.
                 for (int s = 0; s < servers.Count; s++)
                 {
@@ -291,11 +297,11 @@ public partial class StoredProcedures
                         //}
                         cmd = new SqlCommand(query, connections[s]);
                         cmd.CommandTimeout = 3600;
-                        
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
+
                             
-                                while (reader.Read())
+                            while (reader.Read())
                                 {
                                     //int basetime = reader.GetSqlInt32(0).Value;  // Base time
                                     int timestepRead = reader.GetSqlInt32(0).Value;  // Timestep returned
@@ -348,6 +354,7 @@ public partial class StoredProcedures
 
                         map[s].Clear();
                     }
+                   
                 }
                 
                 // create new map
@@ -365,14 +372,10 @@ public partial class StoredProcedures
                     input[input_point].cubesRead = 0;
                     input[input_point].numberOfCubes = 0;
                     input[input_point].lagInt = null;
-
+                    
                     AddRequestToMap(ref map, input[input_point], worker, mask, serverBoundaries, ref number_of_crossings, baseTimeStep );
                     all_done = false;
-                    failsafe = failsafe + 1;
-                    if (failsafe > 8000000)
-                    {
-                        throw new Exception("Looped too many times, aborting trace.");
-                    }
+
                 }
                 foreach (int done_point in done_points)
                 {
@@ -524,7 +527,22 @@ public partial class StoredProcedures
 
         if (worker.spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
         {
-            AddRequestToServerMap(ref map, request, zindex, serverBoundaries, time);
+            if (AddRequestToServerMap(ref map, request, zindex, serverBoundaries, time) == -1)
+            {
+                string sblist = "";
+                for (int i=0;  i < serverBoundaries.Count; i++)
+                {
+                    sblist = sblist + "Server " + i.ToString() + " maxtime: " + serverBoundaries[i].maxTime.ToString() + "\n";
+                    sblist = sblist + "Server " + i.ToString() + " mintime: " + serverBoundaries[i].minTime.ToString() + "\n";
+                    sblist = sblist + "Server " + i.ToString() + " maxkey: " + serverBoundaries[i].endKey.ToString() + "\n";
+                    sblist = sblist + "Server " + i.ToString() + " minkey: " + serverBoundaries[i].startKey.ToString() + "\n";
+                    sblist = sblist + "\n";
+                    sblist = sblist + "Request time: " + time + " zindex: " + zindex + "request zindex: " + request.zindex.ToString() + "Request position x" + request.pos.x.ToString() + " y" + request.pos.y.ToString() + " z" + request.pos.y.ToString();
+                }
+
+                throw new Exception("Server boundaries are: " +sblist);
+            }
+            
         }
         else
         {

@@ -107,39 +107,45 @@ namespace Turbulence.SQLInterface.workers
 
                 float delta = time2 - time1;
 
+
+
                 if (point.compute_predictor)
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pos.x, point.pos.y, point.pos.z, ref point.lagInt);
-                    if (dt > 0)
-                    {
-                        if (dt1 < dt)
-                        {
-                            if (dt1 < 0.00001)
-                            {
-                                throw new Exception("This shouldn't happen!");
 
-                            }
-                            else
-                                dt = dt1;
-                        }
-                    }
-                    else
-                    {
-                        if (dt1 < -dt)
-                        {
-                            if (dt1 < 0.00001)
-                            {
-                                throw new Exception("This shouldn't happen!");
 
-                            }
-                            else
-                                dt = -dt1;
-                        }
-                    }
                 }
                 else
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pre_pos.x, point.pre_pos.y, point.pre_pos.z, ref point.lagInt);
+                }
+
+                /* This used to only happen when point.compute_predictor.  We took it out since it should be adjusted for predictor and corrector steps */
+                if (dt > 0)
+                {
+                    if (dt1 < dt)
+                    {
+                        if (dt1 < 0.00001 && point.compute_predictor)
+                        {
+                            throw new Exception("This shouldn't happen!");
+
+                        }
+                        else
+                            dt = dt1;
+                    }
+                }
+                else
+                {
+                    if (dt1 < -dt)
+                    {
+                        if (dt1 < 0.00001 && point.compute_predictor)
+                        {
+                            throw new Exception("This shouldn't happen!");
+
+                        }
+                        else
+                            dt = -dt1;
+                    }
                 }
 
                 if (timestepRead == timestep0)

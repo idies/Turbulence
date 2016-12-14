@@ -209,11 +209,11 @@ using System.Threading;
             /*This is used to cycle through the turbinfo servers in case one goes down */
             List<String> turbinfoservers = new List<String>();
             //turbinfoservers.Add("dsp033"); /*No SQL server here, just a test*/
-            turbinfoservers.Add("sciserver02");
+            
             turbinfoservers.Add("gw01");
             turbinfoservers.Add("gw02");
-            turbinfoservers.Add("gw03");
-            turbinfoservers.Add("gw04");
+            //turbinfoservers.Add("gw03");
+            //turbinfoservers.Add("gw04");
             /* Now get a good connection in order of what was provided */
             foreach (var server in turbinfoservers)
             {
@@ -247,7 +247,7 @@ using System.Threading;
             String dataset = dataset_enum.ToString();
             //String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             //Sciserver testing.
-            String turbinfoserver = "sciserver02";
+            String turbinfoserver = "gw01";
             turbinfoserver = GetTurbinfoServer();
             String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200", turbinfoserver);
             SqlConnection conn = new SqlConnection(cString);
@@ -326,8 +326,9 @@ using System.Threading;
         public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers)
         {
             String dataset = dataset_enum.ToString();
-            //String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
-            String cString = "Server=sciserver02;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+        String turbinfoserver = GetTurbinfoServer();
+            String cString = "Server=" +turbinfoserver + ";Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            //String cString = "Server=sciserver02;Database=turbinfo;Asynchronous Processing=false;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
