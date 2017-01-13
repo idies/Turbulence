@@ -223,6 +223,7 @@ public partial class StoredProcedures
             TurbulenceBlob blob = new TurbulenceBlob(table);
             int failsafe = 0;
             int norowcount = 0;
+            float priordt = 0; //used to store prior DT for final corrector step.
             while (!all_done)
             {
                 all_done = true;
@@ -328,7 +329,7 @@ public partial class StoredProcedures
                                             throw new Exception("blob is NULL!");
 
                                         point.cubesRead++;
-                                        worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime);
+                                        worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime, ref priordt);
                                     }
 
                                     //endTimer = DateTime.Now;
@@ -537,7 +538,7 @@ public partial class StoredProcedures
                     sblist = sblist + "Server " + i.ToString() + " maxkey: " + serverBoundaries[i].endKey.ToString() + "\n";
                     sblist = sblist + "Server " + i.ToString() + " minkey: " + serverBoundaries[i].startKey.ToString() + "\n";
                     sblist = sblist + "\n";
-                    sblist = sblist + "Request time: " + time + " zindex: " + zindex + "request zindex: " + request.zindex.ToString() + "Request position x" + request.pos.x.ToString() + " y" + request.pos.y.ToString() + " z" + request.pos.y.ToString();
+                    sblist = sblist + "Request time: " + time.ToString() + " zindex: " + zindex.ToString() + "request zindex: " + request.zindex.ToString() + "Request position x" + request.pos.x.ToString() + " y" + request.pos.y.ToString() + " z" + request.pos.y.ToString();
                 }
 
                 throw new Exception("Server boundaries are: " +sblist);

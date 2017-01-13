@@ -9,7 +9,9 @@ using Turbulence.SQLInterface;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
+/* Added for FileDB*/
+using System.IO;
+/* NOTE: This is the experimental filedb version of ExecuteMHDWorker! */
 
 public partial class StoredProcedures
 {
@@ -153,8 +155,10 @@ public partial class StoredProcedures
             int timestep_int = SQLUtility.GetNearestTimestep(time, table);
 
             TurbulenceBlob blob = new TurbulenceBlob(table);
+            /* Modified for filedb */
 
-            cmd = new SqlCommand(
+
+            /* cmd = new SqlCommand(
                String.Format(@"SELECT {0}.zindex, {0}.data " +
                           "FROM {1}, {0} WHERE {0}.timestep = {2} " +
                           "AND {1}.zindex = {0}.zindex",
@@ -162,12 +166,29 @@ public partial class StoredProcedures
                           contextConn);
                           //standardConn);
             cmd.CommandTimeout = 3600;
+            */
+
+            cmd = new SqlCommand(
+               String.Format(@"SELECT {0}.zindex " +
+                          "FROM {0} ",
+                           joinTable),
+                          contextConn);
+            //standardConn);
+            cmd.CommandTimeout = 3600;
+
             //conn.InfoMessage += new SqlInfoMessageEventHandler(InfoMessageHandler);
 
             //endTime = DateTime.Now;
             //resultSendingTime += endTime - startTime;
 
             //startTime = endTime;
+            //Setup the file
+            string pathSource = "d:\\filedb";
+            pathSource = pathSource + "\\" + dbname + "_" + timestep_int + ".bin";
+            
+            FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
+            
+
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 //do
@@ -176,12 +197,24 @@ public partial class StoredProcedures
                 {
                     // read in the current blob
                     long thisBlob = reader.GetSqlInt64(0).Value;
-                    int bytesread = 0;
-                    while (bytesread < table.BlobByteSize)
-                    {
-                        int bytes = (int)reader.GetBytes(1, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
-                        bytesread += bytes;
-                    }
+                    //int bytesread = 0;
+                    //while (bytesread < table.BlobByteSize)
+                    // {
+                    //int bytes = (int)reader.GetBytes(1, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
+                    long z = thisBlob / (table.atomDim*table.atomDim*table.atomDim);
+                    //long offset = z * table.BlobByteSize; //This is hardcoded for testing, will need to adjust for 1 component like pressure
+                    long offset = z* table.BlobByteSize;
+                    filedb.Seek(offset, SeekOrigin.Begin);
+                    //Test
+                    
+                   // string[] lines= { "Offset chosen = ", offset.ToString(), z.ToString(), table.BlobByteSize.ToString(), thisBlob.ToString(),pathSource, table.atomDim.ToString()};
+                    //System.IO.File.WriteAllLines(@"d:\filedb\debug.txt", lines);
+                    
+                    int bytes = filedb.Read(rawdata, 0, table.BlobByteSize);
+                    
+                            
+                       // bytesread += bytes;
+                    //}
                     //endTime = DateTime.Now;
                     //IOTime += endTime - startTime;
 

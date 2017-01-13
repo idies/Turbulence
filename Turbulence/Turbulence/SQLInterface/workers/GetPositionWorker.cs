@@ -76,7 +76,7 @@ namespace Turbulence.SQLInterface.workers
             throw new NotImplementedException();
         }
 
-        public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestepRead, int basetime, float time, float endTime, float dt, ref int nextTimeStep, ref float nextTime)
+        public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestepRead, int basetime, float time, float endTime, float dt, ref int nextTimeStep, ref float nextTime, ref float priordt)
         {
             double[] velocity = new double[3];
 
@@ -86,7 +86,7 @@ namespace Turbulence.SQLInterface.workers
             int timestepsForInterpolation;
 
             float dt1 = Math.Abs(endTime - time);        // PJ 12/14/16, "time" has a different value than during predictor step!
-            float dt2 = Math.Abs(endTime - (time - dt)); // PJ 12/14/16, need to know timestep size for last corrector step
+            //float dt2 = Math.Abs(endTime - (time - dt)); // PJ 12/14/16, need to know timestep size for last corrector step
             // This won't do it, since dt is wrong if the last time step is not dt, which is the whole point of why we need this
             // Fundamental problem: We don't have access to what the "time" or "dt" variable was during the predictor step
 
@@ -143,38 +143,12 @@ namespace Turbulence.SQLInterface.workers
                                 dt = -dt1;
                         }
                     }
+                    priordt = dt; //Used to save prior dt for compute predictor step
                 }
                 else
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pre_pos.x, point.pre_pos.y, point.pre_pos.z, ref point.lagInt);
-
-                    /* For last corrector step, dt = dt2 */
-                    if (dt > 0)
-                    {
-                        if (dt1 < dt)
-                        {
-                            if (dt1 < 0.00001 && point.compute_predictor)
-                            {
-                                throw new Exception("This shouldn't happen!");
-    
-                            }
-                            else
-                                dt = dt1;
-                        }
-                    }
-                    else
-                    {
-                        if (dt1 < -dt)
-                        {
-                            if (dt1 < 0.00001 && point.compute_predictor)
-                            {
-                                throw new Exception("This shouldn't happen!");
-    
-                            }
-                            else
-                                dt = -dt1;
-                        }
-                    }
+                    dt = priordt;
                 }
 
                 if (timestepRead == timestep0)
@@ -206,7 +180,7 @@ namespace Turbulence.SQLInterface.workers
                     //point.result[r] += result[r] * (time - time1) * (time - time1) * (time - time2) / 2 / delta / delta / delta;
                 }
             }
-
+           
             // Check if we are done with this point
             if (point.cubesRead == timestepsForInterpolation * point.numberOfCubes)
             {
@@ -232,8 +206,15 @@ namespace Turbulence.SQLInterface.workers
                         Y = LagInterpolation.CalcNode(point.pre_pos.y, setInfo.Dy);
                         Z = LagInterpolation.CalcNode(point.pre_pos.z, setInfo.Dz);
                     }
+                    /* Fix for wrap around */
+                    X = (X + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    Y = (Y + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    Z = (Z + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+
                     point.zindex = new Morton3D(Z, Y, X);
                     point.compute_predictor = false;
+                    if (point.zindex > 75161927680)
+                        throw new Exception("Zindex out of range! z = " + point.zindex.ToString() + " x y and z are: " + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString());
 
                     nextTime = time + dt;
                     if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
@@ -268,11 +249,19 @@ namespace Turbulence.SQLInterface.workers
                         Y = LagInterpolation.CalcNode(point.pos.y, setInfo.Dy);
                         Z = LagInterpolation.CalcNode(point.pos.z, setInfo.Dz);
                     }
+                    /* Fix for wrap around */
+                    X = (X + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    Y = (Y + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    Z = (Z + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+
                     point.zindex = new Morton3D(Z, Y, X);
+                    if (point.zindex > 75161927680)
+                        throw new Exception("Zindex out of range! z = " + point.zindex.ToString() + " x y and z are: " + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString());
 
                     nextTime = time;
                     nextTimeStep = basetime;
                 }
+                
             }
         }
 
