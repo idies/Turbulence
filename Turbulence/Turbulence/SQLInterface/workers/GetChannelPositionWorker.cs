@@ -77,7 +77,7 @@ namespace Turbulence.SQLInterface.workers
             throw new NotImplementedException();
         }
 
-        public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestepRead, int basetime, float time, float endTime, float dt, ref int nextTimeStep, ref float nextTime)
+        public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestepRead, int basetime, float time, float endTime, float dt, ref int nextTimeStep, ref float nextTime, ref float priordt)
         {
             double[] velocity = new double[3];
 
@@ -87,6 +87,7 @@ namespace Turbulence.SQLInterface.workers
             int timestepsForInterpolation;
 
             float dt1 = Math.Abs(endTime - time);
+
 
             if (temporalInterpolation == TurbulenceOptions.TemporalInterpolation.None)
             {
@@ -139,10 +140,12 @@ namespace Turbulence.SQLInterface.workers
                                 dt = -dt1;
                         }
                     }
+                    priordt = dt;
                 }
                 else
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pre_pos.x, point.pre_pos.y, point.pre_pos.z, ref point.lagInt);
+                    dt = priordt;
                 }
 
                 // PJ 2015: subtract 0.45 from x velocity due to moving grid (we track based on grid location, then convert at end)
@@ -220,16 +223,19 @@ namespace Turbulence.SQLInterface.workers
                     int Z = setInfo.CalcNodeZ(point.pre_pos.z, spatialInterp);
                     //if (kernelSize == 0)
                     //{
-                        //X = LagInterpolation.CalcNodeWithRound(point.pre_pos.x, setInfo.Dx);
-                        //Y = LagInterpolation.CalcNodeWithRound(point.pre_pos.y, setInfo.Dy);
-                        //Z = LagInterpolation.CalcNodeWithRound(point.pre_pos.z, setInfo.Dz);
+                    //X = LagInterpolation.CalcNodeWithRound(point.pre_pos.x, setInfo.Dx);
+                    //Y = LagInterpolation.CalcNodeWithRound(point.pre_pos.y, setInfo.Dy);
+                    //Z = LagInterpolation.CalcNodeWithRound(point.pre_pos.z, setInfo.Dz);
                     //}
                     //else
                     //{
-                        //X = LagInterpolation.CalcNode(point.pre_pos.x, setInfo.Dx);
-                        //Y = LagInterpolation.CalcNode(point.pre_pos.y, setInfo.Dy);
-                        //Z = LagInterpolation.CalcNode(point.pre_pos.z, setInfo.Dz);
+                    //X = LagInterpolation.CalcNode(point.pre_pos.x, setInfo.Dx);
+                    //Y = LagInterpolation.CalcNode(point.pre_pos.y, setInfo.Dy);
+                    //Z = LagInterpolation.CalcNode(point.pre_pos.z, setInfo.Dz);
                     //}
+                    /* Fix for wrap around */
+                    X = ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;                   
+                    Z = ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     point.zindex = new Morton3D(Z, Y, X);
                     point.compute_predictor = false;
@@ -278,16 +284,20 @@ namespace Turbulence.SQLInterface.workers
                     int Z = setInfo.CalcNodeZ(point.pos.z, spatialInterp);
                     //if (kernelSize == 0)
                     //{
-                        //X = LagInterpolation.CalcNodeWithRound(point.pos.x, setInfo.Dx);
-                        //Y = LagInterpolation.CalcNodeWithRound(point.pos.y, setInfo.Dy);
-                        //Z = LagInterpolation.CalcNodeWithRound(point.pos.z, setInfo.Dz);
+                    //X = LagInterpolation.CalcNodeWithRound(point.pos.x, setInfo.Dx);
+                    //Y = LagInterpolation.CalcNodeWithRound(point.pos.y, setInfo.Dy);
+                    //Z = LagInterpolation.CalcNodeWithRound(point.pos.z, setInfo.Dz);
                     //}
                     //else
                     //{
-                        //X = LagInterpolation.CalcNode(point.pos.x, setInfo.Dx);
-                        //Y = LagInterpolation.CalcNode(point.pos.y, setInfo.Dy);
-                        //Z = LagInterpolation.CalcNode(point.pos.z, setInfo.Dz);
+                    //X = LagInterpolation.CalcNode(point.pos.x, setInfo.Dx);
+                    //Y = LagInterpolation.CalcNode(point.pos.y, setInfo.Dy);
+                    //Z = LagInterpolation.CalcNode(point.pos.z, setInfo.Dz);
                     //}
+                    /* Fix for wrap around */
+                    X = ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    Z = ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+
                     point.zindex = new Morton3D(Z, Y, X);
 
                     nextTime = time;

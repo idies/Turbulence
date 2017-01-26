@@ -227,9 +227,15 @@ public partial class StoredProcedures
             // We process the results from the database as they come out, and then calculate PCHIP at the end
 
             TurbulenceBlob blob = new TurbulenceBlob(table);
-
+            float priordt = 0; //used to store prior DT for final corrector step.
+            int failsafe = 0;
             while (!all_done)
             {
+                failsafe = failsafe + 1; /*Just to prevent a server lockup */
+                if (failsafe > 100000)
+                {
+                    throw new Exception("Looped too many times, aborting.  Failsafe = " + failsafe.ToString() + " Time is " + time.ToString());
+                }
                 all_done = true;
                 //Go through each server and request the data.
                 for (int s = 0; s < servers.Count; s++)
@@ -327,7 +333,7 @@ public partial class StoredProcedures
                                         throw new Exception("blob is NULL!");
 
                                     point.cubesRead++;
-                                    worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime);
+                                    worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime, ref priordt);
                                 }
 
                                 //endTimer = DateTime.Now;

@@ -207,9 +207,9 @@ namespace Turbulence.SQLInterface.workers
                         Z = LagInterpolation.CalcNode(point.pre_pos.z, setInfo.Dz);
                     }
                     /* Fix for wrap around */
-                    X = (X + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    Y = (Y + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                    Z = (Z + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    X = ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    Y = ((Y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    Z = ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     point.zindex = new Morton3D(Z, Y, X);
                     point.compute_predictor = false;
@@ -250,9 +250,9 @@ namespace Turbulence.SQLInterface.workers
                         Z = LagInterpolation.CalcNode(point.pos.z, setInfo.Dz);
                     }
                     /* Fix for wrap around */
-                    X = (X + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    Y = (Y + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                    Z = (Z + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    X = ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                    Y = ((Y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
+                    Z = ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     point.zindex = new Morton3D(Z, Y, X);
                     if (point.zindex > 75161927680)
