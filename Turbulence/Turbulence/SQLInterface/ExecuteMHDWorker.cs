@@ -9,7 +9,9 @@ using Turbulence.SQLInterface;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-
+/* Added for FileDB*/
+using System.IO;
+/* NOTE: This is the experimental filedb version of ExecuteMHDWorker! */
 
 public partial class StoredProcedures
 {
@@ -142,7 +144,6 @@ public partial class StoredProcedures
         record = new SqlDataRecord(worker.GetRecordMetaData());
         SqlContext.Pipe.SendResultsStart(record);
 
-
         //throw new Exception(zindexRegionsString);
         if ((TurbulenceOptions.TemporalInterpolation)temporalInterp ==
             TurbulenceOptions.TemporalInterpolation.None)
@@ -153,8 +154,10 @@ public partial class StoredProcedures
             int timestep_int = SQLUtility.GetNearestTimestep(time, table);
 
             TurbulenceBlob blob = new TurbulenceBlob(table);
+            /* Modified for filedb */
 
-            cmd = new SqlCommand(
+
+            /* cmd = new SqlCommand(
                String.Format(@"SELECT {0}.zindex, {0}.data " +
                           "FROM {1}, {0} WHERE {0}.timestep = {2} " +
                           "AND {1}.zindex = {0}.zindex",
@@ -162,12 +165,28 @@ public partial class StoredProcedures
                           contextConn);
                           //standardConn);
             cmd.CommandTimeout = 3600;
+            */
+
+            cmd = new SqlCommand(
+               String.Format(@"SELECT {0}.zindex " +
+                          "FROM {0} ORDER BY zindex",
+                           joinTable),
+                          contextConn);
+            //standardConn);
+            cmd.CommandTimeout = 3600;
+
             //conn.InfoMessage += new SqlInfoMessageEventHandler(InfoMessageHandler);
 
             //endTime = DateTime.Now;
             //resultSendingTime += endTime - startTime;
 
             //startTime = endTime;
+            //Setup the file
+            string pathSource = "d:\\filedb";
+            pathSource = pathSource + "\\" + dbname + "_" + timestep_int + ".bin";
+            FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
+
+
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 //do
@@ -176,12 +195,17 @@ public partial class StoredProcedures
                 {
                     // read in the current blob
                     long thisBlob = reader.GetSqlInt64(0).Value;
-                    int bytesread = 0;
-                    while (bytesread < table.BlobByteSize)
-                    {
-                        int bytes = (int)reader.GetBytes(1, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
-                        bytesread += bytes;
-                    }
+
+                    long z = thisBlob / (table.atomDim*table.atomDim*table.atomDim);
+                    long offset = z* table.BlobByteSize;
+                    filedb.Seek(offset, SeekOrigin.Begin);
+                    //Test
+                    
+                   // string[] lines= { "Offset chosen = ", offset.ToString(), z.ToString(), table.BlobByteSize.ToString(), thisBlob.ToString(),pathSource, table.atomDim.ToString()};
+                    //System.IO.File.WriteAllLines(@"d:\filedb\debug.txt", lines);
+                    
+                    int bytes = filedb.Read(rawdata, 0, table.BlobByteSize);
+                    
                     //endTime = DateTime.Now;
                     //IOTime += endTime - startTime;
 
@@ -269,6 +293,7 @@ public partial class StoredProcedures
             }
             standardConn.Close();
             contextConn.Close();
+            filedb.Close();
             blob = null;
         }
         else if ((TurbulenceOptions.TemporalInterpolation)temporalInterp ==
@@ -282,6 +307,7 @@ public partial class StoredProcedures
             int timestep1 = basetime;
             int timestep2 = basetime + table.TimeInc;
             int timestep3 = basetime + table.TimeInc * 2;
+            
 
             float time0 = (timestep0 - table.TimeOff) * table.Dt;
             float time1 = (timestep1 - table.TimeOff) * table.Dt;
@@ -295,31 +321,58 @@ public partial class StoredProcedures
             TurbulenceBlob blob = new TurbulenceBlob(table);
             cmd = new SqlCommand(
                 String.Format(@"DECLARE @times table (timestep int NOT NULL) " +
+                          "INSERT @times VALUES ({1}) " +
                           "INSERT @times VALUES ({2}) " +
                           "INSERT @times VALUES ({3}) " +
                           "INSERT @times VALUES ({4}) " +
-                          "INSERT @times VALUES ({5}) " +
 
-                          "SELECT {0}.timestep, {0}.zindex, {0}.data " +
-                          "FROM @times as t, {0}, {1} " +
-                          "WHERE {0}.timestep = t.timestep AND {0}.zindex = {1}.zindex",
-                          tableName, joinTable, timestep0, timestep1, timestep2, timestep3),
+                          "SELECT t.timestep, {0}.zindex " +
+                          "FROM @times as t,  {0} " +
+                          "ORDER BY zindex",  
+                           joinTable, timestep0, timestep1, timestep2, timestep3),
                           contextConn);
                           //standardConn);
             cmd.CommandTimeout = 3600;
+            /*Setup all four files and open them*/
+            string pathSource = "d:\\filedb";
+            string pathSource0 = pathSource + "\\" + dbname + "_" + timestep0 + ".bin";
+            FileStream filedb0 = new FileStream(pathSource0, FileMode.Open, System.IO.FileAccess.Read);
+            string pathSource1 = pathSource + "\\" + dbname + "_" + timestep1 + ".bin";
+            FileStream filedb1 = new FileStream(pathSource1, FileMode.Open, System.IO.FileAccess.Read);
+            string pathSource2 = pathSource + "\\" + dbname + "_" + timestep2 + ".bin";
+            FileStream filedb2 = new FileStream(pathSource2, FileMode.Open, System.IO.FileAccess.Read);
+            string pathSource3 = pathSource + "\\" + dbname + "_" + timestep3 + ".bin";
+            FileStream filedb3 = new FileStream(pathSource3, FileMode.Open, System.IO.FileAccess.Read);
+
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
                     int timestep = reader.GetSqlInt32(0).Value;  // Timestep returned
                     long thisBlob = reader.GetSqlInt64(1).Value; // Blob returned
-                    int bytesread = 0;
 
-                    while (bytesread < table.BlobByteSize)
+                    
+                    long z = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
+                    long offset = z * table.BlobByteSize;
+                    if (timestep == timestep0)
                     {
-                        //int bytes = (int)reader.GetBytes(2, 0, rawdata, bytesread, table.BlobByteSize - bytesread);
-                        int bytes = (int)reader.GetBytes(2, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
-                        bytesread += bytes;
+                        filedb0.Seek(offset, SeekOrigin.Begin);
+                        int bytes = filedb0.Read(rawdata, 0, table.BlobByteSize);
+                    }
+                    else if (timestep == timestep1)
+                    {
+                        filedb1.Seek(offset, SeekOrigin.Begin);
+                        int bytes = filedb1.Read(rawdata, 0, table.BlobByteSize);
+                    }
+                    else if (timestep == timestep2)
+                    {
+                        filedb2.Seek(offset, SeekOrigin.Begin);
+                        int bytes = filedb2.Read(rawdata, 0, table.BlobByteSize);
+                    }
+                    else if (timestep == timestep3)
+                    {
+                        filedb3.Seek(offset, SeekOrigin.Begin);
+                        int bytes = filedb3.Read(rawdata, 0, table.BlobByteSize);
                     }
                     blob.Setup(timestep, new Morton3D(thisBlob), rawdata);
                     //for (int i = 0; i < input[thisBlob].Count; i++)
@@ -403,6 +456,10 @@ public partial class StoredProcedures
             }
             standardConn.Close();
             contextConn.Close();
+            filedb0.Close();
+            filedb1.Close();
+            filedb2.Close();
+            filedb3.Close();
             // Encourage garbage collector to clean up.
             blob = null;
         }
