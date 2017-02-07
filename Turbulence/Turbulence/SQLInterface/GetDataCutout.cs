@@ -63,42 +63,32 @@ public partial class StoredProcedures
         string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
         int atomWidth = table.atomDim;
         /*File Db code*/
-        /*Idea is to read in from low to high morton index into a buffer, then create a new buffer and unpack into row major(or column major?) order*/
-
         string pathSource = "d:\\filedb";
         pathSource = pathSource + "\\" + dbname + "_" + timestep + ".bin";
         //FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
-
-        /*Get zindex range to query REMOVED, querying entire file now.*/
-        long skey;
-        skey = new Morton3D(coordinates[0], coordinates[1], coordinates[2]).Key;
-        //ekey = new Morton3D(coordinates[3], coordinates[4], coordinates[5]).Key;
-        /* Now find nearest blob zindex*/
-        skey = skey - skey % table.BlobByteSize; /*Find start zindex for blob*/
-        //ekey = ekey - ekey % table.BlobByteSize;
-        //long difference = ekey - skey; /*We *should* be small enough to cast to int*/
-        //int buffer_size = ((int)difference/(table.atomDim ^ 3)) * table.BlobByteSize;
-        //byte[] z_rawdata = new byte[buffer_size];
-
-               
-        //long offset = skey * table.BlobByteSize;
-        //filedb.Seek(offset, SeekOrigin.Begin);
-        //Test
-        // string[] lines= { "Offset chosen = ", offset.ToString(), z.ToString(), table.BlobByteSize.ToString(), thisBlob.ToString(),pathSource, table.atomDim.ToString()};
-        //System.IO.File.WriteAllLines(@"d:\filedb\debug.txt", lines);
-        //int bytes = filedb.Read(z_rawdata, 0, buffer_size); /*Read it all in at once*/
-        /* Read in entire file. */
-        byte[] z_rawdata = File.ReadAllBytes(pathSource); /*Read it all in at once*/
-
-     
-        //int blobcount = (int) Math.Ceiling((float) (cutoutbytesize / (table.atomDim ^ 3)));
-       // blobcount--; //test decrement blobcount by one. Not sure if this is right.
-        //long iter_zindex = skey;
-        //Instead of getting data, we simply get the z-indicies for the blobs that makeup our cutout.
-        string queryString = String.Format(
-                "select dbo.GetMortonX(zindex),dbo.GetMortonY(zindex),dbo.GetMortonZ(zindex),  zindex from {8}..zindex where " +
+        /* Seems to be no easy way of getting rows from the reader, so we do a quick count first. */
+        string queryStringcount = String.Format(
+                "select count(zindex) from {7}..zindex where " +
                     "X >= {0} & -{6} and X < {3} and Y >= {1} & -{6} and Y < {4} and Z >= {2} & -{6} and z < {5} ", coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5],
-                atomWidth, tableName, dbname, timestep);
+                atomWidth, dbname);
+        SqlCommand countcommand = new SqlCommand(
+            queryStringcount, connection);
+        //SqlDataReader reader = command.ExecuteReader();
+        int rowcount = Convert.ToInt32(countcommand.ExecuteScalar());
+        bool read_entire_file = false;
+        byte[] z_rawdata = new byte[table.BlobByteSize]; ; //Initilize for small cutout, reassign below if we are reading in the entire file.
+        FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read); /* This is in case we don't read in the entire file */
+        /* Read in entire file. */
+        if (rowcount > 4096)
+        { 
+                z_rawdata = File.ReadAllBytes(pathSource); /*Read it all in at once*/
+                read_entire_file = true;
+        }
+        /* TODO: look for smaller requests (128 cube or smaller), and do file seek instead. Looks to be about 4096 rows*/
+        string queryString = String.Format(
+                "select dbo.GetMortonX(zindex),dbo.GetMortonY(zindex),dbo.GetMortonZ(zindex),  zindex from {7}..zindex where " +
+                    "X >= {0} & -{6} and X < {3} and Y >= {1} & -{6} and Y < {4} and Z >= {2} & -{6} and z < {5} ", coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5],
+                atomWidth, dbname);
 
         SqlCommand command = new SqlCommand(
             queryString, connection);
@@ -111,23 +101,36 @@ public partial class StoredProcedures
                 y = reader.GetSqlInt32(1).Value;
                 z = reader.GetSqlInt32(2).Value;
                 int sourceX = 0, destinationX = 0, sourceY = 0, destinationY = 0, sourceZ = 0, destinationZ = 0, lengthX = 0, lengthY = 0, lengthZ = 0;
+                long source0 = 0;
 
                 GetSourceDestLen(x, coordinates[0], coordinates[3], atomWidth, ref sourceX, ref destinationX, ref lengthX);
                 GetSourceDestLen(y, coordinates[1], coordinates[4], atomWidth, ref sourceY, ref destinationY, ref lengthY);
                 GetSourceDestLen(z, coordinates[2], coordinates[5], atomWidth, ref sourceZ, ref destinationZ, ref lengthZ);
 
-                //int source0 = (sourceX + sourceY * atomWidth) * table.Components * sizeof(float);
                 int dest0 = (destinationX + destinationY * x_width) * table.Components * sizeof(float);
                 long thisBlob = reader.GetSqlInt64(3).Value;
-                long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
-                long source0 = bnum * table.BlobByteSize;
+                if (read_entire_file)
+                {
+                    long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
+                    source0 = bnum * table.BlobByteSize;
+                }
+                else
+                {
+                    /* Cutout is small, so read in each blob independently. */
+                    long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
+                    //offset = bnum * table.BlobByteSize;
+                    long offset = bnum * table.BlobByteSize;
+                    filedb.Seek(offset, SeekOrigin.Begin);
+                    
+                    int bytes = filedb.Read(z_rawdata, 0, table.BlobByteSize);
+                    source0 = (sourceX + sourceY * atomWidth) * table.Components * sizeof(float);
+                }
+                
 
                 for (int k = 0; k < (lengthZ); k++)
                 {
-                    //int source = source0 + (sourceZ + k) * atomWidth * atomWidth * table.Components * sizeof(float);
                     int dest = dest0 + (destinationZ + k) * x_width * y_width * table.Components * sizeof(float);
                     long source = source0 + (sourceZ + k) * atomWidth * atomWidth * table.Components * sizeof(float);
-                    //long source = source0 + 
                     for (int j = 0; j < lengthY; j++)
                     {
 
@@ -139,8 +142,8 @@ public partial class StoredProcedures
                         }
                         catch (Exception e)
                         {
-                            throw new Exception(String.Format("Error copying array.  source is {1} size {2}, dest is {3} size {4}  xyz={5},{6},{7} bnum={8} [Inner Exception: {0}])",
-                                e.ToString(), source, cutoutbytesize, dest, cutout.Length, x, y, z, bnum));
+                            throw new Exception(String.Format("Error copying array.  source is {1} size {2}, dest is {3} size {4}  xyz={5},{6},{7}  [Inner Exception: {0}])",
+                                e.ToString(), source, cutoutbytesize, dest, cutout.Length, x, y, z));
                         }
                         source += atomWidth * table.Components * sizeof(float);
                         dest += x_width * table.Components * sizeof(float);
@@ -151,56 +154,6 @@ public partial class StoredProcedures
 
             }
         }
-        /*Replace below with filedb code */
-            /*
-            string queryString = String.Format(
-                "select dbo.GetMortonX(t.zindex), dbo.GetMortonY(t.zindex), dbo.GetMortonZ(t.zindex), t.data " +
-                "from {7} as t right join " +
-                "(select zindex from {8}..zindex where " +
-                    "X >= {0} & -{6} and X < {3} and Y >= {1} & -{6} and Y < {4} and Z >= {2} & -{6} and z < {5}) " +
-                "as c " +
-                "on t.zindex = c.zindex " +
-                "and t.timestep = {9}", coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5],
-                atomWidth, tableName, dbname, timestep);
-
-            SqlCommand command = new SqlCommand(
-                queryString, connection);
-            using (SqlDataReader reader = command.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    x = reader.GetSqlInt32(0).Value;
-                    y = reader.GetSqlInt32(1).Value;
-                    z = reader.GetSqlInt32(2).Value;
-                    int bytesread = 0;
-                    while (bytesread < table.BlobByteSize)
-                    {
-                        int bytes = (int)reader.GetBytes(3, table.SqlArrayHeaderSize, rawdata, bytesread, table.BlobByteSize - bytesread);
-                        bytesread += bytes;
-                    }
-                    int sourceX = 0, destinationX = 0, sourceY = 0, destinationY = 0, sourceZ = 0, destinationZ = 0, lengthX = 0, lengthY = 0, lengthZ = 0;
-
-                    GetSourceDestLen(x, coordinates[0], coordinates[3], atomWidth, ref sourceX, ref destinationX, ref lengthX);
-                    GetSourceDestLen(y, coordinates[1], coordinates[4], atomWidth, ref sourceY, ref destinationY, ref lengthY);
-                    GetSourceDestLen(z, coordinates[2], coordinates[5], atomWidth, ref sourceZ, ref destinationZ, ref lengthZ);
-
-                    int source0 = (sourceX + sourceY * atomWidth) * table.Components * sizeof(float);
-                    int dest0 = (destinationX + destinationY * x_width) * table.Components * sizeof(float);
-
-                    for (int k = 0; k < lengthZ; k++)
-                    {
-                        int source = source0 + (sourceZ + k) * atomWidth * atomWidth * table.Components * sizeof(float);
-                        int dest = dest0 + (destinationZ + k) * x_width * y_width * table.Components * sizeof(float);
-                        for (int j = 0; j < lengthY; j++)
-                        {
-                            Array.Copy(rawdata, source, cutout, dest, lengthX * table.Components * sizeof(float));
-                            source += atomWidth * table.Components * sizeof(float);
-                            dest += x_width * table.Components * sizeof(float);
-                        }
-                    }
-                }
-            }*/
-
 
         }
 
