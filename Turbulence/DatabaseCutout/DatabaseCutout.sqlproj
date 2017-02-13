@@ -70,6 +70,31 @@
   <PropertyGroup>
     <RootNamespace>DatabaseCutout</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants />
+    <WarningLevel>4</WarningLevel>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants />
+    <WarningLevel>4</WarningLevel>
+    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
   <Import Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" Condition="'$(SQLDBExtensionsRefPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" Condition="'$(SQLDBExtensionsRefPath)' == ''" />
   <ItemGroup>

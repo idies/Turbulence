@@ -5,6 +5,11 @@ using System.Data.SqlTypes;
 using Microsoft.SqlServer.Server;
 using Turbulence.TurbLib;
 using Turbulence.SQLInterface;
+using System.Collections.Generic;
+using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
+//
 /* Added for FileDB*/
 using System.IO;
 public partial class StoredProcedures
@@ -49,119 +54,213 @@ public partial class StoredProcedures
         //file.Close();
     }
 
+    public struct cutout_buffer
+    {
+        public int[] coordinates;
+        public byte[] cutout;
+        public int x_width, y_width, z_width;
+        public int atomWidth;
+        public int components;
+        public cutout_buffer(int[] coord, int comp, int aWidth)
+        {
+            coordinates = coord;
+            x_width = coordinates[3] - coordinates[0];
+            y_width = coordinates[4] - coordinates[1];
+            z_width = coordinates[5] - coordinates[2];
+            atomWidth = aWidth;
+            components = comp;
+            int cutoutbytesize = components * sizeof(float) * x_width * y_width * z_width; 
+            cutout = new byte[cutoutbytesize];
+
+        }
+    }
     private static void GetCutout(TurbDataTable table, string dbname, int timestep, int[] coordinates, SqlConnection connection, out byte[] cutout)
     {
-        int x_width, y_width, z_width, x, y, z;
-        x_width = coordinates[3] - coordinates[0];
-        y_width = coordinates[4] - coordinates[1];
-        z_width = coordinates[5] - coordinates[2];
-
-        //byte[] rawdata = new byte[table.BlobByteSize];
-        int cutoutbytesize = table.Components * sizeof(float) * x_width * y_width * z_width; //temp fix to test TODO Fix this
-        cutout = new byte[cutoutbytesize];
+        int atomWidth = table.atomDim;
+        cutout_buffer cbuff = new cutout_buffer(coordinates, table.Components, atomWidth);
+        byte[] rawdata = new byte[table.BlobByteSize];
 
         string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
-        int atomWidth = table.atomDim;
+        System.IO.StreamWriter file = new System.IO.StreamWriter(@"d:\filedb\zindexlistdb.txt", true);
+        DateTime start = DateTime.Now;
         /*File Db code*/
         string pathSource = "d:\\filedb";
         pathSource = pathSource + "\\" + dbname + "_" + timestep + ".bin";
         //FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
-        /* Seems to be no easy way of getting rows from the reader, so we do a quick count first. */
-        string queryStringcount = String.Format(
-                "select count(zindex) from {7}..zindex where " +
-                    "X >= {0} & -{6} and X < {3} and Y >= {1} & -{6} and Y < {4} and Z >= {2} & -{6} and z < {5} ", coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5],
-                atomWidth, dbname);
-        SqlCommand countcommand = new SqlCommand(
-            queryStringcount, connection);
-        //SqlDataReader reader = command.ExecuteReader();
-        int rowcount = Convert.ToInt32(countcommand.ExecuteScalar());
-        bool read_entire_file = false;
-        byte[] z_rawdata = new byte[table.BlobByteSize]; ; //Initilize for small cutout, reassign below if we are reading in the entire file.
-        FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read); /* This is in case we don't read in the entire file */
-        /* Read in entire file. */
-        if (rowcount > 4096)
-        { 
-                z_rawdata = File.ReadAllBytes(pathSource); /*Read it all in at once*/
-                read_entire_file = true;
-        }
+        
         /* TODO: look for smaller requests (128 cube or smaller), and do file seek instead. Looks to be about 4096 rows*/
-        string queryString = String.Format(
-                "select dbo.GetMortonX(zindex),dbo.GetMortonY(zindex),dbo.GetMortonZ(zindex),  zindex from {7}..zindex where " +
-                    "X >= {0} & -{6} and X < {3} and Y >= {1} & -{6} and Y < {4} and Z >= {2} & -{6} and z < {5} ", coordinates[0], coordinates[1], coordinates[2], coordinates[3], coordinates[4], coordinates[5],
-                atomWidth, dbname);
+        /* Create zindex list without using the database */
+        List<long> zlist = new List<long>();
+        //System.IO.StreamWriter zfile = new System.IO.StreamWriter(@"d:\filedb\zindexlist.txt", true);
+        /* Find coordinates of first and last blob */
+        //int xlow = coordinates[0] - coordinates[0] % atomWidth;
+        //int ylow = coordinates[1] - coordinates[1]  % atomWidth;
+        //int zlow = coordinates[2] - coordinates[2]  % atomWidth;
+        int xlow = coordinates[0] & -atomWidth;
+        int ylow = coordinates[1] & -atomWidth;
+        int zlow = coordinates[2] & -atomWidth;
 
-        SqlCommand command = new SqlCommand(
-            queryString, connection);
-        using (SqlDataReader reader = command.ExecuteReader())
+        int xhigh = (coordinates[3]-1) - (coordinates[3] -1 ) % atomWidth;
+        int yhigh = (coordinates[4]-1) - (coordinates[4] - 1) % atomWidth;
+        int zhigh = (coordinates[5]-1) - (coordinates[5] - 1) % atomWidth;
+        /*Iterate through coordinates to create zindex list */
+        /* Note: This will add any zindex even if it isn't on this server.  */
+        long blob;
+        int rowcount = 0;
+        for (int i = zlow; i <= zhigh; i = i + atomWidth)
         {
-            while (reader.Read())
+            for (int j = ylow; j <= yhigh; j = j + atomWidth)
             {
-
-                x = reader.GetSqlInt32(0).Value;
-                y = reader.GetSqlInt32(1).Value;
-                z = reader.GetSqlInt32(2).Value;
-                int sourceX = 0, destinationX = 0, sourceY = 0, destinationY = 0, sourceZ = 0, destinationZ = 0, lengthX = 0, lengthY = 0, lengthZ = 0;
-                long source0 = 0;
-
-                GetSourceDestLen(x, coordinates[0], coordinates[3], atomWidth, ref sourceX, ref destinationX, ref lengthX);
-                GetSourceDestLen(y, coordinates[1], coordinates[4], atomWidth, ref sourceY, ref destinationY, ref lengthY);
-                GetSourceDestLen(z, coordinates[2], coordinates[5], atomWidth, ref sourceZ, ref destinationZ, ref lengthZ);
-
-                int dest0 = (destinationX + destinationY * x_width) * table.Components * sizeof(float);
-                long thisBlob = reader.GetSqlInt64(3).Value;
-                if (read_entire_file)
+                for (int k = xlow; k <= xhigh; k = k + atomWidth)
                 {
-                    long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
-                    source0 = bnum * table.BlobByteSize;
+                    blob = new Morton3D(i, j, k).Key;
+                    zlist.Add(blob);
+                    //zfile.WriteLine(blob);
+                    string coords = k.ToString() + "," + j.ToString() + "," +i.ToString();
+                    //zfile.WriteLine(coords);
+                    rowcount++;
                 }
-                else
-                {
-                    /* Cutout is small, so read in each blob independently. */
-                    long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
-                    //offset = bnum * table.BlobByteSize;
-                    long offset = bnum * table.BlobByteSize;
-                    filedb.Seek(offset, SeekOrigin.Begin);
-                    
-                    int bytes = filedb.Read(z_rawdata, 0, table.BlobByteSize);
-                    source0 = (sourceX + sourceY * atomWidth) * table.Components * sizeof(float);
-                }
-                
-
-                for (int k = 0; k < (lengthZ); k++)
-                {
-                    int dest = dest0 + (destinationZ + k) * x_width * y_width * table.Components * sizeof(float);
-                    long source = source0 + (sourceZ + k) * atomWidth * atomWidth * table.Components * sizeof(float);
-                    for (int j = 0; j < lengthY; j++)
-                    {
-
-                        // Array.Copy(rawdata, source, cutout, dest, lengthX * table.Components * sizeof(float)); //src, srcidx, dest, destidx, size
-                        try
-                        {
-                            Array.Copy(z_rawdata, source, cutout, dest, lengthX * table.Components * sizeof(float));
-
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception(String.Format("Error copying array.  source is {1} size {2}, dest is {3} size {4}  xyz={5},{6},{7}  [Inner Exception: {0}])",
-                                e.ToString(), source, cutoutbytesize, dest, cutout.Length, x, y, z));
-                        }
-                        source += atomWidth * table.Components * sizeof(float);
-                        dest += x_width * table.Components * sizeof(float);
-                    }
-                    //throw new Exception(String.Format("Processed the following: {0} {1} {2} {3} {4}", source, dest, source0, dest0, lengthX));
-                   
-                }
-
             }
         }
 
+        //SqlDataReader reader = command.ExecuteReader();
+       
+        bool read_entire_file = false;
+        byte[] z_rawdata = new byte[table.BlobByteSize]; ; //Initilize for small cutout, reassign below if we are reading in the entire file.
+        FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read); /* This is in case we don't read in the entire file */
+
+        file.WriteLine("Generation of zindex and blob count took:");
+        file.WriteLine(DateTime.Now - start);
+        file.WriteLine("Number of blobs: {0}", rowcount);
+
+        if (rowcount > 4096)
+        {
+            start = DateTime.Now;
+            z_rawdata = File.ReadAllBytes(pathSource); /*Read it all in at once*/
+            read_entire_file = true;
+            file.WriteLine("File Read I/O took:");
+            file.WriteLine(DateTime.Now - start);
+
+        }
+        int MaxCount =48;
+        ManualResetEvent eventX = new ManualResetEvent(false);
+        //ManualResetEvent[] doneEvents = new ManualResetEvent[rowcount];
+        
+        // Make sure the work items have a reference to the signaling event.
+        
+        
+        file.WriteLine("beginning parallel operation");
+        start = DateTime.Now; /* Star the timer */
+        ThreadPool.SetMaxThreads(MaxCount, 48); /*We need to determine how many completion port threads we need */
+        int blobnum = 0;
+        foreach(long thisBlob in zlist)
+           {
+               int source0 = 0;
+            //file.WriteLine(thisBlob);
+            //long thisBlob = reader.GetSqlInt64(3).Value;
+            //file.WriteLine(thisBlob);
+            // string coords = new Morton3D(thisBlob).X.ToString() + "," + new Morton3D(thisBlob).Y.ToString() + "," + new Morton3D(thisBlob).Z.ToString();
+            //file.WriteLine(coords);
+            ThreadBlockMove movers = new ThreadBlockMove(eventX);
+            if (read_entire_file)
+               {
+                   long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim); /*Check this!  Assuming we are small enough to be an int after this division*/
+                   source0 = (int)bnum * table.BlobByteSize;
+                    /* Get refernce to blob from file and pass the reference to avoid extra data copying */
+                   ArraySegment<byte> segment = new ArraySegment<byte>(z_rawdata, source0, table.BlobByteSize);
+                   rawdata = segment.Array;
+                   ThreadPool.QueueUserWorkItem(new WaitCallback(movers.BlockMove), new MoverParameters(thisBlob, ref rawdata, ref cbuff));
+
+               }
+               else
+               {
+                    /* Cutout is small, so read in each blob independently.  This seems to not work well in parallel since the signal for completion isn't triggering */
+                   long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
+                    //offset = bnum * table.BlobByteSize;
+                    long offset = bnum * table.BlobByteSize;
+                   filedb.Seek(offset, SeekOrigin.Begin);
+                   int bytes = filedb.Read(rawdata, 0, table.BlobByteSize);
+                    //BlockMove(thisBlob, ref rawdata, ref cbuff);
+                    ThreadPool.QueueUserWorkItem(new WaitCallback(movers.BlockMove), new MoverParameters(thisBlob, ref rawdata, ref cbuff));
+                    //MoverParameters thisp = new MoverParameters(thisBlob, ref rawdata, ref cbuff);
+                    //ThreadBlockMove mover = new ThreadBlockMove(1);
+                    //mover.BlockMove(thisp);
+                    //file.WriteLine(thisp.zindex);
+                    //file.WriteLine("---");
+                    //file.WriteLine(thisBlob);
+                }
+            blobnum++; //Blob number
         }
 
+        file.WriteLine("Waiting for thread pool to end");
+        //WaitHandle.WaitAll(doneEvents);
+        cutout = cbuff.cutout;
+        file.WriteLine(DateTime.Now - start);
+        file.Close();
+        }
+    public class MoverParameters
+    {
+        public long zindex;
+        public byte[] source_buffer;
+        public cutout_buffer cbuff;
+        public MoverParameters(long z, ref byte[] sb, ref cutout_buffer cb)
+        {
+            zindex = z;
+            source_buffer = sb;
+            cbuff = cb;
+        }
+    }
     /// <summary>
     /// Given a query box formatted as "box [x1,y1,z1,x2,y2,z2]" extracts the coordinates [x1,y1,z1,x2,y2,z2]
     /// </summary>
     /// <param name="QueryBox"></param>
     /// <param name="coordinates"></param>
+    /// 
+    public class ThreadBlockMove
+    {
+        
+        public ThreadBlockMove(ManualResetEvent doneEvent)
+        {
+            _doneEvent = doneEvent;
+        }
+ 
+        private ManualResetEvent _doneEvent;
+
+        
+    /* BlockMove is the method called when the work item is serviced on the thread pool */    
+    public void BlockMove(Object p)
+
+        {
+            long zindex = ((MoverParameters)p).zindex;
+            byte[] source_buffer = ((MoverParameters)p).source_buffer;
+            cutout_buffer cbuff = ((MoverParameters)p).cbuff;
+            int x, y, z;
+            int sourceX = 0, destinationX = 0, sourceY = 0, destinationY = 0, sourceZ = 0, destinationZ = 0, lengthX = 0, lengthY = 0, lengthZ = 0;
+            x = new Morton3D(zindex).X;
+            y = new Morton3D(zindex).Y;
+            z = new Morton3D(zindex).Z;
+            GetSourceDestLen(x, cbuff.coordinates[0], cbuff.coordinates[3], cbuff.atomWidth, ref sourceX, ref destinationX, ref lengthX);
+            GetSourceDestLen(y, cbuff.coordinates[1], cbuff.coordinates[4], cbuff.atomWidth, ref sourceY, ref destinationY, ref lengthY);
+            GetSourceDestLen(z, cbuff.coordinates[2], cbuff.coordinates[5], cbuff.atomWidth, ref sourceZ, ref destinationZ, ref lengthZ);
+            int bufferLength = lengthX * cbuff.components * sizeof(float);
+            int dest0 = (destinationX + destinationY * cbuff.x_width) * cbuff.components * sizeof(float);
+            for (int k = 0; k < lengthZ; k++)
+            {
+                int source = (sourceZ + k) * cbuff.atomWidth * cbuff.atomWidth * cbuff.components * sizeof(float);
+                int dest = dest0 + (destinationZ + k) * cbuff.x_width * cbuff.y_width * cbuff.components * sizeof(float);
+                for (int j = 0; j < lengthY; j++)
+                {
+                    Array.Copy(source_buffer, source, cbuff.cutout, dest, lengthX * cbuff.components * sizeof(float));
+                    source += cbuff.atomWidth * cbuff.components * sizeof(float);
+                    dest += cbuff.x_width * cbuff.components * sizeof(float);
+                }
+            }
+            _doneEvent.Set();
+            
+        }
+    }
+
+   
     private static void ParseQueryBox(string QueryBox, int[] coordinates)
     {
         int left_bracket_pos = QueryBox.IndexOf('[');
