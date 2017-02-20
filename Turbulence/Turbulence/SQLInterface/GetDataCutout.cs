@@ -43,6 +43,9 @@ public partial class StoredProcedures
         GetCutout(table, dbname, timestep, coordinates, connection, out cutout);
 
         // Populate the record
+        /* quick mod send last few bytes to test speed, a 512 cube */
+        //record.SetBytes(0,0, cutout, (cutout.Length - 100), 16);
+        //record.SetBytes(0, 0, cutout, cutout.Length/2, 16);
         record.SetBytes(0, 0, cutout, 0, cutout.Length);
         // Send the record to the client.
         SqlContext.Pipe.Send(record);
@@ -87,7 +90,7 @@ public partial class StoredProcedures
         string pathSource = "d:\\filedb";
         pathSource = pathSource + "\\" + dbname + "_" + timestep + ".bin";
         //FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
-        
+
         /* TODO: look for smaller requests (128 cube or smaller), and do file seek instead. Looks to be about 4096 rows*/
         /* Create zindex list without using the database */
         List<long> zlist = new List<long>();
@@ -100,9 +103,9 @@ public partial class StoredProcedures
         int ylow = coordinates[1] & -atomWidth;
         int zlow = coordinates[2] & -atomWidth;
 
-        int xhigh = (coordinates[3]-1) - (coordinates[3] -1 ) % atomWidth;
-        int yhigh = (coordinates[4]-1) - (coordinates[4] - 1) % atomWidth;
-        int zhigh = (coordinates[5]-1) - (coordinates[5] - 1) % atomWidth;
+        int xhigh = (coordinates[3] - 1) - (coordinates[3] - 1) % atomWidth;
+        int yhigh = (coordinates[4] - 1) - (coordinates[4] - 1) % atomWidth;
+        int zhigh = (coordinates[5] - 1) - (coordinates[5] - 1) % atomWidth;
         /*Iterate through coordinates to create zindex list */
         /* Note: This will add any zindex even if it isn't on this server.  */
         long blob;
@@ -116,7 +119,7 @@ public partial class StoredProcedures
                     blob = new Morton3D(i, j, k).Key;
                     zlist.Add(blob);
                     //zfile.WriteLine(blob);
-                    string coords = k.ToString() + "," + j.ToString() + "," +i.ToString();
+                    string coords = k.ToString() + "," + j.ToString() + "," + i.ToString();
                     //zfile.WriteLine(coords);
                     rowcount++;
                 }
@@ -124,7 +127,7 @@ public partial class StoredProcedures
         }
 
         //SqlDataReader reader = command.ExecuteReader();
-       
+
         bool read_entire_file = false;
         byte[] z_rawdata = new byte[table.BlobByteSize]; ; //Initilize for small cutout, reassign below if we are reading in the entire file.
         FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read); /* This is in case we don't read in the entire file */
@@ -142,62 +145,86 @@ public partial class StoredProcedures
             file.WriteLine(DateTime.Now - start);
 
         }
-        int MaxCount =48;
-        ManualResetEvent eventX = new ManualResetEvent(false);
-        //ManualResetEvent[] doneEvents = new ManualResetEvent[rowcount];
-        
-        // Make sure the work items have a reference to the signaling event.
-        
-        
+        //int MaxCount = 96;
         file.WriteLine("beginning parallel operation");
         start = DateTime.Now; /* Star the timer */
-        ThreadPool.SetMaxThreads(MaxCount, 48); /*We need to determine how many completion port threads we need */
+        //ThreadPool.SetMaxThreads(MaxCount, 96); /*We need to determine how many completion port threads we need */
         int blobnum = 0;
-        foreach(long thisBlob in zlist)
-           {
-               int source0 = 0;
-            //file.WriteLine(thisBlob);
-            //long thisBlob = reader.GetSqlInt64(3).Value;
-            //file.WriteLine(thisBlob);
-            // string coords = new Morton3D(thisBlob).X.ToString() + "," + new Morton3D(thisBlob).Y.ToString() + "," + new Morton3D(thisBlob).Z.ToString();
-            //file.WriteLine(coords);
-            ThreadBlockMove movers = new ThreadBlockMove(eventX);
-            if (read_entire_file)
-               {
-                   long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim); /*Check this!  Assuming we are small enough to be an int after this division*/
-                   source0 = (int)bnum * table.BlobByteSize;
+        
+        using (var finished = new CountdownEvent(rowcount))
+        {
+            foreach (long thisBlob in zlist)
+            {
+                int source0 = 0;
+                // string coords = new Morton3D(thisBlob).X.ToString() + "," + new Morton3D(thisBlob).Y.ToString() + "," + new Morton3D(thisBlob).Z.ToString();
+                //file.WriteLine(coords);
+                //ThreadBlockMove movers = new ThreadBlockMove();
+                int rownum = 0;
+                
+                var capture = thisBlob;
+                if (read_entire_file)
+                {
+                    long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim); /*Check this!  Assuming we are small enough to be an int after this division*/
+                    source0 = (int)bnum * table.BlobByteSize;
                     /* Get refernce to blob from file and pass the reference to avoid extra data copying */
-                   ArraySegment<byte> segment = new ArraySegment<byte>(z_rawdata, source0, table.BlobByteSize);
-                   rawdata = segment.Array;
-                   ThreadPool.QueueUserWorkItem(new WaitCallback(movers.BlockMove), new MoverParameters(thisBlob, ref rawdata, ref cbuff));
-
-               }
-               else
-               {
+                    ArraySegment<byte> segment = new ArraySegment<byte>(z_rawdata, source0, table.BlobByteSize);
+                    rawdata = segment.Array;
+                    //ThreadPool.QueueUserWorkItem(new WaitCallback(movers.BlockMove), new MoverParameters(thisBlob, ref rawdata, ref cbuff));
+                    ThreadPool.QueueUserWorkItem(
+                        (state) =>
+                        {
+                            try
+                            {
+                               // MoverParameters mp = new MoverParameters(thisBlob, ref rawdata, ref cbuff);
+                               // BlockMove(mp);
+                                BlockMove(thisBlob, ref rawdata, ref cbuff);
+                            }
+                            finally
+                            {
+                                finished.Signal();
+                            }
+                        }, null
+                        );
+                    rownum++;
+                }
+                else
+                {
                     /* Cutout is small, so read in each blob independently.  This seems to not work well in parallel since the signal for completion isn't triggering */
-                   long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
+                    long bnum = thisBlob / (table.atomDim * table.atomDim * table.atomDim);
                     //offset = bnum * table.BlobByteSize;
                     long offset = bnum * table.BlobByteSize;
-                   filedb.Seek(offset, SeekOrigin.Begin);
-                   int bytes = filedb.Read(rawdata, 0, table.BlobByteSize);
+                    filedb.Seek(offset, SeekOrigin.Begin);
+                    int bytes = filedb.Read(rawdata, 0, table.BlobByteSize);
                     //BlockMove(thisBlob, ref rawdata, ref cbuff);
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(movers.BlockMove), new MoverParameters(thisBlob, ref rawdata, ref cbuff));
-                    //MoverParameters thisp = new MoverParameters(thisBlob, ref rawdata, ref cbuff);
-                    //ThreadBlockMove mover = new ThreadBlockMove(1);
-                    //mover.BlockMove(thisp);
-                    //file.WriteLine(thisp.zindex);
-                    //file.WriteLine("---");
-                    //file.WriteLine(thisBlob);
+                    //ThreadPool.QueueUserWorkItem(new WaitCallback(movers.BlockMove), new MoverParameters(thisBlob, ref rawdata, ref cbuff));
+                    ThreadPool.QueueUserWorkItem(
+                        (state) =>
+                        {
+                            try
+                            {
+                                //MoverParameters mp = new MoverParameters(thisBlob, ref rawdata, ref cbuff);
+                                //BlockMove(mp);
+                                BlockMove(thisBlob, ref rawdata, ref cbuff);
+                            }
+                            finally
+                            {
+                                finished.Signal();
+                            }
+                        }, null
+                        );
+                    rownum++;
                 }
-            blobnum++; //Blob number
-        }
+                blobnum++; //Blob number
+            }
 
-        file.WriteLine("Waiting for thread pool to end");
-        //WaitHandle.WaitAll(doneEvents);
-        cutout = cbuff.cutout;
-        file.WriteLine(DateTime.Now - start);
-        file.Close();
+            file.WriteLine("Waiting for thread pool to end");
+            finished.Signal();
+            finished.Wait();
+            cutout = cbuff.cutout;
+            file.WriteLine(DateTime.Now - start);
+            file.Close();
         }
+    }
     public class MoverParameters
     {
         public long zindex;
@@ -210,30 +237,14 @@ public partial class StoredProcedures
             cbuff = cb;
         }
     }
-    /// <summary>
-    /// Given a query box formatted as "box [x1,y1,z1,x2,y2,z2]" extracts the coordinates [x1,y1,z1,x2,y2,z2]
-    /// </summary>
-    /// <param name="QueryBox"></param>
-    /// <param name="coordinates"></param>
-    /// 
-    public class ThreadBlockMove
-    {
-        
-        public ThreadBlockMove(ManualResetEvent doneEvent)
-        {
-            _doneEvent = doneEvent;
-        }
- 
-        private ManualResetEvent _doneEvent;
-
         
     /* BlockMove is the method called when the work item is serviced on the thread pool */    
-    public void BlockMove(Object p)
+    private static void BlockMove(long zindex, ref byte[] source_buffer, ref cutout_buffer cbuff)
 
         {
-            long zindex = ((MoverParameters)p).zindex;
-            byte[] source_buffer = ((MoverParameters)p).source_buffer;
-            cutout_buffer cbuff = ((MoverParameters)p).cbuff;
+            //long zindex = ((MoverParameters)p).zindex;
+            //byte[] source_buffer = ((MoverParameters)p).source_buffer;
+            //cutout_buffer cbuff = ((MoverParameters)p).cbuff;
             int x, y, z;
             int sourceX = 0, destinationX = 0, sourceY = 0, destinationY = 0, sourceZ = 0, destinationZ = 0, lengthX = 0, lengthY = 0, lengthZ = 0;
             x = new Morton3D(zindex).X;
@@ -254,11 +265,10 @@ public partial class StoredProcedures
                     source += cbuff.atomWidth * cbuff.components * sizeof(float);
                     dest += cbuff.x_width * cbuff.components * sizeof(float);
                 }
-            }
-            _doneEvent.Set();
+            }            
             
         }
-    }
+ 
 
    
     private static void ParseQueryBox(string QueryBox, int[] coordinates)
