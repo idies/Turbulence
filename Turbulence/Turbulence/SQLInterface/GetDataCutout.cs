@@ -49,6 +49,7 @@ public partial class StoredProcedures
         record.SetBytes(0, 0, cutout, 0, cutout.Length);
         // Send the record to the client.
         SqlContext.Pipe.Send(record);
+        //connection.Snew SqlBinary(cutout);
         
         connection.Close();
 
