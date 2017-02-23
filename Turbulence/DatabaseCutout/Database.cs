@@ -209,7 +209,7 @@ using System.Threading;
             /*This is used to cycle through the turbinfo servers in case one goes down */
             List<String> turbinfoservers = new List<String>();
             //turbinfoservers.Add("dsp033"); /*No SQL server here, just a test*/
-            
+            turbinfoservers.Add("sciserver01");
             turbinfoservers.Add("gw01");
             turbinfoservers.Add("gw02");
             //turbinfoservers.Add("gw03");

@@ -22,7 +22,8 @@ public partial class StoredProcedures
         string dataset,
         int blobDim, 
         int timestep,
-        string QueryBox)
+        string QueryBox,
+        out SqlBytes blob)
     {
         //DateTime start = DateTime.Now;
         
@@ -46,11 +47,12 @@ public partial class StoredProcedures
         /* quick mod send last few bytes to test speed, a 512 cube */
         //record.SetBytes(0,0, cutout, (cutout.Length - 100), 16);
         //record.SetBytes(0, 0, cutout, cutout.Length/2, 16);
-        record.SetBytes(0, 0, cutout, 0, cutout.Length);
+        //record.SetBytes(0, 0, cutout, 0, cutout.Length);
         // Send the record to the client.
-        SqlContext.Pipe.Send(record);
+        //SqlContext.Pipe.Send(record);
         //connection.Snew SqlBinary(cutout);
-        
+        //blob = new SqlBinary(cutout);
+        blob = new SqlBytes(cutout);
         connection.Close();
 
         //System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\GetDataCutoutTime.txt", true);
@@ -85,7 +87,7 @@ public partial class StoredProcedures
         byte[] rawdata = new byte[table.BlobByteSize];
 
         string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
-        System.IO.StreamWriter file = new System.IO.StreamWriter(@"d:\filedb\zindexlistdb.txt", true);
+        //System.IO.StreamWriter file = new System.IO.StreamWriter(@"d:\filedb\zindexlistdb.txt", true);
         DateTime start = DateTime.Now;
         /*File Db code*/
         string pathSource = "d:\\filedb";
@@ -110,7 +112,7 @@ public partial class StoredProcedures
         /*Iterate through coordinates to create zindex list */
         /* Note: This will add any zindex even if it isn't on this server.  */
         long blob;
-        int rowcount = 0;
+        int rowcount = 1;
         for (int i = zlow; i <= zhigh; i = i + atomWidth)
         {
             for (int j = ylow; j <= yhigh; j = j + atomWidth)
@@ -133,21 +135,20 @@ public partial class StoredProcedures
         byte[] z_rawdata = new byte[table.BlobByteSize]; ; //Initilize for small cutout, reassign below if we are reading in the entire file.
         FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read); /* This is in case we don't read in the entire file */
 
-        file.WriteLine("Generation of zindex and blob count took:");
-        file.WriteLine(DateTime.Now - start);
-        file.WriteLine("Number of blobs: {0}", rowcount);
+        //file.WriteLine("Generation of zindex and blob count took:");
+        //file.WriteLine(DateTime.Now - start);
+        //file.WriteLine("Number of blobs: {0}", rowcount);
 
         if (rowcount > 4096)
         {
             start = DateTime.Now;
             z_rawdata = File.ReadAllBytes(pathSource); /*Read it all in at once*/
             read_entire_file = true;
-            file.WriteLine("File Read I/O took:");
-            file.WriteLine(DateTime.Now - start);
-
+            //file.WriteLine("File Read I/O took:");
+            //file.WriteLine(DateTime.Now - start);
         }
         //int MaxCount = 96;
-        file.WriteLine("beginning parallel operation");
+        //file.WriteLine("beginning parallel operation");
         start = DateTime.Now; /* Star the timer */
         //ThreadPool.SetMaxThreads(MaxCount, 96); /*We need to determine how many completion port threads we need */
         int blobnum = 0;
@@ -218,12 +219,12 @@ public partial class StoredProcedures
                 blobnum++; //Blob number
             }
 
-            file.WriteLine("Waiting for thread pool to end");
+            //file.WriteLine("Waiting for thread pool to end");
             finished.Signal();
             finished.Wait();
             cutout = cbuff.cutout;
-            file.WriteLine(DateTime.Now - start);
-            file.Close();
+            //file.WriteLine(DateTime.Now - start);
+            //file.Close();
         }
     }
     public class MoverParameters

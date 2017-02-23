@@ -226,11 +226,11 @@ namespace TurbulenceService
             /*This is used to cycle through the turbinfo servers in case one goes down */
             List<String> turbinfoservers = new List<String>();
             //turbinfoservers.Add("dsp033"); /*No SQL server here, just a test*/
-            //turbinfoservers.Add("sciserver02"); /*Using this for testing...remove for production*/
-            turbinfoservers.Add("gw01");
-            turbinfoservers.Add("gw02");
-            turbinfoservers.Add("gw03");
-            turbinfoservers.Add("gw04");
+            turbinfoservers.Add("sciserver01"); /*Using this for testing...remove for production*/
+            //turbinfoservers.Add("gw01");
+            //turbinfoservers.Add("gw02");
+            //turbinfoservers.Add("gw03");
+            //turbinfoservers.Add("gw04");
             /* Now get a good connection in order of what was provided */
             foreach (var server in turbinfoservers)
             {
@@ -251,7 +251,7 @@ namespace TurbulenceService
                 }
             }
             /*If all else fails, go back to gw01*/
-            return "gw01";
+            return "sciserver01";
 
         }
         /// <summary>
@@ -345,6 +345,7 @@ namespace TurbulenceService
             String cString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
+
             SqlCommand cmd = conn.CreateCommand();
             string DBMapTable = "DatabaseMap";
             if (this.development == true)
@@ -352,17 +353,19 @@ namespace TurbulenceService
                 DBMapTable = "DatabaseMapTest";
             }
             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
-                "from {0}..{1} where DatasetName = @dataset " + 
+                "from {0}..{1} where DatasetName = @dataset and productiondatabasename='turbdb101'" + //*This is a hack to make it only get our test filedb server*/
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
+            string lastserver = "";
             if (reader.HasRows)
             {
                 servers.Clear();
                 databases.Clear();
                 codeDatabase.Clear();
                 serverBoundaries.Clear();
+               
                 while (reader.Read())
                 {
                     servers.Add(reader.GetString(0));
@@ -381,12 +384,14 @@ namespace TurbulenceService
                     int maxTime = reader.GetSqlInt32(6).Value;
                     /* All servers are added, and then ones in range are selected from this list later */
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
+                    lastserver = reader.GetString(0);
                 }
             }
             else
             {
                 throw new Exception("Invalid dataset specified.");
             }
+            //throw new Exception("Found server: " + lastserver + " from server " + cString);
             reader.Close();
             conn.Close(); 
             
@@ -491,6 +496,7 @@ namespace TurbulenceService
                     int minTime = reader.GetSqlInt32(5).Value;
                     int maxTime = reader.GetSqlInt32(6).Value;
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
+                    throw new Exception("Found server: " + reader.GetString(0) + " from server " + cString);
                 }
             }
             else
@@ -919,6 +925,7 @@ namespace TurbulenceService
                                 if (this.connections[i] == null)
                                 {
                                     string server_name = this.servers[i];
+                                    
                                     if (server_name.Contains("_"))
                                         server_name = server_name.Remove(server_name.IndexOf("_"));
                                     String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
@@ -2060,7 +2067,19 @@ namespace TurbulenceService
                     int size = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float);
                     int readLength = size;
                     byte[] rawdata = new byte[size];
-                    SqlDataReader reader = sqlcmds[s].EndExecuteReader(asyncRes[s]);
+                    //rawdata = sqlcmds[s].EndExecuteReader(asyncRes[s]).r;
+                    //rawdata = asyncRes[s];
+                    //SqlDataReader reader = sqlcmds[s].EndExecuteNonQuery(asyncRes[s]);
+                    int nonqueryresult = sqlcmds[s].EndExecuteNonQuery(asyncRes[s]);
+                    rawdata= (byte[])sqlcmds[s].Parameters["@blob"].Value;
+                    /*throw new Exception("rawdata bytesize = " + rawdata.Length.ToString() + " x,y,z,components: + " + serverXwidth[s].ToString() + ", " + serverYwidth[s].ToString() + 
+                        ", " + serverZwidth[s].ToString() + " " + components + " initialsize = " + size.ToString()); */
+                    //rawdata = (byte[])sqlcmds[s].Parameters["@blob"].Value;
+                    //SqlParameter p = sqlcmds[s].Parameters["@blob"];
+                    //p.Direction = ParameterDirection.Output;
+                    //rawdata = (byte[])p.Value;
+                    //throw new Exception("Here is a cut: " + rawdata );
+                    /*
                     while (reader.Read())
                     {
                         int bytesread = 0;
@@ -2076,6 +2095,7 @@ namespace TurbulenceService
                             bytesread += bytes;
                         }
                     }
+                    */
 
                     int sourceIndex = 0;
                     int destinationIndex0 = components * (serverX[s] - X + (serverY[s] - Y) * Xwidth + (serverZ[s] - Z) * Xwidth * Ywidth) * sizeof(float);
@@ -2086,13 +2106,20 @@ namespace TurbulenceService
                         destinationIndex = destinationIndex0 + k * Xwidth * Ywidth * components * sizeof(float);
                         for (int j = 0; j < serverYwidth[s]; j++)
                         {
-                            Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
-                            sourceIndex += length;
-                            destinationIndex += Xwidth * components * sizeof(float);
+                            try
+                            {
+                                Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
+                            }
+                            catch(Exception e)
+                            {
+                                throw new Exception( " source, destindex, length: " + sourceIndex.ToString() + ", " + destinationIndex.ToString() + ", " + length.ToString() + "source length: " + rawdata.Length + " dest length: " + result.Length + " " + "Inner exception: " + e );
+                            }
+                                sourceIndex += length;
+                                destinationIndex += Xwidth * components * sizeof(float);
                         }
                     }
                     rawdata = null;
-                    reader.Close();
+                    //reader.Close();
                     connections[s].Close();
                     connections[s] = null;
                 }
@@ -2638,9 +2665,13 @@ namespace TurbulenceService
                 {
                     string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
+                    int cutoutbytesize = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * 3 * sizeof(float); //TODO Fix this by passing in components if this works.
+                    byte[] cutout = new byte[cutoutbytesize];
+                    
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
-                                            + "@dataset, @blobDim, @timestep, @queryBox ",
+                    sqlcmds[s].CommandText = String.Format(//"DECLARE @blob varbinary(max) " +
+                        "EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
+                                            + "@dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT",
                                             codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@database", databases[s]);
@@ -2649,8 +2680,22 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
                     sqlcmds[s].Parameters.AddWithValue("@queryBox", queryBox);
+                    //sqlcmds[s].Parameters.Add("@blob", SqlDbType.VarBinary);
+                    //sqlcmds[s].Parameters.Add(new SqlParameter("@blob", SqlDbType.VarBinary));
+                    SqlParameter outData = new SqlParameter();
+                    outData.SqlDbType = SqlDbType.VarBinary;
+                    outData.Size = cutoutbytesize; // This ensures the proper output size.  On small cutouts, it was setting to 1, causing an error in arraycopy.
+                    outData.Direction = ParameterDirection.Output;
+                    outData.ParameterName = "@blob";
+                    outData.Value = cutout;
+                    sqlcmds[s].Parameters.Add(outData);
+                    //sqlcmds[s].Parameters.AddWithValue("@blob OUTPUT", cutout);
+
                     sqlcmds[s].CommandTimeout = 3600;
-                    asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
+                    //throw new Exception("Getting data from : " + servers[s] + "Database: " + databases[s]);
+
+                    //asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
+                    asyncRes[s] = sqlcmds[s].BeginExecuteNonQuery(null, sqlcmds[s]);
                 }
             }
 
@@ -3372,15 +3417,13 @@ namespace TurbulenceService
             // for each of the components of the vector or scalar field
             byte[] result = new byte[Xwidth * Ywidth * Zwidth * components * sizeof(float)];
             IAsyncResult[] asyncRes;
-
-            selectServers(dataset_enum);
-
+            /* I'm not sure why we are doing this again -- it was previously called */
+            //selectServers(dataset_enum);
             //if (channel_grid)
             //{
             //    X = (int)Math.Round(X - 0.45 * time / dx);
             //    X = ((X % GridResolutionX) + GridResolutionX) % GridResolutionX;
             //}
-
             int[] serverX = new int[serverCount];
             int[] serverY = new int[serverCount];
             int[] serverZ = new int[serverCount];

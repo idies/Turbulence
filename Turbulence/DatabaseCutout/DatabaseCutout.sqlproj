@@ -102,7 +102,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.XML" />
     <Reference Include="Turbulence">
-      <HintPath>..\Turbulence\bin\Debug\Turbulence.dll</HintPath>
+      <HintPath>..\Turbulence\bin\x64\Release\Turbulence.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
