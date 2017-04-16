@@ -150,6 +150,7 @@
     <Content Include="peoplecredits.aspx" />
     <Content Include="privacy.aspx" />
     <Content Include="publications.aspx" />
+    <Content Include="publications-old.aspx" />
     <Content Include="relatedgrouplinks.aspx" />
     <Content Include="robots.txt" />
     <Content Include="Scripts\jquery.min.js" />
@@ -223,17 +224,6 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.disco" />
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="webquery\query.aspx" />
     <Content Include="webquery\sampledata.txt" />
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.wsdl" />
@@ -254,9 +244,6 @@
     <Compile Include="announcements.aspx.cs">
       <DependentUpon>announcements.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="announcements.aspx.designer.cs">
-      <DependentUpon>announcements.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Code\WebService.cs">
       <SubType>Component</SubType>
@@ -283,6 +270,10 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="publications.aspx.cs">
+      <DependentUpon>publications.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="status\monitor.aspx.cs">
       <DependentUpon>monitor.aspx</DependentUpon>

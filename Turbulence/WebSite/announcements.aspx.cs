@@ -18,7 +18,8 @@ using Turbulence.SQLInterface;
 
     public partial class announcements : System.Web.UI.Page
     {
-        protected void Page_Load(object sender, EventArgs e)
+    protected global::System.Web.UI.WebControls.Literal announcement;
+    protected void Page_Load(object sender, EventArgs e)
         {
             updateAnnouncements();
         }
