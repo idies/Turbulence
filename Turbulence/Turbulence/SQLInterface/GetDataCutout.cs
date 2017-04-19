@@ -15,7 +15,7 @@ using System.IO;
 public partial class StoredProcedures
 {
     [Microsoft.SqlServer.Server.SqlProcedure]
-    public static void GetDataCutout(
+    public static void GetDataFileDBCutout(
         string serverName,
         string dbname,
         string codedb,
@@ -90,7 +90,7 @@ public partial class StoredProcedures
         //System.IO.StreamWriter file = new System.IO.StreamWriter(@"d:\filedb\zindexlistdb.txt", true);
         DateTime start = DateTime.Now;
         /*File Db code*/
-        string pathSource = "d:\\filedb";
+        string pathSource = "e:\\filedb";
         pathSource = pathSource + "\\" + dbname + "_" + timestep + ".bin";
         //FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
 
