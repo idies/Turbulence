@@ -726,7 +726,7 @@ namespace Turbulence.SQLInterface
                 //"IF OBJECT_ID(N'tempdb..{0}') IS NOT NULL " +
                 //"DROP TABLE {0} " +
                 //"CREATE TABLE {0} (zindex bigint, dindex bigint)", jointableName), standardConn);
-                "CREATE TABLE {0} (zindex bigint); CREATE CLUSTERED INDEX IDX_zindex ON {0}  ", jointableName), standardConn);
+                "CREATE TABLE {0} (zindex bigint); CREATE CLUSTERED INDEX IDX_zindex ON {0}(zindex)  ", jointableName), standardConn);
             try
             {
                 command.ExecuteNonQuery();

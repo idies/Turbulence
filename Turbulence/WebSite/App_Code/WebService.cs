@@ -96,6 +96,7 @@ namespace TurbulenceService {
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
+                case DataInfo.DataSets.isotropic4096: //check this
                     GetMHDData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;

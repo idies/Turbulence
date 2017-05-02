@@ -49,7 +49,7 @@ public partial class StoredProcedures
         //DateTime startTime, endTime, initialTimeStamp;
 
         //initialTimeStamp = startTime = DateTime.Now;
-
+        //spacing for 4096 is .00153398
         SqlConnection standardConn;
         SqlConnection contextConn;
         string connString;
@@ -470,7 +470,7 @@ public partial class StoredProcedures
 
         // Load information about the requested dataset
         TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, contextConn);
-
+        
         string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
         // -----------------------------------------------

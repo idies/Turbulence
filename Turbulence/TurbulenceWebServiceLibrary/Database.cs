@@ -128,6 +128,13 @@ namespace TurbulenceService
                     this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
                     channel_grid = false;
                     break;
+                case DataInfo.DataSets.isotropic4096:
+                    this.gridResolution = new int[] { 4096, 4096, 4096 };
+                    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
+                    this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
+                    this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
+                    channel_grid = false;
+                    break;
                 //case DataInfo.DataSets.rmhd:
                 //    this.gridResolution = new int[] { 2048, 2048, 2048 };
                 //    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
@@ -176,6 +183,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.mhd1024:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.mixing:
+                case DataInfo.DataSets.isotropic4096:
                 //case DataInfo.DataSets.rmhd:
                     this.atomDim = 8;
                     this.smallAtoms = true;
@@ -196,6 +204,10 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                     this.Dt = 0.0002F;
                     this.timeInc = 10;
+                    break;
+                case DataInfo.DataSets.isotropic4096: //There is only one timestep for this dataset so this isn't really necessary.
+                    this.Dt = 0.0002F;
+                    this.timeInc = 1;
                     break;
                 case DataInfo.DataSets.mhd1024:
                     this.Dt = 0.00025F;
@@ -353,7 +365,7 @@ namespace TurbulenceService
                 DBMapTable = "DatabaseMapTest";
             }
             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
-                "from {0}..{1} where DatasetName = @dataset and productiondatabasename='turbdb101'" + //*This is a hack to make it only get our test filedb server*/
+                "from {0}..{1} where DatasetName = @dataset " +
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
@@ -389,7 +401,7 @@ namespace TurbulenceService
             }
             else
             {
-                throw new Exception("Invalid dataset specified.");
+                throw new Exception("Invalid dataset specified:" + dataset + ".");
             }
             //throw new Exception("Found server: " + lastserver + " from server " + cString);
             reader.Close();
@@ -2468,10 +2480,21 @@ namespace TurbulenceService
                 if (connections[s] != null && datatables[s].Rows.Count > 0)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDWorker] @serverName, @dbname, @codedb, @dataset, "
-                                            + " @workerType, @blobDim, @time, "
-                                            + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
-                                            codeDatabase[s]);
+                    // quick fix for filedb.  Should filedb be a separate worker?
+                    if (databases[s] == "iso4096")
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDFileDBWorker] @serverName, @dbname, @codedb, @dataset, "
+                                                + " @workerType, @blobDim, @time, "
+                                                + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
+                                                codeDatabase[s]);
+                    }
+                    else
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDWorker] @serverName, @dbname, @codedb, @dataset, "
+                                                + " @workerType, @blobDim, @time, "
+                                                + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
+                                                codeDatabase[s]);
+                    }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);

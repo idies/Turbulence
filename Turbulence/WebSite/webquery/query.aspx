@@ -41,12 +41,13 @@
               onselectedindexchanged="dataset_SelectedIndexChanged"  >
             <asp:ListItem>isotropic1024coarse</asp:ListItem>           
             <asp:ListItem>isotropic1024fine</asp:ListItem>        
+              <asp:ListItem>isotropic4096</asp:ListItem>
             <asp:ListItem>mhd1024</asp:ListItem>
             <asp:ListItem>channel</asp:ListItem>
             <asp:ListItem>mixing</asp:ListItem>
         </asp:DropDownList></td><td></td></tr>
                 <tr><td>Time: [<a href="/datasets.aspx" class="note">?</a>]</td><td>
-            <asp:TextBox ID="time" runat="server">1.0</asp:TextBox>
+            <asp:TextBox ID="time" runat="server">0</asp:TextBox>
             </td><td>
                 
         <asp:Literal ID="timerange" runat="server" Visible="true"></asp:Literal><br />

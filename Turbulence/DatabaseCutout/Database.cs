@@ -125,6 +125,13 @@ using System.Threading;
                     this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
                     channel_grid = false;
                     break;
+                case DataInfo.DataSets.isotropic4096:
+                    this.gridResolution = new int[] { 4096, 4096, 4096 };
+                    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
+                    this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
+                    this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
+                    channel_grid = false;
+                    break;
                 case DataInfo.DataSets.channel:
                     this.gridResolution = new int[] { 1536, 512, 2048 };
                     this.dx = (8.0 * Math.PI) / (double)this.GridResolutionX;
@@ -165,7 +172,8 @@ using System.Threading;
                 case DataInfo.DataSets.mhd1024:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.mixing:
-                    this.atomDim = 8;
+                case DataInfo.DataSets.isotropic4096:
+                this.atomDim = 8;
                     this.smallAtoms = true;
                     break;
                 default:
@@ -182,6 +190,10 @@ using System.Threading;
                     this.timeInc = 1;
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
+                    this.Dt = 0.0002F;
+                    this.timeInc = 10;
+                    break;
+                case DataInfo.DataSets.isotropic4096:
                     this.Dt = 0.0002F;
                     this.timeInc = 10;
                     break;

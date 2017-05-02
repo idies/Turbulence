@@ -22,7 +22,8 @@ namespace TurbulenceService
             isotropic1024fine = 5,
             channel = 6,
             mixing = 7,
-            rmhd = 8
+            rmhd = 8,
+            isotropic4096 = 10
         }
 
         // TODO: This needs to be refactored. We probably don't want to keep track of
@@ -158,6 +159,7 @@ namespace TurbulenceService
                                {"rmhd", "rmhd"},
                                {"mhd1024", "mhd1024"},
                                {"channel", "channel"},
+                               {"isotropic4096", "isotropic4096" },
                                {"mixing", "mixing"}};
 
         public static string findDataSet(string setname)

@@ -244,13 +244,21 @@ namespace Turbulence.TurbLib
             this.timeinc = timeinc;
             this.timeOff = timeoff;
             this.gridResolution = new int[] { 1024, 1024, 1024 };
+            // For isotropic4096, it isn't setting correctly, so correct it here.
+            if (dbName == "iso4096")
+            {
+                this.gridResolution[0] = 4096;
+                this.gridResolution[1] = 4096;
+                this.gridResolution[2] = 4096;
+            }
+                        
             this.dx = (2.0 * Math.PI) / (double)gridResolution[2];
             this.dy = (2.0 * Math.PI) / (double)gridResolution[1];
             this.dz = (2.0 * Math.PI) / (double)gridResolution[0];
             
             this.SqlArrayHeader = 6 * sizeof(int);
             this.serverBoundaries = new ServerBoundaries();
-
+            
             #region VirtualServers
 
             int num_virtual_servers = -1;
@@ -351,6 +359,12 @@ namespace Turbulence.TurbLib
                 "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
                 0.0002f, -1, 100, 1, 0);
           }
+          else if (tableName.Equals("isotropic4096"))
+            {/* Check to see if this really gets executed...*/
+                return new TurbDataTable("isotropic turbulence with a resolution of 4096",
+               "isotropic4096", 4096, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+               0.0002f, 0, 1, 1, 0);
+            }
           else if (tableName.Equals("testing"))
           { 
             return new TurbDataTable("testing table",

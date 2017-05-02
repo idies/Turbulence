@@ -83,6 +83,12 @@ namespace Website
                     EndTimeRange.Text = "0.0 - 0.0198";
                     DeltaTRange.Text = "DB dt = .0002";
                 }
+                else if (dataset.SelectedValue.Equals("isotropic4096"))
+                {
+                    timerange.Text = "0.0 - 0.0";
+                    EndTimeRange.Text = "0.0 - 0.0";
+                    DeltaTRange.Text = "DB dt = .0";
+                }
                 else if (dataset.SelectedValue.Equals("mhd1024"))
                 {
                     timerange.Text = "0.0 - 2.56";
@@ -210,6 +216,10 @@ namespace Website
                 else if (dataset.SelectedValue.Equals("isotropic1024fine"))
                 {
                     timerange.Text = "0.0 - 0.0198";
+                }
+                else if (dataset.SelectedValue.Equals("isotropic4096"))
+                {
+                    timerange.Text = "0.0 - 0.0";
                 }
                 else if (dataset.SelectedValue.Equals("mhd1024"))
                 {
@@ -388,6 +398,47 @@ namespace Website
                 this.magneticEntry2.Enabled = false;
                 this.potentialEntry2.Enabled = false;
                 this.GetForce.Enabled = true;
+                this.GetPosition.Enabled = true;
+                this.GetBoxFilter.Enabled = true;
+                this.GetBoxFilterSGSscalar.Enabled = true;
+                this.GetBoxFilterSGSvector.Enabled = true;
+                this.GetBoxFilterSGSsymtensor.Enabled = true;
+                this.GetBoxFilterSGStensor.Enabled = true;
+                this.GetBoxFilterGradient.Enabled = true;
+                this.densityEntry.Enabled = false;
+                this.densityEntry2.Enabled = false;
+                this.GetDensity.Enabled = false;
+                this.GetDensityGradient.Enabled = false;
+                this.GetDensityHessian.Enabled = false;
+                if (method.SelectedValue.Contains("Magnetic") || method.SelectedValue.Contains("Vector"))
+                {
+                    method.SelectedValue = "GetVelocity";
+                }
+                if (fieldList.SelectedValue.Contains("Density"))
+                {
+                    fieldList.SelectedValue = "Velocity";
+                }
+                if (fieldList2.SelectedValue.Contains("Density"))
+                {
+                    fieldList2.SelectedValue = "Velocity";
+                }
+            }
+            else if (dataset.SelectedValue.Equals("isotropic4096"))
+            {
+                timerange.Text = "0.0 - 0.0<br/>dt = .0";
+                this.GetMagneticField.Enabled = false;
+                this.GetMagneticFieldGradient.Enabled = false;
+                this.GetMagneticFieldHessian.Enabled = false;
+                this.GetMagneticFieldLaplacian.Enabled = false;
+                this.GetVectorPotential.Enabled = false;
+                this.GetVectorPotentialGradient.Enabled = false;
+                this.GetVectorPotentialHessian.Enabled = false;
+                this.GetVectorPotentialLaplacian.Enabled = false;
+                this.magneticEntry.Enabled = false;
+                this.potentialEntry.Enabled = false;
+                this.magneticEntry2.Enabled = false;
+                this.potentialEntry2.Enabled = false;
+                this.GetForce.Enabled = false;
                 this.GetPosition.Enabled = true;
                 this.GetBoxFilter.Enabled = true;
                 this.GetBoxFilterSGSscalar.Enabled = true;

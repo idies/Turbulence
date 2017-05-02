@@ -128,30 +128,76 @@ public partial class StoredProcedures
                 SqlConnection connection = new SqlConnection(cString);
                 connection.Open();
                 sqlcmd = connection.CreateCommand();
-
-                
-
-                /*Check to see if we are striding/filtering or not*/
-                if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
+                int filedb;
+                if (dataset == "isotropic4096")
                 {
-                    sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @database, @codedb, "
-                                            + "@turbinfodb, @datasetid, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @queryBox ",
-                                            database.codeDatabase[s]);
-                    sqlcmd.Parameters.AddWithValue("@turbinfodb", "turbinfo");
-                    sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
-                    sqlcmd.Parameters.AddWithValue("@field", tablename.ToString());
-                    sqlcmd.Parameters.AddWithValue("@filter_width", filter_width);
-                    sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
-                    sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
-                    sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                    filedb = 1;
+                }
+                else
+                {
+                    filedb = 0;
+                }
+                if (filedb == 1)
+                {
+                    /*Check to see if we are striding/filtering or not*/
+                    if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
+                    {
+                        sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @database, @codedb, " //TODO: Modify for filedb.
+                                                + "@turbinfodb, @datasetid, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                                database.codeDatabase[s]);
+                        sqlcmd.Parameters.AddWithValue("@turbinfodb", "turbinfo");
+                        sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+                        sqlcmd.Parameters.AddWithValue("@field", tablename.ToString());
+                        sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                        sqlcmd.Parameters.AddWithValue("@filter_width", filter_width);
+                        sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                        sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                        sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+
+                    }
+                    else
+                    {
+                        sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataFileDBCutout] @serverName, @database, @codedb, "
+                                                + "@dataset, @blobDim, @timestep, @queryBox, @blob ",
+                                                database.codeDatabase[s]);
+                        sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+                        SqlParameter outData = new SqlParameter();
+                        outData.SqlDbType = SqlDbType.VarBinary;
+                        outData.Size = size; // This ensures the proper output size.  On small cutouts, it was setting to 1, causing an error in arraycopy.
+                        outData.Direction = ParameterDirection.Output;
+                        outData.ParameterName = "@blob";
+                        outData.Value = rawdata;
+                        sqlcmd.Parameters.Add(outData); ;
+                    }
 
                 }
                 else
                 {
-                    sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
-                                            + "@dataset, @blobDim, @timestep, @queryBox ",
-                                            database.codeDatabase[s]);
-                    sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+
+
+                    /*Check to see if we are striding/filtering or not*/
+                    if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
+                    {
+                        sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @database, @codedb, "
+                                                + "@turbinfodb, @datasetid, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                                database.codeDatabase[s]);
+                        sqlcmd.Parameters.AddWithValue("@turbinfodb", "turbinfo");
+                        sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+                        sqlcmd.Parameters.AddWithValue("@field", tablename.ToString());
+                        sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                        sqlcmd.Parameters.AddWithValue("@filter_width", filter_width);
+                        sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                        sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                        sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+
+                    }
+                    else
+                    {
+                        sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
+                                                + "@dataset, @blobDim, @timestep, @queryBox ",
+                                                database.codeDatabase[s]);
+                        sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+                    }
                 }
                 sqlcmd.Parameters.AddWithValue("@serverName", database.servers[s]);
                 sqlcmd.Parameters.AddWithValue("@database", database.databases[s]);
@@ -162,22 +208,45 @@ public partial class StoredProcedures
                 sqlcmd.Parameters.AddWithValue("@queryBox", queryBox);
                 sqlcmd.CommandTimeout = 3600;
 
-                SqlDataReader reader = sqlcmd.ExecuteReader();
-
-                while (reader.Read())
+               
+                if (filedb==1)
                 {
-                    int bytesread = 0;
-                    while (bytesread < size)
+                    //size = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float);
+                    //readLength = size;
+                    //byte[] rawdata = new byte[size];
+                    SqlDataReader dr = sqlcmd.ExecuteReader();
+                    dr.Close();
+                    
+                    try
                     {
-                        if (size - bytesread > MAX_READ_LENGTH)
-                            readLength = MAX_READ_LENGTH;
-                        else
-                            readLength = size - bytesread;
-                        int bytes = (int)reader.GetBytes(0, bytesread, rawdata, bytesread, readLength);
-                        if (bytes <= 0)
-                            throw new Exception("Unexpected end of cutout!");
-                        bytesread += bytes;
+                        rawdata = (byte[])sqlcmd.Parameters["@blob"].Value;
                     }
+                    catch (Exception ex)
+                    {
+                        throw new Exception(
+                            String.Format("Error querying filedb.  Inner exception: {0} query result  {1},  {2}, {3}, {4}, {5}, {6}", ex.Message, database.servers[s], database.databases[s], tablename.ToString(), queryBox, tlow, sqlcmd.Parameters["@blob"].Value));
+                    }
+                }
+                else
+                {
+                    SqlDataReader reader = sqlcmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        int bytesread = 0;
+                        while (bytesread < size)
+                        {
+                            if (size - bytesread > MAX_READ_LENGTH)
+                                readLength = MAX_READ_LENGTH;
+                            else
+                                readLength = size - bytesread;
+                            int bytes = (int)reader.GetBytes(0, bytesread, rawdata, bytesread, readLength);
+                            if (bytes <= 0)
+                                throw new Exception("Unexpected end of cutout!");
+                            bytesread += bytes;
+                        }
+                    }
+                    reader.Close();
+
                 }
                 int sourceIndex = 0;
                 //int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * ((xwidth) / x_step) + ((serverZ[s] - zlow) / z_step) * ((xwidth) / x_step) *( (ywidth) / y_step)) * sizeof(float);
@@ -204,8 +273,8 @@ public partial class StoredProcedures
                 /*Update log record*/
                 log.UpdateLogRecord(rowid, database.Bitfield);
                 log.Reset();
-
-                reader.Close();
+               
+                
                 connection.Close();
                 connection = null;
             }
@@ -253,6 +322,14 @@ public partial class StoredProcedures
                     !(xlow >= 0 && xhigh <= 1024) ||
                     !(ylow >= 0 && yhigh <= 1024) ||
                     !(zlow >= 0 && zhigh <= 1024))
+                { throw new Exception("The requested region is out of bounds"); }
+                break;
+            case DataInfo.DataSets.isotropic4096:
+                /* Adding 100 timesteps to coarse */
+                if (!(tlow >= 0 && thigh <= 1) ||
+                    !(xlow >= 0 && xhigh <= 4096) ||
+                    !(ylow >= 0 && yhigh <= 4096) ||
+                    !(zlow >= 0 && zhigh <= 4096))
                 { throw new Exception("The requested region is out of bounds"); }
                 break;
             case DataInfo.DataSets.mixing:

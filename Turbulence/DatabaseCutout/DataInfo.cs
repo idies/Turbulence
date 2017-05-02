@@ -20,7 +20,8 @@ using System.Web;
             isotropic1024coarse = 4,
             isotropic1024fine = 5,
             channel = 6,
-            mixing = 7
+            mixing = 7,
+            isotropic4096 = 10
         }
 
         // TODO: This needs to be refactored. We probably don't want to keep track of
@@ -89,6 +90,13 @@ using System.Web;
                         return TableNames.pr;
                     else
                         throw new Exception("Invalid field specified!");
+                case DataSets.isotropic4096:
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                        return TableNames.vel;
+                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                        return TableNames.pr;
+                    else
+                        throw new Exception("Invalid field specified!");
                 case DataSets.channel:
                     if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.vel;
@@ -145,6 +153,7 @@ using System.Web;
                                {"mhd1024coarse", "mhd1024"},
                                {"mhd1024", "mhd1024"},
                                {"channel", "channel"},
+                               {"isotropic4096", "isotropic4096"},
                                {"mixing", "mixing"}};
 
         public static string findDataSet(string setname)
@@ -176,6 +185,10 @@ using System.Web;
                 return false;
             }
             else if (dataset == DataSets.isotropic1024coarse && time > 2.05F)
+            {
+                return false;
+            }
+            else if (dataset == DataSets.isotropic4096 && time > 2.05F)
             {
                 return false;
             }
