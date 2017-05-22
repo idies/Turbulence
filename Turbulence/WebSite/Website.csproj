@@ -242,6 +242,7 @@
   <ItemGroup>
     <Compile Include="announcements.aspx.cs">
       <DependentUpon>announcements.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="announcements.aspx.designer.cs">
       <DependentUpon>announcements.aspx</DependentUpon>
@@ -251,12 +252,14 @@
     </Compile>
     <Compile Include="oldcutout.aspx.cs">
       <DependentUpon>oldcutout.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="oldcutout.aspx.designer.cs">
       <DependentUpon>oldcutout.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
@@ -272,6 +275,7 @@
     </Compile>
     <Compile Include="status\monitor.aspx.cs">
       <DependentUpon>monitor.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="status\monitor.aspx.designer.cs">
       <DependentUpon>monitor.aspx</DependentUpon>

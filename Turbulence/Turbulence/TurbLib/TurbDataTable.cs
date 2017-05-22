@@ -277,8 +277,29 @@ namespace Turbulence.TurbLib
                 server = 0;
                 num_virtual_servers = 1;
             }
-
+            /*We need to do the following in a better way.  This won't work for filedb, since there is no zindex table */
+            /*
             SqlCommand command = new SqlCommand(String.Format("SELECT MIN(zindex), MAX(zindex) FROM {0}.dbo.zindex", dbName), conn);
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        min_zindex = reader.GetInt64(0);
+                        max_zindex = reader.GetInt64(1);
+                    }
+                }
+                else
+                {
+                    reader.Close();
+                    throw new Exception("No rows returned, when requesting zindex range from database!");
+                }
+            }
+
+            */
+            /*New way-- query the databasemap table */
+            SqlCommand command = new SqlCommand(String.Format("SELECT minLim, maxLim FROM turblib.dbo.databasemap where productiondatabasename = '{0}'", dbName), conn);
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 if (reader.HasRows)
