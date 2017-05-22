@@ -51,7 +51,8 @@ namespace TurbulenceService
         const int MAX_READ_LENGTH = 256000000;
         const int MAX_NUMBER_THRESHOLD_POINTS = 1024 * 1024;
         const double DENSITY_CONSTANT = 80.0;
-
+        //New: db type either file or database.  0 is databse, 1 is file
+        public int dbtype;
         // zindex ranges stored on each server for the channel flow DB
         //long[] range_start;
         //long[] range_end;
@@ -91,6 +92,7 @@ namespace TurbulenceService
             this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
             this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
             this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
+            this.dbtype = 0;  //We set to database as dbtype initially since majority is database.
         }
 
         /// <summary>
@@ -364,9 +366,9 @@ namespace TurbulenceService
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime, dbType " +
                 "from {0}..{1} where DatasetName = @dataset " +
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime, dbType " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -394,6 +396,7 @@ namespace TurbulenceService
                     long maxLim = reader.GetSqlInt64(4).Value;
                     int minTime = reader.GetSqlInt32(5).Value; 
                     int maxTime = reader.GetSqlInt32(6).Value;
+                    this.dbtype = reader.GetSqlInt32(7).Value; //Not sure we should do this--this assumes all dbs are the same type.  Fix this if we have hybrid filedb/database types.
                     /* All servers are added, and then ones in range are selected from this list later */
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
                     lastserver = reader.GetString(0);
@@ -1070,10 +1073,20 @@ namespace TurbulenceService
                 if (server_name.Contains("_"))
                     server_name = server_name.Remove(server_name.IndexOf("_"));
                 //String cString = ConfigurationManager.ConnectionStrings[server_name].ConnectionString;
+                /*quick hack for filedb  TODO: Fix this!!!*/
+                if (this.dbtype == 1)
+                {
+                    databases[server] = "iso4096db101";
+                }
+
+
+
+
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
                     server_name, databases[server], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
 
                 //String cString = ConfigurationManager.ConnectionStrings[this.servers[server]].ConnectionString;
+
                 this.connections[server] = new SqlConnection(cString);
                 this.connections[server].Open();
                 sqlcmds[server] = this.connections[server].CreateCommand();
@@ -2481,12 +2494,17 @@ namespace TurbulenceService
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
                     // quick fix for filedb.  Should filedb be a separate worker?
-                    if (databases[s] == "iso4096")
+                    
+                    if (dbtype == 1)
                     {
                         sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDFileDBWorker] @serverName, @dbname, @codedb, @dataset, "
                                                 + " @workerType, @blobDim, @time, "
-                                                + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
+                                                + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable, @startz, @endz",
                                                 codeDatabase[s]);
+                        /*These are required for filedb since we don't want to query a non existant zindex table */
+                        sqlcmds[s].Parameters.AddWithValue("@startz", serverBoundaries[s].startKey);
+                        sqlcmds[s].Parameters.AddWithValue("@endz", serverBoundaries[s].endKey);
+
                     }
                     else
                     {

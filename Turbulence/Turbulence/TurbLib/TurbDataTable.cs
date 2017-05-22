@@ -426,6 +426,12 @@ namespace Turbulence.TurbLib
                         tableName, blobDim, 0, 2, new string[] { "Ux", "Uy", "Uz" },
                         0.00025f, 0, 36, 4, 0);
                 }
+                else if (dbName.Contains("4096"))
+                {
+                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
+                        0.0002f, 0, 1, 10, 0);
+                }
                 else
                 {
                     return new TurbDataTable(serverName, dbName, conn, "velocity",

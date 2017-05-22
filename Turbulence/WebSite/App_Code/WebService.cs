@@ -253,6 +253,7 @@ namespace TurbulenceService {
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
+                case DataInfo.DataSets.isotropic4096: //This is not really used in filedb, but we don't want to get an invalid dataset.
                     tableName = DataInfo.TableNames.vel;
                     break;
                 case DataInfo.DataSets.mhd1024:
@@ -998,6 +999,7 @@ namespace TurbulenceService {
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
+                case DataInfo.DataSets.isotropic4096:
                     GetMHDGradient(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
@@ -1299,6 +1301,7 @@ namespace TurbulenceService {
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
+                case DataInfo.DataSets.isotropic4096:
                     GetMHDHessian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
@@ -1458,6 +1461,7 @@ namespace TurbulenceService {
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
+                case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.mixing:
                     GetMHDLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, (int)Worker.Workers.GetMHDVelocityLaplacian,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid);

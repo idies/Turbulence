@@ -59,7 +59,7 @@ public partial class StoredProcedures
         //file.WriteLine(DateTime.Now - start);
         //file.Close();
     }
-
+     
     public struct cutout_buffer
     {
         public int[] coordinates;
@@ -80,7 +80,8 @@ public partial class StoredProcedures
 
         }
     }
-    private static void GetCutout(TurbDataTable table, string dbname, int timestep, int[] coordinates, SqlConnection connection, out byte[] cutout)
+     
+    private static void GetFiledbCutout(TurbDataTable table, string dbname, int timestep, int[] coordinates, SqlConnection connection, out byte[] cutout)
     {
         int atomWidth = table.atomDim;
         cutout_buffer cbuff = new cutout_buffer(coordinates, table.Components, atomWidth);
@@ -227,6 +228,7 @@ public partial class StoredProcedures
             //file.Close();
         }
     }
+    /* Already in getdatacutout
     public class MoverParameters
     {
         public long zindex;
@@ -239,6 +241,7 @@ public partial class StoredProcedures
             cbuff = cb;
         }
     }
+    */
         
     /* BlockMove is the method called when the work item is serviced on the thread pool */    
     private static void BlockMove(long zindex, ref byte[] source_buffer, ref cutout_buffer cbuff)
@@ -272,7 +275,7 @@ public partial class StoredProcedures
         }
  
 
-   
+   /*
     private static void ParseQueryBox(string QueryBox, int[] coordinates)
     {
         int left_bracket_pos = QueryBox.IndexOf('[');
@@ -287,6 +290,7 @@ public partial class StoredProcedures
             i++;
         }
     }
+    
 
     private static void GetSourceDestLen(int coordinate, int lower, int upper, int atomWidth, ref int source, ref int dest, ref int len)
     {
@@ -313,4 +317,5 @@ public partial class StoredProcedures
             dest = coordinate - lower;
         }
     }
+    */
 };
