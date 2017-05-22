@@ -332,6 +332,7 @@ namespace Turbulence.TurbLib.DataTypes
         public long endKey;
         public int minTime;
         public int maxTime;
+        public int dbtype;
 
         public ServerBoundaries(Morton3D firstKey, Morton3D lastKey, int minTime, int maxTime)
         {
@@ -345,6 +346,7 @@ namespace Turbulence.TurbLib.DataTypes
             this.endKey = lastKey;
             this.minTime = minTime;
             this.maxTime = maxTime;
+            this.dbtype = 0;
         }
 
         public ServerBoundaries(Morton3D firstBox, Morton3D lastBox, int minTime, int maxTime, int atomDim)
@@ -359,6 +361,7 @@ namespace Turbulence.TurbLib.DataTypes
             this.minTime = minTime;
             this.maxTime = maxTime;
             this.endKey = new Morton3D(endz, endy, endx);
+            this.dbtype = 0;
         }
 
         public ServerBoundaries(int startx, int endx, int starty, int endy, int startz, int endz, int minTime, int maxTime)
@@ -373,8 +376,23 @@ namespace Turbulence.TurbLib.DataTypes
             this.endKey = new Morton3D(endz, endy, endx);
             this.minTime = minTime;
             this.maxTime = maxTime;
+            this.dbtype = 0;
         }
 
+        public ServerBoundaries(int startx, int endx, int starty, int endy, int startz, int endz, int minTime, int maxTime, int dbtype)
+        {
+            this.startx = startx;
+            this.endx = endx;
+            this.starty = starty;
+            this.endy = endy;
+            this.startz = startz;
+            this.endz = endz;
+            this.startKey = new Morton3D(startz, starty, startx);
+            this.endKey = new Morton3D(endz, endy, endx);
+            this.minTime = minTime;
+            this.maxTime = maxTime;
+            this.dbtype = dbtype;
+        }
         /// <summary>
         /// Given a structure representing the server's boundaries
         /// and the number of virtual servers

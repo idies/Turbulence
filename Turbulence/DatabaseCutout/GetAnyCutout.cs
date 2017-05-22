@@ -101,6 +101,7 @@ public partial class StoredProcedures
         int[] serverTmax = new int[serverCount];
 
         database.selectServers(dataset_enum);
+        //throw new Exception("DB Type is: " + database.dbtype.ToString());
         database.development = false;
          
         database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
@@ -109,7 +110,7 @@ public partial class StoredProcedures
          //   serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, 1, 1, 1);
         /*Update xwidth. This is required for reassembly when x is strided */
         int destinationIndex;
-
+       
         /*Now use the parameters to grab the data pieces*/
         for (int s = 0; s < serverCount; s++)
         {
@@ -128,16 +129,8 @@ public partial class StoredProcedures
                 SqlConnection connection = new SqlConnection(cString);
                 connection.Open();
                 sqlcmd = connection.CreateCommand();
-                int filedb;
-                if (dataset == "isotropic4096")
-                {
-                    filedb = 1;
-                }
-                else
-                {
-                    filedb = 0;
-                }
-                if (filedb == 1)
+                /* Look up this info from the database map table */
+                if (database.dbtype == 1)
                 {
                     /*Check to see if we are striding/filtering or not*/
                     if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
@@ -153,12 +146,13 @@ public partial class StoredProcedures
                         sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
                         sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
                         sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                        throw new Exception("We are filtering in filedb, but it isn't implemented yet!");
 
                     }
                     else
                     {
                         sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataFileDBCutout] @serverName, @database, @codedb, "
-                                                + "@dataset, @blobDim, @timestep, @queryBox, @blob ",
+                                                + "@dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT ",
                                                 database.codeDatabase[s]);
                         sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
                         SqlParameter outData = new SqlParameter();
@@ -173,7 +167,7 @@ public partial class StoredProcedures
                 }
                 else
                 {
-
+                    throw new Exception("We didn't detect as filedb! DB type is: " + database.dbtype.ToString());
 
                     /*Check to see if we are striding/filtering or not*/
                     if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
@@ -209,7 +203,7 @@ public partial class StoredProcedures
                 sqlcmd.CommandTimeout = 3600;
 
                
-                if (filedb==1)
+                if (database.dbtype==1)
                 {
                     //size = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float);
                     //readLength = size;

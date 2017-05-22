@@ -50,12 +50,12 @@ using System.Threading;
         const int MAX_READ_LENGTH = 256000000;
         const int MAX_NUMBER_THRESHOLD_POINTS = 1024 * 1024;
         const double DENSITY_CONSTANT = 80.0;
+        public int dbtype; //Used to determine if we are a real database or a filedb database
+    // zindex ranges stored on each server for the channel flow DB
+    //long[] range_start;
+    //long[] range_end;
 
-        // zindex ranges stored on each server for the channel flow DB
-        //long[] range_start;
-        //long[] range_end;
-
-        public int TimeInc { get { return timeInc; } }
+    public int TimeInc { get { return timeInc; } }
         public int TimeOff { get { return timeOff; } }
 
         public byte[] Bitfield
@@ -270,9 +270,9 @@ using System.Threading;
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime, dbtype " +
                 "from {0}..{1} where DatasetName = @dataset " +
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, dbtype " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -298,7 +298,9 @@ using System.Threading;
                     long maxLim = reader.GetSqlInt64(4).Value;
                     int minTime = reader.GetInt32(5);
                     int maxTime = reader.GetInt32(6);
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
+                    int dbtype = reader.GetInt32(7);
+                this.dbtype = reader.GetInt32(7); /*This isn't right.  This doesn't provide for mixed dbs (some file and some database) */
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime, dbtype));
                 }
             }
             else
@@ -349,9 +351,9 @@ using System.Threading;
             {
                 DBMapTable = "DatabaseMapTest";
             }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime, dbtype " +
                 "from {0}..{1} where DatasetName = @dataset " +
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, dbtype " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
@@ -377,7 +379,8 @@ using System.Threading;
                     long maxLim = reader.GetSqlInt64(4).Value;
                     int minTime = reader.GetInt32(5);
                     int maxTime = reader.GetInt32(6);
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
+                    int dbtype = reader.GetInt32(7);
+                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime, dbtype));
                 }
             }
             else

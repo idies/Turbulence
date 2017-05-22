@@ -41,7 +41,7 @@ public partial class StoredProcedures
 
         byte[] cutout;
 
-        GetCutout(table, dbname, timestep, coordinates, connection, out cutout);
+        GetFiledbCutout(table, dbname, timestep, coordinates, connection, out cutout);
 
         // Populate the record
         /* quick mod send last few bytes to test speed, a 512 cube */
@@ -87,7 +87,7 @@ public partial class StoredProcedures
         cutout_buffer cbuff = new cutout_buffer(coordinates, table.Components, atomWidth);
         byte[] rawdata = new byte[table.BlobByteSize];
 
-        string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
+        //string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
         //System.IO.StreamWriter file = new System.IO.StreamWriter(@"d:\filedb\zindexlistdb.txt", true);
         DateTime start = DateTime.Now;
         /*File Db code*/
