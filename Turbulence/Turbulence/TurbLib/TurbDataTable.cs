@@ -245,7 +245,7 @@ namespace Turbulence.TurbLib
             this.timeOff = timeoff;
             this.gridResolution = new int[] { 1024, 1024, 1024 };
             // For isotropic4096, it isn't setting correctly, so correct it here.
-            if (dbName == "iso4096")
+            if (dbName.Contains("iso4096"))
             {
                 this.gridResolution[0] = 4096;
                 this.gridResolution[1] = 4096;
@@ -316,7 +316,7 @@ namespace Turbulence.TurbLib
                     throw new Exception("No rows returned, when requesting zindex range from database!");
                 }
             }
-
+            
             int blobSize = blobDim * blobDim * blobDim;
             //long pernode = (max_zindex + blobSize - min_zindex) / num_virtual_servers;  // space assigned to each node
             //// first zindex stored on this server gives us the coordinates of the 

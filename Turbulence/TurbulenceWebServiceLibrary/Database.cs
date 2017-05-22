@@ -1073,17 +1073,18 @@ namespace TurbulenceService
                 if (server_name.Contains("_"))
                     server_name = server_name.Remove(server_name.IndexOf("_"));
                 //String cString = ConfigurationManager.ConnectionStrings[server_name].ConnectionString;
-                /*quick hack for filedb  TODO: Fix this!!!*/
-                if (this.dbtype == 1)
+                string dbname = "";
+                if (databases[server].Contains("4096"))  /*This is a hack to make sure we don't connect to the database in databasemap table since filedb doesn't actually have a db*/
                 {
-                    databases[server] = "iso4096db101";
+                    dbname = "iso4096db101";
                 }
-
-
-
-
+                else
+                {
+                    dbname = databases[server];
+                }
+                
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                    server_name, databases[server], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                    server_name, dbname, ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
 
                 //String cString = ConfigurationManager.ConnectionStrings[this.servers[server]].ConnectionString;
 
