@@ -923,7 +923,7 @@ using System.Threading;
 
         public void GetServerParameters4RawData(int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth,
-            int x_stride, int y_stride, int z_stride, int T, int Twidth)
+            int x_stride, int y_stride, int z_stride, int T, int Twidth, int dbtype)
         {
             for (int i = 0; i < this.serverCount; i++)
             {
@@ -934,15 +934,19 @@ using System.Threading;
                         if (T + Twidth > serverBoundaries[i].minTime && T <= serverBoundaries[i].maxTime)
                         {
                             // If we have no workload for this server yet... create a connection
-                            if (this.connections[i] == null)
+                            if (dbtype == 0)
                             {
-                                string server_name = this.servers[i];
-                                if (server_name.Contains("_"))
-                                    server_name = server_name.Remove(server_name.IndexOf("_"));
-                                String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;",
-                                    server_name, databases[i]);
-                                this.connections[i] = new SqlConnection(cString);
-                                this.connections[i].Open();
+                                if (this.connections[i] == null)
+                                {
+                                    string server_name = this.servers[i];
+                                    if (server_name.Contains("_"))
+                                        server_name = server_name.Remove(server_name.IndexOf("_"));
+                                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;",
+                                        server_name, databases[i]);
+
+                                    this.connections[i] = new SqlConnection(cString);
+                                    this.connections[i].Open();
+                                }
                             }
                             GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], x_stride);
                             GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref serverY[i], ref serverYwidth[i], y_stride);
@@ -3521,7 +3525,7 @@ using System.Threading;
 
         public byte[] GetFilteredData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
-            int x_stride, int y_stride, int z_stride, int filter_width, int T, int Twidth)
+            int x_stride, int y_stride, int z_stride, int filter_width, int T, int Twidth, int dbtype)
         {
             IAsyncResult[] asyncRes;
 
@@ -3552,7 +3556,7 @@ using System.Threading;
             Zwidth = (Zwidth - 1) / z_stride * z_stride + 1;
 
             GetServerParameters4RawData(X, Y, Z, Xwidth, Ywidth, Zwidth, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth,
-                x_stride, y_stride, z_stride, T, Twidth);
+                x_stride, y_stride, z_stride, T, Twidth, dbtype);
 
             if (filter_width == 1)
             {

@@ -103,9 +103,11 @@ public partial class StoredProcedures
         database.selectServers(dataset_enum);
         //throw new Exception("DB Type is: " + database.dbtype.ToString());
         database.development = false;
-         
+        
         database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
-            serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step, tlow, twidth); //Added time for temporal server location
+            serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step, tlow, twidth, database.dbtype); //Added time for temporal server location
+        
+        
         //database.GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
          //   serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, 1, 1, 1);
         /*Update xwidth. This is required for reassembly when x is strided */
@@ -161,13 +163,13 @@ public partial class StoredProcedures
                         outData.Direction = ParameterDirection.Output;
                         outData.ParameterName = "@blob";
                         outData.Value = rawdata;
-                        sqlcmd.Parameters.Add(outData); ;
+                        sqlcmd.Parameters.Add(outData); 
                     }
 
                 }
                 else
                 {
-                    throw new Exception("We didn't detect as filedb! DB type is: " + database.dbtype.ToString());
+                    //throw new Exception("We didn't detect as filedb! DB type is: " + database.dbtype.ToString());
 
                     /*Check to see if we are striding/filtering or not*/
                     if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
@@ -188,9 +190,16 @@ public partial class StoredProcedures
                     else
                     {
                         sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
-                                                + "@dataset, @blobDim, @timestep, @queryBox ",
+                                                + "@dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT ",
                                                 database.codeDatabase[s]);
                         sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+                        SqlParameter outData = new SqlParameter();
+                        outData.SqlDbType = SqlDbType.VarBinary;
+                        outData.Size = size; // This ensures the proper output size.  On small cutouts, it was setting to 1, causing an error in arraycopy.
+                        outData.Direction = ParameterDirection.Output;
+                        outData.ParameterName = "@blob";
+                        outData.Value = rawdata;
+                        sqlcmd.Parameters.Add(outData);
                     }
                 }
                 sqlcmd.Parameters.AddWithValue("@serverName", database.servers[s]);
@@ -203,7 +212,7 @@ public partial class StoredProcedures
                 sqlcmd.CommandTimeout = 3600;
 
                
-                if (database.dbtype==1)
+                if ( 1==1) //database.dbtype==1)
                 {
                     //size = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float);
                     //readLength = size;
