@@ -2503,6 +2503,7 @@ namespace TurbulenceService
                                                 + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable, @startz, @endz",
                                                 codeDatabase[s]);
                         /*These are required for filedb since we don't want to query a non existant zindex table */
+                        /* These should be removed they are not used in fileDB anymore */
                         sqlcmds[s].Parameters.AddWithValue("@startz", serverBoundaries[s].startKey);
                         sqlcmds[s].Parameters.AddWithValue("@endz", serverBoundaries[s].endKey);
 
