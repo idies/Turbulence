@@ -2869,7 +2869,7 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName, int worker, float time,
+        (DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result)

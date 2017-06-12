@@ -333,7 +333,8 @@ namespace Turbulence.TurbLib
             //endz    = last_zindex.Z;
 
             Morton3D start = new Morton3D(min_zindex);
-            Morton3D end = new Morton3D(max_zindex + blobSize - 1);
+            //Morton3D end = new Morton3D(max_zindex + blobSize - 1);  //This won't work for filedb.  It is already "normalized"
+            Morton3D end = new Morton3D(max_zindex);
             int Xresolution = end.X - start.X + 1;
             int Yresolution = end.Y - start.Y + 1;
             int Zresolution = end.Z - start.Z + 1;

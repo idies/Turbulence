@@ -463,7 +463,7 @@ public partial class StoredProcedures
     /// for each of the calculation functions removed.
     /// </summary>
     [Microsoft.SqlServer.Server.SqlProcedure]
-    public static void ExecuteMHDWorkerFileDBBatch(string serverName, //This is not filedb modified yet, but it can't be the same name as in executemhdworker.
+    public static void ExecuteMHDWorkerFileDBBatch(string serverName, 
         string dbname,
         string codedb,
         string dataset,
@@ -484,7 +484,7 @@ public partial class StoredProcedures
         // Load information about the requested dataset
         TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, contextConn);
         
-        string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
+        //string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
         // -----------------------------------------------
         // construct query boundary for batch execution and invoke a different computation per point
@@ -539,7 +539,7 @@ public partial class StoredProcedures
 
         byte[] rawdata = new byte[table.BlobByteSize];
 
-        long SqlArrayHeader = 0; // 6 * sizeof(int);
+        //long SqlArrayHeader = 0; // 6 * sizeof(int);
 
         standardConn.Open();
         string joinTable = SQLUtility.CreateTemporaryJoinTable(map.Keys, standardConn, points_per_cube);
