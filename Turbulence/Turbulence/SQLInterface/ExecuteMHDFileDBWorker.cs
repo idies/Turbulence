@@ -140,62 +140,67 @@ public partial class StoredProcedures
             {
                 while (reader.Read())
                 { 
+                    
                     // read in the current blob
                     long thisBlob = reader.GetSqlInt64(0).Value;
-                    //Reset blob to line up with beginning of file by taking the modulo of the 512 cube zindex  This could be done by the databasemap maybe.
-                    //One possibility is to take the thisblob-zmin.  
-                    //long fileBlob = thisBlob - startz; /*We need to align the first blob with the start of the file */
-                    long fileBlob = thisBlob % 134217728;
-                    long z = fileBlob / (table.atomDim * table.atomDim * table.atomDim);
-                    long offset = z * table.BlobByteSize;
-                    filedb.Seek(offset, SeekOrigin.Begin);
-                    //Test
-                    //string[] lines= { "Offset chosen = ", offset.ToString(), z.ToString(), table.BlobByteSize.ToString(), thisBlob.ToString(),pathSource, table.atomDim.ToString()};
-                    //System.IO.File.WriteAllLines(@"e:\filedb\debug.txt", lines);
+                    if (thisBlob <= endz && thisBlob >= startz)
+                    { 
+                            //Reset blob to line up with beginning of file by taking the modulo of the 512 cube zindex  This could be done by the databasemap maybe.
+                            //One possibility is to take the thisblob-zmin. 
+                            //thisBlob is the spatial blob.  fileBlob is the corresponding blob in relation to the file. 
+                            //long fileBlob = thisBlob - startz; /*We need to align the first blob with the start of the file */
+                            long fileBlob = thisBlob % 134217728;
+                        long z = fileBlob / (table.atomDim * table.atomDim * table.atomDim);
+                        long offset = z * table.BlobByteSize;
+                        filedb.Seek(offset, SeekOrigin.Begin);
+                        //Test
+                        //string[] lines= { "Offset chosen = ", offset.ToString(), z.ToString(), table.BlobByteSize.ToString(), thisBlob.ToString(),pathSource, table.atomDim.ToString()};
+                        //System.IO.File.WriteAllLines(@"e:\filedb\debug.txt", lines);
 
-                    int bytes = filedb.Read(rawdata, 0, table.BlobByteSize);
-                    blob.Setup(timestep_int, new Morton3D(thisBlob), rawdata);
+                        int bytes = filedb.Read(rawdata, 0, table.BlobByteSize);
+                        blob.Setup(timestep_int, new Morton3D(thisBlob), rawdata);
 
-                    foreach (int point in map[thisBlob])
-                    {
-                        //point = input[thisBlob][i];
-                        double[] result = worker.GetResult(blob, input[point]);
-                        for (int r = 0; r < result.Length; r++)
+                        foreach (int point in map[thisBlob])
                         {
-                            input[point].result[r] += result[r];
-                        }
-                        input[point].cubesRead++;
-                        //endTime = DateTime.Now;
-                        //resultTime += endTime - startTime;
-
-                        //startTime = endTime;
-
-                        if (input[point].cubesRead == input[point].numberOfCubes && !input[point].resultSent)
-                        {
-                            record.SetInt32(0, input[point].request);
-                            int r = 0;
-                            for (; r < input[point].result.Length; r++)
+                            //point = input[thisBlob][i];
+                            double[] result = worker.GetResult(blob, input[point]);
+                            for (int r = 0; r < result.Length; r++)
                             {
-                                record.SetSqlSingle(r + 1, (float)input[point].result[r]);
+                                input[point].result[r] += result[r];
                             }
+                            input[point].cubesRead++;
+                            //endTime = DateTime.Now;
+                            //resultTime += endTime - startTime;
 
-                            //record.SetInt32(r + 1, input[point].cubesRead);
-                            SqlContext.Pipe.SendResultsRow(record);
-                            input[point].resultSent = true;
+                            //startTime = endTime;
 
-                            input[point].lagInt = null;
-                            input[point].result = null;
-                            input[point] = null;
+                            if (input[point].cubesRead == input[point].numberOfCubes && !input[point].resultSent)
+                            {
+                                record.SetInt32(0, input[point].request);
+                                int r = 0;
+                                for (; r < input[point].result.Length; r++)
+                                {
+                                    record.SetSqlSingle(r + 1, (float)input[point].result[r]);
+                                }
+
+                                //record.SetInt32(r + 1, input[point].cubesRead);
+                                SqlContext.Pipe.SendResultsRow(record);
+                                input[point].resultSent = true;
+
+                                input[point].lagInt = null;
+                                input[point].result = null;
+                                input[point] = null;
 #if MEMORY
-                                num_active_points--;
+                                    num_active_points--;
 #endif
+                            }
+                            //endTime = DateTime.Now;
+                            //resultSendingTime += endTime - startTime;
+
+                            //input[thisBlob][i] = point;
+
+                            //startTime = endTime;
                         }
-                        //endTime = DateTime.Now;
-                        //resultSendingTime += endTime - startTime;
-
-                        //input[thisBlob][i] = point;
-
-                        //startTime = endTime;
                     }
                 }
             }
@@ -458,7 +463,7 @@ public partial class StoredProcedures
     /// for each of the calculation functions removed.
     /// </summary>
     [Microsoft.SqlServer.Server.SqlProcedure]
-    public static void ExecuteMHDWorkerFileDBBatch(string serverName, //This is not filedb modified yet, but it can't be the same name as in executemhdworker.
+    public static void ExecuteMHDWorkerFileDBBatch(string serverName, 
         string dbname,
         string codedb,
         string dataset,
@@ -479,7 +484,7 @@ public partial class StoredProcedures
         // Load information about the requested dataset
         TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, contextConn);
         
-        string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
+        //string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
         // -----------------------------------------------
         // construct query boundary for batch execution and invoke a different computation per point
@@ -534,7 +539,7 @@ public partial class StoredProcedures
 
         byte[] rawdata = new byte[table.BlobByteSize];
 
-        long SqlArrayHeader = 0; // 6 * sizeof(int);
+        //long SqlArrayHeader = 0; // 6 * sizeof(int);
 
         standardConn.Open();
         string joinTable = SQLUtility.CreateTemporaryJoinTable(map.Keys, standardConn, points_per_cube);
