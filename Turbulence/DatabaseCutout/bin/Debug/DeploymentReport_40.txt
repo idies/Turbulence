@@ -1,0 +1,23 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Drop
+       [DatabaseCutout] (Assembly)
+     Create
+       [DatabaseCutout] (Assembly)
+     Alter
+       [Turbulence] (Assembly)
+
+** Supporting actions
+     Drop
+       [dbo].[GetAnyCutout] (Procedure)
+     Create
+       [dbo].[GetAnyCutout] (Procedure)

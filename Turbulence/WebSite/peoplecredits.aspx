@@ -28,8 +28,8 @@
 </div>
 <!--#include file="navbar.htm" -->
 <div id="leftcolumn">
-   <p><img src="images/fig4-1.jpg" width="205" height="365" /></p>
-      <p><img src="images/fig2.jpg" width="205" height="163" /></p>
+   <p><img src="images/fig4-1.jpg" width="205" /></p>
+      <p><a href="images/fig2.jpg" target="_blank"><img src="images/fig2.jpg" width="205" /></a></p>
 </div>
 <div id="centercolumn">
       
@@ -49,14 +49,16 @@
 
       <p class="style23">Graduate students:</p>
       <ul class="style24">
-	    <li><a href="http://www.cs.jhu.edu/~stephenh/">Stephen Hamilton</a> (Computer Science)</li>
-        <li><a href="http://me.jhu.edu/students/">Perry Johnson</a> (Mechanical Engineering)</li>
+        <li>Rohit Ravoori (Computer Science)</li>
+        <li>Brian Devincentis (Mechanical Engineering)</li>
       </ul>      
 
       <p class="style23">Postdocs and senior research associates:</p>
       <ul class="style24">
 	    
-        <li>Jin Lee</li>
+        
+        <li>Zhao Wu (Mechanical Engineering)</li>
+        <li>Gerard Lemson (Physics and Astronomy)</li>
 	    
       </ul>      
       <p class="style23">External collaborators:</p>
@@ -69,6 +71,7 @@
         <li><a href="https://www.ices.utexas.edu/people/344/">Robert D. Moser</a></li>
         <li>Jesus Pulido</li>
         <li><a href="http://public.lanl.gov/livescu/">Daniel Livescu</a></li>
+        <li><a href="http://www.me.gatech.edu/faculty/yeung">P.K. Yeung </a></li>
         
 
       </ul> 
@@ -77,6 +80,7 @@
       <ul class="style24">
 	<li>Edo Frederix (Eindhoven Univ., visiting student summer 2011)</li>
 	<li>Kai Buerger (Technical Univ. Muenchen, visiting student, summer 2011)</li>
+    <li>José-Hugo Elsas (Universidade Federal do Rio de Janeiro, visiting PhD student 2016-2017)</li>
       </ul>
 
       <p class="style23">Technical Staff:</p>
@@ -104,6 +108,11 @@
         <li>Zuoli Xiao</li>
         <li>Yunke Yang</li>
 	    <li><a href="http://www.engr.iupui.edu/main/people/detail.php?id=whyu">Huidan Yu</a></li>
+        <li>Kung Yang</li>
+        <li><a href="http://www.cs.jhu.edu/~stephenh/">Stephen Hamilton</a> (Computer Science)</li>
+        <li><a href="http://me.jhu.edu/students/">Perry Johnson</a> (Mechanical Engineering)</li>
+        <li>Jin Lee</li>
+        <li>Mohammad Danish </li>
       </ul>
       
            

@@ -907,6 +907,101 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetTemperature">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTemperatureResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTemperatureResult" type="tns:ArrayOfPressure" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTemperatureGradient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTemperatureGradientResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTemperatureGradientResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTemperatureHessian">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetTemperatureHessianResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetTemperatureHessianResult" type="tns:ArrayOfPressureHessian" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityAndTemperature">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetVelocityAndTemperatureResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetVelocityAndTemperatureResult" type="tns:ArrayOfVector3P" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetInvariant">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetInvariantResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetInvariantResult" type="tns:ArrayOfVector3" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="NullOpSoapIn">
@@ -1131,6 +1226,36 @@
   <wsdl:message name="GetLaplacianOfGradientSoapOut">
     <wsdl:part name="parameters" element="tns:GetLaplacianOfGradientResponse" />
   </wsdl:message>
+  <wsdl:message name="GetTemperatureSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTemperature" />
+  </wsdl:message>
+  <wsdl:message name="GetTemperatureSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTemperatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTemperatureGradientSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTemperatureGradient" />
+  </wsdl:message>
+  <wsdl:message name="GetTemperatureGradientSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTemperatureGradientResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetTemperatureHessianSoapIn">
+    <wsdl:part name="parameters" element="tns:GetTemperatureHessian" />
+  </wsdl:message>
+  <wsdl:message name="GetTemperatureHessianSoapOut">
+    <wsdl:part name="parameters" element="tns:GetTemperatureHessianResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityAndTemperatureSoapIn">
+    <wsdl:part name="parameters" element="tns:GetVelocityAndTemperature" />
+  </wsdl:message>
+  <wsdl:message name="GetVelocityAndTemperatureSoapOut">
+    <wsdl:part name="parameters" element="tns:GetVelocityAndTemperatureResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetInvariantSoapIn">
+    <wsdl:part name="parameters" element="tns:GetInvariant" />
+  </wsdl:message>
+  <wsdl:message name="GetInvariantSoapOut">
+    <wsdl:part name="parameters" element="tns:GetInvariantResponse" />
+  </wsdl:message>
   <wsdl:portType name="TurbulenceServiceSoap">
     <wsdl:operation name="NullOp">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Perform a null operation -- for testing throughput</wsdl:documentation>
@@ -1208,7 +1333,7 @@
       <wsdl:output message="tns:GetForceSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetVelocityAndPressure">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the velocity for an array of points</wsdl:documentation>
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the velocity and pressure for an array of points</wsdl:documentation>
       <wsdl:input message="tns:GetVelocityAndPressureSoapIn" />
       <wsdl:output message="tns:GetVelocityAndPressureSoapOut" />
     </wsdl:operation>
@@ -1268,7 +1393,7 @@
       <wsdl:output message="tns:GetVectorPotentialLaplacianSoapOut" />
     </wsdl:operation>
     <wsdl:operation name="GetPosition">
-      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">FluidParticleTracking</wsdl:documentation>
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Fluid particle tracking using a task parallel evaluation approach inside the database engine.</wsdl:documentation>
       <wsdl:input message="tns:GetPositionSoapIn" />
       <wsdl:output message="tns:GetPositionSoapOut" />
     </wsdl:operation>
@@ -1318,6 +1443,31 @@
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!</wsdl:documentation>
       <wsdl:input message="tns:GetLaplacianOfGradientSoapIn" />
       <wsdl:output message="tns:GetLaplacianOfGradientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTemperature">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the temperature field at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetTemperatureSoapIn" />
+      <wsdl:output message="tns:GetTemperatureSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTemperatureGradient">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the temperature gradient at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetTemperatureGradientSoapIn" />
+      <wsdl:output message="tns:GetTemperatureGradientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetTemperatureHessian">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the temperature hessian at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetTemperatureHessianSoapIn" />
+      <wsdl:output message="tns:GetTemperatureHessianSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityAndTemperature">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the velocity and temperature for an array of points</wsdl:documentation>
+      <wsdl:input message="tns:GetVelocityAndTemperatureSoapIn" />
+      <wsdl:output message="tns:GetVelocityAndTemperatureSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetInvariant">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the invariants of velocity gradient at a fixed location</wsdl:documentation>
+      <wsdl:input message="tns:GetInvariantSoapIn" />
+      <wsdl:output message="tns:GetInvariantSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="TurbulenceServiceSoap" type="tns:TurbulenceServiceSoap">
@@ -1655,6 +1805,51 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetTemperature">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetTemperature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTemperatureGradient">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetTemperatureGradient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTemperatureHessian">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetTemperatureHessian" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityAndTemperature">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityAndTemperature" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInvariant">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetInvariant" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="TurbulenceServiceSoap12" type="tns:TurbulenceServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -1984,6 +2179,51 @@
     </wsdl:operation>
     <wsdl:operation name="GetLaplacianOfGradient">
       <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetLaplacianOfGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTemperature">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetTemperature" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTemperatureGradient">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetTemperatureGradient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetTemperatureHessian">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetTemperatureHessian" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetVelocityAndTemperature">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetVelocityAndTemperature" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetInvariant">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetInvariant" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

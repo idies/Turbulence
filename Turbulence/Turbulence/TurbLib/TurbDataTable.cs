@@ -24,6 +24,7 @@ namespace Turbulence.TurbLib
         private int timeinc;        // integral-increment between timesteps
         private float dt;           // value of dt (t = dt * timestep)
         private int timeOff;        // timestep offset (t = dt * (timestep - timeOff); for channel flow timestep 132010 = time 0)
+        private short dbType;        // timestep offset (t = dt * (timestep - timeOff); for channel flow timestep 132010 = time 0)
         protected double dx;           // grid resolution along x
         protected double dy;           // grid resolution along y
         protected double dz;           // grid resolution along z
@@ -43,6 +44,7 @@ namespace Turbulence.TurbLib
         public int TimeEnd { get { return timeend; } }
         public int TimeInc { get { return timeinc; } }
         public int TimeOff { get { return timeOff; } }
+        public short dbtype { get { return dbType; } }
         public int GridResolutionX { get { return gridResolution[2]; } }
         public int GridResolutionY { get { return gridResolution[1]; } }
         public int GridResolutionZ { get { return gridResolution[0]; } }
@@ -207,7 +209,7 @@ namespace Turbulence.TurbLib
             string tableName, int gridResolution, int blobDim,
             int edgeRegion,
             int components, string [] dataDescription,
-            float dt, int timestart, int timeend, int timeinc, int timeoff)
+            float dt, int timestart, int timeend, int timeinc, int timeoff, short dbtype)
         {
             this.dataName = dataName;
             this.tableName = tableName;
@@ -221,15 +223,16 @@ namespace Turbulence.TurbLib
             this.timeend = timeend;
             this.timeinc = timeinc;
             this.timeOff = timeoff;
+            this.dbType = dbtype;
             this.dx = (2.0 * Math.PI) / (double)gridResolution;
             this.SqlArrayHeader = 6 * sizeof(int);
         }
 
-        public TurbDataTable(string serverName, string dbName, SqlConnection conn, string dataName,
+        public TurbDataTable(string serverName, string dbName, TurbServerInfo serverinfo, string dataName,
             string tableName, int blobDim,
             int edgeRegion,
             int components, string[] dataDescription,
-            float dt, int timestart, int timeend, int timeinc, int timeoff)
+            float dt, int timestart, int timeend, int timeinc, int timeoff, short dbtype)
         {
             this.serverName = serverName;
             this.dataName = dataName;
@@ -243,9 +246,10 @@ namespace Turbulence.TurbLib
             this.timeend = timeend;
             this.timeinc = timeinc;
             this.timeOff = timeoff;
+            this.dbType = dbtype;
             this.gridResolution = new int[] { 1024, 1024, 1024 };
             // For isotropic4096, it isn't setting correctly, so correct it here.
-            if (dbName.Contains("iso4096"))
+            if (dbName.Contains("iso4096") || dbName.Contains("strat4096"))
             {
                 this.gridResolution[0] = 4096;
                 this.gridResolution[1] = 4096;
@@ -299,7 +303,13 @@ namespace Turbulence.TurbLib
 
             */
             /*New way-- query the databasemap table */
-            SqlCommand command = new SqlCommand(String.Format("SELECT minLim, maxLim FROM turblib.dbo.databasemap where productiondatabasename = '{0}'", dbName), conn);
+            String cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverinfo.infoDB_server, serverinfo.infoDB);
+            SqlConnection turbinfoConn = new SqlConnection(cString);
+            turbinfoConn.Open();
+            SqlCommand command = turbinfoConn.CreateCommand();
+            command.CommandText = String.Format("SELECT MIN(minLim), MAX(maxLim) FROM {0}.dbo.databasemap "+
+                "WHERE productiondatabasename = '{1}'", serverinfo.infoDB, dbName);
+            //SqlCommand command = new SqlCommand(String.Format("SELECT MIN(minLim), MAX(maxLim) FROM turbinfo.dbo.databasemap where productiondatabasename = '{1}'", dbName), conn);
             using (SqlDataReader reader = command.ExecuteReader())
             {
                 if (reader.HasRows)
@@ -316,7 +326,7 @@ namespace Turbulence.TurbLib
                     throw new Exception("No rows returned, when requesting zindex range from database!");
                 }
             }
-            
+            turbinfoConn.Close();
             int blobSize = blobDim * blobDim * blobDim;
             //long pernode = (max_zindex + blobSize - min_zindex) / num_virtual_servers;  // space assigned to each node
             //// first zindex stored on this server gives us the coordinates of the 
@@ -369,29 +379,35 @@ namespace Turbulence.TurbLib
         /// </remarks>
         public static TurbDataTable GetTableInfo(string tableName)
         {
-            if (tableName.Equals("isotropic1024coarse") || tableName.Equals("isotropic1024old"))
+          if (tableName.Equals("isotropic1024coarse") || tableName.Equals("isotropic1024old"))
           {
             return new TurbDataTable("isotropic turbulence with a resolution of 1024",
                 "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -10, 4700, 10, 0);
+                0.0002f, -10, 4700, 10, 0, 0);
           }
           else if (tableName.Equals("isotropic1024fine") || tableName.Equals("isotropic1024fine_old"))
           {
             return new TurbDataTable("isotropic turbulence with a resolution of 1024",
                 "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -1, 100, 1, 0);
+                0.0002f, -1, 100, 1, 0, 0);
           }
           else if (tableName.Equals("isotropic4096"))
             {/* Check to see if this really gets executed...*/
                 return new TurbDataTable("isotropic turbulence with a resolution of 4096",
                "isotropic4096", 4096, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-               0.0002f, 0, 1, 1, 0);
+               0.0002f, 0, 0, 1, 0, 1);
+            }
+          else if (tableName.Equals("strat4096"))
+            {/* Check to see if this really gets executed...*/
+                return new TurbDataTable("roration and stratified turbulence with a resolution of 4096",
+               "strat4096", 4096, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+               1f, 0, 4, 1, 0, 1);
             }
           else if (tableName.Equals("testing"))
           { 
             return new TurbDataTable("testing table",
                 "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -1, 100, 1, 0);
+                0.0002f, -1, 100, 1, 0, 0);
           }
           else
           {
@@ -408,66 +424,78 @@ namespace Turbulence.TurbLib
         /// <remarks>
         /// TODO: This information could easily be stored as XML (or similar) inside the database.
         /// </remarks>
-        public static TurbDataTable GetTableInfo(string serverName, string dbName, string tableName, int blobDim, SqlConnection conn)
+        public static TurbDataTable GetTableInfo(string serverName, string dbName, string tableName, int blobDim, TurbServerInfo serverinfo)
         {
             if (tableName.Equals("isotropic1024fine_vel"))
             {
-                return new TurbDataTable(serverName, dbName, conn, "velocity",
+                return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                     "vel", blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                    0.0002f, -1, 100, 1, 0);
+                    0.0002f, -1, 100, 1, 0, 0);
             }
             else if (tableName.Equals("isotropic1024fine_pr"))
             {
-                return new TurbDataTable(serverName, dbName, conn, "pressure",
+                return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                     "pr", blobDim, 0, 1, new string[] { "P" },
-                    0.0002f, -1, 100, 1, 0);
+                    0.0002f, -1, 100, 1, 0, 0);
             }
             else if (tableName.Equals("testing"))
             {
-                return new TurbDataTable(serverName, dbName, conn, "testing table",
+                return new TurbDataTable(serverName, dbName, serverinfo, "testing table",
                     "velocity08", blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz", "P" },
-                    0.0002f, -1, 100, 1, 0);
+                    0.0002f, -1, 100, 1, 0, 0);
             }
             else if (tableName.Equals("vel") || tableName.Contains("vel_"))
             {
                 if (dbName.Contains("channeldb"))
                 {
-                    return new ChannelFlowDataTable(serverName, dbName, conn, "velocity",
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0013f, 132005, 152015, 5, 132010);
+                        0.0013f, 132005, 152015, 5, 132010, 0);
+                }
+                else if (dbName.Contains("bl_zaki"))
+                {
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
+                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
+                        0.001f, 0, 7, 1, 0, 2);
                 }
                 else if (dbName.Contains("mixing"))
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.04f, 0, 1014, 1, 1);
+                        0.04f, 0, 1014, 1, 1, 0);
                 }
                 else if (dbName.Contains("rmhd"))
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 2, new string[] { "Ux", "Uy", "Uz" },
-                        0.00025f, 0, 36, 4, 0);
+                        0.00025f, 0, 36, 4, 0, 0);
                 }
-                else if (dbName.Contains("4096"))
+                else if (dbName.Contains("iso4096"))
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0002f, 0, 1, 10, 0);
+                        0.0002f, 0, 0, 10, 0, 1);
+                }
+                else if (dbName.Contains("strat4096"))
+                {
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
+                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
+                        1f, 0, 4, 1, 0, 1);
                 }
                 else
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0002f, -10, 50300, 10, 0);
+                        0.0002f, -10, 50300, 10, 0, 0);
                 }
             }
             else if (tableName.Equals("mag"))
             {
                 if (dbName.Contains("rmhd"))
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 2, new string[] { "Ux", "Uy", "Uz" },
-                        0.00025f, 0, 36, 4, 0);
+                        0.00025f, 0, 36, 4, 0, 0);
                 }
                 else
                 {
@@ -478,82 +506,107 @@ namespace Turbulence.TurbLib
             {
                 if (dbName.Contains("channeldb"))
                 {
-                    return new ChannelFlowDataTable(serverName, dbName, conn, "velocity",
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0013f, 132005, 152015, 5, 132010);
+                        0.0013f, 132005, 152015, 5, 132010, 0);
                 }
                 else if (dbName.Contains("mixing"))
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.04f, 0, 1014, 1, 1);
+                        0.04f, 0, 1014, 1, 1, 0);
                 }
                 else
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "velocity",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.00025f, -10, 10240, 10, 0);
+                        0.00025f, -10, 10240, 10, 0, 0);
                 }
             }
             else if (tableName.Equals("pr") || tableName.Contains("pr_"))
             {
                 if (dbName.Contains("channeldb"))
                 {
-                    return new ChannelFlowDataTable(serverName, dbName, conn, "pressure",
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.0013f, 132005, 152015, 5, 132010);
+                        0.0013f, 132005, 152015, 5, 132010, 0);
+                }
+                else if (dbName.Contains("bl_zaki"))
+                {
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
+                        tableName, blobDim, 0, 1, new string[] { "P" },
+                        0.001f, 0, 7, 1, 0, 2);
                 }
                 else if (dbName.Contains("mixing"))
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "pressure",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.04f, 0, 1014, 1, 1);
+                        0.04f, 0, 1014, 1, 1, 0);
+                }
+                else if (dbName.Contains("iso4096"))
+                {
+                    return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
+                        tableName, blobDim, 0, 1, new string[] { "P" },
+                        0.0002f, 0, 0, 10, 0, 1);
                 }
                 else
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "pressure",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.0002f, -10, 10240, 10, 0);
+                        0.0002f, -10, 10240, 10, 0, 0);
                 }
             }
             else if (tableName.Equals("pressure08"))
             {
                 if (dbName.Contains("channeldb"))
                 {
-                    return new ChannelFlowDataTable(serverName, dbName, conn, "pressure",
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.0013f, 132005, 152015, 5, 132010);
+                        0.0013f, 132005, 152015, 5, 132010, 0);
                 }
                 else if (dbName.Contains("mixing"))
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "pressure",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.04f, 0, 1014, 1, 1);
+                        0.04f, 0, 1014, 1, 1, 0);
                 }
                 else
                 {
-                    return new TurbDataTable(serverName, dbName, conn, "pressure",
+                    return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.00025f, -1, 100, 10, 0);
+                        0.00025f, -1, 100, 10, 0, 0);
                 }
             }
             else if (tableName.Contains("magnetic"))
             {
-                return new TurbDataTable(serverName, dbName, conn, "magnetic",
+                return new TurbDataTable(serverName, dbName, serverinfo, "magnetic",
                     tableName, blobDim, 0, 3, new string[] { "Bx", "By", "Bz" },
-                    0.00025f, -10, 10240, 10, 0);
+                    0.00025f, -10, 10240, 10, 0, 0);
             }
             else if (tableName.Contains("potential"))
             {
-                return new TurbDataTable(serverName, dbName, conn, "potential",
+                return new TurbDataTable(serverName, dbName, serverinfo, "potential",
                     tableName, blobDim, 0, 3, new string[] { "Ax", "Ay", "Az" },
-                    0.00025f, -10, 10240, 10, 0);
+                    0.00025f, -10, 10240, 10, 0, 0);
             }
             else if (tableName.Equals("density"))
             {
-                return new TurbDataTable(serverName, dbName, conn, "density",
+                return new TurbDataTable(serverName, dbName, serverinfo, "density",
                     tableName, blobDim, 0, 1, new string[] { "D" },
-                    0.04f, 0, 1014, 1, 1);
+                    0.04f, 0, 1014, 1, 1, 0);
+            }
+            else if (tableName.Equals("th") || tableName.Contains("tem"))
+            {
+                if (dbName.Contains("strat4096"))
+                {
+                    return new TurbDataTable(serverName, dbName, serverinfo, "temperature",
+                    tableName, blobDim, 0, 1, new string[] { "Th" },
+                    1f, 0, 4, 1, 0, 1);
+                }
+                else
+                {
+                    throw new Exception(String.Format("Unknown dataset: {0}", tableName));
+                }
             }
             else
             {
@@ -576,37 +629,43 @@ namespace Turbulence.TurbLib
             {
                 return new TurbDataTable("velocity", tableName, 1024, blobDim, 0, 3, 
                     new string[] { "Ux", "Uy", "Uz" },
-                    0.0002f, -1, 100, 10, 0);
+                    0.0002f, -1, 100, 10, 0, 0);
             }
             else if (tableName.Equals("velocity08"))
             {
                 return new TurbDataTable("velocity", tableName, 1024, blobDim, 0, 3, 
                     new string[] { "Ux", "Uy", "Uz" },
-                    0.00025f, -1, 100, 10, 0);
+                    0.00025f, -1, 100, 10, 0, 0);
             }
             else if (tableName.Equals("pr") || tableName.Contains("pr_"))
             {
                 return new TurbDataTable("pressure",
                     tableName, 1024, blobDim, 0, 1, new string[] { "P" },
-                    0.0002f, -1, 100, 10, 0);
+                    0.0002f, -1, 100, 10, 0, 0);
             }
             else if (tableName.Equals("pressure08"))
             {
                 return new TurbDataTable("pressure",
                     tableName, 1024, blobDim, 0, 1, new string[] { "P" },
-                    0.00025f, -1, 100, 10, 0);
+                    0.00025f, -1, 100, 10, 0, 0);
             }
             else if (tableName.Contains("magnetic"))
             {
                 return new TurbDataTable("magnetic",
                     tableName, 1024, blobDim, 0, 3, new string[] { "Bx", "By", "Bz" },
-                    0.00025f, -1, 100, 10, 0);
+                    0.00025f, -1, 100, 10, 0, 0);
             }
             else if (tableName.Contains("potential"))
             {
                 return new TurbDataTable("potential",
                     tableName, 1024, blobDim, 0, 3, new string[] { "Ax", "Ay", "Az" },
-                    0.00025f, -1, 100, 10, 0);
+                    0.00025f, -1, 100, 10, 0, 0);
+            }
+            else if (tableName.Contains("temperature"))
+            {
+                return new TurbDataTable("temperature",
+                    tableName, 4096, blobDim, 0, 1, new string[] { "Th" },
+                    1f, 0, 4, 1, 0, 0);
             }
             else
             {
@@ -669,7 +728,7 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.None_Fd4:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd8:
-                    return gridPointsY.GetCellIndex(value, 0.0);
+                    //return gridPointsY.GetCellIndex(value, 0.0); //TODO: should I correct here?
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -694,7 +753,7 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.M4Q10:
                 case TurbulenceOptions.SpatialInterpolation.M4Q12:
                 case TurbulenceOptions.SpatialInterpolation.M4Q14:
-                    return gridPointsY.GetCellIndex(value);
+                    //return gridPointsY.GetCellIndex(value); //TODO: should I correct here?
                 case TurbulenceOptions.SpatialInterpolation.None:
                     return gridPointsY.GetCellIndexRound(value);
                 default:
@@ -703,22 +762,60 @@ namespace Turbulence.TurbLib
         }
 
         // 0.0065f, 132005, 142000, 5, 132005
-        public ChannelFlowDataTable(string serverName, string dbName, SqlConnection conn, string dataName,
+        public ChannelFlowDataTable(string serverName, string dbName, TurbServerInfo serverinfo, string dataName,
             string tableName, int blobDim,
             int edgeRegion,
             int components, string[] dataDescription,
-            float dt, int timestart, int timeend, int timeinc, int timeoff)
-            : base(serverName, dbName, conn, dataName, tableName, blobDim, edgeRegion, components, dataDescription,
-            dt, timestart, timeend, timeinc, timeoff)
+            float dt, int timestart, int timeend, int timeinc, int timeoff, short dbtype)
+            : base(serverName, dbName, serverinfo, dataName, tableName, blobDim, edgeRegion, components, dataDescription,
+            dt, timestart, timeend, timeinc, timeoff, dbtype)
         {
-            this.gridResolution = new int[] { 1536, 512, 2048 };
-            this.dx = (8.0 * Math.PI) / (double)gridResolution[2];
-            this.dz = (3.0 * Math.PI) / (double)gridResolution[0];
+            if (dbName.Contains("channel"))
+            {
+                this.gridResolution = new int[] { 1536, 512, 2048 };
+                this.dx = (8.0 * Math.PI) / (double)gridResolution[2];
+                this.dz = (3.0 * Math.PI) / (double)gridResolution[0];
+            }
+            else if (dbName.Contains("bl_zaki"))
+            {
+                this.gridResolution = new int[] { 2048, 224, 3320 };
+                this.dx = 0.292210466252391;
+                this.dz = 0.117187500000000;
+            }
+
             // dy is not uniform for the channel flow DB
             // we have to store all of the grid points for the y-dimension
             this.dy = 0.0;
             gridPointsY = new GridPoints(gridResolution[1]);
-            gridPointsY.GetGridPointsFromDB(conn);
+            SqlConnection contextConn = new SqlConnection("context connection=true");
+            contextConn.Open();
+            gridPointsY.GetGridPointsFromDB(contextConn, dbName);
+            contextConn.Close();
+        }
+    }
+
+    public class TurbServerInfo
+    {
+        private string codedb;
+        private string infodb;    // name of this dataset [used as a root for table names]
+        private string infodb_server;   // name of the primary table for blob access
+
+        public string codeDB { get { return codedb; } }
+        public string infoDB { get { return infodb; } }
+        public string infoDB_server { get { return infodb_server; } }
+
+        public TurbServerInfo(string codedb,
+            string infodb, string infodb_server)
+        {
+            this.codedb = codedb;
+            this.infodb = infodb;
+            this.infodb_server = infodb_server;
+        }
+
+        public static TurbServerInfo GetTurbServerInfo(string codedb,
+            string infodb, string infodb_server)
+        {
+            return new TurbServerInfo(codedb, infodb, infodb_server);
         }
     }
 }

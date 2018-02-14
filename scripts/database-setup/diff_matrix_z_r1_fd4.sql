@@ -1,8 +1,8 @@
-USE [turblib]
+USE [turbdev]
 
---DROP TABLE [turblib].[dbo].[diff_matrix_z_r1_fd4]
+--DROP TABLE [turbdev].[dbo].[BL_diff_matrix_z_r1_fd4]
 --GO
-CREATE TABLE [turblib].[dbo].[diff_matrix_z_r1_fd4](
+CREATE TABLE [turbdev].[dbo].[BL_diff_matrix_z_r1_fd4](
 	[w0] float,
 	[w1] float,
 	[w2] float,
@@ -11,17 +11,17 @@ CREATE TABLE [turblib].[dbo].[diff_matrix_z_r1_fd4](
 )
 GO
     
-INSERT INTO [turblib].[dbo].[diff_matrix_z_r1_fd4]
+INSERT INTO [turbdev].[dbo].[BL_diff_matrix_z_r1_fd4]
            ([w0]
            ,[w1]
            ,[w2]
            ,[w3]
            ,[w4])
      VALUES
-           (1.3581221810508401e+01, -1.0864977448406721e+02, 5.3290705182007514e-15, 1.0864977448406721e+02, -1.3581221810508401e+01)
+           (7.1111111111111114e-01, -5.6888888888888891e+00, -1.1102230246251565e-16, 5.6888888888888891e+00, -7.1111111111111114e-01)
 GO
 
-GRANT SELECT ON [diff_matrix_z_r1_fd4] TO [turbquery]
+GRANT SELECT ON [BL_diff_matrix_z_r1_fd4] TO [turbquery]
 GO
 
-SELECT * FROM [turblib].[dbo].[diff_matrix_z_r1_fd4]
+SELECT * FROM [turbdev].[dbo].[BL_diff_matrix_z_r1_fd4]

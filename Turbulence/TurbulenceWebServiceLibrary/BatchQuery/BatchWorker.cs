@@ -17,11 +17,12 @@ namespace TurbulenceService
 		private BatchWorkerQueue queue;
 		private Mutex queueLock;
         private Hashtable timeSlices;
-        private const string infodb = "turbinfo";
+        //private const string infodb = "turbinfo";
+        private const string infodb = "turbinfo_test";
 
-		// public const bool DEVEL_MODE = false;
+        // public const bool DEVEL_MODE = false;
 
-		public BatchWorker(TimePlane s, ArrayList a, BatchWorkerQueue q, Mutex l, Hashtable t)
+        public BatchWorker(TimePlane s, ArrayList a, BatchWorkerQueue q, Mutex l, Hashtable t)
 		{
 			slice = s;
 			atoms = a;

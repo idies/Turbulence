@@ -78,6 +78,12 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Turbulence\Turbulence.sqlproj">
+      <Project>{5a5bd529-56cd-4cc4-89d3-a1e94da48d55}</Project>
+      <Name>Turbulence</Name>
+    </ProjectReference>
+  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

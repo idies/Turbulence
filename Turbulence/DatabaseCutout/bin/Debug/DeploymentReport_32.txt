@@ -1,0 +1,81 @@
+﻿** Highlights
+     Tables that will be rebuilt
+       None
+     Clustered indexes that will be dropped
+       None
+     Clustered indexes that will be created
+       None
+     Possible data issues
+       None
+
+** User actions
+     Drop
+       [DatabaseCutout] (Assembly)
+       [Turbulence] (Assembly)
+     Create
+       [DatabaseCutout] (Assembly)
+       [Turbulence] (Assembly)
+       [dbo].[GetAnyCutout] (Procedure)
+       [dbo].[GetDataFileDBCutout2] (Procedure)
+
+** Supporting actions
+     Drop
+       [dbo].[CreateMortonIndex] (Function)
+       [dbo].[GetMortonX] (Function)
+       [dbo].[GetMortonY] (Function)
+       [dbo].[GetMortonZ] (Function)
+       [dbo].[WriteToFile] (Function)
+       [dbo].[ExecuteBoxFilterDBWorker] (Procedure)
+       [dbo].[ExecuteBoxFilterWorker] (Procedure)
+       [dbo].[ExecuteDBFileReader] (Procedure)
+       [dbo].[ExecuteGetPositionWorker] (Procedure)
+       [dbo].[ExecuteMHDFileDBWorker] (Procedure)
+       [dbo].[ExecuteMHDWorker] (Procedure)
+       [dbo].[ExecuteMHDWorkerBatch] (Procedure)
+       [dbo].[ExecuteMHDWorkerFileDBBatch] (Procedure)
+       [dbo].[ExecuteParticleTrackingChannelWorkerTaskParallel] (Procedure)
+       [dbo].[ExecuteParticleTrackingWorkerTaskParallel] (Procedure)
+       [dbo].[ExecuteTurbulenceWorker] (Procedure)
+       [dbo].[ExecuteTwoFieldsBoxFilterDBWorker] (Procedure)
+       [dbo].[ExecuteTwoFieldsBoxFilterWorker] (Procedure)
+       [dbo].[ExecuteTwoFieldsDBWorker] (Procedure)
+       [dbo].[ExecuteTwoFieldsWorker] (Procedure)
+       [dbo].[GetDataCutout] (Procedure)
+       [dbo].[GetDataFileDBCutout] (Procedure)
+       [dbo].[GetFilteredCutout] (Procedure)
+       [dbo].[GetPDF] (Procedure)
+       [dbo].[GetStridedDataCutout] (Procedure)
+       [dbo].[GetThreshold] (Procedure)
+       [dbo].[StoreFilteredCutout] (Procedure)
+       [dbo].[TestExecuteBoxFilterWorker] (Procedure)
+       [dbo].[ExecuteRemoteDBReader] (Procedure)
+     Create
+       [dbo].[CreateMortonIndex] (Function)
+       [dbo].[GetMortonX] (Function)
+       [dbo].[GetMortonY] (Function)
+       [dbo].[GetMortonZ] (Function)
+       [dbo].[WriteToFile] (Function)
+       [dbo].[ExecuteBoxFilterDBWorker] (Procedure)
+       [dbo].[ExecuteBoxFilterWorker] (Procedure)
+       [dbo].[ExecuteDBFileReader] (Procedure)
+       [dbo].[ExecuteGetPositionWorker] (Procedure)
+       [dbo].[ExecuteMHDFileDBWorker] (Procedure)
+       [dbo].[ExecuteMHDWorker] (Procedure)
+       [dbo].[ExecuteMHDWorkerBatch] (Procedure)
+       [dbo].[ExecuteMHDWorkerFileDBBatch] (Procedure)
+       [dbo].[ExecuteParticleTrackingChannelWorkerTaskParallel] (Procedure)
+       [dbo].[ExecuteParticleTrackingWorkerTaskParallel] (Procedure)
+       [dbo].[ExecuteTurbulenceWorker] (Procedure)
+       [dbo].[ExecuteTwoFieldsBoxFilterDBWorker] (Procedure)
+       [dbo].[ExecuteTwoFieldsBoxFilterWorker] (Procedure)
+       [dbo].[ExecuteTwoFieldsDBWorker] (Procedure)
+       [dbo].[ExecuteTwoFieldsWorker] (Procedure)
+       [dbo].[GetDataCutout] (Procedure)
+       [dbo].[GetDataFileDBCutout] (Procedure)
+       [dbo].[GetFilteredCutout] (Procedure)
+       [dbo].[GetPDF] (Procedure)
+       [dbo].[GetStridedDataCutout] (Procedure)
+       [dbo].[GetThreshold] (Procedure)
+       [dbo].[StoreFilteredCutout] (Procedure)
+       [dbo].[TestExecuteBoxFilterWorker] (Procedure)
+       [dbo].[ExecuteRemoteDBReader] (Procedure)

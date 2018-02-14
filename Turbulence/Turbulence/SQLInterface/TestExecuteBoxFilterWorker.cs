@@ -21,6 +21,8 @@ public partial class StoredProcedures
     public static void TestExecuteBoxFilterWorker(string serverName,
         string dbname,
         string codedb,
+        string turbinfodb,
+        string turbinfoserver,
         string dataset,
         int workerType,
         int blobDim,
@@ -31,16 +33,16 @@ public partial class StoredProcedures
         int inputSize,
         string tempTable)
     {
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
         SqlConnection standardConn;
         SqlConnection contextConn;
         string connString;
-        connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
+        connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
-        contextConn.Open();
 
         // Load information about the requested dataset
-        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, contextConn);
+        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, serverinfo);
 
         string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
@@ -48,11 +50,12 @@ public partial class StoredProcedures
         if (workerType != (int)Worker.Workers.GetMHDBoxFilterSV &&
             workerType != (int)Worker.Workers.GetMHDBoxFilterSGS_SV)
         {
-            contextConn.Close();
+            //contextConn.Close();
             throw new Exception("Invalid worker type specified! This procedure works only with a GetMHDBoxFilterSV or GetMHDBoxFilterSGS_SV worker!");
         }
 
-        Worker worker = Worker.GetWorker(table, workerType, spatialInterp, arg, contextConn);
+        contextConn.Open();
+        Worker worker = Worker.GetWorker(dbname, table, workerType, spatialInterp, arg, contextConn);
         //Turbulence.SQLInterface.workers.GetMHDBoxFilter3 worker = new Turbulence.SQLInterface.workers.GetMHDBoxFilter3(table,
         //    (TurbulenceOptions.SpatialInterpolation)spatialInterp,
         //    arg);
@@ -183,7 +186,7 @@ public partial class StoredProcedures
         else
         {
             standardConn.Close();
-            //contextConn.Close();
+            contextConn.Close();
             input = null;
             rawdata = null;
             //worker.DeleteSummedVolumes();

@@ -10,12 +10,21 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "WebSite\Website.csproj", "{943CE846-969A-46E3-8DA2-598CEFB9F5F5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestApp", "TestApp\TestApp.csproj", "{D1920898-03E3-4FC4-B8A3-52E58AE5B3AD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6D341D06-801B-4B24-97E5-EE21C52F46C6} = {6D341D06-801B-4B24-97E5-EE21C52F46C6}
+		{5A5BD529-56CD-4CC4-89D3-A1E94DA48D55} = {5A5BD529-56CD-4CC4-89D3-A1E94DA48D55}
+	EndProjectSection
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Turbulence", "Turbulence\Turbulence.sqlproj", "{5A5BD529-56CD-4CC4-89D3-A1E94DA48D55}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "DatabaseCutout", "DatabaseCutout\DatabaseCutout.sqlproj", "{7FFE9EA8-1BE3-4444-BC31-03159FF65BDF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A5BD529-56CD-4CC4-89D3-A1E94DA48D55} = {5A5BD529-56CD-4CC4-89D3-A1E94DA48D55}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImportData", "ImportData\ImportData.csproj", "{E598F83D-D3CA-46DF-B152-1D45EDD844FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_website", "test_website\test_website.csproj", "{6DEA190E-A09D-4FCB-A43E-143750405D4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -181,6 +190,30 @@ Global
 		{E598F83D-D3CA-46DF-B152-1D45EDD844FB}.Release|x64.ActiveCfg = Release|Any CPU
 		{E598F83D-D3CA-46DF-B152-1D45EDD844FB}.Release|x86.ActiveCfg = Release|Any CPU
 		{E598F83D-D3CA-46DF-B152-1D45EDD844FB}.Release|x86.Build.0 = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|.NET.Build.0 = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|Win32.Build.0 = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|x64.ActiveCfg = Debug|x64
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|x64.Build.0 = Debug|x64
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Debug|x86.Build.0 = Debug|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|.NET.ActiveCfg = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|.NET.Build.0 = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|Win32.ActiveCfg = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|Win32.Build.0 = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|x64.ActiveCfg = Release|x64
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|x64.Build.0 = Release|x64
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|x86.ActiveCfg = Release|Any CPU
+		{6DEA190E-A09D-4FCB-A43E-143750405D4A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,7 +21,7 @@
 </div>
 <!--#include file="navbar.htm" -->
 <div id="leftcolumn">
-   <p><img src="images/fig4-1.jpg" width="205" height="365" /></p>
+   <p><img src="images/fig4-1.jpg" width="205" /></p>
        
 </div>
 <div id="centercolumn">
@@ -79,12 +79,27 @@ A Web Services-accessible database of turbulent channel flow and its use for tes
         <p>D. Livescu, C. Canada, K. Kanov, R. Burns & IDIES staff, J. Pulido, &quot;Homogeneous Buoyancy driven turbulence data set&quot; (2014), 
         available at <a href="http://turbulence.pha.jhu.edu/docs/README-HBDT.pdf">http://turbulence.pha.jhu.edu/docs/README-HBDT.pdf</a> </p>
       </blockquote> 
+    <p>For articles that use the 4096<sup>3</sup> isotropic turbulence, we suggest also including:</p>
+    <blockquote>
+       <p> 
+P.K. Yeung, D.A. Donzis, and K.R. Sreenivasan. (2012)  &quot;Dissipation, enstrophy and pressure statistics in turbulence simulations at high Reynolds numbers &quot;. Journal of Fluid Mechanics 700, 5-15.</p>
+    </blockquote>
       <p >For articles that use the Lagrangian tracking GetPosition function, we suggest also including:</p>
       <blockquote>
         <p>H. Yu, K. Kanov, E. Perlman, J. Graham, E. Frederix, R. Burns, A. Szalay, G. Eyink, and C. Meneveau. 
         &quot;Studying Lagrangian dynamics of turbulence using on-demand fluid particle tracking in a public turbulence database&quot;. Journal of Turbulence <strong>13</strong>, No. 12 (2012). </p>
       </blockquote>
+    <p>In addition to the published papers mentioned above, each dataset has a specific DOI:</p>
+    <blockquote>
+    Forced Isotropic Turbulence Data Set (Extended) :<a href = "https://doi.org/10.7281/T1KK98XB"> https://doi.org/10.7281/T1KK98XB </a> <br>
+    Forced MHD Turbulence Data Set :<a href = "https://doi.org/10.7281/T1930RBS" >https://doi.org/10.7281/T1930RBS </a> <br>
+    Homogeneous Buoyancy Driven Turbulence Data Set :<a href = "https://doi.org/10.7281/T1VX0DPC" > https://doi.org/10.7281/T1VX0DPC </a> <br>
+    Turbulent Channel Flow :<a href ="https://doi.org/10.7281/T10K26QW"> https://doi.org/10.7281/T10K26QW </a> <br>
+	Forced Isotropic Turbulence Dataset on 4096<sup>3</sup> Grid :<a href ="https://doi.org/10.7281/T1DN4363"> https://doi.org/10.7281/T1DN4363</a> <br>
+    Rotating Stratified Turbulence Dataset on 4096<sup>3</sup> Grid :<a href ="https://doi.org/10.7281/T1J964JJ"> https://doi.org/10.7281/T1J964JJ</a> <br>
+    </blockquote>
     
+        
 </div>
 <div id="rightcolumn"> 
       

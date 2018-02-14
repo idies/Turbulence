@@ -14,7 +14,7 @@ using System.Data.SqlClient;
     {
         bool devmode;
         string infodb;
-
+        string infodb_server;
         /// <summary>
         /// Structure representating a row of the user table
         /// </summary>
@@ -35,9 +35,10 @@ using System.Data.SqlClient;
             }
         }
 
-        public AuthInfo(string infodb, bool devmode)
+        public AuthInfo(string infodb, string infodb_server, bool devmode)
         {
             this.infodb = infodb;
+            this.infodb_server = infodb_server;
             this.devmode = devmode;
         }
 
@@ -67,7 +68,9 @@ using System.Data.SqlClient;
             }
 
             AuthToken token = null;
-            String cString = "Server=gw01;Database=turbinfo;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            //String cString = "Server=mydbsql;Database=turbinfo;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
+            String cString = String.Format("Server={0};Database={1};Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
+                        infodb_server, infodb);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -83,7 +86,7 @@ using System.Data.SqlClient;
             }
             else
             {
-                throw new Exception("Invalid identification token.  Please see http://turbulence.pha.jhu.edu/help/authtoken.aspx for more information.");
+                throw new Exception("Invalid identification token. Please see http://turbulence.pha.jhu.edu/help/authtoken.aspx for more information.");
             }
             reader.Close();
             conn.Close();

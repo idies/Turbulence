@@ -85,9 +85,6 @@
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
-    <Reference Include="Turbulence">
-      <HintPath>..\Turbulence\bin\Debug\Turbulence.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\Settings.Designer.cs">
@@ -177,10 +174,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://localhost:3265/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://localhost/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\turbulence\</RelPath>
-      <UpdateFromURL>http://localhost:3265/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://localhost/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
@@ -191,6 +188,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Web References\turbulence\turbulence.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TurbulenceWebServiceLibrary\TurbulenceWebServiceLibrary.csproj">
+      <Project>{6d341d06-801b-4b24-97e5-ee21c52f46c6}</Project>
+      <Name>TurbulenceWebServiceLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Turbulence\Turbulence.sqlproj">
+      <Project>{5a5bd529-56cd-4cc4-89d3-a1e94da48d55}</Project>
+      <Name>Turbulence</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Datacutout.sql" />
+    <Content Include="bl_zaki_debugger.sql" />
+    <Content Include="GetPosition.sql" />
+    <Content Include="GetDataFileDBCutout.sql" />
+    <Content Include="GetAnyCutout.sql" />
+    <Content Include="DBFileReader.sql" />
+    <Content Include="threshold.sql" />
+    <Content Include="DBfilter.sql" />
+    <Content Include="fileDB_iso4096_debugger.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

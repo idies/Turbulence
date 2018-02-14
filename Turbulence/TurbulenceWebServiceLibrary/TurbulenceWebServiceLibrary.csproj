@@ -21,6 +21,7 @@
     <DefineConstants>TRACE;DEBUG;k</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -72,9 +73,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Turbulence">
-      <HintPath>..\Turbulence\bin\Debug\Turbulence.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthInfo.cs" />
@@ -87,6 +85,12 @@
     <Compile Include="Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadForceData.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Turbulence\Turbulence.sqlproj">
+      <Project>{5a5bd529-56cd-4cc4-89d3-a1e94da48d55}</Project>
+      <Name>Turbulence</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

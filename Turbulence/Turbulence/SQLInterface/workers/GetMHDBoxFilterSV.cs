@@ -505,7 +505,7 @@ namespace Turbulence.SQLInterface.workers
             return resultSize;
         }
 
-        public override void GetData(short datasetID, string turbinfodb, int timestep, int[] coordinates)
+        public override void GetData(short datasetID, TurbServerInfo serverinfo, int timestep, int[] coordinates, short dbtype)
         {
             cutout_coordinates = GetCutoutCoordinates(coordinates);
             int x_width, y_width, z_width;
@@ -515,7 +515,7 @@ namespace Turbulence.SQLInterface.workers
 
             InitializeSummedVolumes(x_width, y_width, z_width);
 
-            GetCutout(datasetID, turbinfodb, timestep);
+            GetCutout(datasetID, serverinfo, timestep);
         }
 
         public override int[] GetCutoutCoordinates(int[] coordinates)

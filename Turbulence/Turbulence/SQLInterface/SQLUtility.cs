@@ -16,6 +16,13 @@ namespace Turbulence.SQLInterface
 {
     public class SQLUtility
     {
+        public class zlistTable
+        {
+            public long startZ { get; set; }
+            public long endZ { get; set; }
+            public long blobBefore { get; set; }
+        }
+
         public struct InputRequest
         {
             /*public InputRequest(int localID, int request, long zindex, double x, double y, double z)
@@ -950,6 +957,136 @@ namespace Turbulence.SQLInterface
             return times;
         }*/
 
+        public static string getDBfilePath(string dbname, int timestep, string DataName, SqlConnection sqlConn)
+        {
+            //SqlConnection contextConn = new SqlConnection("context connection=true");
+            try
+            {
+                //contextConn.Open();
+                SqlCommand cmd_path = sqlConn.CreateCommand();
+                cmd_path.CommandText = String.Format("select Path " +
+                    "from {0}..DataPath where ProductionDatabaseName = @dbname ", dbname.Substring(0, dbname.Length - 3));
+                cmd_path.Parameters.AddWithValue("@dbname", dbname);
+                cmd_path.CommandTimeout = 600;
+
+                string pathSource = "";
+                using (SqlDataReader reader = cmd_path.ExecuteReader())
+                {
+                    while (reader.Read() && !reader.IsDBNull(0))
+                    {
+                        if (DataName.Contains("vel") || DataName.Contains("Vel") || DataName == "u")
+                        {
+                            pathSource = reader.GetString(0) + "\\" + dbname + "_vel_" + timestep + ".bin";
+                        }
+                        else if (DataName.Contains("pr") || DataName.Contains("Pr") || DataName == "p")
+                        {
+                            pathSource = reader.GetString(0) + "\\" + dbname + "_pr_" + timestep + ".bin";
+                        }
+                        else if (DataName.Contains("th") || DataName.Contains("Th") || DataName.Contains("tem") || DataName.Contains("Tem") || DataName == "t")
+                        {
+                            pathSource = reader.GetString(0) + "\\" + dbname + "_th_" + timestep + ".bin";
+                        }
+                        break;
+                    }
+                }
+                return pathSource;
+            }
+            catch (Exception ex)
+            {
+                if (sqlConn.State == ConnectionState.Open)
+                {
+                    sqlConn.Close();
+                }
+                throw ex;
+            }
+        }
+
+        public static void InsertAtomIntoListDB(short datasetID, TurbServerInfo serverinfo, TurbDataTable table, List<Morton3D> zindex, int timestep,
+            out List<string> serverName, out List<string> dbname, out List<long> minLim, out List<long> maxLim)
+        {
+            SqlConnection turbInfoConn = new SqlConnection(
+                String.Format("Server={0};Database={1};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", serverinfo.infoDB_server, serverinfo.infoDB));
+            
+            /*then, we find the path/dbname need to be read and the corresponding z-index Limit*/
+            serverName = new List<string>();
+            dbname = new List<string>();
+            List<string> codedb = new List<string>();
+            minLim = new List<long>();
+            maxLim = new List<long>();
+
+            turbInfoConn.Open();
+            for (int i = 0; i < zindex.Count; i++)
+            {
+                SqlCommand cmd = turbInfoConn.CreateCommand();
+                cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minLim, maxLim " +
+                    "from {0}..DatabaseMap where DatasetID = @datasetID " +
+                    "and minLim <= @zindex and @zindex <= maxLim  and minTime <= @timestep and @timestep <= maxTime", serverinfo.infoDB);
+                cmd.Parameters.AddWithValue("@datasetID", datasetID);
+                cmd.Parameters.AddWithValue("@zindex", zindex[i].Key);
+                cmd.Parameters.AddWithValue("@timestep", timestep);
+                cmd.CommandTimeout = 600;
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (!reader.HasRows)
+                {
+                    turbInfoConn.Close();
+                    throw new Exception(
+                        String.Format("The DatabaseMap table does not contain information about this dataset, zindex combination: {0}, {1}",
+                        datasetID, zindex));
+                }
+                reader.Read();
+                string serverName_add = reader.GetString(0);
+                string dbname_add = reader.GetString(1);
+                string codedb_add = reader.GetString(2);
+                long minLim_add = reader.GetInt64(3);
+                long maxLim_add = reader.GetInt64(4);
+                if (!dbname.Contains(dbname_add))
+                {
+                    serverName.Add(serverName_add);
+                    dbname.Add(dbname_add);
+                    codedb.Add(codedb_add);
+                    minLim.Add(minLim_add);
+                    maxLim.Add(maxLim_add);
+                }
+                reader.Close();
+                reader.Dispose();
+            }
+            turbInfoConn.Close();
+        }
+
+        public static List<zlistTable> fileDB2zlistTable(string dbname, SqlConnection sqlConn)
+        {
+            //SqlConnection contextConn = new SqlConnection("context connection=true");
+            List<zlistTable> zlist = new List<zlistTable>();
+            try
+            {
+                SqlCommand cmd1 = new SqlCommand(
+                        String.Format(@"SELECT * " +
+                        "FROM {0}.dbo.{1}", dbname.Substring(0, dbname.Length - 3), dbname),
+                        sqlConn);
+                cmd1.CommandTimeout = 3600;
+                using (SqlDataReader reader = cmd1.ExecuteReader())
+                {
+                    int i = -1;
+                    while (reader.Read())
+                    {
+                        i++;
+                        zlist.Add(new zlistTable());
+                        zlist[i].startZ = reader.GetSqlInt64(0).Value;
+                        zlist[i].endZ = reader.GetSqlInt64(1).Value;
+                        zlist[i].blobBefore = reader.GetSqlInt64(2).Value;
+                    }
+                }
+                return zlist;
+            }
+            catch (Exception ex)
+            {
+                if (sqlConn.State == ConnectionState.Open)
+                {
+                    sqlConn.Close();
+                }
+                throw ex;
+            }
+        }
     }
 
 }

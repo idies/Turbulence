@@ -13,10 +13,11 @@ using System.Net;
         DateTime start;
         public bool devmode; //We are going to dual purpose this--if it is a monitor token, we set it to devmode so we don't log.
         string logdb;
-
-        public Log(string logdb, bool devmode)
+        string logdb_server;
+        public Log(string logdb, string logdb_server, bool devmode)
         {
             this.logdb = logdb;
+            this.logdb_server = logdb_server;
             this.devmode = devmode;
             this.Reset();
         }
@@ -44,7 +45,7 @@ using System.Net;
         public void UpdateRecordCount(int id, int count)
         {
             if (devmode) { return; }
-            String cString = String.Format("Server=gw01;Database='turblib';Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200");
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200", logdb_server, logdb);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -55,7 +56,6 @@ using System.Net;
             conn.Close();
         }
 
-
         // Write a verbose log record
         public void WriteVerboseLogRecord(int id, int dataset, int op, int spatial, int temporal, int count, float time, object endTime, object nt, byte[] access, string ipaddr)
         {
@@ -63,7 +63,7 @@ using System.Net;
             IPAddress addr = IPAddress.Parse(ipaddr);
 
 
-            String cString = String.Format("Server=gw01;Database='turblib';Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200");
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200", logdb_server, logdb);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -98,7 +98,7 @@ using System.Net;
             if (devmode) { return null; }
             IPAddress addr = IPAddress.Parse(ipaddr);
 
-            String cString = String.Format("Server=gw01;Database='turblib';Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200");
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200", logdb_server, logdb);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -133,7 +133,7 @@ using System.Net;
         {
             if (devmode) { return; }
 
-            String cString = String.Format("Server=gw01;Database='turblib';Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200");
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Connection Lifetime=7200", logdb_server, logdb);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();

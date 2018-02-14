@@ -38,8 +38,12 @@
                 <td align="center" class="newStyle2">MHD</td>
                 <td align="center" class="newStyle2">Channel</td>
                 <td align="center" class="newStyle2">Mixing</td>
+                <td align="center" class="newStyle2">Isotropic4096</td>
+                <td align="center" class="newStyle2">Rotstrat4096</td>
             </tr>
             <tr><td class="newStyle2">GetVelocity</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
@@ -50,10 +54,14 @@
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+             <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetVectorPotential</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
@@ -62,16 +70,41 @@
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
+
+             <tr><td class="newStyle2">GetTemperature</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            </tr>
+
             <tr><td class="newStyle2">GetVelocityAndPressure</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            </tr>
+
+             <tr><td class="newStyle2">GetVelocityAndTemperature</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetForce</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
@@ -80,10 +113,14 @@
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+             <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetMagneticFieldGradient*</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
@@ -92,11 +129,23 @@
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+                <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetPressureGradient</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            </tr>
+            <tr><td class="newStyle2">GetTemperatureGradient</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetPressureHessian</td>
@@ -104,16 +153,30 @@
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            </tr>
+             <tr><td class="newStyle2">GetTemperatureHessian</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetVelocityLaplacian</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+                <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetMagneticFieldLaplacian</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
@@ -122,8 +185,12 @@
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+                <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetVelocityHessian</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
@@ -134,78 +201,112 @@
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+                <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetVectorPotentialHessian</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+                <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetPosition</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+                <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetBoxFilter</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+                <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetBoxFilterSGSscalar</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+                <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetBoxFilterSGSvector</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+                <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetBoxFilterSGSsymtensor</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+                <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetBoxFilterSGStensor</td>
-            <td align="center" class="newStyle2">&#10003;</td>
-            <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+                <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetBoxFilterGradient</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+                <td align="center" class="newStyle2">&#10003;</td>
             </tr>
             <tr><td class="newStyle2">GetDensity</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+                <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetDensityGradient</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+                <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetDensityHessian</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&nbsp;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
+            <td align="center" class="newStyle2">&nbsp;</td>
             </tr>
             <tr><td class="newStyle2">GetThreshold</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
             <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            </tr>
+            <tr><td class="newStyle2">GetInvariant</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+            <td align="center" class="newStyle2">&#10003;</td>
+                <td align="center" class="newStyle2">&#10003;</td>
             </tr>
         </table>
     <p><font face="Arial, Helvetica, sans-serif">

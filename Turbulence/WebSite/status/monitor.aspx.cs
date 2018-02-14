@@ -12,7 +12,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Collections.Generic;
 using System.Net;
-//using TurbulenceService;
+using TurbulenceService;
 //using Turbulence.TurbLib;
 //using Turbulence.TurbLib.DataTypes;
 namespace Website
@@ -23,8 +23,6 @@ namespace Website
         protected int sqlConnectionTimeout = 3;
         protected int sqlCommandTimeout = 5;
         edu.jhu.pha.turbulence.TurbulenceService service;
-        //TurbulenceService.TurbulenceService service;
-
 
         public void reportError(string name, Exception e)
         {
@@ -32,7 +30,6 @@ namespace Website
             errortext.Text = String.Format("{0}\n<p class=\"errorbox\"><b>{1}:</b><br />{2}<br />{3}</p>",
                 errortext.Text.ToString(), name, e.Message, e.StackTrace);
         }
-
 
         /// <summary>
         /// Connect to each database node and perform several basic tests.\
@@ -44,37 +41,67 @@ namespace Website
         /// </summary>
         public DataTable testNodes()
         {
+            const string infodb_string = TurbulenceService.TurbulenceService.infodb_string;
+            const string infodb_backup_string = TurbulenceService.TurbulenceService.infodb_backup_string;
+            const bool development = TurbulenceService.TurbulenceService.DEVEL_MODE;
+                
             List<string> servers = new List<string>(24);
             List<string> databases = new List<string>(24);
             List<string> codeDatabases = new List<string>(24);
             List<long> zindex = new List<long>(24);
             List<int> mintime = new List<int>(24);
             List<int> maxtime = new List<int>(24);
+            List<int> dbType = new List<int>(24);
             Random random = new Random();
 
-            String cString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            Database database = new Database(infodb_string, development);
+            string turbinfo_connectionString = ConfigurationManager.ConnectionStrings[infodb_string].ConnectionString;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
+            string turbinfoServer_primary = builder.DataSource;
+            string turbinfo_primary = builder.InitialCatalog;
+
+            turbinfo_connectionString = ConfigurationManager.ConnectionStrings[infodb_backup_string].ConnectionString;
+            builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
+            string turbinfoServer_backup = builder.DataSource;
+            string turbinfo_backup = builder.InitialCatalog;
+
+            String cString = String.Format("Server={0};Database={1};;Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                database.infodb_server, database.infodb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
-            cmd.CommandText = "select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, min(minLim) as minLim, max(maxLim) as maxLim, min(minTime) as minTime, max(maxTime) as maxTime " +
-                "from turbinfo..DatabaseMap " +
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName";
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, min(minLim) as minLim, max(maxLim) as maxLim, min(minTime) as minTime, max(maxTime) as maxTime, min(dbType) as dbType " +
+                "from {0}..DatabaseMap " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName", database.infodb);
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    servers.Add(reader.GetString(0));
-                    databases.Add(reader.GetString(1));
-                    codeDatabases.Add(reader.GetString(2));
-                    long minLim = reader.GetSqlInt64(3).Value;
-                    long maxLim = reader.GetSqlInt64(4).Value;
-                    int minTime = reader.GetSqlInt32(5).Value;
-                    int maxTime = reader.GetSqlInt32(6).Value;
-                    mintime.Add(minTime);
-                    maxtime.Add(maxTime);
-
-                    zindex.Add(minLim + (long)(random.NextDouble() * (maxLim - minLim)));
+                    long minLim;
+                    long maxLim;
+                    int minTime, maxTime;
+                    if (reader.GetSqlInt32(7).Value==0)
+                    {
+                        servers.Add(reader.GetString(0));
+                        databases.Add(reader.GetString(1));
+                        if (development == false)
+                        {
+                            codeDatabases.Add(reader.GetString(2));
+                        }
+                        else
+                        {
+                            codeDatabases.Add("turblib_test");
+                        }
+                        minLim = reader.GetSqlInt64(3).Value;
+                        maxLim = reader.GetSqlInt64(4).Value;
+                        minTime = reader.GetSqlInt32(5).Value;
+                        maxTime = reader.GetSqlInt32(6).Value;
+                        mintime.Add(minTime);
+                        maxtime.Add(maxTime);
+                        dbType.Add(reader.GetSqlInt32(7).Value);
+                        zindex.Add(minLim + (long)(random.NextDouble() * (maxLim - minLim)));
+                    }
                 }
             }
             else
@@ -91,6 +118,22 @@ namespace Website
             dt.Columns.Add("Simple CLR Function");
             dt.Columns.Add("Simple Data Query");
             dt.Columns.Add("Time");
+
+            dt.Rows.Add("", "", "Primary Database: ", string.Format("{0}.{1}",turbinfoServer_primary, turbinfo_primary), "", "");
+            dt.Rows.Add("", "", "Backup Database: ", string.Format("{0}.{1}", turbinfoServer_backup, turbinfo_backup), "", "");
+            if (database.infodb_server == turbinfoServer_primary)
+            {
+                dt.Rows.Add("", "", "Currently connected to ", "Primary database: ",string.Format("{0}.{1}", turbinfoServer_primary, turbinfo_primary), "");
+            }
+            else if (database.infodb_server == turbinfoServer_backup)
+            {
+                dt.Rows.Add("", "", "Primary database is not reachable. ", "Currently connected to Backup database: ", string.Format("{0}.{1}", turbinfoServer_backup, turbinfo_backup), "");
+            }
+            else
+            {
+                dt.Rows.Add("", "", "Neither Primary nor Backup database is not reachable.", "", "", "");
+            }
+
             for (int i = 0; i < servers.Count; i++)
             {
                 bool connect = false;
@@ -102,9 +145,19 @@ namespace Website
                 try
                 {
                     //String cString = ConfigurationManager.ConnectionStrings[nodes[i]].ConnectionString;
-                    cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = {4};",
+                    if (dbType[i] == 1)
+                    {
+                        cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = {4};",
+                        servers[i], databases[i].Substring(0, databases[i].Length - 3), ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"], sqlConnectionTimeout);
+                    }
+                    else
+                    {
+                        cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = {4};",
                         servers[i], databases[i], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"], sqlConnectionTimeout);
 
+                    }
+                    //string msg = "server: " + servers[i] + " database: " + databases[i] + " dbType: " + dbType[i] + System.Environment.NewLine;
+                    //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
                     using (conn = new SqlConnection(cString))
                     {
                         int x = 1, y = 1, z = 1;
@@ -163,6 +216,22 @@ namespace Website
                                 " WHERE v.zindex = (@zindex & -512) AND timestep = 100", databases[i]);
                             cmd.Parameters.AddWithValue("@zindex", zindex[i]);
                             ret = cmd.ExecuteReader();
+                        }
+                        else if (databases[i].Contains("iso4096"))
+                        {
+                            cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
+                            ret = cmd.ExecuteScalar();
+                            //dt.Rows.Add(servers[i], connect, memory, true, domainadd, DateTime.Now - startTime);
+                            dt.Rows.Add(servers[i], connect, memory, true, "No test for isotropic4096", DateTime.Now - startTime);
+                            continue;
+                        }
+                        else if (databases[i].Contains("strat4096"))
+                        {
+                            cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
+                            ret = cmd.ExecuteScalar();
+                            //dt.Rows.Add(servers[i], connect, memory, true, domainadd, DateTime.Now - startTime);
+                            dt.Rows.Add(servers[i], connect, memory, true, "No test for strat4096", DateTime.Now - startTime);
+                            continue;
                         }
                         else
                         {
@@ -234,6 +303,25 @@ namespace Website
                     }
                 }
                 output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "isotropic1024", 0.0f,
+                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
+
+                /*I don't understand the logical here*/
+                num_servers = 8;
+                num_disks_per_server = 4;
+                server_size = 134217728;
+                partition_size = 134217728;
+                for (int i = 0; i < num_servers; i++)
+                {
+                    for (int j = 0; j < num_disks_per_server; j++)
+                    {
+                        points[i] = new edu.jhu.pha.turbulence.Point3();
+                        Morton3D z = new Morton3D(i * server_size + j * partition_size + partition_size / 2);
+                        points[i].x = z.X * 2.0f * (float)Math.PI / 4096;
+                        points[i].y = z.Y * 2.0f * (float)Math.PI / 4096;
+                        points[i].z = z.Z * 2.0f * (float)Math.PI / 4096;
+                    }
+                }
+                output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "isotropic4096", 0.0f,
                     edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
 
                 // There are only 4 servers for the MHD dataset.
@@ -364,7 +452,7 @@ namespace Website
             return dt;
         }
          * 
-         */ 
+         */
 
         public DataTable BetaCutoutServiceTest()
         {
@@ -422,9 +510,14 @@ namespace Website
                 !Request.UserHostAddress.StartsWith("172.16") &&
                 !Request.UserHostAddress.StartsWith("192.168.24"))
             {
-                throw new Exception("This page may not be run from outside JHU.");
+                //string domainadd = Request.Url.Host;
+                if (Request.Url.Host == "turbulence.pha.jhu.edu")
+                {
+                    throw new Exception("This page may not be run from outside JHU.");
+                }
+                
             }
-            
+
             dbstatusgrid.DataSource = testNodes();
             dbstatusgrid.DataBind();
 
@@ -433,8 +526,8 @@ namespace Website
 
             //cutoutstatusgrid.DataSource = CutoutServiceTest();
             //cutoutstatusgrid.DataBind();
-            
-            
+
+
             betacutoutstatusgrid.DataSource = BetaCutoutServiceTest();
             betacutoutstatusgrid.DataBind();
 

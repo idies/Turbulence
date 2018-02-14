@@ -14,7 +14,7 @@
     <RootNamespace>Website</RootNamespace>
     <AssemblyName>Website</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -68,6 +68,7 @@
   <ItemGroup>
     <Content Include="analysisdoc.aspx" />
     <Content Include="announcements.aspx" />
+    <Content Include="authtoken.aspx" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap-theme.css" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap-theme.min.css" />
     <Content Include="bootstrap-3.2.0-dist\css\bootstrap.css" />
@@ -76,6 +77,12 @@
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.js" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.min.js" />
     <Content Include="citing.aspx" />
+    <Content Include="images\channel-small.jpg" />
+    <Content Include="images\iso1024-small.jpg" />
+    <Content Include="images\isotropic4096.jpg" />
+    <Content Include="images\mhd-small.jpg" />
+    <Content Include="images\rotstrat4096.jpg" />
+    <Content Include="Isotropic4096.aspx" />
     <Content Include="newcutout.aspx" />
     <Content Include="oldcutout.aspx" />
     <Content Include="datasets.aspx" />
@@ -152,6 +159,7 @@
     <Content Include="publications.aspx" />
     <Content Include="relatedgrouplinks.aspx" />
     <Content Include="robots.txt" />
+    <Content Include="Rotstrat4096.aspx" />
     <Content Include="Scripts\jquery.min.js" />
     <Content Include="service\turbulence.asmx" />
     <Content Include="Spectra-MHD.txt" />
@@ -196,6 +204,16 @@
     <Content Include="papers\Grahametal-JoT-2016-preprint.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="ClassDiagram1.cd" />
+    <Content Include="docs\README-isotropic4096.pdf" />
+    <Content Include="download\turblib-20171102.tar.gz" />
+    <Content Include="download\turblib-20171102.zip" />
+    <Content Include="download\turbmat-20171102.tar.gz" />
+    <Content Include="download\turbmat-20171102.zip" />
+    <Content Include="download\turbmat-20180129.tar.gz" />
+    <Content Include="download\turbmat-20180129.zip" />
+    <Content Include="docs\README-rotstrat4096.pdf" />
+    <None Include="Properties\PublishProfiles\dsa004.pubxml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -223,6 +241,10 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.disco" />
+    <Content Include="Channel_Flow.aspx" />
+    <Content Include="Forced_isotropic_turbulence.aspx" />
+    <Content Include="Forced_MHD_turbulence.aspx" />
+    <Content Include="Homogeneous_buoyancy_driven_turbulence.aspx" />
     <Content Include="webquery\query.aspx" />
     <Content Include="webquery\sampledata.txt" />
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.wsdl" />
@@ -237,6 +259,15 @@
     </None>
     <None Include="Web References\edu.jhu.pha.turbulence\VelocityHessian.datasource">
       <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <Content Include="web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </None>
+    <None Include="web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -414,16 +445,6 @@
     <Content Include="papers\wang_sc10.ppt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\TurbulenceWebServiceLibrary\TurbulenceWebServiceLibrary.csproj">
-      <Project>{6D341D06-801B-4B24-97E5-EE21C52F46C6}</Project>
-      <Name>TurbulenceWebServiceLibrary</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Turbulence\Turbulence.sqlproj">
-      <Project>{5a5bd529-56cd-4cc4-89d3-a1e94da48d55}</Project>
-      <Name>Turbulence</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
@@ -441,6 +462,16 @@
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>Website_edu_jhu_pha_turbulence_TurbulenceService</CachedSettingsPropName>
     </WebReferenceUrl>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TurbulenceWebServiceLibrary\TurbulenceWebServiceLibrary.csproj">
+      <Project>{6d341d06-801b-4b24-97e5-ee21c52f46c6}</Project>
+      <Name>TurbulenceWebServiceLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Turbulence\Turbulence.sqlproj">
+      <Project>{5a5bd529-56cd-4cc4-89d3-a1e94da48d55}</Project>
+      <Name>Turbulence</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -472,12 +503,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>55599</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>
-          </IISUrl>
+          <IISUrl>http://localhost:55598/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

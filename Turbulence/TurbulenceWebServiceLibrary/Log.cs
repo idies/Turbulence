@@ -15,10 +15,17 @@ namespace TurbulenceService
         DateTime start;
         public bool devmode;
         string logdb;
+        string logdb_server;
+        public string cutout_ipadd;
+        public bool cutoutLog = false;
 
-        public Log(string logdb, bool devmode)
+        public Log(string logdb_string, bool devmode)
         {
-            this.logdb = logdb;
+            string turbinfo_connectionString = ConfigurationManager.ConnectionStrings[logdb_string].ConnectionString;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
+
+            this.logdb = builder.InitialCatalog;
+            this.logdb_server = builder.DataSource;
             this.devmode = devmode;
             this.Reset();
         }
@@ -46,7 +53,9 @@ namespace TurbulenceService
         public void UpdateRecordCount(int id, int count)
         {
             if (devmode) { return; }
-            String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+            //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
+                            logdb_server, logdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -62,10 +71,20 @@ namespace TurbulenceService
         public void WriteVerboseLogRecord(int id, int dataset, int op, int spatial, int temporal, int count, float time, object endTime, object nt, byte[] access)
         {
             if (devmode) { return; }
-            IPAddress addr = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
-            
-            
-            String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+            IPAddress addr = new IPAddress(0);
+            if (!cutoutLog)
+            {
+                addr = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
+
+            }
+            else
+            {
+                addr = IPAddress.Parse(cutout_ipadd);
+            }
+
+            //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
+                            logdb_server, logdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -98,9 +117,19 @@ namespace TurbulenceService
         public object CreateVerboseLogRecord(int id, int dataset, int op, int spatial, int temporal, int count, float time, object endTime, object dt)
         {
             if (devmode) { return null; }
-            IPAddress addr = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
+            IPAddress addr = new IPAddress(0);
+            if (!cutoutLog)
+            {
+                addr = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
+            }
+            else
+            {
+                addr = IPAddress.Parse(cutout_ipadd);
+            }
 
-            String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+            //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
+                            logdb_server, logdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -135,7 +164,9 @@ namespace TurbulenceService
         {
             if (devmode) { return; }
 
-            String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+            //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
+                            logdb_server, logdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
@@ -157,6 +188,12 @@ namespace TurbulenceService
             cmd.Parameters.AddWithValue("@rowid", rowid);
             cmd.ExecuteNonQuery();
             conn.Close();
+        }
+
+        public void cutout_ip(string ipaddr)
+        {
+            cutout_ipadd = ipaddr;
+            cutoutLog = true;
         }
 
     }

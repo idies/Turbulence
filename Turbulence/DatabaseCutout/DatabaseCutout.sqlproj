@@ -29,7 +29,7 @@
     <FileUpgradeFlags>40</FileUpgradeFlags>
     <UpgradeBackupLocation>H:\Turbulence\Turbulence\Backup7\</UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql100DatabaseSchemaProvider</DSP>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql110DatabaseSchemaProvider</DSP>
     <Name>DatabaseCutout</Name>
     <ProjectVersion>4.1</ProjectVersion>
     <ProjectGuid>{7ffe9ea8-1be3-4444-bc31-03159ff65bdf}</ProjectGuid>
@@ -101,9 +101,6 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.XML" />
-    <Reference Include="Turbulence">
-      <HintPath>..\Turbulence\bin\x64\Release\Turbulence.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthInfo.cs" />
@@ -128,6 +125,12 @@
     <Folder Include="Properties\" />
     <Folder Include="Test Scripts\" />
     <Folder Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Turbulence\Turbulence.sqlproj">
+      <Project>{5a5bd529-56cd-4cc4-89d3-a1e94da48d55}</Project>
+      <Name>Turbulence</Name>
+    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

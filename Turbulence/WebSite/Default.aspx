@@ -66,14 +66,15 @@
       To date the Web-services-accessible databases contain a  space-time history of a direct numerical simulation (DNS) of isotropic turbulent flow, in incompressible fluid in 3D, 
       a DNS of the incompressible magneto-hydrodynamic (MHD) equations, a DNS of forced, fully developed turbulent channel flow, 
       and a DNS of homogeneous buoyancy driven turbulence. 
-      The datasets comprise over 20 Terabytes for the isotropic turbulence data, 56 Terabytes for the MHD data, 130 Terabytes for the channel flow data 
-      and 27 Terabytes for the homogeneous buoyancy driven turbulence data. 
+      The datasets comprise over 20 Terabytes for the isotropic turbulence data, 56 Terabytes for the MHD data, 130 Terabytes for the channel flow data , 27 Terabytes for the homogeneous buoyancy driven turbulence data and 5 Terabytes for rotating stratified turbulence data. 
       Basic characteristics of the data sets can be found in the <a href="datasets.aspx">datasets description page</a>.
       Technical details about the database techniques used for this project are described in the <a href="publications.aspx">publications</a>.
       </font></p>
       <p align="left"><font size="2" face="Arial, Helvetica, sans-serif">The
           JHTDB project is funded by the US <a href="http://www.nsf.gov/">National
           Science Foundation</a> <a href="http://www.nsf.gov/"><img src="images/nsf.jpg" width="40"  border="0" /></a>.</font></p>
+    <p align="left"><font size="2" face="Arial, Helvetica, sans-serif">
+          JHTDB is also supported by the  <a href="http://idies.jhu.edu/"> Institute for Data Intensive Engineering and Science </a> <img src="images/idies-logo.png" width="40"  border="0" />.JHTDB data may also be accessed via <a href="http://www.sciserver.org"> SciServer resources </a> <img src="images/SciServer-logo.png" width="30"  border="0" />.</font></p>
       <p align="center"><font size="2" color="red">Questions and comments?
             <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a></font></p>
       <p align="center"><span class="style13">

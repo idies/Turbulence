@@ -1,8 +1,8 @@
-USE [turblib]
+USE [turbdev]
 
-DROP TABLE [turblib].[dbo].[barycentric_weights_y_4]
+DROP TABLE [turbdev].[dbo].[BL_barycentric_weights_y_4]
 GO
-CREATE TABLE [turblib].[dbo].[barycentric_weights_y_4](
+CREATE TABLE [turbdev].[dbo].[BL_barycentric_weights_y_4](
 	[cell_index] int,
 	[offset_index] int,
 	[stencil_start_index] int,
@@ -15,8 +15,8 @@ CREATE TABLE [turblib].[dbo].[barycentric_weights_y_4](
 GO
     
 
-BULK INSERT [turblib].[dbo].[barycentric_weights_y_4]
-FROM N'C:\Users\kalin\Documents\turbulence\channel-baryctrwt\baryctrwt-y-lag4.dat'
+BULK INSERT [turbdev].[dbo].[BL_barycentric_weights_y_4]
+FROM N'C:\Users\zwu27\Documents\Turbulence-for-publish\BL-baryctrwt\Output\BL-baryctrwt-y-lag4.dat'
 WITH
 (
 FIELDTERMINATOR = ' ',
@@ -24,10 +24,10 @@ ROWTERMINATOR = '\n'
 )
 GO
 
-GRANT SELECT ON [barycentric_weights_y_4] TO [turbquery]
+GRANT SELECT ON [BL_barycentric_weights_y_4] TO [turbquery]
 GO
 
-SELECT * FROM [turblib].[dbo].[barycentric_weights_y_4]
+SELECT * FROM [turbdev].[dbo].[BL_barycentric_weights_y_4]
 		 ORDER BY cell_index
 		 
 

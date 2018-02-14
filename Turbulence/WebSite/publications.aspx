@@ -93,11 +93,11 @@ International Conference for High Performance Computing, Networking, Storage and
 <ul>      
 
     <li><font face="Arial, Helvetica, sans-serif">
-         F. Candelier, J. Einarsson, and B. Mehlig, <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.117.204501">Angular Dynamics of a Small Particle in Turbulence</a>, Physical Review Letters, 117, 204501, doi:10.1103/PhysRevLett.117.204501</font>
+         F. Candelier, J. Einarsson, and B. Mehlig, <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.117.204501">Angular Dynamics of a Small Particle in Turbulence</a>, Physical Review Letters, 117, 204501, doi:10.1103/PhysRevLett.117.204501 (November 2016)</font>
         </li>
     
     <li><font face="Arial, Helvetica, sans-serif">
-         P. L. Johnson and C. Meneveau<a href="http://dx.doi.org/10.1017/jfm.2016.551">A closure for Lagrangian velocity gradient evolution in turbulence using recent-deformation mapping of initially Gaussian fields</a>, Journal of Fluid Mechanics, Vol. 804, pp 387-419, 2016.
+         P. L. Johnson and C. Meneveau<a href="http://dx.doi.org/10.1017/jfm.2016.551">A closure for Lagrangian velocity gradient evolution in turbulence using recent-deformation mapping of initially Gaussian fields</a>, Journal of Fluid Mechanics, Vol. 804, pp 387-419 (2016).
     </font>
         </li>
 
@@ -112,12 +112,12 @@ International Conference for High Performance Computing, Networking, Storage and
         </li>
 
     <li><font face="Arial, Helvetica, sans-serif">
-         Alain Pumir, Haitao Xu, Eberhard Bodenschatz, and Rainer Grauer, <a href="http://dx.doi.org/10.1103/PhysRevLett.116.124502">Single-Particle Motion and Vortex Stretching in Three-Dimensional Turbulent Flows</a>, Physical Review Letters, 116, 124502, doi:10.1103/PhysRevLett.116.124502
+         Alain Pumir, Haitao Xu, Eberhard Bodenschatz, and Rainer Grauer, <a href="http://dx.doi.org/10.1103/PhysRevLett.116.124502">Single-Particle Motion and Vortex Stretching in Three-Dimensional Turbulent Flows</a>, Physical Review Letters, 116, 124502, doi:10.1103/PhysRevLett.116.124502 ( March 2016)
     </font>
         </li>
 
     <li><font face="Arial, Helvetica, sans-serif">
-         J.-B. Chapelier, G. Lodato, A. Jameson, <a href="http://www.sciencedirect.com/science/article/pii/S0045793016300512">A study on the numerical dissipation of the Spectral Difference method for freely decaying and wall-bounded turbulence</a>, Computers & Fluids, doi:10.1016/j.compfluid.2016.03.006
+         J.-B. Chapelier, G. Lodato, A. Jameson, <a href="http://www.sciencedirect.com/science/article/pii/S0045793016300512">A study on the numerical dissipation of the Spectral Difference method for freely decaying and wall-bounded turbulence</a>, Computers & Fluids, doi:10.1016/j.compfluid.2016.03.006 ( November 2016)
     </font>
         </li>
 
@@ -437,7 +437,80 @@ Yi&nbsp;Li, Laurent Chevillard, Gregory Eyink, and Charles Meneveau.
           H. Yu &amp; C. Meneveau. Lagrangian Refined Kolmogorov Similarity Hypothesis for Gradient Time Evolution
           and Correlation in Turbulent Flows. <em>Phys. Rev. Letts.</em> <strong>104</strong>, 084502 (2010).
           (<a href="http://prl.aps.org/abstract/PRL/v104/i8/e084502" target="_blank">abstract</a>)</font></p>
-        </li>          
+        </li>       
+      <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          P. Rao, C. P. Caulfield and J.D.Gibbon.
+          <a href = https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/div-classtitlenonlinear-effects-in-buoyancy-driven-variable-density-turbulencediv/5654BD694732DC4AE86B8DE3DAE348BF >Nonlinear effects in buoyancy-driven variable-density turbulence. </a> 
+           Journal of Fluid Mechanics (January 2017).
+        </li>   
+
+    <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          M.A. Mendez, M. Raiola, A. Masullo, S. Discetti, A. Ianiro, R. Theunissen, J.M. Buchlin.
+          <a href = http://www.sciencedirect.com/science/article/pii/S0894177716302266 > POD-based background removal for particle image velocimetry. </a> 
+          Experimental Thermal and Fluid Science (Volume 80, January 2017, Pages 181-192).
+        </li>  
+
+     <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          J E Higham, W Brevis and C J Keylock.
+          <a href = http://iopscience.iop.org/article/10.1088/0957-0233/27/12/125303/meta > A rapid non-iterative proper orthogonal decomposition based outlier detection and correction for PIV data. </a> 
+          Measurement Science and Technology (Volume 27, Number 12, October 2016)
+        </li>
+      
+       <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          Cosmin Safta, Myra Blaylock, Jeremy Templeton, Stefan Domino, Khachik Sargsyan, Habib Najm.
+          <a href = http://onlinelibrary.wiley.com/doi/10.1002/fld.4272/full > Uncertainty quantification in LES of channel flow. </a> 
+          International Journal for Numerical Methods in Fluids (July 2016)
+        </li> 
+
+    <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          Léonie Canet, Vincent Rossetto, Nicolás Wschebor, and Guillaume Balarac.
+          <a href = https://journals.aps.org/pre/abstract/10.1103/PhysRevE.95.023107 > Spatiotemporal velocity-velocity correlation function in fully developed turbulence. </a> 
+          Phys. Rev. E 95, 023107 (February 2017)
+        </li> 
+
+    <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          Christopher J. Keylock.
+          <a href = https://journals.aps.org/prfluids/abstract/10.1103/PhysRevFluids.2.084607> Synthetic velocity gradient tensors and the identification of statistically significant aspects of the structure of turbulence.</a> 
+          Phys. Rev. Fluids 2, 084607 (August 2017)
+        </li>
+
+     <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          R. Tunstalla, D. Laurence, R. Prosser, A. Skillen.
+          <a href = http://www.sciencedirect.com/science/article/pii/S0045793017302852 > Towards a generalised dual-mesh hybrid LES/RANS framework with improved consistency.</a> 
+          Computers & Fluids (Volume 157, November 2017, Pages 73-83)
+        </li>
+
+      <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          Huan Lian, Nikolaos Soulopoulos, Yannis Hardalupas.
+          <a href = https://link.springer.com/article/10.1007/s00348-017-2395-x > Evaluation of the topological characteristics of the turbulent flow in a ‘box of turbulence’ through 2D time-resolved particle image velocimetry.</a> 
+          Experiments in Fluids( August 2017)
+        </li>
+
+    <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          Stefania Scarsoglio, Giovanni Iacobello, Luca Ridolfi.
+          <a href = http://dx.doi.org/10.1142/S0218127416502230 > Complex Networks Unveiling Spatial Patterns in Turbulence </a> 
+          International Journal of Bifurcation and Chaos (December 2016)
+        </li>
+
+      <li>
+          <p><font face="Arial, Helvetica, sans-serif">
+          Giovanni Iacobello, Stefania Scarsoglio, Luca Ridolfi
+          <a href = https://doi.org/10.1016/j.physleta.2017.10.027 > Visibility graph analysis of wall turbulence time-series </a> 
+          Physics Letters A (Volume 382, Issue 1, 5 January 2018)
+        </li>
+
+
+       
+
                                   
 
       </ul>               

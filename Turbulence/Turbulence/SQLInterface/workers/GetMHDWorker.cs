@@ -280,7 +280,7 @@ namespace Turbulence.SQLInterface.workers
         /// <param name="coordiantes"></param>
         /// <param name="threshold"></param>
         /// <returns></returns>
-        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold)
+        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold, int workertype)
         {
             if (spatialInterp != TurbulenceOptions.SpatialInterpolation.None)
             {

@@ -101,7 +101,7 @@ namespace ImportData
         static void GenerateWeightsY(SqlConnection sqlcon)
         {
             GridPoints grid_points_y = new GridPoints(Ny);
-            grid_points_y.GetGridPointsFromDB(sqlcon);
+            grid_points_y.GetGridPointsFromDB(sqlcon, "channel"); //or "bl_zaki"
 
             int[] nOrder = new int[] { 4, 6, 8 };
             for (int n = 0; n < nOrder.Length; n++)

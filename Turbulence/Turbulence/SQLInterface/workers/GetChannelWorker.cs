@@ -14,13 +14,16 @@ namespace Turbulence.SQLInterface.workers
 {
     public abstract class GetChannelWorker : Worker
     {
+        protected bool periodicX;
+        protected bool periodicY;
+        protected bool periodicZ;
         protected BarycentricWeights weights_x;
         protected BarycentricWeights weights_y;
         protected BarycentricWeights weights_z;
 
         int numPointsInKernel = 0;
         
-        public GetChannelWorker(TurbDataTable setInfo,
+        public GetChannelWorker(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             SqlConnection conn)
         {
@@ -28,26 +31,93 @@ namespace Turbulence.SQLInterface.workers
             this.setInfo = setInfo;
             this.spatialInterp = spatialInterp;
 
+            if (dataset.Contains("channel"))
+            {
+                periodicX = true;
+                periodicY = false;
+                periodicZ = true;
+            }
+            else if (dataset.Contains("bl_zaki"))
+            {
+                periodicX = false;
+                periodicY = false;
+                periodicZ = true;
+            }
+
+            if (periodicX)
+            {
+                weights_x = new UniformBarycentricWeights();
+            }
+            else
+            {
+                weights_x = new NonUniformBarycentricWeights();
+            }
+            if (periodicY)
+            {
+                weights_y = new UniformBarycentricWeights();
+            }
+            else
+            {
+                weights_y = new NonUniformBarycentricWeights();
+            }
+            if (periodicZ)
+            {
+                weights_z = new UniformBarycentricWeights();
+            }
+            else
+            {
+                weights_z = new NonUniformBarycentricWeights();
+            }
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Lag4)
             {
                 this.kernelSize = 4;
-                SetWeightsX(conn, "barycentric_weights_x_4");
-                SetWeightsY(conn, "barycentric_weights_y_4");
-                SetWeightsZ(conn, "barycentric_weights_z_4");
+                if (dataset.Contains("channel"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "barycentric_weights_x_4");
+                    weights_y.GetWeightsFromDB(conn, "barycentric_weights_y_4");
+                    weights_z.GetWeightsFromDB(conn, "barycentric_weights_z_4");
+                    //SetWeightsX(dataset, conn, "barycentric_weights_x_4");
+                    //SetWeightsY(dataset, conn, "barycentric_weights_y_4");
+                    //SetWeightsZ(dataset, conn, "barycentric_weights_z_4");
+                }
+                else if (dataset.Contains("bl_zaki"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "BL_barycentric_weights_x_4");
+                    weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_4");
+                    weights_z.GetWeightsFromDB(conn, "BL_barycentric_weights_z_4");
+                }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Lag6)
             {
                 this.kernelSize = 6;
-                SetWeightsX(conn, "barycentric_weights_x_6");
-                SetWeightsY(conn, "barycentric_weights_y_6");
-                SetWeightsZ(conn, "barycentric_weights_z_6");
+                if (dataset.Contains("channel"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "barycentric_weights_x_6");
+                    weights_y.GetWeightsFromDB(conn, "barycentric_weights_y_6");
+                    weights_z.GetWeightsFromDB(conn, "barycentric_weights_z_6");
+                }
+                else if (dataset.Contains("bl_zaki"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "BL_barycentric_weights_x_6");
+                    weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_6");
+                    weights_z.GetWeightsFromDB(conn, "BL_barycentric_weights_z_6");
+                }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Lag8)
             {
                 this.kernelSize = 8;
-                SetWeightsX(conn, "barycentric_weights_x_8");
-                SetWeightsY(conn, "barycentric_weights_y_8");
-                SetWeightsZ(conn, "barycentric_weights_z_8");
+                if (dataset.Contains("channel"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "barycentric_weights_x_8");
+                    weights_y.GetWeightsFromDB(conn, "barycentric_weights_y_8");
+                    weights_z.GetWeightsFromDB(conn, "barycentric_weights_z_8");
+                }
+                else if (dataset.Contains("bl_zaki"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "BL_barycentric_weights_x_8");
+                    weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_8");
+                    weights_z.GetWeightsFromDB(conn, "BL_barycentric_weights_z_8");
+                }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
             {
@@ -63,17 +133,25 @@ namespace Turbulence.SQLInterface.workers
             numPointsInKernel = kernelSize * kernelSize * kernelSize;
         }
 
-        private void SetWeightsX(SqlConnection conn, string tableName)
+        private void SetWeightsX(string dataset, SqlConnection conn, string tableName)
         {
-            weights_x = new UniformBarycentricWeights();
-            weights_x.GetWeightsFromDB(conn, tableName);
+            if (dataset.Contains("channel"))
+            {
+                weights_x = new UniformBarycentricWeights();
+                weights_x.GetWeightsFromDB(conn, tableName);
+            }
+            else if (dataset.Contains("bl_zaki"))
+            {
+                weights_x = new NonUniformBarycentricWeights();
+                weights_x.GetWeightsFromDB(conn, tableName);
+            }
         }
-        private void SetWeightsY(SqlConnection conn, string tableName)
+        private void SetWeightsY(string dataset, SqlConnection conn, string tableName)
         {
             weights_y = new NonUniformBarycentricWeights();
             weights_y.GetWeightsFromDB(conn, tableName);
         }
-        private void SetWeightsZ(SqlConnection conn, string tableName)
+        private void SetWeightsZ(string dataset, SqlConnection conn, string tableName)
         {
             weights_z = new UniformBarycentricWeights();
             weights_z.GetWeightsFromDB(conn, tableName);
@@ -96,7 +174,10 @@ namespace Turbulence.SQLInterface.workers
             int startz = weights_z.GetStencilStart(request.cell_z, kernelSize), 
                 starty = weights_y.GetStencilStart(request.cell_y, kernelSize), 
                 startx = weights_x.GetStencilStart(request.cell_x, kernelSize);
-            int endz = startz + kernelSize - 1, endy = weights_y.GetStencilEnd(request.cell_y), endx = startx + kernelSize - 1;
+            int endx = periodicX ? startx + kernelSize - 1 : weights_x.GetStencilEnd(request.cell_x);
+            int endy = periodicY ? starty + kernelSize - 1 : weights_y.GetStencilEnd(request.cell_y);
+            int endz = periodicZ ? startz + kernelSize - 1 : weights_z.GetStencilEnd(request.cell_z);
+            //int endz = startz + kernelSize - 1, endy = weights_y.GetStencilEnd(request.cell_y), endx = startx + kernelSize - 1;
 
             // we do not want a request to appear more than once in the list for an atom
             // with the below logic we are going to check distinct atoms only
@@ -148,7 +229,7 @@ namespace Turbulence.SQLInterface.workers
         /// <param name="coordiantes"></param>
         /// <param name="threshold"></param>
         /// <returns></returns>
-        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold)
+        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold, int workertype)
         {
             if (spatialInterp != TurbulenceOptions.SpatialInterpolation.None)
             {
