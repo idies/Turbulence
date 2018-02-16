@@ -1,8 +1,8 @@
-USE [turblib]
+USE [turbdev]
 
-DROP TABLE [turblib].[dbo].[barycentric_weights_z_4]
+DROP TABLE [turbdev].[dbo].[BL_barycentric_weights_z_4]
 GO
-CREATE TABLE [turblib].[dbo].[barycentric_weights_z_4](
+CREATE TABLE [turbdev].[dbo].[BL_barycentric_weights_z_4](
 	[w0] float,
 	[w1] float,
 	[w2] float,
@@ -10,16 +10,16 @@ CREATE TABLE [turblib].[dbo].[barycentric_weights_z_4](
 )
 GO
     
-INSERT INTO [turblib].[dbo].[barycentric_weights_z_4]
+INSERT INTO [turbdev].[dbo].[BL_barycentric_weights_z_4]
            ([w0]
            ,[w1]
            ,[w2]
            ,[w3])
      VALUES
-           (-7.2145461268963397e+05, 2.1643638380689020e+06, -2.1643638380689020e+06, 7.2145461268963397e+05)
+           (-1.0356306172839506e+02, 3.1068918518518518e+02, -3.1068918518518518e+02, 1.0356306172839506e+02)
 GO
 
-GRANT SELECT ON [barycentric_weights_z_4] TO [turbquery]
+GRANT SELECT ON [BL_barycentric_weights_z_4] TO [turbquery]
 GO
 
-SELECT * FROM turblib..barycentric_weights_z_4
+SELECT * FROM turbdev..BL_barycentric_weights_z_4

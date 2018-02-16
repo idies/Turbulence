@@ -22,7 +22,10 @@ namespace TurbulenceService
             isotropic1024fine = 5,
             channel = 6,
             mixing = 7,
-            rmhd = 8
+            rmhd = 8,
+            isotropic4096 = 10,
+            strat4096 = 11,
+            bl_zaki = 12
         }
 
         // TODO: This needs to be refactored. We probably don't want to keep track of
@@ -41,6 +44,7 @@ namespace TurbulenceService
             potential08, //MHD DB Potential table
             vel, //Isotropic Turb. DB Velocity table, Channel DB Velocity table
             pr, //Isotropic Turb. DB Pressure table, Channel DB Pressure table
+            th,
             isotropic1024fine_vel,
             isotropic1024fine_pr,
             density, // Mixing DB Density table
@@ -65,9 +69,11 @@ namespace TurbulenceService
                     return 3;
                 case TableNames.pr:
                     return 1;
+                case TableNames.th:
+                    return 1;
                 case TableNames.pressure08:
                     return 1;
-                case TableNames.vel:                    
+                case TableNames.vel:
                     return 3;
                 case TableNames.velocity08:
                     return 3;
@@ -128,6 +134,27 @@ namespace TurbulenceService
                         return TableNames.density;
                     else
                         throw new Exception("Invalid field specified!");
+                case DataSets.isotropic4096:
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                        return TableNames.vel;
+                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                        return TableNames.pr;
+                    else
+                        throw new Exception("Invalid field specified!");
+                case DataSets.strat4096:
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                        return TableNames.vel;
+                    else if (field.Equals("t") || field.Contains("th") || field.Contains("Th") || field.Contains("tem") || field.Contains("Tem") || field.Contains("phi") || field.Contains("Phi"))
+                        return TableNames.th;
+                    else
+                        throw new Exception("Invalid field specified!");
+                case DataSets.bl_zaki:
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                        return TableNames.vel;
+                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                        return TableNames.pr;
+                    else
+                        throw new Exception("Invalid field specified!");
                 default:
                     throw new Exception("Invalid data set specified!");
             }
@@ -145,6 +172,8 @@ namespace TurbulenceService
                 return "p";
             else if (field.Equals("d") || field.Contains("density") || field.Contains("Density"))
                 return "d";
+            else if (field.Equals("t") || field.Contains("th") || field.Contains("Th") || field.Contains("tem") || field.Contains("Tem") || field.Contains("phi") || field.Contains("Phi"))
+                return "t";
             else
                 throw new Exception("Invalid field specified!");
         }
@@ -158,6 +187,10 @@ namespace TurbulenceService
                                {"rmhd", "rmhd"},
                                {"mhd1024", "mhd1024"},
                                {"channel", "channel"},
+                               {"isotropic4096", "isotropic4096"},
+                               {"strat4096", "strat4096"},
+                               {"rotstrat4096", "strat4096"},
+                               {"bl_zaki", "bl_zaki"},
                                {"mixing", "mixing"}};
 
         public static string findDataSet(string setname)
@@ -212,7 +245,18 @@ namespace TurbulenceService
             {
                 return false;
             }
-
+            else if (dataset == DataSets.isotropic4096 && time > 0F)
+            {
+                return false;
+            }
+            else if (dataset == DataSets.strat4096 && time > 4F)
+            {
+                return false;
+            }
+            else if (dataset == DataSets.bl_zaki && time > 0.007F)
+            {
+                return false;
+            }
             return true;
         }
 

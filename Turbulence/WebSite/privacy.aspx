@@ -28,7 +28,7 @@
 </div>
 <!--#include file="navbar.htm" -->
 <div id="leftcolumn">
-   <p><img src="images/fig4-1.jpg" width="205" height="365" /></p>
+   <p><img src="images/fig4-1.jpg" width="205"/></p>
       <p><img src="images/fig2.jpg" width="205" height="163" /></p>
 </div>
 <div id="centercolumn">
@@ -45,7 +45,7 @@ Aggregate statistics may be reported in the future.
 and to experiment with load-balancing algorithms. This histogram is currently 4096 bits representing
 which regions of space are accessed in the execution of a request.</i>
 </p>
-<p align="center"><font size="2" color="red">Questions? turbulence&#64;pha&#46;jhu&#46;edu</font></p>
+<p align="center"><font size="2" color="red">Questions? <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a></font></p>
 
     
 </div>

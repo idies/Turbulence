@@ -18,6 +18,7 @@ public partial class StoredProcedures
         string codedb,
         string cachedb,
         string turbinfodb,
+        string turbinfoserver,
         string tableName,
         int workerType,
         int blobDim,
@@ -165,7 +166,8 @@ public partial class StoredProcedures
 
         if (update_cache_data)
         {
-            GetThresholdUsingCutout(datasetID, serverName, dbname, codedb, turbinfodb, tableName, workerType, blobDim, timestep, spatialInterp, arg, threshold,
+            TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
+            GetThresholdUsingCutout(datasetID, serverName, dbname, serverinfo, tableName, workerType, blobDim, timestep, spatialInterp, arg, threshold,
                 coordinates,
                 out points_above_threshold);
         }
@@ -499,8 +501,7 @@ public partial class StoredProcedures
         short datasetID,
         string serverName,
         string dbname,
-        string codedb,
-        string turbinfodb,
+        TurbServerInfo serverinfo,
         string tableName,
         int workerType,
         int blobDim,
@@ -511,31 +512,45 @@ public partial class StoredProcedures
         int[] coordinates,
         out HashSet<SQLUtility.PartialResult> points_above_threshold)
     {
+        SqlConnection contextConn;
+        contextConn = new SqlConnection("context connection=true");
         try
         {
-            SqlConnection contextConn;
-            contextConn = new SqlConnection("context connection=true");
-            contextConn.Open();
-
-            TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, tableName, blobDim, contextConn);
+            TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, tableName, blobDim, serverinfo);
             string DBtableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
-            Worker worker = Worker.GetWorker(table, workerType, spatialInterp, arg, contextConn);
+            contextConn.Open();
+            Worker worker = Worker.GetWorker(dbname, table, workerType, spatialInterp, arg, contextConn);
             contextConn.Close();
+            //string outputmsg = "worker " + worker + System.Environment.NewLine +
+            //    "coordinates " + System.Environment.NewLine +
+            //    coordinates[0] + coordinates[1] + coordinates[2] + System.Environment.NewLine +
+            //    "threshold " + threshold + System.Environment.NewLine;
+            //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb5.log", outputmsg);
 
-            worker.GetData(datasetID, turbinfodb, timestep, coordinates);
-            
+            //outputmsg = "datasetID " + datasetID + System.Environment.NewLine +
+            //    "turbinfodb " + turbinfodb + System.Environment.NewLine +
+            //    "timestep " + timestep;
+            //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb5.log", outputmsg);
+            worker.GetData(datasetID, serverinfo, timestep, coordinates, table.dbtype);
+            //outputmsg = "GetData done" + System.Environment.NewLine;
+            //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb5.log", outputmsg);
+
             //endTime = DateTime.Now;
             //IOTime = endTime - startTime;
             //startTime = endTime;
 
-            points_above_threshold = worker.GetThresholdUsingCutout(coordinates, threshold);
+            points_above_threshold = worker.GetThresholdUsingCutout(coordinates, threshold, workerType);
 
             //endTime = DateTime.Now;
             //computeTime = endTime - startTime;
         }
         catch (Exception ex)
         {
+            if (contextConn.State == ConnectionState.Open)
+            {
+                contextConn.Close();
+            }
             throw ex;
         }
     }

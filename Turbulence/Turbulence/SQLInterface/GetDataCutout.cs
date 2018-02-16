@@ -13,20 +13,23 @@ public partial class StoredProcedures
         string serverName,
         string dbname,
         string codedb,
+        string turbinfodb,
+        string turbinfoserver,
         string dataset,
-        int blobDim, 
+        int blobDim,
         int timestep,
-        string QueryBox)
+        string QueryBox,
+        out SqlBytes blob)
     {
         //DateTime start = DateTime.Now;
-        
+
         SqlDataRecord record = new SqlDataRecord(new SqlMetaData("data", SqlDbType.VarBinary, -1));
-        String connectionString = "Context connection=true;";        
+        String connectionString = "Context connection=true;";
         SqlConnection connection = new SqlConnection(connectionString);
-        connection.Open();
 
         // Load information about the requested dataset
-        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, connection);
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
+        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, serverinfo);
 
         int[] coordinates = new int[6];
 
@@ -34,13 +37,14 @@ public partial class StoredProcedures
 
         byte[] cutout;
 
+        connection.Open();
         GetCutout(table, dbname, timestep, coordinates, connection, out cutout);
 
         // Populate the record
-        record.SetBytes(0, 0, cutout, 0, cutout.Length);
+        //record.SetBytes(0, 0, cutout, 0, cutout.Length);
         // Send the record to the client.
-        SqlContext.Pipe.Send(record);
-        
+        //SqlContext.Pipe.Send(record);
+        blob = new SqlBytes(cutout);
         connection.Close();
 
         //System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\GetDataCutoutTime.txt", true);
@@ -128,7 +132,7 @@ public partial class StoredProcedures
             }
         }
     }
-    
+
     /// <summary>
     /// Given a query box formatted as "box [x1,y1,z1,x2,y2,z2]" extracts the coordinates [x1,y1,z1,x2,y2,z2]
     /// </summary>

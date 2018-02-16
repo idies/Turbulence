@@ -22,6 +22,7 @@ namespace TurbulenceService
     public class Database
     {
         public string infodb;
+        public string infodb_server;
         protected int[] gridResolution; // Dimensions of the entire grid given az [z,y,x]
         public int atomDim;                // length of side of a single data atom
         public List<string> servers;       // name of each server (resolved via web.config)
@@ -51,7 +52,8 @@ namespace TurbulenceService
         const int MAX_READ_LENGTH = 256000000;
         const int MAX_NUMBER_THRESHOLD_POINTS = 1024 * 1024;
         const double DENSITY_CONSTANT = 80.0;
-
+        //New: db type either file or database.  0 is databse, 1 is file. We assume there is no mix-type dataset.
+        public int dbtype;
         // zindex ranges stored on each server for the channel flow DB
         //long[] range_start;
         //long[] range_end;
@@ -70,11 +72,13 @@ namespace TurbulenceService
         /// <param name="development">Use dev/testing server instead of production</param>
         /// <remarks>
         /// </remarks>
-        public Database(string infodb, bool development)
+        public Database(string infodb_string, bool development)
         {
-            this.infodb = infodb;
+            this.development = development;
+            SqlConnectionStringBuilder builder = GetTurbinfoServer(infodb_string);
+            this.infodb = builder.InitialCatalog; //This is the infodb, not the server that holds infodb.  Do this elsewhere
             /*Update infodb to one that is currently accepting requests*/
-            //this.infodb = GetTurbinfoServer();  This is the infodb, not the server that holds infodb.  Do this elsewhere
+            this.infodb_server = builder.DataSource;  //This is the server that holds infodb.
             this.servers = new List<string>(8);
             this.databases = new List<string>(8);
             this.codeDatabase = new List<string>(8);
@@ -84,13 +88,13 @@ namespace TurbulenceService
             this.Dt = 0.0002F;  // The default time resolution is 0.0002F for the isotropic turbulence DB, for the MHD database it is 0.00025
             this.timeInc = 10;  // The default time increment is 10 for the coarse isotropic and MHD datasets, for the fine dataset it is 1
             this.timeOff = 0;
-            this.development = development;
             this.bitfield = new byte[4096 / 8]; // large enough to cover all data regions
             this.tempTableName = "#" + Guid.NewGuid().ToString().Replace("-", "");
             this.smallAtoms = true; // By default we assume that the atoms stored in the database are small
             this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
             this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
             this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
+            this.dbtype = 0;  //We set to database as dbtype initially since majority is database.
         }
 
         /// <summary>
@@ -128,6 +132,14 @@ namespace TurbulenceService
                     this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
                     channel_grid = false;
                     break;
+                case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.strat4096:
+                    this.gridResolution = new int[] { 4096, 4096, 4096 };
+                    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
+                    this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
+                    this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
+                    channel_grid = false;
+                    break;
                 //case DataInfo.DataSets.rmhd:
                 //    this.gridResolution = new int[] { 2048, 2048, 2048 };
                 //    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
@@ -152,9 +164,39 @@ namespace TurbulenceService
                             server_name = server_name.Remove(server_name.IndexOf("_"));
                         String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
                             server_name, codeDatabase[0], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                        //String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=false; Connect Timeout = 600;",
+                        //    server_name, codeDatabase[0], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
                         SqlConnection sqlConn = new SqlConnection(cString);
                         sqlConn.Open();
-                        gridPointsY.GetGridPointsFromDB(sqlConn);
+                        gridPointsY.GetGridPointsFromDB(sqlConn, dataset.ToString());
+                        sqlConn.Close();
+                    }
+                    else
+                    {
+                        throw new Exception("Servers not initialized!");
+                    }
+                    break;
+                case DataInfo.DataSets.bl_zaki:
+                    this.gridResolution = new int[] { 2048, 224, 3320 };
+                    this.dx = 0.292210466252391;
+                    this.dz = 0.117187500000000;
+                    gridPointsY = new GridPoints(this.GridResolutionY);
+                    channel_grid = true;
+                    // We need to retrieve the y grid values from the database.
+                    // TODO: Maybe randomize the node that we query so that we don't always hit the same server...
+                    //String cString = ConfigurationManager.ConnectionStrings["dsp085"].ConnectionString;
+                    if (servers.Count > 0)
+                    {
+                        string server_name = this.servers[0];
+                        if (server_name.Contains("_"))
+                            server_name = server_name.Remove(server_name.IndexOf("_"));
+                        String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
+                            server_name, codeDatabase[0], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                        //String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=false; Connect Timeout = 600;",
+                        //    server_name, codeDatabase[0], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                        SqlConnection sqlConn = new SqlConnection(cString);
+                        sqlConn.Open();
+                        gridPointsY.GetGridPointsFromDB(sqlConn, dataset.ToString());
                         sqlConn.Close();
                     }
                     else
@@ -176,7 +218,10 @@ namespace TurbulenceService
                 case DataInfo.DataSets.mhd1024:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.mixing:
-                //case DataInfo.DataSets.rmhd:
+                case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.strat4096:
+                case DataInfo.DataSets.bl_zaki:
+                    //case DataInfo.DataSets.rmhd:
                     this.atomDim = 8;
                     this.smallAtoms = true;
                     break;
@@ -197,6 +242,14 @@ namespace TurbulenceService
                     this.Dt = 0.0002F;
                     this.timeInc = 10;
                     break;
+                case DataInfo.DataSets.isotropic4096: //There is only one timestep for this dataset so this isn't really necessary.
+                    this.Dt = 0.0002F;
+                    this.timeInc = 1;
+                    break;
+                case DataInfo.DataSets.strat4096: //These are seperated snapshots, so we set Dt=1.
+                    this.Dt = 1F;
+                    this.timeInc = 1;
+                    break;
                 case DataInfo.DataSets.mhd1024:
                     this.Dt = 0.00025F;
                     this.timeInc = 10;
@@ -211,6 +264,10 @@ namespace TurbulenceService
                     this.timeInc = 1;
                     this.timeOff = 1;
                     break;
+                case DataInfo.DataSets.bl_zaki:
+                    this.Dt = 0.001F;
+                    this.timeInc = 1;
+                    break;
                 //case DataInfo.DataSets.rmhd:
                 //    this.Dt = 0.0006F;
                 //    this.timeInc = 4;
@@ -221,38 +278,40 @@ namespace TurbulenceService
         }
 
         /// Rotates through all known infodbs for redundancy.
-        public String GetTurbinfoServer()
+        public SqlConnectionStringBuilder GetTurbinfoServer(string infodb_string)
         {
             /*This is used to cycle through the turbinfo servers in case one goes down */
-            List<String> turbinfoservers = new List<String>();
-            //turbinfoservers.Add("dsp033"); /*No SQL server here, just a test*/
-            //turbinfoservers.Add("sciserver02"); /*Using this for testing...remove for production*/
-            turbinfoservers.Add("gw01");
-            turbinfoservers.Add("gw02");
-            turbinfoservers.Add("gw03");
-            turbinfoservers.Add("gw04");
-            /* Now get a good connection in order of what was provided */
-            foreach (var server in turbinfoservers)
+            string turbinfo_connectionString = ConfigurationManager.ConnectionStrings[infodb_string].ConnectionString;
+            using (var l_oConnection = new SqlConnection(turbinfo_connectionString))
             {
-                //Console.WriteLine("trying server {0}", server);
-                /*Using a short timeout on this connection just to find a server that responds quickly */
-                String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200; Connection Timeout=2", server);
-                using (var l_oConnection = new SqlConnection(cString))
+                try
+                {
+                    l_oConnection.Open();
+                    return new SqlConnectionStringBuilder(turbinfo_connectionString);
+                }
+                catch (SqlException)
+                {
+                    //Console.WriteLine("Trying next server");
+                }
+            }
+
+            if (development == false)
+            {
+                string turbinfo_connectionString2 = ConfigurationManager.ConnectionStrings["turbinfo_backup_conn"].ConnectionString;
+                using (var l_oConnection = new SqlConnection(turbinfo_connectionString2))
                 {
                     try
                     {
                         l_oConnection.Open();
-                        return server;
+                        return new SqlConnectionStringBuilder(turbinfo_connectionString2);
                     }
                     catch (SqlException)
                     {
-                        Console.WriteLine("Trying next server");
+                        //Console.WriteLine("Trying next server");
                     }
                 }
             }
-            /*If all else fails, go back to gw01*/
-            return "gw01";
-
+            return new SqlConnectionStringBuilder(turbinfo_connectionString);
         }
         /// <summary>
         /// Initialize servers, connections and input data tables.
@@ -261,19 +320,17 @@ namespace TurbulenceService
         public void selectServers(DataInfo.DataSets dataset_enum)
         {
             String dataset = dataset_enum.ToString();
-            
-
-            //String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             /*We use the new select server function to get the first available server */
-            String cString = String.Format("Server={0};Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200; Connection Timeout=30", GetTurbinfoServer());
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200; Connection Timeout=30",
+                this.infodb_server, this.infodb);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
             string DBMapTable = "DatabaseMap";
-            if (this.development == true)
-            {
-                DBMapTable = "DatabaseMapTest";
-            }
+            //if (this.development == true)
+            //{
+            //    DBMapTable = "DatabaseMapTest";
+            //}
             cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
                 "from {0}..{1} where DatasetName = @dataset " + 
                 "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
@@ -296,7 +353,7 @@ namespace TurbulenceService
                     }
                     else
                     {
-                        codeDatabase.Add("turbdev");
+                        codeDatabase.Add("turbdev_zw");
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
@@ -342,27 +399,34 @@ namespace TurbulenceService
         public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers)
         {            
             String dataset = dataset_enum.ToString();
-            String cString = ConfigurationManager.ConnectionStrings["turbinfo"].ConnectionString;
+            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                            this.infodb_server, this.infodb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
+            //cString = String.Format(cString, this.infodb_server, this.infodb);
+            //String cString = "Data Source=gw01;Initial Catalog=turbinfo;Integrated Security=true;Pooling=false;";
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
+
             SqlCommand cmd = conn.CreateCommand();
             string DBMapTable = "DatabaseMap";
-            if (this.development == true)
-            {
-                DBMapTable = "DatabaseMapTest";
-            }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
-                "from {0}..{1} where DatasetName = @dataset " + 
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
+            //if (this.development == true)
+            //{
+            //    DBMapTable = "DatabaseMapTest";
+            //}
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime, dbType " +
+                "from {0}..{1} where DatasetName = @dataset " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime, dbType " +
                 "order by minLim", infodb, DBMapTable);
             cmd.Parameters.AddWithValue("@dataset", dataset);
+
             SqlDataReader reader = cmd.ExecuteReader();
+            string lastserver = "";
             if (reader.HasRows)
             {
                 servers.Clear();
                 databases.Clear();
                 codeDatabase.Clear();
                 serverBoundaries.Clear();
+               
                 while (reader.Read())
                 {
                     servers.Add(reader.GetString(0));
@@ -373,20 +437,23 @@ namespace TurbulenceService
                     }
                     else
                     {
-                        codeDatabase.Add("turbdev");
+                        codeDatabase.Add("turbdev_zw");
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
                     int minTime = reader.GetSqlInt32(5).Value; 
                     int maxTime = reader.GetSqlInt32(6).Value;
+                    this.dbtype = reader.GetSqlInt32(7).Value; //Not sure we should do this--this assumes all dbs are the same type.  Fix this if we have hybrid filedb/database types.
                     /* All servers are added, and then ones in range are selected from this list later */
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
+                    lastserver = reader.GetString(0);
                 }
             }
             else
             {
-                throw new Exception("Invalid dataset specified.");
+                throw new Exception("Invalid dataset specified:" + dataset + ".");
             }
+            //throw new Exception("Found server: " + lastserver + " from server " + cString);
             reader.Close();
             conn.Close(); 
             
@@ -445,172 +512,6 @@ namespace TurbulenceService
             }
         }
 
-        /// TODO: This function is to be merged with the above
-        /// <summary>
-        /// Initialize servers, connections and input data tables.
-        /// </summary>
-        /// <param name="num_virtual_servers">Number of virtual servers to use. Currently assumes this is multiple of 2.</param>
-        public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers, int worker)
-        {
-            String dataset = dataset_enum.ToString();
-            String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
-            SqlConnection conn = new SqlConnection(cString);
-            conn.Open();
-            SqlCommand cmd = conn.CreateCommand();
-            string DBMapTable = "DatabaseMap";
-            if (this.development == true)
-            {
-                DBMapTable = "DatabaseMapTest";
-            }
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
-                "from {0}..{1} where DatasetName = @dataset " +
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
-                "order by minLim", infodb, DBMapTable);
-            cmd.Parameters.AddWithValue("@dataset", dataset);
-            SqlDataReader reader = cmd.ExecuteReader();
-            if (reader.HasRows)
-            {
-                servers.Clear();
-                databases.Clear();
-                codeDatabase.Clear();
-                serverBoundaries.Clear();
-                while (reader.Read())
-                {
-                    servers.Add(reader.GetString(0));
-                    databases.Add(reader.GetString(1));
-                    if (this.development == false)
-                    {
-                        codeDatabase.Add(reader.GetString(2));
-                    }
-                    else
-                    {
-                        codeDatabase.Add("turbdev");
-                    }
-                    long minLim = reader.GetSqlInt64(3).Value;
-                    long maxLim = reader.GetSqlInt64(4).Value;
-                    int minTime = reader.GetSqlInt32(5).Value;
-                    int maxTime = reader.GetSqlInt32(6).Value;
-                    serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
-                }
-            }
-            else
-            {
-                throw new Exception("Invalid dataset specified.");
-            }
-            reader.Close();
-            conn.Close();
-
-            if (num_virtual_servers > 1)
-            {
-                // Each virtual server will be responsible for some part of the data stored on the physical server
-                // We need to make sure that the data are partitioned according to the partitioning scheme (z-order)
-                // It is somewhat complicated as the data may not form a cube or occupy a contiguous region along the z-curve
-                if ((num_virtual_servers & (num_virtual_servers - 1)) != 0)
-                    throw new Exception("The number of virtual servers must be a power of 2!");
-
-                List<string> tempServers = new List<string>(servers.Count * num_virtual_servers);
-                List<string> tempDatabases = new List<string>(servers.Count * num_virtual_servers);
-                List<ServerBoundaries> tempServerBoundaries = new List<ServerBoundaries>(servers.Count * num_virtual_servers);
-                ServerBoundaries[] VirtualServerBoundaries;
-                int currentServer = 0;
-                for (int i = 0; i < servers.Count; i++)
-                {
-                    VirtualServerBoundaries = serverBoundaries[i].getVirtualServerBoundaries(num_virtual_servers);
-                    for (int j = 0; j < num_virtual_servers; j++)
-                    {
-                        currentServer = i * num_virtual_servers + j;
-                        tempServers.Add(servers[i] + "_" + num_virtual_servers + "_" + j);
-                        tempDatabases.Add(databases[i]);
-                        tempServerBoundaries.Add(VirtualServerBoundaries[j]);
-                    }
-                }
-
-                servers = tempServers;
-                databases = tempDatabases;
-                serverBoundaries = tempServerBoundaries;
-            }
-
-            //if (dataset_enum == DataInfo.DataSets.isotropic1024coarse)
-            //{
-            //    codeDatabase = "turblib";
-
-            //    servers = new string[] { "gw01", "gw13", "gw02", "gw14", "blackbox5", "gw15", "gw12", "gw16" };
-            //    databases = new string[] { "turbdb101", "turbdb102", "turbdb103", "turbdb104", "turbdb105", "turbdb106", "turbdb107", "turbdb108" };
-
-            //    if (this.development == true)
-            //    {
-            //        codeDatabase = "turbdev";
-            //    }
-            //}
-            //else if (dataset_enum == DataInfo.DataSets.mhd1024)
-            //{
-            //    codeDatabase = "mhdlib"; //NOTE: Should be "mhdlib" when pushing to production                
-            //    servers = new string[] { "gw21", "gw22", "gw23", "gw24" };
-            //    databases = new string[] { "mhddb021", "mhddb022", "mhddb023", "mhddb024" };
-
-            //    if (this.development == true)
-            //    {
-            //        codeDatabase = "turbdev";
-            //    }
-            //}
-            //serverBoundaries = new ServerBoundaries[servers.Length];
-            //ServerBoundaries entireGrid = new ServerBoundaries(0, GridResolutionX - 1, 0, GridResolutionX - 1, 0, GridResolutionX - 1);
-            //serverBoundaries = entireGrid.getVirtualServerBoundaries(servers.Length);
-
-            //if (num_virtual_servers > 1)
-            //{
-            //    // Each virtual server will be responsible for some part of the data stored on the physical server
-            //    // We need to make sure that the data is partitioned according to the partitioning scheme (z-order)
-            //    // It is somewhat complicated as the data may not form a cube or occupy a contiguous region along the z-curve
-            //    if ((num_virtual_servers & (num_virtual_servers - 1)) != 0)
-            //        throw new Exception("The number of virtual servers must be a power of 2!");
-
-            //    string[] tempServers = new string[servers.Length * num_virtual_servers];
-            //    string[] tempDatabases = new string[servers.Length * num_virtual_servers];
-            //    ServerBoundaries[] tempServerBoundaries = new ServerBoundaries[servers.Length * num_virtual_servers];
-            //    ServerBoundaries[] VirtualServerBoundaries;
-            //    int currentServer = 0;
-            //    for (int i = 0; i < servers.Length; i++)
-            //    {
-            //        VirtualServerBoundaries = serverBoundaries[i].getVirtualServerBoundaries(num_virtual_servers);
-            //        for (int j = 0; j < num_virtual_servers; j++)
-            //        {
-            //            currentServer = i * num_virtual_servers + j;
-            //            tempServers[currentServer] = servers[i] + "_" + num_virtual_servers + "_" + j;
-            //            tempDatabases[currentServer] = databases[i];
-            //            tempServerBoundaries[currentServer] = VirtualServerBoundaries[j];
-            //        }
-            //    }
-
-            //    servers = tempServers;
-            //    databases = tempDatabases;
-            //    serverBoundaries = tempServerBoundaries;
-            //}
-
-            this.serverCount = servers.Count;
-            this.connections = new SqlConnection[this.serverCount];
-            this.sqlcmds = new SqlCommand[this.serverCount];
-            this.count = new int[serverCount];
-            this.datatables = new DataTable[serverCount];
-            //this.tempTableNames = new String[serverCount];
-            for (int i = 0; i < serverCount; i++)
-            {
-                this.count[i] = 0;
-                this.connections[i] = null;
-                this.sqlcmds[i] = null;
-                if (worker == (int)Worker.Workers.GetPositionDBEvaluation)
-                    this.datatables[i] = createInputDataTableForParticleTracking();
-                else
-                    this.datatables[i] = createInputDataTable();
-                // NOTE: We should not need to create unique table names, but we were
-                //       running in problems with connection pooling.
-                // NOTE: This table name is used for all methods expect for GetPosition
-                // NOTE: Since we may need to access the table from a non-context connection (for bulk insert)
-                //       the temp tables need to be global and unique for each connection
-                //       as in some cases there are more than 1 databases per server
-                //this.tempTableNames[i] = "##" + Guid.NewGuid().ToString().Replace("-","");
-            }
-        }
 
         /// <summary>
         /// check if there are any open connections and close them
@@ -834,6 +735,12 @@ namespace TurbulenceService
             {
                 x = Turbulence.SciLib.LagInterpolation.CalcNode(xp, dx);
             }
+            if (databases[0].Contains("bl_zaki") && (x < 0 || x > GridResolutionX - 1))
+            {
+                throw new Exception(String.Format("The given x value({0}) is outside of the allowed range [{1},{2}]!", xp,
+                    0, dx * (GridResolutionX - 1)));                
+            }
+
 
             return ((x % GridResolutionX) + GridResolutionX) % GridResolutionX;
         }
@@ -851,7 +758,8 @@ namespace TurbulenceService
                 if (kernelSizeY == 0)
                     y = gridPointsY.GetCellIndexRound(yp);
                 else
-                    y = gridPointsY.GetCellIndex(yp, 0.0);
+                    //y = gridPointsY.GetCellIndex(yp, 0.0); //TODO: should I correct here?
+                    y = gridPointsY.GetCellIndex(yp);
                 if (y < 0 || y > GridResolutionY - 1)
                 {
                     throw new Exception(String.Format("The given y value({0}) is outside of the allowed range [{1},{2}]!", yp,
@@ -919,10 +827,21 @@ namespace TurbulenceService
                                 if (this.connections[i] == null)
                                 {
                                     string server_name = this.servers[i];
+                                    
                                     if (server_name.Contains("_"))
                                         server_name = server_name.Remove(server_name.IndexOf("_"));
+                                    string dbname = "";
+                                    if (this.dbtype==0)  /*This is a hack to make sure we don't connect to the database in databasemap table since filedb doesn't actually have a db*/
+                                    {
+                                        dbname = databases[i];                                        
+                                    }
+                                    else
+                                    {
+                                        dbname = databases[i].Substring(0, databases[i].Length - 3); //"iso4096db"
+                                    }
+
                                     String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                                        server_name, databases[i], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                                        server_name, dbname, ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
                                     this.connections[i] = new SqlConnection(cString);
                                     this.connections[i].Open();
                                 }
@@ -965,16 +884,28 @@ namespace TurbulenceService
                                 // If we have no workload for this server yet... create a connection
                                 if (this.connections[i] == null)
                                 {
-                                    System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\shamilto\\Desktop\\rawcall.txt", true);
-                                    file.WriteLine("boundary = {0}, {1}, {2}, {3}", X, Y, Z, T);
-                                    file.WriteLine("Timerange = {0}-{1}", serverBoundaries[i].minTime, serverBoundaries[i].maxTime);
-                                    file.Close();
+                                    //System.IO.StreamWriter file = new System.IO.StreamWriter("C:\\Users\\shamilto\\Desktop\\rawcall.txt", true);
+                                    //file.WriteLine("boundary = {0}, {1}, {2}, {3}", X, Y, Z, T);
+                                    //file.WriteLine("Timerange = {0}-{1}", serverBoundaries[i].minTime, serverBoundaries[i].maxTime);
+                                    //file.Close();
 
                                     string server_name = this.servers[i];
                                     if (server_name.Contains("_"))
                                         server_name = server_name.Remove(server_name.IndexOf("_"));
+                                    string dbname = "";
+                                    if (this.dbtype == 0)  /*This is a hack to make sure we don't connect to the database in databasemap table since filedb doesn't actually have a db*/
+                                    {
+                                        dbname = databases[i];
+                                    }
+                                    else
+                                    {
+                                        dbname = databases[i].Substring(0, databases[i].Length - 3); //"iso4096db"
+                                    }
+
                                     String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                                        server_name, databases[i], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                                        server_name, dbname, ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                                    //String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=false; Connect Timeout = 600;",
+                                    //    server_name, databases[i], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
                                     this.connections[i] = new SqlConnection(cString);
                                     this.connections[i].Open();
                                 }
@@ -1051,10 +982,23 @@ namespace TurbulenceService
                 if (server_name.Contains("_"))
                     server_name = server_name.Remove(server_name.IndexOf("_"));
                 //String cString = ConfigurationManager.ConnectionStrings[server_name].ConnectionString;
+                string dbname = "";
+                if (this.dbtype == 0)  /*This is a hack to make sure we don't connect to the database in databasemap table since filedb doesn't actually have a db*/
+                {
+                    dbname = databases[server]; 
+                }
+                else
+                {
+                    dbname = databases[server].Substring(0, databases[server].Length - 3); //"iso4096db"
+                }
+
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
-                    server_name, databases[server], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                    server_name, dbname, ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                //String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=false; Connect Timeout = 600;",
+                //                    server_name, dbname, ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
 
                 //String cString = ConfigurationManager.ConnectionStrings[this.servers[server]].ConnectionString;
+
                 this.connections[server] = new SqlConnection(cString);
                 this.connections[server].Open();
                 sqlcmds[server] = this.connections[server].CreateCommand();
@@ -1084,8 +1028,8 @@ namespace TurbulenceService
                 newRow["y"] = y;
                 newRow["z"] = z;
                 datatables[server].Rows.Add(newRow);
-                //string msg = "Added row to server: " + server + " Server name: " + servers[server] + " X: " + x + " Y: " + y + " Z: " + z;
-                ///System.IO.File.WriteAllText(@"c:\www\sqloutput-turb4.log", msg);
+                //string msg = "InsertIntoTempTable Added row to server: " + server + " Server name: " + servers[server] + " X: " + x + " Y: " + y + " Z: " + z + System.Environment.NewLine;
+                //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
 
                 //TODO: Need to enable logging and make it work for the channel flow DB.
                 SetBit(sfc); // Logging
@@ -1126,6 +1070,8 @@ namespace TurbulenceService
                 //String cString = ConfigurationManager.ConnectionStrings[server_name].ConnectionString;
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
                     server_name, databases[server], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                //String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=false; Connect Timeout = 600;",
+                //    server_name, databases[server], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
                 this.connections[server] = new SqlConnection(cString);
                 this.connections[server].Open();
                 sqlcmds[server] = this.connections[server].CreateCommand();
@@ -1189,6 +1135,8 @@ namespace TurbulenceService
                 //String cString = ConfigurationManager.ConnectionStrings[server_name].ConnectionString;
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
                     server_name, databases[server], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
+                //String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=false; Connect Timeout = 600;",
+                //    server_name, databases[server], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
                 this.connections[server] = new SqlConnection(cString);
                 this.connections[server].Open();
                 sqlcmds[server] = this.connections[server].CreateCommand();
@@ -1244,6 +1192,11 @@ namespace TurbulenceService
                     int num_y_regions = GridResolutionY / 128;
 
                     bit = sfc.X / 128 + sfc.Y / 128 * num_x_regions + sfc.Z / 128 * num_x_regions * num_y_regions;
+                }
+                //TODO: what is this value?
+                else if (GridResolutionX==4096) 
+                {
+                    bit = (int)(sfc / (long)(1 << 27));
                 }
                 else
                 {
@@ -1385,7 +1338,7 @@ namespace TurbulenceService
             endx = ((endx % GridResolutionX) + GridResolutionX) % GridResolutionX;
             endy = ((endy % GridResolutionY) + GridResolutionY) % GridResolutionY;
             endz = ((endz % GridResolutionZ) + GridResolutionZ) % GridResolutionZ;
-            int t = (int)(time / this.Dt);
+            int t = (int)(time / this.Dt);int count1 = 0;
             // The last two conditions have to do with wrap around
             // The beginning and end of each kernel may be outside of the grid space
             // Due to periodicity in space these locations are going to be wrapped around
@@ -1413,6 +1366,7 @@ namespace TurbulenceService
                                 (endz < startz && serverBoundaries[i].endz < endz))
                             {
                                 InsertIntoTempTable(i, id, zindex, zp, yp, xp, true);
+                                count1++;
                                 if (serverMin[i].x > startx)
                                     if (startx >= serverBoundaries[i].startx)
                                         serverMin[i].x = startx;
@@ -1502,7 +1456,7 @@ namespace TurbulenceService
         {
             for (int i = 0; i < points.Length; i++)
             {
-                if (channel_grid)
+                if (databases[0].Contains("channel"))
                 {
                     points[i].x -= 0.45f * time;
                 }
@@ -1754,6 +1708,7 @@ namespace TurbulenceService
                             result[id].x += reader.GetSqlSingle(1).Value;
                             result[id].y += reader.GetSqlSingle(2).Value;
                             result[id].z += reader.GetSqlSingle(3).Value;
+                            //Console.WriteLine("id={0} s={1} u={2} v={3} w={4}", id, s, result[id].x, result[id].y, result[id].z);
                         }
                     }
                     reader.Close();
@@ -2060,7 +2015,19 @@ namespace TurbulenceService
                     int size = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float);
                     int readLength = size;
                     byte[] rawdata = new byte[size];
-                    SqlDataReader reader = sqlcmds[s].EndExecuteReader(asyncRes[s]);
+                    //rawdata = sqlcmds[s].EndExecuteReader(asyncRes[s]).r;
+                    //rawdata = asyncRes[s];
+                    //SqlDataReader reader = sqlcmds[s].EndExecuteNonQuery(asyncRes[s]);
+                    int nonqueryresult = sqlcmds[s].EndExecuteNonQuery(asyncRes[s]);
+                    rawdata= (byte[])sqlcmds[s].Parameters["@blob"].Value;
+                    /*throw new Exception("rawdata bytesize = " + rawdata.Length.ToString() + " x,y,z,components: + " + serverXwidth[s].ToString() + ", " + serverYwidth[s].ToString() + 
+                        ", " + serverZwidth[s].ToString() + " " + components + " initialsize = " + size.ToString()); */
+                    //rawdata = (byte[])sqlcmds[s].Parameters["@blob"].Value;
+                    //SqlParameter p = sqlcmds[s].Parameters["@blob"];
+                    //p.Direction = ParameterDirection.Output;
+                    //rawdata = (byte[])p.Value;
+                    //throw new Exception("Here is a cut: " + rawdata );
+                    /*
                     while (reader.Read())
                     {
                         int bytesread = 0;
@@ -2076,6 +2043,7 @@ namespace TurbulenceService
                             bytesread += bytes;
                         }
                     }
+                    */
 
                     int sourceIndex = 0;
                     int destinationIndex0 = components * (serverX[s] - X + (serverY[s] - Y) * Xwidth + (serverZ[s] - Z) * Xwidth * Ywidth) * sizeof(float);
@@ -2086,13 +2054,20 @@ namespace TurbulenceService
                         destinationIndex = destinationIndex0 + k * Xwidth * Ywidth * components * sizeof(float);
                         for (int j = 0; j < serverYwidth[s]; j++)
                         {
-                            Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
-                            sourceIndex += length;
-                            destinationIndex += Xwidth * components * sizeof(float);
+                            try
+                            {
+                                Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
+                            }
+                            catch(Exception e)
+                            {
+                                throw new Exception( " source, destindex, length: " + sourceIndex.ToString() + ", " + destinationIndex.ToString() + ", " + length.ToString() + "source length: " + rawdata.Length + " dest length: " + result.Length + " " + "Inner exception: " + e );
+                            }
+                                sourceIndex += length;
+                                destinationIndex += Xwidth * components * sizeof(float);
                         }
                     }
                     rawdata = null;
-                    reader.Close();
+                    //reader.Close();
                     connections[s].Close();
                     connections[s] = null;
                 }
@@ -2441,13 +2416,34 @@ namespace TurbulenceService
                 if (connections[s] != null && datatables[s].Rows.Count > 0)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDWorker] @serverName, @dbname, @codedb, @dataset, "
-                                            + " @workerType, @blobDim, @time, "
-                                            + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
-                                            codeDatabase[s]);
+                    // quick fix for filedb.  Should filedb be a separate worker?
+                    
+                    if (dbtype == 0)
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @dataset, "
+                                                + " @workerType, @blobDim, @time, "
+                                                + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
+                                                codeDatabase[s]);                        
+                    }
+                    else
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDFileDBWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @dataset, "
+                                                + " @workerType, @blobDim, @time, "
+                                                + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable, @startz, @endz",
+                                                codeDatabase[s]);
+                        /*These are required for filedb since we don't want to query a non existant zindex table */
+                        /* These should be removed they are not used in fileDB anymore */
+                        sqlcmds[s].Parameters.AddWithValue("@startz", serverBoundaries[s].startKey);
+                        sqlcmds[s].Parameters.AddWithValue("@endz", serverBoundaries[s].endKey);
+                        //sqlcmds[s].Parameters.AddWithValue("@dbtype", dbtype);
+                        //string msg = "ExecuteMHDWorker: " + s + " startKey: " + serverBoundaries[s].startKey + " endKey " + serverBoundaries[s].endKey + System.Environment.NewLine;
+                        //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
+                    }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@dataset", tableName);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", worker);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
@@ -2481,13 +2477,31 @@ namespace TurbulenceService
                 if (connections[s] != null && datatables[s].Rows.Count > 0)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsWorker] @serverName, @dbname, @codedb, @field1, @field2, "
+                    // quick fix for filedb.  Should filedb be a separate worker?
+
+                    if (dbtype == 0)
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @field1, @field2, "
                                             + " @workerType, @blobDim, @time, "
                                             + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
                                             codeDatabase[s]);
+                    }
+                    else
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsDBWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @field1, @field2, "
+                                            + " @workerType, @blobDim, @time, "
+                                            + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable, @startz, @endz",
+                                            codeDatabase[s]);
+                        /*These are required for filedb since we don't want to query a non existant zindex table */
+                        /* These should be removed they are not used in fileDB anymore */
+                        sqlcmds[s].Parameters.AddWithValue("@startz", serverBoundaries[s].startKey);
+                        sqlcmds[s].Parameters.AddWithValue("@endz", serverBoundaries[s].endKey);
+                    }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@field1", tableName1);
                     sqlcmds[s].Parameters.AddWithValue("@field2", tableName2);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", worker);
@@ -2522,13 +2536,15 @@ namespace TurbulenceService
                 if (connections[s] != null)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDWorkerBatch] @serverName, @dbname, @codedb, @dataset, "
+                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDWorkerBatch] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @dataset, "
                                             + " @workerType, @blobDim, @time, "
                                             + " @boundary, @arg, @tempTable",
                                             codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@dataset", tableName);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", (int)worker);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
@@ -2560,13 +2576,34 @@ namespace TurbulenceService
                 if (connections[s] != null)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteBoxFilterWorker] @serverName, @dbname, @codedb, @dataset, "
+                    if (dbtype == 0)
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteBoxFilterWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @dataset, "
                                             + " @workerType, @blobDim, @time, "
                                             + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
                                             codeDatabase[s]);
+                    }
+                    else
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteBoxFilterDBWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @dataset, "
+                                                + " @workerType, @blobDim, @time, "
+                                                + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable, @minz, @maxz",
+                                                codeDatabase[s]);
+                        /*These are required for filedb since we don't want to query a non existant zindex table */
+                        /* These should be removed they are not used in fileDB anymore */
+                        sqlcmds[s].Parameters.AddWithValue("@minz", serverBoundaries[s].startKey);
+                        sqlcmds[s].Parameters.AddWithValue("@maxz", serverBoundaries[s].endKey);
+                        //sqlcmds[s].Parameters.AddWithValue("@dbtype", dbtype);
+                        string msg1 = "ExecuteBoxFilterDBWorker: " + sqlcmds[s].CommandText + System.Environment.NewLine;
+                        //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg1);
+                        //msg1 = "minz: " + serverBoundaries[s].startKey + " maxz: " + serverBoundaries[s].endKey + System.Environment.NewLine;
+                        //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg1);
+                    }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@dataset", tableName);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", worker);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
@@ -2577,6 +2614,9 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@inputSize", count[s]);
                     //sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableNames[s]);
                     sqlcmds[s].Parameters.AddWithValue("@tempTable", tempTableName);
+                    //string msg = "" + servers[s] + " " + databases[s] + " " + codeDatabase[s] + " " + tableName + 
+                    //    " " + worker + " " + atomDim + " " + time + " " + spatial + " " + temporal + " " + arg + " " + count[s] + System.Environment.NewLine;
+                    //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
                     sqlcmds[s].CommandTimeout = 3600;
                     asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
                 }
@@ -2600,13 +2640,31 @@ namespace TurbulenceService
                 if (connections[s] != null)
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsBoxFilterWorker] @serverName, @dbname, @codedb, @field1, @field2 "
+                    // quick fix for filedb.  Should filedb be a separate worker?
+
+                    if (dbtype == 1)
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsBoxFilterWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @field1, @field2 "
                                             + " @workerType, @blobDim, @time, "
                                             + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
                                             codeDatabase[s]);
+                    }
+                    else
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsBoxFilterDBWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @field1, @field2, "
+                                            + " @workerType, @blobDim, @time, "
+                                            + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable, @startz, @endz",
+                                            codeDatabase[s]);
+                        /*These are required for filedb since we don't want to query a non existant zindex table */
+                        /* These should be removed they are not used in fileDB anymore */
+                        sqlcmds[s].Parameters.AddWithValue("@startz", serverBoundaries[s].startKey);
+                        sqlcmds[s].Parameters.AddWithValue("@endz", serverBoundaries[s].endKey);
+                    }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@field1", tableName1);
                     sqlcmds[s].Parameters.AddWithValue("@field2", tableName2);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", worker);
@@ -2638,19 +2696,39 @@ namespace TurbulenceService
                 {
                     string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
+                    int cutoutbytesize = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * 3 * sizeof(float); //TODO Fix this by passing in components if this works.
+                    byte[] cutout = new byte[cutoutbytesize];
+                    
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, "
-                                            + "@dataset, @blobDim, @timestep, @queryBox ",
+                    sqlcmds[s].CommandText = String.Format(//"DECLARE @blob varbinary(max) " +
+                        "EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, @turbinfodb, @turbinfoserver, "
+                                            + "@dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT",
                                             codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@database", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@dataset", dataset);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
                     sqlcmds[s].Parameters.AddWithValue("@queryBox", queryBox);
+                    //sqlcmds[s].Parameters.Add("@blob", SqlDbType.VarBinary);
+                    //sqlcmds[s].Parameters.Add(new SqlParameter("@blob", SqlDbType.VarBinary));
+                    SqlParameter outData = new SqlParameter();
+                    outData.SqlDbType = SqlDbType.VarBinary;
+                    outData.Size = cutoutbytesize; // This ensures the proper output size.  On small cutouts, it was setting to 1, causing an error in arraycopy.
+                    outData.Direction = ParameterDirection.Output;
+                    outData.ParameterName = "@blob";
+                    outData.Value = cutout;
+                    sqlcmds[s].Parameters.Add(outData);
+                    //sqlcmds[s].Parameters.AddWithValue("@blob OUTPUT", cutout);
+
                     sqlcmds[s].CommandTimeout = 3600;
-                    asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
+                    //throw new Exception("Getting data from : " + servers[s] + "Database: " + databases[s]);
+
+                    //asyncRes[s] = sqlcmds[s].BeginExecuteReader(null, sqlcmds[s]);
+                    asyncRes[s] = sqlcmds[s].BeginExecuteNonQuery(null, sqlcmds[s]);
                 }
             }
 
@@ -2671,12 +2749,13 @@ namespace TurbulenceService
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
                     sqlcmds[s] = connections[s].CreateCommand();
                     sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @dbname, @codedb, "
-                                            + "@turbinfodb, @datasetID, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @QueryBox ",
+                                            + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @QueryBox ",
                                             codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
                     sqlcmds[s].Parameters.AddWithValue("@field", field);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
@@ -2708,12 +2787,13 @@ namespace TurbulenceService
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
                     sqlcmds[s] = connections[s].CreateCommand();
                     sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedDataCutout] @serverName, @dbname, @codedb, "
-                                            + "@turbinfodb, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @QueryBox ",
+                                            + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @QueryBox ",
                                             codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
                     sqlcmds[s].Parameters.AddWithValue("@field", field);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
@@ -2744,7 +2824,7 @@ namespace TurbulenceService
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
                     sqlcmds[s] = connections[s].CreateCommand();
                     sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetThreshold] @datasetID, @serverName, @dbname, @codedb, " +
-                        "@cachedb, @turbinfodb, @tableName, @workerType, @blobDim, @timestep, " +
+                        "@cachedb, @turbinfodb, @turbinfoserver, @tableName, @workerType, @blobDim, @timestep, " +
                         "@spatialInterp, @arg, @threshold, @QueryBox ",
                         codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
@@ -2753,6 +2833,7 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@cachedb", "cachedb");
                     sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@tableName", tableName);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", workerType);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
@@ -2781,7 +2862,7 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName, int worker, float time,
+        /*(DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result)
@@ -2790,7 +2871,7 @@ namespace TurbulenceService
             asyncRes = ExecuteMHDWorker(tableName.ToString(),
                         worker, time, (int)spatial, (int)temporal, 0);
             return GetXYZResults(asyncRes, result);
-        }
+        }*/
 
         public int ExecuteGetMHDData(DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
@@ -3148,7 +3229,7 @@ namespace TurbulenceService
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
                     sqlcmds[s] = connections[s].CreateCommand();
                     sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetPDF] @datasetID, @serverName, @dbname, @codedb, " +
-                        "@cachedb, @turbinfodb, @tableName, @workerType, @blobDim, @timestep, " +
+                        "@cachedb, @turbinfodb, @turbinfoserver, @tableName, @workerType, @blobDim, @timestep, " +
                         "@spatialInterp, @arg, @binSize, @numberOfBins, @QueryBox ",
                         codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset_enum);
@@ -3157,6 +3238,7 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@cachedb", "cachedb");
                     sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
                     sqlcmds[s].Parameters.AddWithValue("@tableName", tableName);
                     sqlcmds[s].Parameters.AddWithValue("@workerType", workerType);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
@@ -3234,19 +3316,25 @@ namespace TurbulenceService
             ManualResetEvent doneEvent = new ManualResetEvent(false);
             Exception exception = null;
              
-            string executeStr;
+            string executeStr="";
             if (dataset == DataInfo.DataSets.channel)
             {
                 executeStr = "ExecuteParticleTrackingChannelWorkerTaskParallel";
             }
-            else
+            else if (dataset == DataInfo.DataSets.bl_zaki)
+            {
+                executeStr = "ExecuteParticleTrackingChannelDBWorkerTaskParallel";
+                //ExecuteParticleTrackingChannelDBWorkerTaskParallel2 can only use local DB files
+            }
+            else if(dbtype==0)
             {
                 executeStr = "ExecuteParticleTrackingWorkerTaskParallel"; //PJ 2015: call regular or channel flow worker
             }
+            else
+            {
+                executeStr = "ExecuteParticleTrackingDBWorkerTaskParallel";
+            }
 
-            string turbinfo_connectionString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
-            string turbinfoServer = builder.DataSource;
             string msg;
             int last_s = 0;
             for (int s = 0; s < serverCount; s++)
@@ -3257,12 +3345,13 @@ namespace TurbulenceService
                     sqlcmds[s] = connections[s].CreateCommand();
 
                     sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].["
-                                                + executeStr + 
-                                                "] @turbinfoServer, @turbinfoDB, @localServer, @localDatabase, @datasetID, "
+                                                + executeStr +
+                                                "] @codedb, @turbinfoDB, @turbinfoServer, @localServer, @localDatabase, @datasetID, "
                                                 + "@tableName, @atomDim, @workerType, "
-                                                + " @spatialInterp, @temporalInterp, @inputSize, @tempTable, @time, @endTime, @dt, @development", codeDatabase[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@turbinfoServer", turbinfoServer);
-                    sqlcmds[s].Parameters.AddWithValue("@turbinfoDB", "turbinfo");
+                                                + " @spatialInterp, @temporalInterp, @inputSize, @tempTable, @time, @endTime, @dt", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);//it uses "turbinfo" before
+                    sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server); //turbinfoServer
                     sqlcmds[s].Parameters.AddWithValue("@localServer", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@localDatabase", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@datasetID", dataset);
@@ -3276,7 +3365,7 @@ namespace TurbulenceService
                     sqlcmds[s].Parameters.AddWithValue("@time", time);
                     sqlcmds[s].Parameters.AddWithValue("@endTime", endTime);
                     sqlcmds[s].Parameters.AddWithValue("@dt", dt);
-                    sqlcmds[s].Parameters.AddWithValue("@development", development);
+                    //sqlcmds[s].Parameters.AddWithValue("@development", development);
                     sqlcmds[s].CommandTimeout = 36000;
                     Interlocked.Increment(ref numberOfCallbacksNotYetCompleted);
                     AsyncCallback callback = new AsyncCallback(result =>
@@ -3284,7 +3373,7 @@ namespace TurbulenceService
                         HandleCallback(result, points, ref numberOfCallbacksNotYetCompleted, ref number_of_crossings, doneEvent, ref exception);
                     });
                     sqlcmds[s].BeginExecuteReader(callback, new Tuple<int, SqlCommand>(s, sqlcmds[s]));
-                    string outputmsg = "Ran query on server number " + s + " servername: " + servers[s] + " time: " + time + " db: " + databases[s];
+                    //string outputmsg = "Ran query on server number " + s + " servername: " + servers[s] + " time: " + time + " db: " + databases[s];
                     //System.IO.File.WriteAllText(@"c:\www\sqloutput-turb5.log", outputmsg);
                 }
             }
@@ -3372,15 +3461,13 @@ namespace TurbulenceService
             // for each of the components of the vector or scalar field
             byte[] result = new byte[Xwidth * Ywidth * Zwidth * components * sizeof(float)];
             IAsyncResult[] asyncRes;
-
-            selectServers(dataset_enum);
-
+            /* I'm not sure why we are doing this again -- it was previously called */
+            //selectServers(dataset_enum);
             //if (channel_grid)
             //{
             //    X = (int)Math.Round(X - 0.45 * time / dx);
             //    X = ((X % GridResolutionX) + GridResolutionX) % GridResolutionX;
             //}
-
             int[] serverX = new int[serverCount];
             int[] serverY = new int[serverCount];
             int[] serverZ = new int[serverCount];

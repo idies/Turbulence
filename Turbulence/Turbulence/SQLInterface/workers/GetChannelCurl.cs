@@ -12,10 +12,10 @@ namespace Turbulence.SQLInterface.workers
 {
     public class GetChannelCurl : GetChannelGradient
     {
-        public GetChannelCurl(TurbDataTable setInfo,
+        public GetChannelCurl(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             SqlConnection conn) :
-            base (setInfo, spatialInterp, conn)
+            base (dataset, setInfo, spatialInterp, conn)
         {
         }
 
@@ -45,14 +45,15 @@ namespace Turbulence.SQLInterface.workers
         }
 
         protected override void GetResultUsingCutout(ref SQLUtility.PartialResult point, int x, int y, int z, int startx, int starty, int startz, int endx, int endy, int endz,
-            int[] cutout_coordinates, int[] cutout_dimensions, int offset_y)
+            int[] cutout_coordinates, int[] cutout_dimensions, int offset_x, int offset_y, int offset_z)
         {
             for (int x_i = startx; x_i <= endx; x_i++)
             {
                 //Determine the kernel index, at which this data point is for the kernel of the above taget point.
-                int iKernelIndexX = x_i - x + kernelSize / 2;
+                int iKernelIndexX = x_i - x + kernelSize / 2 - offset_x;
 
-                double coeff = diff_matrix_x[iKernelIndexX];
+                //double coeff = diff_matrix_x[iKernelIndexX];
+                double coeff = periodicX ? diff_matrix_x[iKernelIndexX] : diff_matrix_x[x, iKernelIndexX];
                 ulong sourceIndex = (((ulong)z - (ulong)cutout_coordinates[2]) * (ulong)cutout_dimensions[2] * (ulong)cutout_dimensions[1] +
                     ((ulong)y - (ulong)cutout_coordinates[1]) * (ulong)cutout_dimensions[2] +
                     ((ulong)x_i - (ulong)cutout_coordinates[0])) * (ulong)setInfo.Components;
@@ -65,7 +66,9 @@ namespace Turbulence.SQLInterface.workers
                 //Determine the kernel index, at which this data point is for the kernel of the above taget point.
                 int iKernelIndexY = y_i - y + kernelSize / 2 - offset_y;
 
-                double coeff = diff_matrix_y[y, iKernelIndexY];
+                //double coeff = diff_matrix_y[y, iKernelIndexY];
+                double coeff = periodicY ? diff_matrix_y[iKernelIndexY] : diff_matrix_y[y, iKernelIndexY];
+
                 ulong sourceIndex = (((ulong)z - (ulong)cutout_coordinates[2]) * (ulong)cutout_dimensions[2] * (ulong)cutout_dimensions[1] +
                     ((ulong)y_i - (ulong)cutout_coordinates[1]) * (ulong)cutout_dimensions[2] +
                     ((ulong)x - (ulong)cutout_coordinates[0])) * (ulong)setInfo.Components;
@@ -76,9 +79,11 @@ namespace Turbulence.SQLInterface.workers
             for (int z_i = startz; z_i <= endz; z_i++)
             {
                 //Determine the kernel index, at which this data point is for the kernel of the above taget point.
-                int iKernelIndexZ = z_i - z + kernelSize / 2;
+                int iKernelIndexZ = z_i - z + kernelSize / 2 - offset_z;
 
-                double coeff = diff_matrix_z[iKernelIndexZ];
+                //double coeff = diff_matrix_z[iKernelIndexZ];
+                double coeff = periodicZ ? diff_matrix_z[iKernelIndexZ] : diff_matrix_z[z, iKernelIndexZ];
+
                 ulong sourceIndex = (((ulong)z_i - (ulong)cutout_coordinates[2]) * (ulong)cutout_dimensions[2] * (ulong)cutout_dimensions[1] +
                     ((ulong)y - (ulong)cutout_coordinates[1]) * (ulong)cutout_dimensions[2] +
                     ((ulong)x - (ulong)cutout_coordinates[0])) * (ulong)setInfo.Components;

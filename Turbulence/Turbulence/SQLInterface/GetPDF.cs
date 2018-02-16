@@ -18,6 +18,7 @@ public partial class StoredProcedures
         string codedb,
         string cachedb,
         string turbinfodb,
+        string turbinfoserver,
         string tableName,
         int workerType,
         int blobDim,
@@ -35,7 +36,8 @@ public partial class StoredProcedures
         int[] coordinates = new int[6];
         ParseQueryBox(QueryBox, coordinates);
 
-        GetPDFUsingCutout(datasetID, serverName, dbname, codedb, turbinfodb, tableName, workerType, blobDim, timestep, spatialInterp, arg, binSize,
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
+        GetPDFUsingCutout(datasetID, serverName, dbname, serverinfo, tableName, workerType, blobDim, timestep, spatialInterp, arg, binSize,
             coordinates,
             bins);
 
@@ -58,8 +60,7 @@ public partial class StoredProcedures
         short datasetID,
         string serverName,
         string dbname,
-        string codedb,
-        string turbinfodb,
+        TurbServerInfo serverinfo,
         string tableName,
         int workerType,
         int blobDim,
@@ -74,17 +75,17 @@ public partial class StoredProcedures
         {
             SqlConnection contextConn;
             contextConn = new SqlConnection("context connection=true");
-            contextConn.Open();
+            //contextConn.Open();
 
-            TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, tableName, blobDim, contextConn);
+            TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, tableName, blobDim, serverinfo);
             string DBtableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
             //Worker worker = Worker.GetWorker(table, workerType, spatialInterp, arg, contextConn);
             Turbulence.SQLInterface.workers.GetCurl worker = 
                 new Turbulence.SQLInterface.workers.GetCurl(table, (TurbulenceOptions.SpatialInterpolation)spatialInterp);
-            contextConn.Close();
+            //contextConn.Close();
 
-            worker.GetData(datasetID, turbinfodb, timestep, coordinates);
+            worker.GetData(datasetID, serverinfo, timestep, coordinates, table.dbtype);
 
             worker.GetPDFUsingCutout(coordinates, bins, binSize);
         }

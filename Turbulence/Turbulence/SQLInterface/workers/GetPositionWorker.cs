@@ -213,7 +213,7 @@ namespace Turbulence.SQLInterface.workers
 
                     point.zindex = new Morton3D(Z, Y, X);
                     point.compute_predictor = false;
-                    if (point.zindex > 75161927680)
+                    if (point.zindex > 68719476735)
                         throw new Exception("Zindex out of range! z = " + point.zindex.ToString() + " x y and z are: " + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString());
 
                     nextTime = time + dt;
@@ -255,7 +255,7 @@ namespace Turbulence.SQLInterface.workers
                     Z = ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     point.zindex = new Morton3D(Z, Y, X);
-                    if (point.zindex > 75161927680)
+                    if (point.zindex > 68719476735)
                         throw new Exception("Zindex out of range! z = " + point.zindex.ToString() + " x y and z are: " + X.ToString() + ", " + Y.ToString() + ", " + Z.ToString());
 
                     nextTime = time;

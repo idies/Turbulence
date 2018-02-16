@@ -49,6 +49,15 @@ namespace Website {
         protected global::System.Web.UI.WebControls.DropDownList dataset;
         
         /// <summary>
+        /// TimeRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow TimeRow;
+        
+        /// <summary>
         /// time control.
         /// </summary>
         /// <remarks>
@@ -65,6 +74,33 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal timerange;
+        
+        /// <summary>
+        /// SnapshotRow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTableRow SnapshotRow;
+        
+        /// <summary>
+        /// SnapshotNumber control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox SnapshotNumber;
+        
+        /// <summary>
+        /// SnapshotRange control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal SnapshotRange;
         
         /// <summary>
         /// EndTimeRow control.
@@ -130,6 +166,24 @@ namespace Website {
         protected global::System.Web.UI.WebControls.DropDownList method;
         
         /// <summary>
+        /// GetPressure control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetPressure;
+        
+        /// <summary>
+        /// GetTemperature control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetTemperature;
+        
+        /// <summary>
         /// GetMagneticField control.
         /// </summary>
         /// <remarks>
@@ -157,6 +211,42 @@ namespace Website {
         protected global::System.Web.UI.WebControls.ListItem GetDensity;
         
         /// <summary>
+        /// GetVelocityAndPressure control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetVelocityAndPressure;
+        
+        /// <summary>
+        /// GetVelocityAndTemperature control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetVelocityAndTemperature;
+        
+        /// <summary>
+        /// GetPressureGradient control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetPressureGradient;
+        
+        /// <summary>
+        /// GetTemperatureGradient control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetTemperatureGradient;
+        
+        /// <summary>
         /// GetMagneticFieldGradient control.
         /// </summary>
         /// <remarks>
@@ -182,6 +272,24 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetDensityGradient;
+        
+        /// <summary>
+        /// GetPressureHessian control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetPressureHessian;
+        
+        /// <summary>
+        /// GetTemperatureHessian control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem GetTemperatureHessian;
         
         /// <summary>
         /// GetMagneticFieldHessian control.
@@ -382,6 +490,15 @@ namespace Website {
         protected global::System.Web.UI.WebControls.ListItem pressureEntry;
         
         /// <summary>
+        /// temperatureEntry control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem temperatureEntry;
+        
+        /// <summary>
         /// magneticEntry control.
         /// </summary>
         /// <remarks>
@@ -452,6 +569,15 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem pressureEntry2;
+        
+        /// <summary>
+        /// temperatureEntry2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListItem temperatureEntry2;
         
         /// <summary>
         /// magneticEntry2 control.

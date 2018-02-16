@@ -279,7 +279,7 @@ namespace Turbulence.SQLInterface.workers
         /// <param name="coordiantes"></param>
         /// <param name="threshold"></param>
         /// <returns></returns>
-        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold)
+        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold, int workertype)
         {
             if (spatialInterp != TurbulenceOptions.SpatialInterpolation.None)
             {
@@ -317,7 +317,7 @@ namespace Turbulence.SQLInterface.workers
                             point.result[c] = GetDataItem(sourceIndex + c);
                         }
 
-                        // Compute the norm.
+                        // Compute the norm.  //TODO: should we give |p| instead of p, |theta| instead of theta?
                         double norm = 0.0f;
                         for (int i = 0; i < GetResultSize(); i++)
                         {

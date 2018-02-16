@@ -685,8 +685,9 @@ namespace Turbulence.SQLInterface.workers
         /// <param name="cutout_coordiantes"></param>
         /// <param name="coordiantes"></param>
         /// <param name="threshold"></param>
+        /// <param name="workertype"></param>
         /// <returns></returns>
-        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold)
+        public override HashSet<SQLUtility.PartialResult> GetThresholdUsingCutout(int[] coordiantes, double threshold, int workertype)
         {
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
             {
@@ -712,11 +713,21 @@ namespace Turbulence.SQLInterface.workers
 
                         // Compute the norm.
                         double norm = 0.0f;
-                        for (int i = 0; i < GetResultSize(); i++)
+                        if (workertype == 30 || workertype == 31) //Q criterion
                         {
-                            norm += point.result[i] * point.result[i];
+                            for (int i = 0; i < GetResultSize(); i++)
+                            {
+                                norm += point.result[i];
+                            }
                         }
-                        norm = Math.Sqrt(norm);
+                        else
+                        {
+                            for (int i = 0; i < GetResultSize(); i++)
+                            {
+                                norm += point.result[i] * point.result[i];
+                            }
+                            norm = Math.Sqrt(norm);
+                        }
                         point.norm = norm;
                         if (norm > threshold)
                         {

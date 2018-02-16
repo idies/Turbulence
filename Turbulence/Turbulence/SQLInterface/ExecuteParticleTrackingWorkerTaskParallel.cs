@@ -22,8 +22,9 @@ public partial class StoredProcedures
     /// </summary>
     [Microsoft.SqlServer.Server.SqlProcedure]
     public static void ExecuteParticleTrackingWorkerTaskParallel(
-        string turbinfoServer,
-        string turbinfoDB,
+        string codedb,
+        string turbinfodb,
+        string turbinfoserver,
         string localServer,
         string localDatabase,
         short datasetID,
@@ -36,8 +37,7 @@ public partial class StoredProcedures
         string tempTable,
         float time,
         float endTime,
-        float dt,
-        bool development)
+        float dt)
     {
         //TimeSpan IOTime = new TimeSpan(0), preProcessTime = new TimeSpan(0), resultTime = new TimeSpan(0),
         //    MemoryTime = new TimeSpan(0), resultSendingTime = new TimeSpan(0),
@@ -59,19 +59,20 @@ public partial class StoredProcedures
         SqlConnection contextConn;
         contextConn = new SqlConnection("context connection=true");
 
-        String cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", turbinfoServer, turbinfoDB);
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
+        String cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverinfo.infoDB_server, serverinfo.infoDB);
         SqlConnection turbinfoConn = new SqlConnection(cString);
         turbinfoConn.Open();
         SqlCommand cmd = turbinfoConn.CreateCommand();
         string DBMapTable = "DatabaseMap";
-        if (development == true)
-        {
-            DBMapTable = "DatabaseMapTest";
-        }
+        //if (development == true)
+        //{
+        //    DBMapTable = "DatabaseMapTest";
+        //}
         cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, min(minTime) as minTime, max(maxTime) as maxTime " +
             "from {0}..{1} where DatasetID = @datasetID " +
             "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-            "order by minLim, minTime", turbinfoDB, DBMapTable);
+            "order by minLim, minTime", serverinfo.infoDB, DBMapTable);
         cmd.Parameters.AddWithValue("@datasetID", datasetID);
         using (SqlDataReader reader = cmd.ExecuteReader())
         {
@@ -83,14 +84,14 @@ public partial class StoredProcedures
                     String DBName = reader.GetString(1);
                     servers.Add(serverName);
                     databases.Add(DBName);
-                    if (development == false)
-                    {
-                        codeDatabase.Add(reader.GetString(2));
-                    }
-                    else
-                    {
-                        codeDatabase.Add("turbdev");
-                    }
+                    //if (development == false)
+                    //{
+                    //    codeDatabase.Add(reader.GetString(2));
+                    //}
+                    //else
+                    //{
+                    //    codeDatabase.Add("turblib_test");
+                    //}
                     long minLim = reader.GetInt64(3); 
                     long maxLim = reader.GetInt64(4);
                     int minTime = reader.GetInt32(5);  
@@ -112,13 +113,13 @@ public partial class StoredProcedures
                 throw new Exception("Invalid dataset specified.");
             }
         }
-        
+        //turbinfoConn.Close();
 
-        contextConn.Open();
         // Load information about the requested dataset
-        TurbDataTable table = TurbDataTable.GetTableInfo(localServerCleanName, localDatabase, tableName, atomDim, contextConn);
+        TurbDataTable table = TurbDataTable.GetTableInfo(localServerCleanName, localDatabase, tableName, atomDim, serverinfo);
 
         // Instantiate a worker class
+        contextConn.Open();
         Turbulence.SQLInterface.workers.GetPositionWorker worker =
             new Turbulence.SQLInterface.workers.GetPositionWorker(table,
                 (TurbulenceOptions.SpatialInterpolation)spatialInterp,
@@ -448,8 +449,8 @@ public partial class StoredProcedures
             map[i].Clear();
         }
 
-        //contextConn.Close();
-        //contextConn.Dispose();
+        contextConn.Close();
+        contextConn.Dispose();
         standardConn.Close();
         standardConn.Dispose();
         map = null;

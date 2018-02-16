@@ -25,9 +25,22 @@ namespace Turbulence.TurbLib
         /// Retrieves the grid values for the y dimension over the given SQL Server connection.
         /// </summary>
         /// <param name="conn">Open connection to the SQL Server and database containing the "grid_points_y" table storing the grid values for y.</param>
-        public void GetGridPointsFromDB(SqlConnection conn)
+        public void GetGridPointsFromDB(SqlConnection conn, string dataset)
         {
-            SqlCommand GetGridPointsCommand = new SqlCommand(String.Format("SELECT cell_index, value FROM grid_points_y ORDER BY cell_index"), conn);
+            SqlCommand GetGridPointsCommand = null;
+            if (dataset.Contains("channel")) //this should be Dataset Name or Production Dataset Name
+            {
+                GetGridPointsCommand = new SqlCommand(String.Format("SELECT cell_index, value FROM grid_points_y ORDER BY cell_index"), conn);
+            }
+            else if (dataset.Contains("bl_zaki"))
+            {
+                GetGridPointsCommand = new SqlCommand(String.Format("SELECT cell_index, value FROM BL_grid_points_y ORDER BY cell_index"), conn);
+            }
+            else
+            {
+                throw new Exception(String.Format("No y-grid-point table for dataset {0}, or this dataset has uniform y grid.", dataset));
+            }
+
             using (SqlDataReader reader = GetGridPointsCommand.ExecuteReader())
             {
                 if (reader.HasRows)
@@ -60,6 +73,10 @@ namespace Turbulence.TurbLib
 
                 if (indexOfNearest == grid_points.Count)
                 {
+                    if (value - grid_points[indexOfNearest - 1].Value < 1e-3)
+                    {
+                        return indexOfNearest - 1;
+                    }
                     throw new Exception(String.Format("The given y value is greater than the largest allowed grid value for the y dimension: {0}",
                         value));
                 }
@@ -98,6 +115,10 @@ namespace Turbulence.TurbLib
 
                 if (indexOfNearest == grid_points.Count)
                 {
+                    if (value - grid_points[indexOfNearest - 1].Value < 1e-3)
+                    {
+                        return indexOfNearest - 1;
+                    }
                     throw new Exception(String.Format("The given y value is greater than the largest allowed grid value for the y dimension: {0}",
                         value));
                 }
@@ -132,6 +153,10 @@ namespace Turbulence.TurbLib
 
                 if (indexOfNearest == grid_points.Count)
                 {
+                    if (value - grid_points[indexOfNearest - 1].Value < 1e-3)
+                    {
+                        return indexOfNearest - 1;
+                    }
                     throw new Exception(String.Format("The given y value is greater than the largest allowed grid value for the y dimension: {0}",
                         value));
                 }

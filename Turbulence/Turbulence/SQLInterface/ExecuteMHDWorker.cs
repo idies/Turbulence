@@ -31,6 +31,8 @@ public partial class StoredProcedures
         string serverName,
         string dbname,
         string codedb,
+        string turbinfodb,
+        string turbinfoserver,
         string dataset,
         int workerType,
         int blobDim,
@@ -47,28 +49,28 @@ public partial class StoredProcedures
         //DateTime startTime, endTime, initialTimeStamp;
 
         //initialTimeStamp = startTime = DateTime.Now;
-
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
         SqlConnection standardConn;
         SqlConnection contextConn;
         string connString;
         if (serverName.Contains("_"))
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), codedb);
+            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
         else
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
+            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
-        contextConn.Open();
 
         // Check temp table
         //tempTable = SQLUtility.SanitizeTemporaryTable(tempTable);
 
         // Load information about the requested dataset
-        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, contextConn);
+        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, serverinfo);        
 
         string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
         // Instantiate a worker class
-        Worker worker = Worker.GetWorker(table, workerType, spatialInterp, arg, contextConn);
+        contextConn.Open();
+        Worker worker = Worker.GetWorker(dbname, table, workerType, spatialInterp, arg, contextConn);
 
         float points_per_cube = 0;
 
@@ -469,9 +471,11 @@ public partial class StoredProcedures
     /// for each of the calculation functions removed.
     /// </summary>
     [Microsoft.SqlServer.Server.SqlProcedure]
-    public static void ExecuteMHDWorkerBatch(string serverName,
+    public static void ExecuteMHDWorkerBatch(string serverName, 
         string dbname,
         string codedb,
+        string turbinfodb,
+        string turbinfoserver,
         string dataset,
         int workerType,
         int blobDim,
@@ -480,15 +484,15 @@ public partial class StoredProcedures
         int arg,            // Extra argument (not used by all workers)
         string tempTable)
     {
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
         SqlConnection standardConn;
         SqlConnection contextConn;
-        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
+        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
-        contextConn.Open();
 
         // Load information about the requested dataset
-        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, contextConn);
+        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, dataset, blobDim, serverinfo);        
 
         string tableName = String.Format("{0}.dbo.{1}", dbname, table.TableName);
 
@@ -502,6 +506,7 @@ public partial class StoredProcedures
         int[] spatialInterp = new int[queryStr.Length];
         TurbulenceOptions.TemporalInterpolation[] temporalInterp = new TurbulenceOptions.TemporalInterpolation[queryStr.Length];
 
+        contextConn.Open();
         for (int i = 0; i < queryStr.Length; ++i)
         {
             string[] component = queryStr[i].Split(',');
@@ -509,7 +514,7 @@ public partial class StoredProcedures
             spatialInterp[i] = int.Parse(component[1]);
             temporalInterp[i] = (TurbulenceOptions.TemporalInterpolation)int.Parse(component[2]);
             // Instantiate a worker class
-            worker[i] = Worker.GetWorker(table, workerType, spatialInterp[i], arg, contextConn);
+            worker[i] = Worker.GetWorker(dbname, table, workerType, spatialInterp[i], arg, contextConn);
             result_size[i] = worker[i].GetResultSize();
             nOrder[i] = int.Parse(component[4]);
         }
@@ -652,12 +657,13 @@ public partial class StoredProcedures
                     }
                 }
             }
-
+            contextConn.Close();
             standardConn.Close();
             blob = null;
         }
         else
         {
+            contextConn.Close();
             standardConn.Close();
             map.Clear();
             map = null;

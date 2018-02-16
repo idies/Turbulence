@@ -36,6 +36,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -117,7 +118,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HDF5DotNet">
-      <HintPath>bin\HDF5DotNet.dll</HintPath>
+      <HintPath>..\..\HDF5DotNet64\HDF5DotNet.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Web.DynamicData" />
@@ -135,10 +136,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="Turbulence, Version=1.1.6018.24659, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Turbulence\bin\Debug\Turbulence.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="download.aspx" />
@@ -156,7 +153,6 @@
   <ItemGroup>
     <Compile Include="download.aspx.cs">
       <DependentUpon>download.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="download.aspx.designer.cs">
       <DependentUpon>download.aspx</DependentUpon>
@@ -168,6 +164,10 @@
     <ProjectReference Include="..\TurbulenceWebServiceLibrary\TurbulenceWebServiceLibrary.csproj">
       <Project>{6D341D06-801B-4B24-97E5-EE21C52F46C6}</Project>
       <Name>TurbulenceWebServiceLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Turbulence\Turbulence.sqlproj">
+      <Project>{5a5bd529-56cd-4cc4-89d3-a1e94da48d55}</Project>
+      <Name>Turbulence</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -24,6 +24,8 @@ public partial class StoredProcedures
         string serverName,
         string database,
         string codedb,
+        string turbinfodb,
+        string turbinfoserver,
         string dataset,
         int workerType,
         int blobDim,
@@ -35,6 +37,7 @@ public partial class StoredProcedures
         int inputSize,
         string tempTable)
     {
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
         // clean database name
         database = SQLUtility.SanitizeDatabaseName(database);
         // Check temp table
@@ -42,22 +45,22 @@ public partial class StoredProcedures
 
         SqlConnection standardConn;
         SqlConnection contextConn;
-        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
+        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
-        contextConn.Open();
 
         // Load information about the requested dataset
-        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, database, dataset, blobDim, contextConn);
+        TurbDataTable table = TurbDataTable.GetTableInfo(serverName, database, dataset, blobDim, serverinfo);
 
         string tableName = String.Format("{0}.dbo.{1}", database, table.TableName);
 
         // Instantiate a worker class
-        Turbulence.SQLInterface.workers.GetPosition getPosition_worker = 
-            (Turbulence.SQLInterface.workers.GetPosition)Worker.GetWorker(table, workerType, spatialInterp, correcting_pos, contextConn);
+        contextConn.Open();
+        Turbulence.SQLInterface.workers.GetPosition getPosition_worker =
+            (Turbulence.SQLInterface.workers.GetPosition)Worker.GetWorker(database, table, workerType, spatialInterp, correcting_pos, contextConn);
 
-        Turbulence.SQLInterface.workers.GetVelocityWorker velocity_worker = 
-            (Turbulence.SQLInterface.workers.GetVelocityWorker)Worker.GetWorker(table, 
+        Turbulence.SQLInterface.workers.GetVelocityWorker velocity_worker =
+            (Turbulence.SQLInterface.workers.GetVelocityWorker)Worker.GetWorker(database, table,
             (int)Worker.Workers.GetVelocity, spatialInterp, correcting_pos, contextConn);
 
         float points_per_cube = 0;
@@ -105,8 +108,8 @@ public partial class StoredProcedures
                           "AND {0}.zindex = {1}.zindex",
                           tableName, joinTable, timestep_int),
                           standardConn);
-                          //contextConn);
-                          //conn);
+            //contextConn);
+            //conn);
 
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
@@ -131,10 +134,10 @@ public partial class StoredProcedures
                         try
                         {
                             //if (correcting_pos == 1)
-                                if (dataset.Equals("isotropic1024coarse") || dataset.Equals("isotropic1024fine"))
-                                    velocity = velocity_worker.CalcVelocity(blob, input[point].x, input[point].y, input[point].z);
-                                else
-                                    velocity = velocity_worker.CalcVelocity(blob, input[point].x, input[point].y, input[point].z, input[point]);
+                            if (dataset.Equals("isotropic1024coarse") || dataset.Equals("isotropic1024fine"))
+                                velocity = velocity_worker.CalcVelocity(blob, input[point].x, input[point].y, input[point].z);
+                            else
+                                velocity = velocity_worker.CalcVelocity(blob, input[point].x, input[point].y, input[point].z, input[point]);
                             //else
                             //    if (dataset.Equals("isotropic1024coarse") || dataset.Equals("isotropic1024fine"))
                             //        velocity = velocity_worker.CalcVelocity(blob, input[point].predictor.x, input[point].predictor.y, input[point].predictor.z);
@@ -146,7 +149,7 @@ public partial class StoredProcedures
                             throw new Exception(String.Format("Error on point X:{0},Y:{1},Z:{2}." +
                                 "[Inner Exception: {4}])",
                                 (double)input[point].x, (double)input[point].y, (double)input[point].z, blob.ToString(), e.ToString()));
-                                //,input[point].predictor.x, input[point].predictor.y, input[point].predictor.z, correcting_pos));
+                            //,input[point].predictor.x, input[point].predictor.y, input[point].predictor.z, correcting_pos));
                         }
                         for (int r = 0; r < velocity.Length; r++)
                         {
@@ -223,8 +226,8 @@ public partial class StoredProcedures
                           "WHERE {0}.timestep = t.timestep AND {0}.zindex = {1}.zindex",
                           tableName, joinTable, timestep0, timestep1, timestep2, timestep3),
                           standardConn);
-                          //contextConn);
-                          //conn);
+            //contextConn);
+            //conn);
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
@@ -244,15 +247,15 @@ public partial class StoredProcedures
                         try
                         {
                             //if (correcting_pos == 1)
-                                if (dataset.Equals("isotropic1024coarse") || dataset.Equals("isotropic1024fine"))
-                                    velocity = velocity_worker.CalcVelocity(blob, input[point].x, input[point].y, input[point].z);
-                                else
-                                    velocity = velocity_worker.CalcVelocity(blob, input[point].x, input[point].y, input[point].z, input[point]);
+                            if (dataset.Equals("isotropic1024coarse") || dataset.Equals("isotropic1024fine"))
+                                velocity = velocity_worker.CalcVelocity(blob, input[point].x, input[point].y, input[point].z);
+                            else
+                                velocity = velocity_worker.CalcVelocity(blob, input[point].x, input[point].y, input[point].z, input[point]);
                             //else
-                                //if (dataset.Equals("isotropic1024coarse") || dataset.Equals("isotropic1024fine"))
-                                //    velocity = velocity_worker.CalcVelocity(blob, input[point].predictor.x, input[point].predictor.y, input[point].predictor.z);
-                                //else
-                                //    velocity = velocity_worker.CalcVelocity(blob, input[point].predictor.x, input[point].predictor.y, input[point].predictor.z, input[point]);
+                            //if (dataset.Equals("isotropic1024coarse") || dataset.Equals("isotropic1024fine"))
+                            //    velocity = velocity_worker.CalcVelocity(blob, input[point].predictor.x, input[point].predictor.y, input[point].predictor.z);
+                            //else
+                            //    velocity = velocity_worker.CalcVelocity(blob, input[point].predictor.x, input[point].predictor.y, input[point].predictor.z, input[point]);
                             for (int r = 0; r < velocity.Length; r++)
                             {
                                 if (timestep == timestep0)
@@ -295,7 +298,7 @@ public partial class StoredProcedures
                             throw new Exception(String.Format("Error on point[{3}] X:{0},Y:{1},Z:{2}." +
                                 "[Inner Exception: {4}])",
                                 (double)input[point].x, (double)input[point].y, (double)input[point].z, input[point].request, e.ToString()));
-                                //,input[point].predictor.x, input[point].predictor.y, input[point].predictor.z, correcting_pos));
+                            //,input[point].predictor.x, input[point].predictor.y, input[point].predictor.z, correcting_pos));
                         }
                     }
                 }
@@ -323,8 +326,8 @@ public partial class StoredProcedures
         //conn.Close();
         //if (!dataset.Equals("isotropic1024coarse") && !dataset.Equals("isotropic1024fine"))
         //{
-            contextConn.Close();
-            standardConn.Close();
+        contextConn.Close();
+        standardConn.Close();
         //}
 
         input = null;

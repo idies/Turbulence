@@ -17,6 +17,9 @@ namespace Turbulence.SQLInterface.workers
     // can be moved to a parent abstract class.
     public class GetChannelLaplacian : Worker
     {
+        protected bool periodicX;
+        protected bool periodicY;
+        protected bool periodicZ;
         protected BarycentricWeights weights_x;
         protected BarycentricWeights weights_y;
         protected BarycentricWeights weights_z;
@@ -29,9 +32,9 @@ namespace Turbulence.SQLInterface.workers
         // For the non-uniform y direction the size of the y-kernel of computation
         // is different than that of the uniform x and z directions.
         //private int kernelSizeY;
-        private int FdOrderY;
+        private int FdOrderX, FdOrderY, FdOrderZ;
 
-        public GetChannelLaplacian(TurbDataTable setInfo,
+        public GetChannelLaplacian(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             SqlConnection conn)
         {
@@ -41,35 +44,75 @@ namespace Turbulence.SQLInterface.workers
             this.setInfo = setInfo;
             this.spatialInterp = spatialInterp;
 
+            if (dataset.Contains("channel"))
+            {
+                periodicX = true;
+                periodicY = false;
+                periodicZ = true;
+            }
+            else if (dataset.Contains("bl_zaki"))
+            {
+                periodicX = false;
+                periodicY = false;
+                periodicZ = true;
+            }
+
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None_Fd4)
             {
                 this.kernelSize = 5;
                 //this.kernelSizeY = 6;
                 this.FdOrder = 4;
-                this.FdOrderY = 5;
-                diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd4");
-                diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd4");
-                diff_matrix_z = GetUniformDiffMatrix(conn, "diff_matrix_z_r2_fd4");
+                //this.FdOrderY = 5;
+                if (dataset.Contains("channel"))
+                {
+                    diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd4");
+                    diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd4");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "diff_matrix_z_r2_fd4");
+                }
+                else if (dataset.Contains("bl_zaki"))
+                {
+                    diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd4");
+                    diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd4");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd4");
+                }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None_Fd6)
             {
                 this.kernelSize = 7;
                 //this.kernelSizeY = 8;
                 this.FdOrder = 6;
-                this.FdOrderY = 7;
-                diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd6");
-                diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd6");
-                diff_matrix_z = GetUniformDiffMatrix(conn, "diff_matrix_z_r2_fd6");
+                //this.FdOrderY = 7;
+                if (dataset.Contains("channel"))
+                {
+                    diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd6");
+                    diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd6");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "diff_matrix_z_r2_fd6");
+                }
+                else if (dataset.Contains("bl_zaki"))
+                {
+                    diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd6");
+                    diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd6");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd6");
+                }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None_Fd8)
             {
                 this.kernelSize = 9;
                 //this.kernelSizeY = 10;
                 this.FdOrder = 8;
-                this.FdOrderY = 9;
-                diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd8");
-                diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd8");
-                diff_matrix_z = GetUniformDiffMatrix(conn, "diff_matrix_z_r2_fd8");
+                //this.FdOrderY = 9;
+                if (dataset.Contains("channel"))
+                {
+                    diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd8");
+                    diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd8");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "diff_matrix_z_r2_fd8");
+                }
+                else if (dataset.Contains("bl_zaki"))
+                {
+                    diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd8");
+                    diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd8");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd8");
+                }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
             {
@@ -78,20 +121,37 @@ namespace Turbulence.SQLInterface.workers
                 this.kernelSize = 8;
                 //this.kernelSizeY = 9;
                 this.FdOrder = 4;
-                this.FdOrderY = 5;
+                //this.FdOrderY = 5;
                 this.LagIntOrder = 4;
-                weights_x = GetUniformWeights(conn, "barycentric_weights_x_4");
-                weights_y = GetNonuniformWeights(conn, "barycentric_weights_y_4");
-                weights_z = GetUniformWeights(conn, "barycentric_weights_z_4");
+                if (dataset.Contains("channel"))
+                {
+                    weights_x = GetUniformWeights(conn, "barycentric_weights_x_4");
+                    weights_y = GetNonuniformWeights(conn, "barycentric_weights_y_4");
+                    weights_z = GetUniformWeights(conn, "barycentric_weights_z_4");
 
-                diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd4");
-                diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd4");
-                diff_matrix_z = GetUniformDiffMatrix(conn, "diff_matrix_z_r2_fd4");
+                    diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd4");
+                    diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd4");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "diff_matrix_z_r2_fd4");
+                }
+                else if (dataset.Contains("bl_zaki"))
+                {
+                    weights_x = GetNonuniformWeights(conn, "BL_barycentric_weights_x_4");
+                    weights_y = GetNonuniformWeights(conn, "BL_barycentric_weights_y_4");
+                    weights_z = GetUniformWeights(conn, "BL_barycentric_weights_z_4");
+
+                    diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd4");
+                    diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd4");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd4");
+                }
             }
             else
             {
                 throw new Exception(String.Format("Invalid Spatial Interpolation Option: {0}", spatialInterp));
             }
+
+            FdOrderX = periodicX ? FdOrder : FdOrder + 1;
+            FdOrderY = periodicY ? FdOrder : FdOrder + 1;
+            FdOrderZ = periodicZ ? FdOrder : FdOrder + 1;
         }
 
         private BarycentricWeights GetUniformDiffMatrix(SqlConnection conn, string tableName)
@@ -145,21 +205,50 @@ namespace Turbulence.SQLInterface.workers
                 // The computation has 2 componnets -- differentiation and interpolation
                 // We get the start of the differentiation stencil and using that we get the start of the overall stencil
                 startx = weights_x.GetStencilStart(request.cell_x, LagIntOrder);
-                startx = diff_matrix_x.GetStencilStart(startx, FdOrder);
-                endx = startx + kernelSize - 1;
+                startx = diff_matrix_x.GetStencilStart(startx, FdOrderX);
+                if (periodicX)
+                {
+                    endx = startx + kernelSize - 1;
+                }
+                else
+                {
+                    endx = weights_x.GetStencilEnd(request.cell_x);
+                    endx = diff_matrix_x.GetStencilEnd(endx);
+                }
                 // For d2udxdx, the stencil for y and z does not include differentiation
                 starty = weights_y.GetStencilStart(request.cell_y, LagIntOrder);
-                endy = weights_y.GetStencilEnd(request.cell_y);
+                if (periodicY)
+                {
+                    endy = starty + LagIntOrder - 1;
+                }
+                else
+                {
+                    endy = weights_y.GetStencilEnd(request.cell_y);
+                }
                 startz = weights_z.GetStencilStart(request.cell_z, LagIntOrder);
-                endz = startz + LagIntOrder - 1;
+                if (periodicZ)
+                {
+                    endz = startz + LagIntOrder - 1;
+                }
+                else
+                {
+                    endz = weights_z.GetStencilEnd(request.cell_z);
+                }
             }
             else
             {
                 // This is the case for None_FD4, None_FD6, and None_FD8
                 // for which we only need data along a line segment
                 // In this case we are not performing Lagrange Polynomial interpolation  
-                startx = diff_matrix_x.GetStencilStart(request.cell_x, FdOrder); // From X-4 to X+4 for None_FD8
-                endx = startx + kernelSize - 1;
+                startx = diff_matrix_x.GetStencilStart(request.cell_x, FdOrderX); // From X-4 to X+4 for None_FD8
+                if (periodicX)
+                {
+                    endx = startx + kernelSize - 1;
+                }
+                else
+                {
+                    endx = diff_matrix_x.GetStencilEnd(request.cell_x);
+                }
                 starty = request.cell_y; // Only Y
                 endy = request.cell_y;
                 startz = request.cell_z; // Only Z
@@ -171,20 +260,48 @@ namespace Turbulence.SQLInterface.workers
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
             {
                 startx = weights_x.GetStencilStart(request.cell_x, LagIntOrder); // From X-1 to X+2
-                endx = startx + LagIntOrder - 1;
+                if (periodicX)
+                {
+                    endx = startx + LagIntOrder - 1;
+                }
+                else
+                {
+                    endx = weights_x.GetStencilEnd(request.cell_x);
+                }
                 starty = weights_y.GetStencilStart(request.cell_y, LagIntOrder); // From Y-3 to Y+5
                 starty = diff_matrix_y.GetStencilStart(starty, FdOrderY);
-                endy = weights_y.GetStencilEnd(request.cell_y);
-                endy = diff_matrix_y.GetStencilEnd(endy);
+                if (periodicY)
+                {
+                    endy = starty + kernelSize - 1;
+                }
+                else
+                {
+                    endy = weights_y.GetStencilEnd(request.cell_y);
+                    endy = diff_matrix_y.GetStencilEnd(endy);
+                }
                 startz = weights_z.GetStencilStart(request.cell_z, LagIntOrder); // From Z-1 to Z+2
-                endz = startz + LagIntOrder - 1;
+                if (periodicZ)
+                {
+                    endz = startz + LagIntOrder - 1;
+                }
+                else
+                {
+                    endz = weights_z.GetStencilEnd(request.cell_z);
+                }
             }
             else
             {
                 startx = request.cell_x; // Only X
                 endx = request.cell_x;
                 starty = diff_matrix_y.GetStencilStart(request.cell_y, FdOrderY); // From Y-4 to Y+5 for None_FD8
-                endy = diff_matrix_y.GetStencilEnd(request.cell_y);
+                if (periodicY)
+                {
+                    endy = starty + kernelSize - 1;
+                }
+                else
+                {
+                    endy = diff_matrix_y.GetStencilEnd(request.cell_y);
+                }
                 startz = request.cell_z; // Only Z
                 endz = request.cell_z;
             }
@@ -194,12 +311,34 @@ namespace Turbulence.SQLInterface.workers
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
             {
                 startx = weights_x.GetStencilStart(request.cell_x, LagIntOrder);
-                endx = startx + LagIntOrder - 1;
+                if (periodicX)
+                {
+                    endx = startx + LagIntOrder - 1;
+                }
+                else
+                {
+                    endx = weights_x.GetStencilEnd(request.cell_x);
+                }
                 starty = weights_y.GetStencilStart(request.cell_y, LagIntOrder);
-                endy = weights_y.GetStencilEnd(request.cell_y);
+                if (periodicY)
+                {
+                    endy = starty + LagIntOrder - 1;
+                }
+                else
+                {
+                    endy = weights_y.GetStencilEnd(request.cell_y);
+                }
                 startz = weights_z.GetStencilStart(request.cell_z, LagIntOrder);
-                startz = diff_matrix_z.GetStencilStart(startz, FdOrder);
-                endz = startz + kernelSize - 1;
+                startz = diff_matrix_z.GetStencilStart(startz, FdOrderZ);
+                if (periodicZ)
+                {
+                    endz = startz + kernelSize - 1;
+                }
+                else
+                {
+                    endz = weights_z.GetStencilEnd(request.cell_z);
+                    endz = diff_matrix_z.GetStencilEnd(endz);
+                }                
             }
             else
             {
@@ -207,8 +346,15 @@ namespace Turbulence.SQLInterface.workers
                 endx = request.cell_x;
                 starty = request.cell_y; // Only Y
                 endy = request.cell_y;
-                startz = diff_matrix_z.GetStencilStart(request.cell_z, FdOrder); // From Z-4 to Z+4 for None_FD8
-                endz = startz + kernelSize - 1;
+                startz = diff_matrix_z.GetStencilStart(request.cell_z, FdOrderZ); // From Z-4 to Z+4 for None_FD8
+                if (periodicZ)
+                {
+                    endz = startz + kernelSize - 1;
+                }
+                else
+                {
+                    endz = diff_matrix_z.GetStencilEnd(request.cell_z);
+                }
             }
             AddAtoms(startz, starty, startx, endz, endy, endx, atoms, mask);
 
@@ -262,6 +408,7 @@ namespace Turbulence.SQLInterface.workers
 
             int x, y, z;
             int stencil_startx, stencil_starty, stencil_startz;
+            int stencil_endx, stencil_endy, stencil_endz;
             int startz = 0, starty = 0, startx = 0, endz = 0, endy = 0, endx = 0;
             int iKernelIndexX = 0, iKernelIndexY = 0, iKernelIndexZ = 0;
 
@@ -276,17 +423,18 @@ namespace Turbulence.SQLInterface.workers
                     y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
                     z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
-                    stencil_startx = diff_matrix_x.GetStencilStart(x, FdOrder);
+                    stencil_startx = diff_matrix_x.GetStencilStart(x, FdOrderX);
                     stencil_starty = diff_matrix_y.GetStencilStart(y, FdOrderY);
-                    stencil_startz = diff_matrix_z.GetStencilStart(z, FdOrder);
-                    
+                    stencil_startz = diff_matrix_z.GetStencilStart(z, FdOrderZ);
+                    stencil_endx = periodicX ? stencil_startx + kernelSize - 1 : diff_matrix_x.GetStencilEnd(x);
+                    stencil_endy = periodicY ? stencil_starty + kernelSize - 1 : diff_matrix_y.GetStencilEnd(y);
+                    stencil_endz = periodicZ ? stencil_startz + kernelSize - 1 : diff_matrix_z.GetStencilEnd(z);
+
                     // Since the given blob may not hold all of the required data
                     // we determine where to start and end the partial computation
                     blob.GetSubcubeStart(stencil_startz, stencil_starty, stencil_startx, 
                         ref startz, ref starty, ref startx);
-                    blob.GetSubcubeEnd(stencil_startz + kernelSize - 1, 
-                        diff_matrix_y.GetStencilEnd(y), 
-                        stencil_startx + kernelSize - 1, 
+                    blob.GetSubcubeEnd(stencil_endz, stencil_endy, stencil_endx,
                         ref endz, ref endy, ref endx);
 
                     // We also need to determine where we are starting, e.g. f(x_(n-2)), f(x_(n-1)), etc.
@@ -318,7 +466,10 @@ namespace Turbulence.SQLInterface.workers
                             off = startx * setInfo.Components + (y - blob.GetBaseY) * blob.GetSide * setInfo.Components + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * setInfo.Components;
                             for (int ix = startx; ix <= endx; ix++)
                             {
-                                double coeff = diff_matrix_x[iKernelIndexX + ix - startx];
+                                //double coeff = diff_matrix_x[iKernelIndexX + ix - startx];
+                                double coeff = periodicX? diff_matrix_x[iKernelIndexX + ix - startx]:
+                                    diff_matrix_x[x, iKernelIndexX + ix - startx];
+
                                 for (int j = 0; j < setInfo.Components; j++)
                                 {
                                     ax[j] += coeff * fdata[off + j];
@@ -332,7 +483,10 @@ namespace Turbulence.SQLInterface.workers
                             off = (x - blob.GetBaseX) * setInfo.Components + starty * blob.GetSide * setInfo.Components + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * setInfo.Components;
                             for (int iy = starty; iy <= endy; iy++)
                             {
-                                double coeff = diff_matrix_y[y, iKernelIndexY + iy - starty];
+                                //double coeff = diff_matrix_y[y, iKernelIndexY + iy - starty];
+                                double coeff = periodicY ? diff_matrix_y[iKernelIndexY + iy - starty] :
+                                    diff_matrix_y[y, iKernelIndexY + iy - starty];
+
                                 for (int j = 0; j < setInfo.Components; j++)
                                 {
                                     ay[j] += coeff * fdata[off + j];
@@ -346,7 +500,10 @@ namespace Turbulence.SQLInterface.workers
                             off = (x - blob.GetBaseX) * setInfo.Components + (y - blob.GetBaseY) * blob.GetSide * setInfo.Components + startz * blob.GetSide * blob.GetSide * setInfo.Components;
                             for (int iz = startz; iz <= endz; iz++)
                             {
-                                double coeff = diff_matrix_z[iKernelIndexZ + iz - startz];
+                                //double coeff = diff_matrix_z[iKernelIndexZ + iz - startz];
+                                double coeff = periodicZ ? diff_matrix_z[iKernelIndexZ + iz - startz] :
+                                    diff_matrix_z[z, iKernelIndexZ + iz - startz];
+
                                 for (int j = 0; j < setInfo.Components; j++)
                                 {
                                     az[j] += coeff * fdata[off + j];
@@ -370,16 +527,46 @@ namespace Turbulence.SQLInterface.workers
                         lagInt_stencil_startx = weights_x.GetStencilStart(input.cell_x, LagIntOrder);
                         input.lagInt = new double[LagIntOrder * 3];
 
-                        LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.x, 
-                            ((ChannelFlowDataTable)setInfo).GridValuesX(lagInt_stencil_startx, LagIntOrder),
-                            weights_x.GetWeights(), 0, input.lagInt);
-                        // The y weights are non-uniform and therefore we have to provide the cell index for the retrieval of the weights.
-                        LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.y, 
-                            ((ChannelFlowDataTable)setInfo).GridValuesY(lagInt_stencil_starty, LagIntOrder),
-                            weights_y.GetWeights(input.cell_y), 1, input.lagInt);
-                        LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.z, 
+                        if (periodicX)
+                        {
+                            LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.x,
+                                ((ChannelFlowDataTable)setInfo).GridValuesX(lagInt_stencil_startx, LagIntOrder),
+                                weights_x.GetWeights(), 0, input.lagInt);
+                        }
+                        else
+                        {
+                            LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.x,
+                                ((ChannelFlowDataTable)setInfo).GridValuesX(lagInt_stencil_startx, LagIntOrder),
+                                weights_x.GetWeights(input.cell_x), 0, input.lagInt);
+                        }
+
+                        if (periodicY)
+                        {
+                            // The y weights are non-uniform and therefore we have to provide the cell index for the retrieval of the weights.
+                            LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.y,
+                                ((ChannelFlowDataTable)setInfo).GridValuesY(lagInt_stencil_starty, LagIntOrder),
+                                weights_y.GetWeights(), 1, input.lagInt);
+                        }
+                        else
+                        {
+                            // The y weights are non-uniform and therefore we have to provide the cell index for the retrieval of the weights.
+                            LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.y,
+                                ((ChannelFlowDataTable)setInfo).GridValuesY(lagInt_stencil_starty, LagIntOrder),
+                                weights_y.GetWeights(input.cell_y), 1, input.lagInt);
+                        }
+
+                        if (periodicZ)
+                        {
+                            LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.z,
                             ((ChannelFlowDataTable)setInfo).GridValuesZ(lagInt_stencil_startz, LagIntOrder),
                             weights_z.GetWeights(), 2, input.lagInt);
+                        }
+                        else
+                        {
+                            LagInterpolation.InterpolantBarycentricWeights(LagIntOrder, input.z,
+                            ((ChannelFlowDataTable)setInfo).GridValuesZ(lagInt_stencil_startz, LagIntOrder),
+                            weights_z.GetWeights(input.cell_z), 2, input.lagInt);
+                        }
                     }
 
                     // Wrap the coordinates into the grid space
@@ -406,16 +593,42 @@ namespace Turbulence.SQLInterface.workers
                     // Such planer patches will be interpolated according to the lagrange polynomial computation
                     
                     lagInt_stencil_startx = weights_x.GetStencilStart(x, LagIntOrder);
-                    stencil_startx = diff_matrix_x.GetStencilStart(lagInt_stencil_startx, FdOrder);
+                    stencil_startx = diff_matrix_x.GetStencilStart(lagInt_stencil_startx, FdOrderX);
                     lagInt_stencil_starty = weights_y.GetStencilStart(y, LagIntOrder);
                     stencil_starty = diff_matrix_y.GetStencilStart(lagInt_stencil_starty, FdOrderY);
                     lagInt_stencil_startz = weights_z.GetStencilStart(z, LagIntOrder);
-                    stencil_startz = diff_matrix_z.GetStencilStart(lagInt_stencil_startz, FdOrder);
+                    stencil_startz = diff_matrix_z.GetStencilStart(lagInt_stencil_startz, FdOrderZ);
 
-                    int stencil_endx = stencil_startx + kernelSize - 1;
-                    int stencil_endy = weights_y.GetStencilEnd(y);
-                    stencil_endy = diff_matrix_y.GetStencilEnd(stencil_endy);
-                    int stencil_endz = stencil_startz + kernelSize - 1;
+                    //int stencil_endx = 0, stencil_endy = 0, stencil_endz = 0;//stencil_startx + kernelSize - 1;
+                    if (periodicX)
+                    {
+                        stencil_endx = stencil_startx + kernelSize - 1;
+                    }
+                    else
+                    {
+                        stencil_endx = weights_x.GetStencilEnd(x);
+                        stencil_endx = diff_matrix_x.GetStencilEnd(stencil_endx);
+                    }
+
+                    if (periodicY)
+                    {
+                        stencil_endy = stencil_starty + kernelSize - 1;
+                    }
+                    else
+                    {
+                        stencil_endy = weights_y.GetStencilEnd(y);
+                        stencil_endy = diff_matrix_y.GetStencilEnd(stencil_endy);
+                    }
+
+                    if (periodicZ)
+                    {
+                        stencil_endz = stencil_startz + kernelSize - 1;
+                    }
+                    else
+                    {
+                        stencil_endz = weights_z.GetStencilEnd(z);
+                        stencil_endz = diff_matrix_z.GetStencilEnd(stencil_endz);
+                    }
 
                     int lagint_index_startx = lagInt_stencil_startx - stencil_startx;
                     int lagint_index_starty = lagInt_stencil_starty - stencil_starty;
@@ -478,10 +691,16 @@ namespace Turbulence.SQLInterface.workers
                                             // we update the partial sum accordingly
                                             for (int i = 0; i < LagIntOrder; i++)
                                             {
+                                                int cell_index = lagInt_stencil_startx + i;
+                                                int FD_stencil_start = diff_matrix_x.GetStencilStart(cell_index, FdOrderX);
+                                                int FDIndex = stencil_startx + KernelIndexX - FD_stencil_start;
                                                 // The kernel index ranges from 0 to 4 for 4th-order finite differencing
-                                                if (KernelIndexX - i >= 0 && KernelIndexX - i <= FdOrder)
+                                                if (FDIndex >= 0 && FDIndex <= FdOrderX)
                                                 {
-                                                    double c = lagint[i] * diff_matrix_x[KernelIndexX - i];
+                                                    //double c = lagint[i] * diff_matrix_x[KernelIndexX - i];
+                                                    double c = periodicX ? lagint[i] * diff_matrix_x[FDIndex] :
+                                                        lagint[i] * diff_matrix_x[cell_index, FDIndex];
+
                                                     for (int j = 0; j < setInfo.Components; j++)
                                                     {
                                                         cx[j] += c * fdata[off + j];
@@ -539,7 +758,10 @@ namespace Turbulence.SQLInterface.workers
                                         if (FDIndex >= 0 && FDIndex <= FdOrderY)
                                         {
                                             // First, we compute d2uidydy
-                                            double coeff_y = lagint[1 * LagIntOrder + i] * diff_matrix_y[cell_index, FDIndex];
+                                            //double coeff_y = lagint[1 * LagIntOrder + i] * diff_matrix_y[cell_index, FDIndex];
+                                            double coeff_y = periodicY ? lagint[1 * LagIntOrder + i] * diff_matrix_y[FDIndex] :
+                                                        lagint[1 * LagIntOrder + i] * diff_matrix_y[cell_index, FDIndex];
+
                                             for (int k = 0; k < setInfo.Components; k++)
                                             {
                                                 by[k] += coeff_y * cy[k];
@@ -560,10 +782,16 @@ namespace Turbulence.SQLInterface.workers
                                 #region d2uidzdz
                                 for (int i = 0; i < LagIntOrder; i++)
                                 {
+                                    int cell_index = lagInt_stencil_startz + i;
+                                    int FD_stencil_start = diff_matrix_z.GetStencilStart(cell_index, FdOrderZ);
+                                    int FDIndex = stencil_startz + KernelIndexZ - FD_stencil_start;
                                     // The kernel index ranges from 0 to 4 for 4th-order finite differencing
-                                    if (KernelIndexZ - i >= 0 && KernelIndexZ - i <= FdOrder)
+                                    if (FDIndex >= 0 && FDIndex <= FdOrderZ)
                                     {
-                                        double c = lagint[2 * LagIntOrder + i] * diff_matrix_z[KernelIndexZ - i];
+                                        //double c = lagint[2 * LagIntOrder + i] * diff_matrix_z[KernelIndexZ - i];
+                                        double c = periodicZ ? lagint[2 * LagIntOrder + i] * diff_matrix_z[FDIndex] :
+                                                        lagint[2 * LagIntOrder + i] * diff_matrix_z[cell_index, FDIndex];
+
                                         for (int k = 0; k < setInfo.Components; k++)
                                         {
                                             az[k] += c * bz[k];

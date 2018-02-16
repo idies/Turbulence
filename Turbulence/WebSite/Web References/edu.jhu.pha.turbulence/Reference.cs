@@ -23,7 +23,7 @@ namespace Website.edu.jhu.pha.turbulence {
     
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="TurbulenceServiceSoap", Namespace="http://turbulence.pha.jhu.edu/")]
@@ -102,6 +102,16 @@ namespace Website.edu.jhu.pha.turbulence {
         private System.Threading.SendOrPostCallback GetThresholdOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetLaplacianOfGradientOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetTemperatureOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetTemperatureGradientOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetTemperatureHessianOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetVelocityAndTemperatureOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetInvariantOperationCompleted;
         
         private bool useDefaultCredentialsSetExplicitly;
         
@@ -251,6 +261,21 @@ namespace Website.edu.jhu.pha.turbulence {
         
         /// <remarks/>
         public event GetLaplacianOfGradientCompletedEventHandler GetLaplacianOfGradientCompleted;
+        
+        /// <remarks/>
+        public event GetTemperatureCompletedEventHandler GetTemperatureCompleted;
+        
+        /// <remarks/>
+        public event GetTemperatureGradientCompletedEventHandler GetTemperatureGradientCompleted;
+        
+        /// <remarks/>
+        public event GetTemperatureHessianCompletedEventHandler GetTemperatureHessianCompleted;
+        
+        /// <remarks/>
+        public event GetVelocityAndTemperatureCompletedEventHandler GetVelocityAndTemperatureCompleted;
+        
+        /// <remarks/>
+        public event GetInvariantCompletedEventHandler GetInvariantCompleted;
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/NullOp", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -1772,6 +1797,206 @@ namespace Website.edu.jhu.pha.turbulence {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperature", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Pressure[] GetTemperature(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+            object[] results = this.Invoke("GetTemperature", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points});
+            return ((Pressure[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
+            this.GetTemperatureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+            if ((this.GetTemperatureOperationCompleted == null)) {
+                this.GetTemperatureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureOperationCompleted);
+            }
+            this.InvokeAsync("GetTemperature", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points}, this.GetTemperatureOperationCompleted, userState);
+        }
+        
+        private void OnGetTemperatureOperationCompleted(object arg) {
+            if ((this.GetTemperatureCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetTemperatureCompleted(this, new GetTemperatureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperatureGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3[] GetTemperatureGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+            object[] results = this.Invoke("GetTemperatureGradient", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points});
+            return ((Vector3[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
+            this.GetTemperatureGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+            if ((this.GetTemperatureGradientOperationCompleted == null)) {
+                this.GetTemperatureGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureGradientOperationCompleted);
+            }
+            this.InvokeAsync("GetTemperatureGradient", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points}, this.GetTemperatureGradientOperationCompleted, userState);
+        }
+        
+        private void OnGetTemperatureGradientOperationCompleted(object arg) {
+            if ((this.GetTemperatureGradientCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetTemperatureGradientCompleted(this, new GetTemperatureGradientCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperatureHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public PressureHessian[] GetTemperatureHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+            object[] results = this.Invoke("GetTemperatureHessian", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points});
+            return ((PressureHessian[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
+            this.GetTemperatureHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+            if ((this.GetTemperatureHessianOperationCompleted == null)) {
+                this.GetTemperatureHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureHessianOperationCompleted);
+            }
+            this.InvokeAsync("GetTemperatureHessian", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points}, this.GetTemperatureHessianOperationCompleted, userState);
+        }
+        
+        private void OnGetTemperatureHessianOperationCompleted(object arg) {
+            if ((this.GetTemperatureHessianCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetTemperatureHessianCompleted(this, new GetTemperatureHessianCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityAndTemperature", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3P[] GetVelocityAndTemperature(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+            object[] results = this.Invoke("GetVelocityAndTemperature", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points});
+            return ((Vector3P[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetVelocityAndTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
+            this.GetVelocityAndTemperatureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        }
+        
+        /// <remarks/>
+        public void GetVelocityAndTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+            if ((this.GetVelocityAndTemperatureOperationCompleted == null)) {
+                this.GetVelocityAndTemperatureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityAndTemperatureOperationCompleted);
+            }
+            this.InvokeAsync("GetVelocityAndTemperature", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points}, this.GetVelocityAndTemperatureOperationCompleted, userState);
+        }
+        
+        private void OnGetVelocityAndTemperatureOperationCompleted(object arg) {
+            if ((this.GetVelocityAndTemperatureCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVelocityAndTemperatureCompleted(this, new GetVelocityAndTemperatureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetInvariant", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3[] GetInvariant(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+            object[] results = this.Invoke("GetInvariant", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points});
+            return ((Vector3[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetInvariantAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
+            this.GetInvariantAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        }
+        
+        /// <remarks/>
+        public void GetInvariantAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+            if ((this.GetInvariantOperationCompleted == null)) {
+                this.GetInvariantOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInvariantOperationCompleted);
+            }
+            this.InvokeAsync("GetInvariant", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points}, this.GetInvariantOperationCompleted, userState);
+        }
+        
+        private void OnGetInvariantOperationCompleted(object arg) {
+            if ((this.GetInvariantCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetInvariantCompleted(this, new GetInvariantCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
@@ -1791,7 +2016,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1836,7 +2061,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1893,7 +2118,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1974,7 +2199,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2199,7 +2424,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2316,7 +2541,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2373,7 +2598,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2454,7 +2679,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2475,7 +2700,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2520,7 +2745,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
     public enum SpatialInterpolation {
@@ -2623,7 +2848,7 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2102.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
     public enum TemporalInterpolation {
@@ -2636,11 +2861,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void NullOpCompletedEventHandler(object sender, NullOpCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class NullOpCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2662,11 +2887,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVelocityCompletedEventHandler(object sender, GetVelocityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2688,11 +2913,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVelocityBatchCompletedEventHandler(object sender, GetVelocityBatchCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityBatchCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2714,11 +2939,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetRawVelocityCompletedEventHandler(object sender, GetRawVelocityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetRawVelocityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2740,11 +2965,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetPressureCompletedEventHandler(object sender, GetPressureCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPressureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2766,11 +2991,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetRawPressureCompletedEventHandler(object sender, GetRawPressureCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetRawPressureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2792,11 +3017,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetMagneticFieldCompletedEventHandler(object sender, GetMagneticFieldCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMagneticFieldCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2818,11 +3043,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetRawMagneticFieldCompletedEventHandler(object sender, GetRawMagneticFieldCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetRawMagneticFieldCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2844,11 +3069,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVectorPotentialCompletedEventHandler(object sender, GetVectorPotentialCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVectorPotentialCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2870,11 +3095,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetRawVectorPotentialCompletedEventHandler(object sender, GetRawVectorPotentialCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetRawVectorPotentialCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2896,11 +3121,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetDensityCompletedEventHandler(object sender, GetDensityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDensityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2922,11 +3147,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetDensityGradientCompletedEventHandler(object sender, GetDensityGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDensityGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2948,11 +3173,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetDensityHessianCompletedEventHandler(object sender, GetDensityHessianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDensityHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2974,11 +3199,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetRawDensityCompletedEventHandler(object sender, GetRawDensityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetRawDensityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3000,11 +3225,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetForceCompletedEventHandler(object sender, GetForceCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetForceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3026,11 +3251,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVelocityAndPressureCompletedEventHandler(object sender, GetVelocityAndPressureCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityAndPressureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3052,11 +3277,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVelocityGradientCompletedEventHandler(object sender, GetVelocityGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3078,11 +3303,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetMagneticFieldGradientCompletedEventHandler(object sender, GetMagneticFieldGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMagneticFieldGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3104,11 +3329,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVectorPotentialGradientCompletedEventHandler(object sender, GetVectorPotentialGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVectorPotentialGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3130,11 +3355,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetPressureGradientCompletedEventHandler(object sender, GetPressureGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPressureGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3156,11 +3381,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetPressureHessianCompletedEventHandler(object sender, GetPressureHessianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPressureHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3182,11 +3407,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVelocityHessianCompletedEventHandler(object sender, GetVelocityHessianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3208,11 +3433,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetMagneticHessianCompletedEventHandler(object sender, GetMagneticHessianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMagneticHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3234,11 +3459,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVectorPotentialHessianCompletedEventHandler(object sender, GetVectorPotentialHessianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVectorPotentialHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3260,11 +3485,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVelocityLaplacianCompletedEventHandler(object sender, GetVelocityLaplacianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityLaplacianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3286,11 +3511,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetMagneticFieldLaplacianCompletedEventHandler(object sender, GetMagneticFieldLaplacianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMagneticFieldLaplacianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3312,11 +3537,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetVectorPotentialLaplacianCompletedEventHandler(object sender, GetVectorPotentialLaplacianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVectorPotentialLaplacianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3338,11 +3563,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetPositionCompletedEventHandler(object sender, GetPositionCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPositionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3364,11 +3589,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetBoxFilterCompletedEventHandler(object sender, GetBoxFilterCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBoxFilterCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3390,11 +3615,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetBoxFilterSGSCompletedEventHandler(object sender, GetBoxFilterSGSCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBoxFilterSGSCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3416,11 +3641,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetBoxFilterSGSsymtensorCompletedEventHandler(object sender, GetBoxFilterSGSsymtensorCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBoxFilterSGSsymtensorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3442,11 +3667,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetBoxFilterSGStensorCompletedEventHandler(object sender, GetBoxFilterSGStensorCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBoxFilterSGStensorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3468,11 +3693,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetBoxFilterSGSvectorCompletedEventHandler(object sender, GetBoxFilterSGSvectorCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBoxFilterSGSvectorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3494,11 +3719,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetBoxFilterSGSscalarCompletedEventHandler(object sender, GetBoxFilterSGSscalarCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBoxFilterSGSscalarCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3520,11 +3745,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetBoxFilterGradientCompletedEventHandler(object sender, GetBoxFilterGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBoxFilterGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3546,11 +3771,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetThresholdCompletedEventHandler(object sender, GetThresholdCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetThresholdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3572,11 +3797,11 @@ namespace Website.edu.jhu.pha.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     public delegate void GetLaplacianOfGradientCompletedEventHandler(object sender, GetLaplacianOfGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.6.1055.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetLaplacianOfGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3593,6 +3818,136 @@ namespace Website.edu.jhu.pha.turbulence {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((VelocityGradient[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    public delegate void GetTemperatureCompletedEventHandler(object sender, GetTemperatureCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetTemperatureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetTemperatureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Pressure[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Pressure[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    public delegate void GetTemperatureGradientCompletedEventHandler(object sender, GetTemperatureGradientCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetTemperatureGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetTemperatureGradientCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    public delegate void GetTemperatureHessianCompletedEventHandler(object sender, GetTemperatureHessianCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetTemperatureHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetTemperatureHessianCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public PressureHessian[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((PressureHessian[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    public delegate void GetVelocityAndTemperatureCompletedEventHandler(object sender, GetVelocityAndTemperatureCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVelocityAndTemperatureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetVelocityAndTemperatureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3P[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3P[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    public delegate void GetInvariantCompletedEventHandler(object sender, GetInvariantCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetInvariantCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetInvariantCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3[])(this.results[0]));
             }
         }
     }

@@ -3,5 +3,7 @@
   <PropertyGroup>
     <StartupScript>(Blank)</StartupScript>
     <StartAction>StartNone</StartAction>
+    <ReferencePath>
+    </ReferencePath>
   </PropertyGroup>
 </Project>

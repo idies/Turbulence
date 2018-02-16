@@ -40,6 +40,7 @@ public partial class StoredProcedures
         tempTable = SQLUtility.SanitizeTemporaryTable(tempTable);
 
         // Load information about the requested dataset
+        //TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
         TurbDataTable table = TurbDataTable.GetTableInfo(dataset);
 
         string tableName = String.Format("{0}.dbo.{1}", database, table.TableName);
@@ -47,7 +48,7 @@ public partial class StoredProcedures
         // Instantiate a worker class
         SqlConnection conn = new SqlConnection("context connection=true");
         conn.Open();
-        Worker worker = Worker.GetWorker(table, workerType, spatialInterp, arg, conn);
+        Worker worker = Worker.GetWorker(dataset, table, workerType, spatialInterp, arg, conn);
         conn.Close();
 
         // Bitmask to ignore low order bits of address

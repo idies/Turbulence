@@ -942,7 +942,7 @@ namespace Turbulence.SQLInterface.workers
             }
         }
 
-        public GetSplinesWorker(TurbDataTable setInfo,
+        public GetSplinesWorker(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             int derivative)
         {

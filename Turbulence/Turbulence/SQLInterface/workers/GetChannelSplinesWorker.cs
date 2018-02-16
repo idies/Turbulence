@@ -16,10 +16,10 @@ namespace Turbulence.SQLInterface.workers
     {
         private SplineWeights[] weights_y;
 
-        public GetChannelSplinesWorker(TurbDataTable setInfo,
+        public GetChannelSplinesWorker(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             int derivative,
-            SqlConnection conn) : base (setInfo, spatialInterp, derivative)
+            SqlConnection conn) : base (dataset, setInfo, spatialInterp, derivative)
         {
             weights_y = new SplineWeights[derivative + 1];
             for (int i = 0; i <= derivative; i++)
@@ -29,13 +29,34 @@ namespace Turbulence.SQLInterface.workers
                 switch (spatialInterp)
                 {
                     case TurbulenceOptions.SpatialInterpolation.M1Q4:
-                        weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m1q4_d{0}", i));
+                        if (dataset.Contains("channel"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m1q4_d{0}", i));
+                        }
+                        else if (dataset.Contains("bl_zaki"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("BL_spline_coeff_y_m1q4_d{0}", i));
+                        }
                         break;
                     case TurbulenceOptions.SpatialInterpolation.M2Q8:
-                        weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m2q8_d{0}", i));
+                        if (dataset.Contains("channel"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m2q8_d{0}", i));
+                        }
+                        else if (dataset.Contains("bl_zaki"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("BL_spline_coeff_y_m2q8_d{0}", i));
+                        }
                         break;
                     case TurbulenceOptions.SpatialInterpolation.M2Q14:
-                        weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m2q14_d{0}", i));
+                        if (dataset.Contains("channel"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m2q14_d{0}", i));
+                        }
+                        else if (dataset.Contains("bl_zaki"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("BL_spline_coeff_y_m2q14_d{0}", i));
+                        }
                         break;
                     default:
                         throw new Exception(String.Format("Invalid Spatial Interpolation Option: {0}", spatialInterp));

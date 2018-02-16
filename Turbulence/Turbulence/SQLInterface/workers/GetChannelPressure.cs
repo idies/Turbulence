@@ -13,11 +13,11 @@ using System.Diagnostics;
 namespace Turbulence.SQLInterface.workers
 {
     public class GetChannelPressure : GetChannelWorker
-    {        
-        public GetChannelPressure(TurbDataTable setInfo,
+    {
+        public GetChannelPressure(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             SqlConnection conn)
-            : base (setInfo, spatialInterp, conn)
+            : base (dataset, setInfo, spatialInterp, conn)
         {
             this.kernelSize = 0;
             this.setInfo = setInfo;
@@ -89,6 +89,7 @@ namespace Turbulence.SQLInterface.workers
             else
             {
                 int stencil_startz, stencil_starty, stencil_startx;
+                int stencil_endz, stencil_endy, stencil_endx;
 
                 // The coefficients are computed only once and cached, so that they don't have to be 
                 // recomputed for each partial sum
@@ -99,14 +100,40 @@ namespace Turbulence.SQLInterface.workers
                     stencil_startx = weights_x.GetStencilStart(input.cell_x, kernelSize);
                     input.lagInt = new double[kernelSize * 3];
 
-                    LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.x, ((ChannelFlowDataTable)setInfo).GridValuesX(stencil_startx, kernelSize),
-                        weights_x.GetWeights(), 0, input.lagInt);
-                    // The y weights are non-uniform and therefore we have to provide the cell index
-                    // for the retrieval of the weights.
-                    LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.y, ((ChannelFlowDataTable)setInfo).GridValuesY(stencil_starty, kernelSize),
-                        weights_y.GetWeights(input.cell_y), 1, input.lagInt);
-                    LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.z, ((ChannelFlowDataTable)setInfo).GridValuesZ(stencil_startz, kernelSize),
-                        weights_z.GetWeights(), 2, input.lagInt);
+                    if (periodicX)
+                    {
+                        LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.x, ((ChannelFlowDataTable)setInfo).GridValuesX(stencil_startx, kernelSize),
+                            weights_x.GetWeights(), 0, input.lagInt);
+                    }
+                    else
+                    {
+                        LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.x, ((ChannelFlowDataTable)setInfo).GridValuesX(stencil_startx, kernelSize),
+                            weights_x.GetWeights(input.cell_x), 0, input.lagInt);
+                    }
+
+                    if (periodicY)
+                    {
+                        LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.y, ((ChannelFlowDataTable)setInfo).GridValuesY(stencil_starty, kernelSize),
+                            weights_y.GetWeights(), 1, input.lagInt);
+                    }
+                    else
+                    {
+                        // The y weights are non-uniform and therefore we have to provide the cell index
+                        // for the retrieval of the weights.
+                        LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.y, ((ChannelFlowDataTable)setInfo).GridValuesY(stencil_starty, kernelSize),
+                            weights_y.GetWeights(input.cell_y), 1, input.lagInt);
+                    }
+
+                    if (periodicZ)
+                    {
+                        LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.z, ((ChannelFlowDataTable)setInfo).GridValuesZ(stencil_startz, kernelSize),
+                            weights_z.GetWeights(), 2, input.lagInt);
+                    }
+                    else
+                    {
+                        LagInterpolation.InterpolantBarycentricWeights(kernelSize, input.z, ((ChannelFlowDataTable)setInfo).GridValuesZ(stencil_startz, kernelSize),
+                            weights_z.GetWeights(input.cell_z), 2, input.lagInt);
+                    }
                 }
 
                 // Wrap the coordinates into the grid space
@@ -118,6 +145,9 @@ namespace Turbulence.SQLInterface.workers
                 stencil_startz = weights_z.GetStencilStart(z, kernelSize);
                 stencil_starty = weights_y.GetStencilStart(y, kernelSize);
                 stencil_startx = weights_x.GetStencilStart(x, kernelSize);
+                stencil_endx = periodicX ? stencil_startx + kernelSize - 1 : weights_x.GetStencilEnd(x);
+                stencil_endy = periodicY ? stencil_starty + kernelSize - 1 : weights_y.GetStencilEnd(y);
+                stencil_endz = periodicZ ? stencil_startz + kernelSize - 1 : weights_z.GetStencilEnd(z);
 
                 float[] data = blob.data;
                 int startz = 0, starty = 0, startx = 0, endz = 0, endy = 0, endx = 0;
@@ -125,9 +155,7 @@ namespace Turbulence.SQLInterface.workers
                     stencil_starty,
                     stencil_startx, 
                     ref startz, ref starty, ref startx);
-                blob.GetSubcubeEnd(stencil_startz + kernelSize - 1, 
-                    weights_y.GetStencilEnd(y), 
-                    stencil_startx + kernelSize - 1, 
+                blob.GetSubcubeEnd(stencil_endz, stencil_endy, stencil_endx,
                     ref endz, ref endy, ref endx);
                 int off0 = startx * setInfo.Components;
 

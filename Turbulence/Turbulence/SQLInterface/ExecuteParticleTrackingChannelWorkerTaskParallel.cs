@@ -22,8 +22,9 @@ public partial class StoredProcedures
     /// </summary>
     [Microsoft.SqlServer.Server.SqlProcedure]
     public static void ExecuteParticleTrackingChannelWorkerTaskParallel(
-        string turbinfoServer,
-        string turbinfoDB,
+        string codedb,
+        string turbinfodb,
+        string turbinfoserver,
         string localServer,
         string localDatabase,
         short datasetID,
@@ -36,8 +37,7 @@ public partial class StoredProcedures
         string tempTable,
         float time,
         float endTime,
-        float dt,
-        bool development)
+        float dt)
     {
         //TimeSpan IOTime = new TimeSpan(0), preProcessTime = new TimeSpan(0), resultTime = new TimeSpan(0),
         //    MemoryTime = new TimeSpan(0), resultSendingTime = new TimeSpan(0),
@@ -59,19 +59,21 @@ public partial class StoredProcedures
         SqlConnection contextConn;
         contextConn = new SqlConnection("context connection=true");
 
-        String cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", turbinfoServer, turbinfoDB);
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
+
+        String cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverinfo.infoDB_server, serverinfo.infoDB);
         SqlConnection turbinfoConn = new SqlConnection(cString);
         turbinfoConn.Open();
         SqlCommand cmd = turbinfoConn.CreateCommand();
         string DBMapTable = "DatabaseMap";
-        if (development == true)
-        {
-            DBMapTable = "DatabaseMapTest";
-        }
+        //if (development == true)
+        //{
+        //    DBMapTable = "DatabaseMapTest";
+        //}
         cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
             "from {0}..{1} where DatasetID = @datasetID " +
             "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-            "order by minLim", turbinfoDB, DBMapTable);
+            "order by minLim", serverinfo.infoDB, DBMapTable);
         cmd.Parameters.AddWithValue("@datasetID", datasetID);
         using (SqlDataReader reader = cmd.ExecuteReader())
         {
@@ -83,14 +85,14 @@ public partial class StoredProcedures
                     String DBName = reader.GetString(1);
                     servers.Add(serverName);
                     databases.Add(DBName);
-                    if (development == false)
-                    {
-                        codeDatabase.Add(reader.GetString(2));
-                    }
-                    else
-                    {
-                        codeDatabase.Add("turbdev");
-                    }
+                    //if (development == false)
+                    //{
+                    //    codeDatabase.Add(reader.GetString(2));
+                    //}
+                    //else
+                    //{
+                    //    codeDatabase.Add("turblib_test");
+                    //}
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
                     int minTime = reader.GetInt32(5);
@@ -114,9 +116,8 @@ public partial class StoredProcedures
         }
         turbinfoConn.Close();
 
-        contextConn.Open();
         // Load information about the requested dataset
-        TurbDataTable table = TurbDataTable.GetTableInfo(localServerCleanName, localDatabase, tableName, atomDim, contextConn);
+        TurbDataTable table = TurbDataTable.GetTableInfo(localServerCleanName, localDatabase, tableName, atomDim, serverinfo);
 
         // Instantiate a worker class
         //Turbulence.SQLInterface.workers.GetPositionWorker worker =
@@ -124,8 +125,17 @@ public partial class StoredProcedures
         //        (TurbulenceOptions.SpatialInterpolation)spatialInterp,
         //        (TurbulenceOptions.TemporalInterpolation)temporalInterp);
         // PJ 2015
+        contextConn.Open();
+        GridPoints gridPointsY = new GridPoints(table.GridResolutionY);
+        gridPointsY.GetGridPointsFromDB(contextConn, localDatabase.ToString());
+        double[] grid_points_y = new double[table.GridResolutionY];
+        for (int i = 0; i < table.GridResolutionY; i++)
+        {
+            grid_points_y[i] = gridPointsY.GetGridValue(i);
+        }
+
         Turbulence.SQLInterface.workers.GetChannelPositionWorker worker =
-            new Turbulence.SQLInterface.workers.GetChannelPositionWorker(table,
+            new Turbulence.SQLInterface.workers.GetChannelPositionWorker(databases[0], table,
                 (TurbulenceOptions.SpatialInterpolation)spatialInterp,
                 (TurbulenceOptions.TemporalInterpolation)temporalInterp,
                 contextConn);
@@ -333,7 +343,7 @@ public partial class StoredProcedures
                                         throw new Exception("blob is NULL!");
 
                                     point.cubesRead++;
-                                    worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime, ref priordt);
+                                    worker.GetResult(blob, ref point, timestepRead, baseTimeStep, time, endTime, dt, ref nextTimeStep, ref nextTime, ref priordt, grid_points_y, databases[s]);
                                 }
 
                                 //endTimer = DateTime.Now;
@@ -378,7 +388,7 @@ public partial class StoredProcedures
                 }
                 foreach (int done_point in done_points)
                 {
-                    GenerateChannelResultRowFinalPosition(record, input[done_point], endTime);
+                    GenerateChannelResultRowFinalPosition(record, input[done_point], endTime, localDatabase);
                     input.Remove(done_point);
                 }
                 done_points.Clear();
@@ -446,8 +456,8 @@ public partial class StoredProcedures
             map[i].Clear();
         }
 
-        //contextConn.Close();
-        //contextConn.Dispose();
+        contextConn.Close();
+        contextConn.Dispose();
         standardConn.Close();
         standardConn.Dispose();
         map = null;
@@ -558,9 +568,9 @@ public partial class StoredProcedures
             int startz = worker.GetStencilStartZ(Z, worker.KernelSize);
             int starty = worker.GetStencilStartY(Y, worker.KernelSize);
             int startx = worker.GetStencilStartX(X, worker.KernelSize);
-            int endz = startz + worker.KernelSize - 1;
-            int endy = worker.GetStencilEndY(Y, worker.KernelSize);
-            int endx = startx + worker.KernelSize - 1;
+            int endz = worker.periodicZ ? startz + worker.KernelSize - 1 : worker.GetStencilEndZ(Z, worker.KernelSize);
+            int endy = worker.periodicX ? starty + worker.KernelSize - 1 : worker.GetStencilEndY(Y, worker.KernelSize);
+            int endx = worker.periodicX ? startx + worker.KernelSize - 1 : worker.GetStencilEndX(X, worker.KernelSize);
 
             // we do not want a request to appear more than once in the list for an atom
             // with the below logic we are going to check distinct atoms only
@@ -635,10 +645,17 @@ public partial class StoredProcedures
         return -1;
     }
 
-    static void GenerateChannelResultRowFinalPosition(SqlDataRecord record, SQLUtility.TrackingInputRequest temp_point, float endTime)
+    static void GenerateChannelResultRowFinalPosition(SqlDataRecord record, SQLUtility.TrackingInputRequest temp_point, float endTime, string database)
     {
         record.SetInt32(0, temp_point.request);
-        record.SetFloat(1, temp_point.pos.x + 0.45f * endTime); // PJ 2015... add shift at end back to physical location
+        if (database.Contains("channel"))
+        {
+            record.SetFloat(1, temp_point.pos.x + 0.45f * endTime); // PJ 2015... add shift at end back to physical location
+        }
+        else
+        {
+            record.SetFloat(1, temp_point.pos.x); // PJ 2015... add shift at end back to physical location
+        }
         record.SetFloat(2, temp_point.pos.y);
         record.SetFloat(3, temp_point.pos.z);
         SqlContext.Pipe.SendResultsRow(record);

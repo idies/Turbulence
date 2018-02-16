@@ -21,7 +21,7 @@ namespace ImportData
             Open();
         }
 
-        public  void Open()
+        public void Open()
         {
             sqlcon = new SqlConnection(connectionString);
             sqlcon.Open();

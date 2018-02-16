@@ -21,6 +21,8 @@ public partial class StoredProcedures
     public static void ExecuteTwoFieldsBoxFilterWorker(string serverName,
         string dbname,
         string codedb,
+        string turbinfodb,
+        string turbinfoserver,
         string field1,
         string field2,
         int workerType,
@@ -32,20 +34,20 @@ public partial class StoredProcedures
         int inputSize,
         string tempTable)
     {
+        TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
         SqlConnection standardConn;
         SqlConnection contextConn;
         string connString;
         if (serverName.Contains("_"))
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), codedb);
+            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
         else
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, codedb);
+            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
-        contextConn.Open();
 
-        // Load information about the requested dataset
-        TurbDataTable table1 = TurbDataTable.GetTableInfo(serverName, dbname, field1, blobDim, contextConn);
-        TurbDataTable table2 = TurbDataTable.GetTableInfo(serverName, dbname, field2, blobDim, contextConn);
+        // Load information about the requested dataset        
+        TurbDataTable table1 = TurbDataTable.GetTableInfo(serverName, dbname, field1, blobDim, serverinfo);
+        TurbDataTable table2 = TurbDataTable.GetTableInfo(serverName, dbname, field2, blobDim, serverinfo);
 
         string tableName1 = String.Format("{0}.dbo.{1}", dbname, table1.TableName);
         string tableName2 = String.Format("{0}.dbo.{1}", dbname, table2.TableName);
@@ -53,10 +55,11 @@ public partial class StoredProcedures
         // Instantiate a worker class
         if (workerType != (int)Worker.Workers.GetMHDBoxFilterSGS_SV)
         {
-            contextConn.Close();
+            //contextConn.Close();
             throw new Exception("Invalid worker type specified! This procedure works only with a GetMHDBoxFilterSV or GetMHDBoxFilterSGS_SV worker!");
         }
 
+        contextConn.Open();
         Worker worker = Worker.GetWorker(table1, table2, workerType, spatialInterp, arg, contextConn);
 
         HashSet<SQLUtility.MHDInputRequest> input = new HashSet<SQLUtility.MHDInputRequest>();

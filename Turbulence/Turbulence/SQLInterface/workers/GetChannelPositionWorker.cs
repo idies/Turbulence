@@ -14,20 +14,36 @@ namespace Turbulence.SQLInterface.workers
     {
         public const int TIMESTEPS_TO_READ_NO_INTERPOLATION = 1;
         public const int TIMESTEPS_TO_READ_WITH_INTERPOLATION = 4;
+        public bool periodicX;
+        public bool periodicY;
+        public bool periodicZ;
 
         TurbulenceOptions.TemporalInterpolation temporalInterpolation;
         long full;
         private GetChannelVelocity turbulence_worker;
 
-        public GetChannelPositionWorker(TurbDataTable setInfo,
+        public GetChannelPositionWorker(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             SqlConnection conn)
         {
+            if (dataset.Contains("channel"))
+            {
+                periodicX = true;
+                periodicY = false;
+                periodicZ = true;
+            }
+            else if (dataset.Contains("bl_zaki"))
+            {
+                periodicX = false;
+                periodicY = false;
+                periodicZ = true;
+            }
+
             this.setInfo = setInfo;
             this.spatialInterp = spatialInterp;
             this.temporalInterpolation = temporalInterpolation;
-            this.turbulence_worker = new GetChannelVelocity(setInfo, spatialInterp, conn);
+            this.turbulence_worker = new GetChannelVelocity(dataset, setInfo, spatialInterp, conn);
 
             this.full = new Morton3D(0, 0, setInfo.GridResolutionX).Key; // == Morton3D(GridResolution-1,GridResolution-1,GridResolution-1) + 1
 
@@ -77,7 +93,7 @@ namespace Turbulence.SQLInterface.workers
             throw new NotImplementedException();
         }
 
-        public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestepRead, int basetime, float time, float endTime, float dt, ref int nextTimeStep, ref float nextTime, ref float priordt)
+        public void GetResult(TurbulenceBlob blob, ref SQLUtility.TrackingInputRequest point, int timestepRead, int basetime, float time, float endTime, float dt, ref int nextTimeStep, ref float nextTime, ref float priordt, double[] grid_points_y, string database)
         {
             double[] velocity = new double[3];
 
@@ -195,12 +211,27 @@ namespace Turbulence.SQLInterface.workers
                     //point.pre_pos.z = point.pos.z + point.vel_inc.z;
 
                     // When tracking, grid->phys correction, subtract grid velocity
-                    point.vel_inc.x = point.vel_inc.x - 0.45f * dt;
+                    if (database.Contains("channel"))
+                    {
+                        point.vel_inc.x = point.vel_inc.x - 0.45f * dt;
+                    }
                     // For channel predictor, if it goes out of domain, stick it to the wall
-                    point.pre_pos.x = point.pos.x + point.vel_inc.x; 
-                    point.pre_pos.y = Math.Max(Math.Min(point.pos.y + point.vel_inc.y, 1.0f), -1.0f);
-                    //point.pre_pos.y = point.pos.y + point.vel_inc.y;
+                    point.pre_pos.x = point.pos.x + point.vel_inc.x;                     
+                    point.pre_pos.y = point.pos.y + point.vel_inc.y;
                     point.pre_pos.z = point.pos.z + point.vel_inc.z;
+
+                    if (!periodicX)
+                    {
+                        point.pre_pos.x = Math.Max(Math.Min(point.pos.x, (float)setInfo.Dx * (setInfo.GridResolutionX - 1)), 0);
+                    }
+                    if (!periodicY)
+                    {
+                        point.pre_pos.y = Math.Max(Math.Min(point.pos.y, (float)grid_points_y[grid_points_y.Length-1]), (float)grid_points_y[0]);
+                    }
+                    if (!periodicZ)
+                    {
+                        point.pre_pos.z = Math.Max(Math.Min(point.pos.z, (float)setInfo.Dz * (setInfo.GridResolutionZ - 1)), 0);
+                    }
 
                     // For channel flow, if predictor is out of domain, throw Exception
                     /*
@@ -216,8 +247,7 @@ namespace Turbulence.SQLInterface.workers
                             + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString());
                     }
                     */
-                    
-                    //int X, Y, Z;
+
                     int X = setInfo.CalcNodeX(point.pre_pos.x, spatialInterp);
                     int Y = setInfo.CalcNodeY(point.pre_pos.y, spatialInterp);
                     int Z = setInfo.CalcNodeZ(point.pre_pos.z, spatialInterp);
@@ -249,22 +279,49 @@ namespace Turbulence.SQLInterface.workers
                 else
                 {
                     // When tracking, grid->phys correction, subtract grid velocity
-                    point.vel_inc.x = point.vel_inc.x - 0.45f * dt;
+                    if (database.Contains("channel"))
+                    {
+                        point.vel_inc.x = point.vel_inc.x - 0.45f * dt;
+                    }
                     // Corrector; update positions
                     point.pos.x = (point.pos.x + point.pre_pos.x + point.vel_inc.x) * 0.5f;
                     point.pos.y = (point.pos.y + point.pre_pos.y + point.vel_inc.y) * 0.5f;
                     point.pos.z = (point.pos.z + point.pre_pos.z + point.vel_inc.z) * 0.5f;
 
-                    // For channel flow, if corrector is out of domain, throw Exception
-                    if (point.pos.y > 1.0 || point.pos.y < -1.0)
+                    if (!periodicX && (point.pos.x > setInfo.Dx * (setInfo.GridResolutionX - 1) || point.pos.x < 0))
                     {
-                        bool condition = point.pos.y < -1.0;
+                        bool condition = point.pos.x < 0;
+                        throw new Exception("Particle left domain on corrector step!\nx:"
+                            + (point.pos.x + 0.45 * endTime).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
+                            + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
+                            + "\nZ-index:" + point.zindex.ToString()
+                            + "\nx:" + (point.pre_pos.x + 0.45 * endTime).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
+                            + "\ndvx:" + (point.vel_inc.x + 0.45 * endTime).ToString() + "dvy:" + point.vel_inc.y.ToString() + "dvz:" + point.vel_inc.z.ToString()
+                            + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString()
+                            + "\nfull server:" + this.full.ToString());
+                    }
+                    // For channel flow, if corrector is out of domain, throw Exception
+                    if (!periodicY && (point.pos.y > grid_points_y[grid_points_y.Length-1] || point.pos.y < grid_points_y[0]))
+                    {
+                        bool condition = point.pos.y < grid_points_y[0];
                         throw new Exception("Particle left domain on corrector step!\nx:"
                             +(point.pos.x+0.45*endTime).ToString()+"y:"+point.pos.y.ToString()+"z:"+point.pos.z.ToString()
                             +"\nCondition:"+condition.ToString()+"\nConnection:"+point.numberOfCubes.ToString()
                             +"\nZ-index:"+point.zindex.ToString()
                             + "\nx:"+(point.pre_pos.x + 0.45 * endTime).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
                             +"\ndvx:"+(point.vel_inc.x + 0.45 * endTime).ToString()+"dvy:" + point.vel_inc.y.ToString()+"dvz:"+point.vel_inc.z.ToString()
+                            + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString()
+                            + "\nfull server:" + this.full.ToString());
+                    }
+                    if (!periodicZ && (point.pos.z > setInfo.Dz * (setInfo.GridResolutionZ - 1) || point.pos.z < 0))
+                    {
+                        bool condition = point.pos.z < 0;
+                        throw new Exception("Particle left domain on corrector step!\nx:"
+                            + (point.pos.x + 0.45 * endTime).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
+                            + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
+                            + "\nZ-index:" + point.zindex.ToString()
+                            + "\nx:" + (point.pre_pos.x + 0.45 * endTime).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
+                            + "\ndvx:" + (point.vel_inc.x + 0.45 * endTime).ToString() + "dvy:" + point.vel_inc.y.ToString() + "dvz:" + point.vel_inc.z.ToString()
                             + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString()
                             + "\nfull server:" + this.full.ToString());
                     }
@@ -464,9 +521,17 @@ namespace Turbulence.SQLInterface.workers
         {
             return turbulence_worker.GetStencilStartZ(z, kernelSize);
         }
+        public int GetStencilEndX(int x, int kernelSize)
+        {
+            return turbulence_worker.GetStencilEndX(x, kernelSize);
+        }
         public int GetStencilEndY(int y, int kernelSize)
         {
             return turbulence_worker.GetStencilEndY(y, kernelSize);
+        }
+        public int GetStencilEndZ(int z, int kernelSize)
+        {
+            return turbulence_worker.GetStencilEndZ(z, kernelSize);
         }
 
     }

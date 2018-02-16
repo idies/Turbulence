@@ -17,7 +17,7 @@
 #include <math.h>
 #include "hdf5.h"
 
-#define H5_GRID_FILE "grid.h5"
+#define H5_GRID_FILE "BL_grid.h5"
 
 /*
  * min()/max() macros copied from linux/kernel.h header
@@ -104,17 +104,17 @@ int main()
 		double *w = (double*)malloc(sizeof(double) * q );
 		
 		// X barycentric weights
-		sprintf( fname, "baryctrwt-x-lag%d.dat", q);
+		sprintf( fname, "BL-baryctrwt-x-lag%d.dat", q);
 		baryctrwt_uniform( q, dx, w );		
 		baryctrwt_uniform_write( fname, q, w );
 		
 		// Z barycentric weights
-		sprintf( fname, "baryctrwt-z-lag%d.dat", q);
+		sprintf( fname, "BL-baryctrwt-z-lag%d.dat", q);
 		baryctrwt_uniform( q, dz, w );		
 		baryctrwt_uniform_write( fname, q, w );
 
 		// Y barycentric weights
-		sprintf( fname, "baryctrwt-y-lag%d.dat", q);
+		sprintf( fname, "BL-baryctrwt-y-lag%d.dat", q);
 		FILE *fid = fopen( fname, "w" );
 		baryctrwt_write_header( fid, q );
 
@@ -156,31 +156,31 @@ int main()
 		
 		// X barycentric weights
 		// first derivative
-		sprintf( fname, "baryctrwt-diffmat-x-r-1-fd%d.dat", q_prime);		
+		sprintf( fname, "BL-baryctrwt-diffmat-x-r-1-fd%d.dat", q_prime);		
 		baryctrwt_diffmat1_uniform( q, i_local, dx, D );		
 		baryctrwt_diffmat_uniform_write( fname, q, D );
 		// second derivative
-		sprintf( fname, "baryctrwt-diffmat-x-r-2-fd%d.dat", q_prime);		
+		sprintf( fname, "BL-baryctrwt-diffmat-x-r-2-fd%d.dat", q_prime);		
 		baryctrwt_diffmat2_uniform( q, i_local, dx, D );		
 		baryctrwt_diffmat_uniform_write( fname, q, D );
 
 
 		// Z barycentric weights
 		// first derivative
-		sprintf( fname, "baryctrwt-diffmat-z-r-1-fd%d.dat", q_prime);		
+		sprintf( fname, "BL-baryctrwt-diffmat-z-r-1-fd%d.dat", q_prime);		
 		baryctrwt_diffmat1_uniform( q, i_local, dz, D );		
 		baryctrwt_diffmat_uniform_write( fname, q, D );
 		// second derivative
-		sprintf( fname, "baryctrwt-diffmat-z-r-2-fd%d.dat", q_prime);		
+		sprintf( fname, "BL-baryctrwt-diffmat-z-r-2-fd%d.dat", q_prime);		
 		baryctrwt_diffmat2_uniform( q, i_local, dz, D );		
 		baryctrwt_diffmat_uniform_write( fname, q, D );
 
 		free(D);
 
 		// Y barycentric weights
-		sprintf( fname, "baryctrwt-diffmat-y-r-1-fd%d.dat", q_prime);		
+		sprintf( fname, "BL-baryctrwt-diffmat-y-r-1-fd%d.dat", q_prime);		
 		FILE *fid1 = fopen( fname, "w" );
-		sprintf( fname, "baryctrwt-diffmat-y-r-2-fd%d.dat", q_prime);		
+		sprintf( fname, "BL-baryctrwt-diffmat-y-r-2-fd%d.dat", q_prime);		
 		FILE *fid2 = fopen( fname, "w" );
 
 		// open the output files

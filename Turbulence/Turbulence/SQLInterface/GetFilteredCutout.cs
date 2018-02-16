@@ -15,6 +15,7 @@ public partial class StoredProcedures
         string dbname,
         string codedb,
         string turbinfodb,
+        string turbinfoserver,
         short datasetID,
         string field,
         int blobDim, 
@@ -32,17 +33,22 @@ public partial class StoredProcedures
             SqlDataRecord record = new SqlDataRecord(new SqlMetaData("data", SqlDbType.VarBinary, -1));
             SqlConnection contextConn;
             contextConn = new SqlConnection("context connection=true");
-            contextConn.Open();
+            //contextConn.Open();
 
             int[] coordinates = new int[6];
             ParseQueryBox(QueryBox, coordinates);
 
-            TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, contextConn);
-            contextConn.Close();
+            TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
+            TurbDataTable table = TurbDataTable.GetTableInfo(serverName, dbname, field, blobDim, serverinfo);
+            //contextConn.Close();
 
             //GetMHDBoxFilterSV worker = new GetMHDBoxFilterSV(table, filter_width);
             GetMHDBoxFilter worker = new GetMHDBoxFilter(table, filter_width);
-            worker.GetData(datasetID, turbinfodb, timestep, coordinates);
+            //System.IO.StreamWriter file = new System.IO.StreamWriter(@"C:\www\zindexlistdb.txt", true);
+            //DateTime start = DateTime.Now;
+            worker.GetData(datasetID, serverinfo, timestep, coordinates, table.dbtype);
+            //file.WriteLine(DateTime.Now - start);
+            //file.Close();
             cutout = worker.GetResult(coordinates, x_stride, y_stride, z_stride);
 
             // Populate the record
