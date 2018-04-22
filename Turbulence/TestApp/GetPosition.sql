@@ -9,19 +9,19 @@ CREATE TABLE [dbo].[#temp_zw] (
     [z]      REAL   NULL
 );
 INSERT INTO [dbo].[#temp_zw]  
-VALUES (0, 0, 0.1, -1, 0); 
+VALUES (0, 543279, 3.14, 1, 3.14);
 
 SELECT reqseq, zindex, x, y, z FROM #temp_zw
 
 DECLARE	@return_value Int
 
-EXEC	@return_value = [dbo].[ExecuteParticleTrackingChannelWorkerTaskParallel]
+EXEC	@return_value = [dbo].[ExecuteParticleTrackingChannelDBWorkerTaskParallel]
 		@codedb = N'turbdev_zw',
 		@turbinfoDB = N'turbinfo_test',
 		@turbinfoServer = N'sciserver02',
 		@localServer = N'dsp012',
-		@localDatabase = N'channeldb06',
-		@datasetID = 6,
+		@localDatabase = N'bl_zakidb001',
+		@datasetID = 12,
 		@tableName = N'vel',
 		@atomDim = 8,
 		@workerType = 22,
@@ -29,9 +29,9 @@ EXEC	@return_value = [dbo].[ExecuteParticleTrackingChannelWorkerTaskParallel]
 		@temporalInterp = 1,
 		@inputSize = 1,
 		@tempTable = N'#temp_zw',
-		@time = 0.001,
-		@endTime = 0.002,
-		@dt = 0.001
+		@time = 0,
+		@endTime = 1,
+		@dt = 0.25
 SELECT	@return_value as 'Return Value'
 
 GO

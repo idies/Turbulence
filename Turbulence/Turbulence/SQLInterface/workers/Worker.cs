@@ -161,7 +161,7 @@ namespace Turbulence.SQLInterface
         {
             //string turbinfoserver = "gw01"; //This shouldn't be hardcoded.  Replace with server selector in the future.
             SqlConnection turbInfoConn = new SqlConnection(
-                String.Format("Server={0};Database={1};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", serverinfo.infoDB_server, serverinfo.infoDB));
+                String.Format("Server={0};Database={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;", serverinfo.infoDB_server, serverinfo.infoDB));
             turbInfoConn.Open();
             SqlConnection sqlConn;
 
@@ -198,7 +198,7 @@ namespace Turbulence.SQLInterface
 
                             long zindex = new Morton3D(wrapped_local_z, wrapped_local_y, wrapped_local_x);
                             SqlCommand cmd = turbInfoConn.CreateCommand();
-                            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
+                            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, HotSpareActive, HotSpareMachineName " +
                                 "from {0}..DatabaseMap where DatasetID = @datasetID " +
                                 "and minLim <= @zindex and maxLim >= @zindex and minTime <= @timestep and maxTime >= @timestep", serverinfo.infoDB);
                             cmd.Parameters.AddWithValue("@datasetID", datasetID);
@@ -213,14 +213,22 @@ namespace Turbulence.SQLInterface
                                     datasetID, zindex));
                             }
                             reader.Read();
-                            string serverName = reader.GetString(0);
+                            string serverName;
+                            if (!reader.GetBoolean(3)) //HotSpareActive=false
+                            {
+                                serverName = reader.GetString(0);
+                            }
+                            else
+                            {
+                                serverName = reader.GetString(4);
+                            }
                             string dbname = reader.GetString(1);
                             //string codedb = reader.GetString(2);
                             reader.Close();
                             reader.Dispose();
 
                             sqlConn = new SqlConnection(
-                                String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;Connect Timeout = 600;",
+                                String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;Connect Timeout = 600;",
                                 serverName, serverinfo.codeDB));
                             sqlConn.Open();
 
@@ -387,7 +395,7 @@ namespace Turbulence.SQLInterface
             //string turbinfoserver = "gw01"; //This shouldn't be hardcoded.  Replace with server selector in the future.
             //turbinfoserver = "mydbsql";
             SqlConnection turbInfoConn = new SqlConnection(
-                String.Format("Server={0};Database={1};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", serverinfo.infoDB_server, serverinfo.infoDB));
+                String.Format("Server={0};Database={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;", serverinfo.infoDB_server, serverinfo.infoDB));
 
             //SqlConnection sqlConn;
 
@@ -456,10 +464,10 @@ namespace Turbulence.SQLInterface
             for (int i = 0; i < dbname.Count; i++)
             {
                 sqlConns[i] = new SqlConnection(
-                                String.Format("Data Source={0};Initial Catalog={1};Asynchronous Processing=true;Trusted_Connection=True;Pooling=false;Connect Timeout = 600;",
+                                String.Format("Data Source={0};Initial Catalog={1};Asynchronous Processing=true;User ID='turbquery';Password='aa2465ways2k';Pooling=false;Connect Timeout = 600;",
                                 serverName[i], serverinfo.codeDB));
                 sqlConns[i].Open();
-                string pathSource = SQLUtility.getDBfilePath(dbname[i], timestep, table.DataName, sqlConns[i]);
+                string pathSource = SQLUtility.getDBfilePath(dbname[i], timestep, table.DataName, sqlConns[i], serverName[i]);
 
                 List<Morton3D> zindexQueryList = new List<Morton3D>();
                 string zindexQuery = "[";

@@ -41,9 +41,9 @@ public partial class StoredProcedures
         SqlConnection contextConn;
         string connString;
         if (serverName.Contains("_"))
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
         else
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
 
@@ -117,7 +117,7 @@ public partial class StoredProcedures
             TurbulenceBlob atom = new TurbulenceBlob(table);
             //string pathSource = "e:\\filedb\\isotropic4096";
             //pathSource = pathSource + "\\" + dbname + "_" + timestep_int + ".bin";
-            string pathSource = SQLUtility.getDBfilePath(dbname, timestep_int, table.DataName, standardConn);
+            string pathSource = SQLUtility.getDBfilePath(dbname, timestep_int, table.DataName, standardConn, serverName);
             FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
             //string[] tester = { "In filedb..."};
             //System.IO.File.WriteAllLines(@"e:\filedb\debug.txt", tester);

@@ -63,19 +63,15 @@ public partial class StoredProcedures
 
         TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
 
-        String cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverinfo.infoDB_server, serverinfo.infoDB);
+        String cString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverinfo.infoDB_server, serverinfo.infoDB);
         SqlConnection turbinfoConn = new SqlConnection(cString);
         turbinfoConn.Open();
         SqlCommand cmd = turbinfoConn.CreateCommand();
-        string DBMapTable = "DatabaseMap";
-        //if (development == true)
-        //{
-        //    DBMapTable = "DatabaseMapTest";
-        //}
-        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime " +
-            "from {0}..{1} where DatasetID = @datasetID " +
-            "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName " +
-            "order by minLim", serverinfo.infoDB, DBMapTable);
+        //string DBMapTable = "DatabaseMap";
+        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime, dbtype, HotSpareActive, HotSpareMachineName " +
+            "from {0}..DatabaseMap where DatasetID = @datasetID " +
+            "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, dbtype, HotSpareActive, HotSpareMachineName " +
+            "order by minLim", serverinfo.infoDB);
         cmd.Parameters.AddWithValue("@datasetID", datasetID);
         using (SqlDataReader reader = cmd.ExecuteReader())
         {
@@ -83,18 +79,18 @@ public partial class StoredProcedures
             {
                 while (reader.Read())
                 {
-                    String serverName = reader.GetString(0);
+                    String serverName;
+                    if (!reader.GetBoolean(8)) //HotSpareActive=false
+                    {
+                        serverName = reader.GetString(0);
+                    }
+                    else
+                    {
+                        serverName = reader.GetString(9);
+                    }
                     String DBName = reader.GetString(1);
                     servers.Add(serverName);
                     databases.Add(DBName);
-                    //if (development == false)
-                    //{
-                    //    codeDatabase.Add(reader.GetString(2));
-                    //}
-                    //else
-                    //{
-                    //    codeDatabase.Add("turblib_test");
-                    //}
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
                     int minTime = reader.GetInt32(5);
@@ -107,7 +103,7 @@ public partial class StoredProcedures
                     }
                     else
                     {
-                        connections.Add(new SqlConnection(String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, DBName.Substring(0, DBName.Length - 3))));
+                        connections.Add(new SqlConnection(String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, DBName.Substring(0, DBName.Length - 3))));
                     }
                 }
             }
@@ -207,7 +203,7 @@ public partial class StoredProcedures
         //cmd.ExecuteNonQuery();
 
         SqlConnection standardConn;
-        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", localServerCleanName, localDatabase.Substring(0,localDatabase.Length-3));
+        string connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", localServerCleanName, localDatabase.Substring(0,localDatabase.Length-3));
         standardConn = new SqlConnection(connString);
         standardConn.Open();
 
@@ -303,10 +299,10 @@ public partial class StoredProcedures
                             zlist = SQLUtility.fileDB2zlistTable(databases[s], standardConn);
                         }
 
-                        string pathSource0 = SQLUtility.getDBfilePath(databases[s], timestep0, table.DataName, connections[s]);
-                        string pathSource1 = SQLUtility.getDBfilePath(databases[s], timestep1, table.DataName, connections[s]);
-                        string pathSource2 = SQLUtility.getDBfilePath(databases[s], timestep2, table.DataName, connections[s]);
-                        string pathSource3 = SQLUtility.getDBfilePath(databases[s], timestep3, table.DataName, connections[s]);
+                        string pathSource0 = SQLUtility.getDBfilePath(databases[s], timestep0, table.DataName, connections[s], localServer);
+                        string pathSource1 = SQLUtility.getDBfilePath(databases[s], timestep1, table.DataName, connections[s], localServer);
+                        string pathSource2 = SQLUtility.getDBfilePath(databases[s], timestep2, table.DataName, connections[s], localServer);
+                        string pathSource3 = SQLUtility.getDBfilePath(databases[s], timestep3, table.DataName, connections[s], localServer);
                         FileStream filedb0 = null, filedb1 = null, filedb2 = null, filedb3 = null;
 
                         try

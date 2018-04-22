@@ -61,9 +61,9 @@ public partial class StoredProcedures
 
         string connString;
         if (serverName.Contains("_"))
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
         else
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
 
         contextConn = new SqlConnection("context connection=true");
@@ -143,7 +143,7 @@ public partial class StoredProcedures
 
             //string pathSource = "e:\\filedb\\isotropic4096";
             //pathSource = pathSource + "\\" + dbname + "_" + timestep_int + ".bin";
-            string pathSource = SQLUtility.getDBfilePath(dbname, timestep_int, table.DataName, standardConn);
+            string pathSource = SQLUtility.getDBfilePath(dbname, timestep_int, table.DataName, standardConn, serverName);
             FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
             //string[] tester = { "In filedb..."};
             //System.IO.File.WriteAllLines(@"e:\filedb\debug.txt", tester);
@@ -304,10 +304,10 @@ public partial class StoredProcedures
                 zlist = SQLUtility.fileDB2zlistTable(dbname, standardConn);
             }
 
-            string pathSource0 = SQLUtility.getDBfilePath(dbname, timestep0, table.DataName, standardConn);
-            string pathSource1 = SQLUtility.getDBfilePath(dbname, timestep1, table.DataName, standardConn);
-            string pathSource2 = SQLUtility.getDBfilePath(dbname, timestep2, table.DataName, standardConn);
-            string pathSource3 = SQLUtility.getDBfilePath(dbname, timestep3, table.DataName, standardConn);
+            string pathSource0 = SQLUtility.getDBfilePath(dbname, timestep0, table.DataName, standardConn, serverName);
+            string pathSource1 = SQLUtility.getDBfilePath(dbname, timestep1, table.DataName, standardConn, serverName);
+            string pathSource2 = SQLUtility.getDBfilePath(dbname, timestep2, table.DataName, standardConn, serverName);
+            string pathSource3 = SQLUtility.getDBfilePath(dbname, timestep3, table.DataName, standardConn, serverName);
             FileStream filedb0 = null, filedb1 = null, filedb2 = null, filedb3 = null;
 
             try
@@ -568,7 +568,7 @@ public partial class StoredProcedures
         TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
         SqlConnection standardConn;
         SqlConnection contextConn;
-        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
+        string connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
 
@@ -676,7 +676,7 @@ public partial class StoredProcedures
             /*We need a better way of doing this--not hardcoded for sure! */
             //string pathSource = "e:\\filedb\\isotropic4096";
             //pathSource = pathSource + "\\" + dbname + "_" + timestep_int + ".bin";
-            string pathSource = SQLUtility.getDBfilePath(dbname, timestep_int, table.DataName, standardConn);
+            string pathSource = SQLUtility.getDBfilePath(dbname, timestep_int, table.DataName, standardConn, serverName);
             FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
             //string[] tester = { "In filedb..." };
             //System.IO.File.WriteAllLines(@"e:\filedb\debug.txt", tester);

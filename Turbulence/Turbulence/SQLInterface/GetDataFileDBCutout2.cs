@@ -46,7 +46,7 @@ public partial class StoredProcedures
         byte[] cutout;
 
         connection.Open();
-        GetFiledbCutout2(table, dbname, timestep, coordinates, connection, out cutout);
+        GetFiledbCutout2(table, dbname, timestep, coordinates, connection, serverName, out cutout);
 
         // Populate the record
         /* quick mod send last few bytes to test speed, a 512 cube */
@@ -116,7 +116,7 @@ public partial class StoredProcedures
         }
     }
 
-    private static void GetFiledbCutout2(TurbDataTable table, string dbname, int timestep, int[] coordinates, SqlConnection connection, out byte[] cutout)
+    private static void GetFiledbCutout2(TurbDataTable table, string dbname, int timestep, int[] coordinates, SqlConnection connection, string serverName, out byte[] cutout)
     {
         int x_width, y_width, z_width, x, y, z;
         x_width = coordinates[3] - coordinates[0];
@@ -134,7 +134,7 @@ public partial class StoredProcedures
         /*File Db code*/
         //string pathSource = "e:\\filedb\\isotropic4096"; //TODO no hardcode
         //pathSource = pathSource + "\\" + dbname + "_" + timestep + ".bin";
-        string pathSource = SQLUtility.getDBfilePath(dbname, timestep, table.TableName, connection);
+        string pathSource = SQLUtility.getDBfilePath(dbname, timestep, table.TableName, connection, serverName);
         //FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
 
         /* TODO: look for smaller requests (128 cube or smaller), and do file seek instead. Looks to be about 4096 rows*/

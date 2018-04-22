@@ -303,7 +303,7 @@ namespace Turbulence.TurbLib
 
             */
             /*New way-- query the databasemap table */
-            String cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverinfo.infoDB_server, serverinfo.infoDB);
+            String cString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverinfo.infoDB_server, serverinfo.infoDB);
             SqlConnection turbinfoConn = new SqlConnection(cString);
             turbinfoConn.Open();
             SqlCommand command = turbinfoConn.CreateCommand();
@@ -456,7 +456,7 @@ namespace Turbulence.TurbLib
                 {
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.001f, 0, 7, 1, 0, 2);
+                        0.25f, 0, 4700, 1, 0, 2);
                 }
                 else if (dbName.Contains("mixing"))
                 {
@@ -535,7 +535,7 @@ namespace Turbulence.TurbLib
                 {
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.001f, 0, 7, 1, 0, 2);
+                        0.25f, 0, 4700, 1, 0, 2);
                 }
                 else if (dbName.Contains("mixing"))
                 {
@@ -761,7 +761,6 @@ namespace Turbulence.TurbLib
             }
         }
 
-        // 0.0065f, 132005, 142000, 5, 132005
         public ChannelFlowDataTable(string serverName, string dbName, TurbServerInfo serverinfo, string dataName,
             string tableName, int blobDim,
             int edgeRegion,
@@ -779,8 +778,8 @@ namespace Turbulence.TurbLib
             else if (dbName.Contains("bl_zaki"))
             {
                 this.gridResolution = new int[] { 2048, 224, 3320 };
-                this.dx = 0.292210466252391;
-                this.dz = 0.117187500000000;
+                this.dx = 0.292210466240511;
+                this.dz = 0.117244748412311;
             }
 
             // dy is not uniform for the channel flow DB

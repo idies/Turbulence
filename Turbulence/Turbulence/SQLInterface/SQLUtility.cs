@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Turbulence.TurbLib;
 using Turbulence.SciLib;
+using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using Microsoft.SqlServer.Server;
@@ -957,7 +958,7 @@ namespace Turbulence.SQLInterface
             return times;
         }*/
 
-        public static string getDBfilePath(string dbname, int timestep, string DataName, SqlConnection sqlConn)
+        public static string getDBfilePath(string dbname, int timestep, string DataName, SqlConnection sqlConn, string serverName)
         {
             //SqlConnection contextConn = new SqlConnection("context connection=true");
             try
@@ -965,10 +966,31 @@ namespace Turbulence.SQLInterface
                 //contextConn.Open();
                 SqlCommand cmd_path = sqlConn.CreateCommand();
                 cmd_path.CommandText = String.Format("select Path " +
-                    "from {0}..DataPath where ProductionDatabaseName = @dbname ", dbname.Substring(0, dbname.Length - 3));
+                    "from {0}..DataPath " +
+                    "where ProductionDatabaseName = @dbname " +
+                    "AND minTime <= @timestep AND @timestep <= maxTime AND ProductionMachineName=@servername",
+                    dbname.Substring(0, dbname.Length - 3));
                 cmd_path.Parameters.AddWithValue("@dbname", dbname);
+                cmd_path.Parameters.AddWithValue("@timestep", timestep);
+                if (sqlConn.ConnectionString.ToLower().Contains("context connection"))
+                {
+                    if (serverName.Contains("_"))
+                    {
+                        cmd_path.Parameters.AddWithValue("@servername", serverName.Remove(serverName.IndexOf("_")));
+                    }
+                    else
+                    {
+                        cmd_path.Parameters.AddWithValue("@servername", serverName);
+                    }
+                }
+                else
+                {
+                    cmd_path.Parameters.AddWithValue("@servername", sqlConn.DataSource);
+                }
                 cmd_path.CommandTimeout = 600;
-
+                //SqlDataSourceEnumerator instance =
+                //    SqlDataSourceEnumerator.Instance;
+                //System.Data.DataTable table = instance.GetDataSources();
                 string pathSource = "";
                 using (SqlDataReader reader = cmd_path.ExecuteReader())
                 {
@@ -1005,7 +1027,7 @@ namespace Turbulence.SQLInterface
             out List<string> serverName, out List<string> dbname, out List<long> minLim, out List<long> maxLim)
         {
             SqlConnection turbInfoConn = new SqlConnection(
-                String.Format("Server={0};Database={1};Trusted_Connection=True;Pooling=false; Connect Timeout = 600;", serverinfo.infoDB_server, serverinfo.infoDB));
+                String.Format("Server={0};Database={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;", serverinfo.infoDB_server, serverinfo.infoDB));
             
             /*then, we find the path/dbname need to be read and the corresponding z-index Limit*/
             serverName = new List<string>();
@@ -1018,7 +1040,7 @@ namespace Turbulence.SQLInterface
             for (int i = 0; i < zindex.Count; i++)
             {
                 SqlCommand cmd = turbInfoConn.CreateCommand();
-                cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minLim, maxLim " +
+                cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minLim, maxLim, HotSpareActive, HotSpareMachineName  " +
                     "from {0}..DatabaseMap where DatasetID = @datasetID " +
                     "and minLim <= @zindex and @zindex <= maxLim  and minTime <= @timestep and @timestep <= maxTime", serverinfo.infoDB);
                 cmd.Parameters.AddWithValue("@datasetID", datasetID);
@@ -1034,7 +1056,15 @@ namespace Turbulence.SQLInterface
                         datasetID, zindex));
                 }
                 reader.Read();
-                string serverName_add = reader.GetString(0);
+                string serverName_add;
+                if (!reader.GetBoolean(5)) //HotSpareActive=false
+                {
+                    serverName_add = reader.GetString(0);
+                }
+                else
+                {
+                    serverName_add = reader.GetString(6);
+                }                
                 string dbname_add = reader.GetString(1);
                 string codedb_add = reader.GetString(2);
                 long minLim_add = reader.GetInt64(3);

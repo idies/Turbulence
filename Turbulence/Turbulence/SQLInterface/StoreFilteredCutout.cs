@@ -43,7 +43,7 @@ public partial class StoredProcedures
             SqlConnection standardConn;
 
             string cString;
-            cString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, outputdb);
+            cString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, outputdb);
             standardConn = new SqlConnection(cString);
 
             TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);

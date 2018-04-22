@@ -20,17 +20,9 @@ public partial class announcements : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-<<<<<<< HEAD
-    protected global::System.Web.UI.WebControls.Literal announcement;
-    protected void Page_Load(object sender, EventArgs e)
-        {
-            updateAnnouncements();
-        }
-=======
         const string infodb_string = TurbulenceService.TurbulenceService.infodb_string;
         updateAnnouncements(infodb_string);
     }
->>>>>>> FileDBmerg2
 
     private void updateAnnouncements(string infodb_string)
     {

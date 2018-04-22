@@ -111,19 +111,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Test Scripts\Test.sql">
-      <SubType>Content</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <PreDeploy Include="PreDeployScript.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <PostDeploy Include="PostDeployScript.sql" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Properties\" />
-    <Folder Include="Test Scripts\" />
     <Folder Include="Service References\" />
   </ItemGroup>
   <ItemGroup>

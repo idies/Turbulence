@@ -37,7 +37,7 @@ public partial class StoredProcedures
         SqlConnection standardConn;
         SqlConnection contextConn;
         string connString;
-        connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
+        connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
 

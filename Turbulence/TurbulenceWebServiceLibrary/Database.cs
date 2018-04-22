@@ -178,8 +178,8 @@ namespace TurbulenceService
                     break;
                 case DataInfo.DataSets.bl_zaki:
                     this.gridResolution = new int[] { 2048, 224, 3320 };
-                    this.dx = 0.292210466252391;
-                    this.dz = 0.117187500000000;
+                    this.dx = 0.292210466240511;
+                    this.dz = 0.117244748412311;
                     gridPointsY = new GridPoints(this.GridResolutionY);
                     channel_grid = true;
                     // We need to retrieve the y grid values from the database.
@@ -265,7 +265,7 @@ namespace TurbulenceService
                     this.timeOff = 1;
                     break;
                 case DataInfo.DataSets.bl_zaki:
-                    this.Dt = 0.001F;
+                    this.Dt = 0.25F;
                     this.timeInc = 1;
                     break;
                 //case DataInfo.DataSets.rmhd:
@@ -317,24 +317,20 @@ namespace TurbulenceService
         /// Initialize servers, connections and input data tables.
         /// </summary>
         /// <param name="worker">Worker type used</param>
-        public void selectServers(DataInfo.DataSets dataset_enum)
+        /*public void selectServers(DataInfo.DataSets dataset_enum)
         {
             String dataset = dataset_enum.ToString();
-            /*We use the new select server function to get the first available server */
+            // We use the new select server function to get the first available server 
             String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200; Connection Timeout=30",
                 this.infodb_server, this.infodb);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
-            string DBMapTable = "DatabaseMap";
-            //if (this.development == true)
-            //{
-            //    DBMapTable = "DatabaseMapTest";
-            //}
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime " +
-                "from {0}..{1} where DatasetName = @dataset " + 
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime " +
-                "order by minLim", infodb, DBMapTable);
+            //string DBMapTable = "DatabaseMap";
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime, HotSpareActive, HotSpareMachineName " +
+                "from {0}..DatabaseMap where DatasetName = @dataset " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime, HotSpareActive, HotSpareMachineName " +
+                "order by minLim", infodb);
             cmd.Parameters.AddWithValue("@dataset", dataset);
             SqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
@@ -345,7 +341,14 @@ namespace TurbulenceService
                 serverBoundaries.Clear();
                 while (reader.Read())
                 {
-                    servers.Add(reader.GetString(0));
+                    if (!reader.GetBoolean(8)) //HotSpareActive=false
+                    {
+                        servers.Add(reader.GetString(0));
+                    }
+                    else
+                    {
+                        servers.Add(reader.GetString(9));
+                    }
                     databases.Add(reader.GetString(1));
                     if (this.development == false)
                     {
@@ -390,14 +393,14 @@ namespace TurbulenceService
                 //this.tempTableNames[i] = "##" + Guid.NewGuid().ToString().Replace("-","");
             }
         }
-
+*/
 
         /// <summary>
         /// Initialize servers, connections and input data tables.
         /// </summary>
         /// <param name="num_virtual_servers">Number of virtual servers to use. Currently assumes this is multiple of 2.</param>
         public void selectServers(DataInfo.DataSets dataset_enum, int num_virtual_servers)
-        {            
+        {
             String dataset = dataset_enum.ToString();
             String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
                             this.infodb_server, this.infodb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
@@ -407,15 +410,11 @@ namespace TurbulenceService
             conn.Open();
 
             SqlCommand cmd = conn.CreateCommand();
-            string DBMapTable = "DatabaseMap";
-            //if (this.development == true)
-            //{
-            //    DBMapTable = "DatabaseMapTest";
-            //}
-            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime, dbType " +
-                "from {0}..{1} where DatasetName = @dataset " +
-                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime, dbType " +
-                "order by minLim", infodb, DBMapTable);
+            //string DBMapTable = "DatabaseMap";
+            cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, minTime, maxTime, dbType, HotSpareActive, HotSpareMachineName " +
+                "from {0}..DatabaseMap where DatasetName = @dataset " +
+                "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, minTime, maxTime, dbType, HotSpareActive, HotSpareMachineName " +
+                "order by minLim", infodb);
             cmd.Parameters.AddWithValue("@dataset", dataset);
 
             SqlDataReader reader = cmd.ExecuteReader();
@@ -426,10 +425,18 @@ namespace TurbulenceService
                 databases.Clear();
                 codeDatabase.Clear();
                 serverBoundaries.Clear();
-               
+
                 while (reader.Read())
                 {
-                    servers.Add(reader.GetString(0));
+                    if (!reader.GetBoolean(8)) //HotSpareActive=false
+                    {
+                        lastserver = reader.GetString(0);
+                    }
+                    else
+                    {
+                        lastserver = reader.GetString(9);
+                    }
+                    servers.Add(lastserver);
                     databases.Add(reader.GetString(1));
                     if (this.development == false)
                     {
@@ -441,12 +448,12 @@ namespace TurbulenceService
                     }
                     long minLim = reader.GetSqlInt64(3).Value;
                     long maxLim = reader.GetSqlInt64(4).Value;
-                    int minTime = reader.GetSqlInt32(5).Value; 
+                    int minTime = reader.GetSqlInt32(5).Value;
                     int maxTime = reader.GetSqlInt32(6).Value;
                     this.dbtype = reader.GetSqlInt32(7).Value; //Not sure we should do this--this assumes all dbs are the same type.  Fix this if we have hybrid filedb/database types.
                     /* All servers are added, and then ones in range are selected from this list later */
                     serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
-                    lastserver = reader.GetString(0);
+
                 }
             }
             else
@@ -455,8 +462,8 @@ namespace TurbulenceService
             }
             //throw new Exception("Found server: " + lastserver + " from server " + cString);
             reader.Close();
-            conn.Close(); 
-            
+            conn.Close();
+
             if (num_virtual_servers > 1)
             {
                 // Each virtual server will be responsible for some part of the data stored on the physical server
@@ -727,6 +734,11 @@ namespace TurbulenceService
         public int GetIntLocX(float xp, bool round)
         {
             int x;
+            if (databases[0].Contains("bl_zaki") && (xp < 0.0f || xp > 1000.065033624836 - 30.218496172581567))
+            {
+                throw new Exception(String.Format("The given x value({0}) is outside of the allowed range [{1}, {2}]!", xp + 30.218496463124346f,
+                    30.218496172581567, 1000.065033624836));
+            }
             if (round)
             {
                 x = Turbulence.SciLib.LagInterpolation.CalcNodeWithRound(xp, dx);
@@ -735,13 +747,6 @@ namespace TurbulenceService
             {
                 x = Turbulence.SciLib.LagInterpolation.CalcNode(xp, dx);
             }
-            if (databases[0].Contains("bl_zaki") && (x < 0 || x > GridResolutionX - 1))
-            {
-                throw new Exception(String.Format("The given x value({0}) is outside of the allowed range [{1},{2}]!", xp,
-                    0, dx * (GridResolutionX - 1)));                
-            }
-
-
             return ((x % GridResolutionX) + GridResolutionX) % GridResolutionX;
         }
         /// <summary>
@@ -760,7 +765,12 @@ namespace TurbulenceService
                 else
                     //y = gridPointsY.GetCellIndex(yp, 0.0); //TODO: should I correct here?
                     y = gridPointsY.GetCellIndex(yp);
-                if (y < 0 || y > GridResolutionY - 1)
+                if (databases[0].Contains("bl_zaki") && (yp < 0.0f || y > GridResolutionY - 1))
+                {
+                    throw new Exception(String.Format("The given y value({0}) is outside of the allowed range [{1},{2}]!", yp,
+                        0.0f, gridPointsY.GetGridValue(GridResolutionY - 1)));
+                }
+                else if (databases[0].Contains("channel") && (y < 0 || y > GridResolutionY - 1))
                 {
                     throw new Exception(String.Format("The given y value({0}) is outside of the allowed range [{1},{2}]!", yp,
                         gridPointsY.GetGridValue(0), gridPointsY.GetGridValue(GridResolutionY - 1)));
@@ -827,13 +837,13 @@ namespace TurbulenceService
                                 if (this.connections[i] == null)
                                 {
                                     string server_name = this.servers[i];
-                                    
+
                                     if (server_name.Contains("_"))
                                         server_name = server_name.Remove(server_name.IndexOf("_"));
                                     string dbname = "";
-                                    if (this.dbtype==0)  /*This is a hack to make sure we don't connect to the database in databasemap table since filedb doesn't actually have a db*/
+                                    if (this.dbtype == 0)  /*This is a hack to make sure we don't connect to the database in databasemap table since filedb doesn't actually have a db*/
                                     {
-                                        dbname = databases[i];                                        
+                                        dbname = databases[i];
                                     }
                                     else
                                     {
@@ -912,7 +922,7 @@ namespace TurbulenceService
                                 GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], x_stride);
                                 GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref serverY[i], ref serverYwidth[i], y_stride);
                                 GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i], z_stride);
-                            
+
                                 //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
                                 Morton3D access;
                                 for (int x_i = serverX[i] & (-64); x_i <= serverX[i] + serverXwidth[i] - atomDim; x_i += 64)
@@ -985,7 +995,7 @@ namespace TurbulenceService
                 string dbname = "";
                 if (this.dbtype == 0)  /*This is a hack to make sure we don't connect to the database in databasemap table since filedb doesn't actually have a db*/
                 {
-                    dbname = databases[server]; 
+                    dbname = databases[server];
                 }
                 else
                 {
@@ -1194,7 +1204,7 @@ namespace TurbulenceService
                     bit = sfc.X / 128 + sfc.Y / 128 * num_x_regions + sfc.Z / 128 * num_x_regions * num_y_regions;
                 }
                 //TODO: what is this value?
-                else if (GridResolutionX==4096) 
+                else if (GridResolutionX == 4096)
                 {
                     bit = (int)(sfc / (long)(1 << 27));
                 }
@@ -1224,7 +1234,7 @@ namespace TurbulenceService
             int startz = Z - kernelSize / 2 + 1, starty = Y - kernelSize / 2 + 1, startx = X - kernelSize / 2 + 1;
             int endz = Z + kernelSize / 2, endy = Y + kernelSize / 2, endx = X + kernelSize / 2;
             //Convert time for server
-            int t = (int)(time / this.Dt);
+            int t = (int)Math.Round(time / this.Dt);
             // The last two conditions have to do with wrap around
             // The beginning and end of each kernel may be outside of the grid space
             // Due to periodicity in space these locations are going to be wrapped around
@@ -1271,7 +1281,7 @@ namespace TurbulenceService
             int X = GetIntLocX(xp, round);
             Morton3D zindex = new Morton3D(Z, Y, X);
             //Convert time for server
-            int t = (int)(time/this.Dt);
+            int t = (int)Math.Round(time / this.Dt);
 
             int startz = GetKernelStart(Z, kernelSizeZ), starty = GetKernelStart(Y, kernelSizeY), startx = GetKernelStart(X, kernelSizeX);
             int endz = startz + kernelSizeZ - 1, endy = starty + kernelSizeY - 1, endx = startx + kernelSizeX - 1;
@@ -1285,7 +1295,7 @@ namespace TurbulenceService
             for (int i = 0; i < this.serverCount; i++)
             {   //Added due to temporal boundaries of servers
                 if (serverBoundaries[i].minTime <= t && serverBoundaries[i].maxTime >= t)
-                    {
+                {
                     if ((serverBoundaries[i].startx <= startx && startx <= serverBoundaries[i].endx) ||
                         (serverBoundaries[i].startx <= endx && endx <= serverBoundaries[i].endx) ||
                         (startx < serverBoundaries[i].startx && serverBoundaries[i].endx < endx) ||
@@ -1338,7 +1348,7 @@ namespace TurbulenceService
             endx = ((endx % GridResolutionX) + GridResolutionX) % GridResolutionX;
             endy = ((endy % GridResolutionY) + GridResolutionY) % GridResolutionY;
             endz = ((endz % GridResolutionZ) + GridResolutionZ) % GridResolutionZ;
-            int t = (int)(time / this.Dt);int count1 = 0;
+            int t = (int)Math.Round(time / this.Dt); int count1 = 0;
             // The last two conditions have to do with wrap around
             // The beginning and end of each kernel may be outside of the grid space
             // Due to periodicity in space these locations are going to be wrapped around
@@ -1459,6 +1469,10 @@ namespace TurbulenceService
                 if (databases[0].Contains("channel"))
                 {
                     points[i].x -= 0.45f * time;
+                }
+                if (databases[0].Contains("bl_zaki"))
+                {
+                    points[i].x -= 30.218496172581567f;
                 }
                 AddWorkloadPointToMultipleServers(i, points[i].z, points[i].y, points[i].x, round, kernelSizeZ, kernelSizeY, kernelSizeX, time);
             }
@@ -1587,7 +1601,7 @@ namespace TurbulenceService
                 serverBoundaries[i].endy = last_zindex.Y;
                 serverBoundaries[i].startz = first_zindex.Z;
                 serverBoundaries[i].endz = last_zindex.Z;
-                
+
             }
 
             for (int i = 0; i < points.Length; i++)
@@ -1608,15 +1622,19 @@ namespace TurbulenceService
         {
             for (int i = 0; i < points.Length; i++)
             {
-                if (channel_grid)
+                if (databases[0].Contains("channel"))
                 {
                     points[i].x -= 0.45f * time;
+                }
+                if (databases[0].Contains("bl_zaki"))
+                {
+                    points[i].x -= 30.218496172581567f;
                 }
                 int Z = GetIntLocZ(points[i].z, round);
                 int Y = GetIntLocY(points[i].y, round, kernelSizeY);
                 int X = GetIntLocX(points[i].x, round);
                 Morton3D zindex = new Morton3D(Z, Y, X);
-                int t = (int)(time / this.Dt);
+                int t = (int)Math.Round(time / this.Dt);
                 //TODO: Flag is for debuggin purposes only
                 bool flag = false;
                 for (int s = 0; s < this.serverCount; s++)
@@ -2019,7 +2037,7 @@ namespace TurbulenceService
                     //rawdata = asyncRes[s];
                     //SqlDataReader reader = sqlcmds[s].EndExecuteNonQuery(asyncRes[s]);
                     int nonqueryresult = sqlcmds[s].EndExecuteNonQuery(asyncRes[s]);
-                    rawdata= (byte[])sqlcmds[s].Parameters["@blob"].Value;
+                    rawdata = (byte[])sqlcmds[s].Parameters["@blob"].Value;
                     /*throw new Exception("rawdata bytesize = " + rawdata.Length.ToString() + " x,y,z,components: + " + serverXwidth[s].ToString() + ", " + serverYwidth[s].ToString() + 
                         ", " + serverZwidth[s].ToString() + " " + components + " initialsize = " + size.ToString()); */
                     //rawdata = (byte[])sqlcmds[s].Parameters["@blob"].Value;
@@ -2058,12 +2076,12 @@ namespace TurbulenceService
                             {
                                 Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
                             }
-                            catch(Exception e)
+                            catch (Exception e)
                             {
-                                throw new Exception( " source, destindex, length: " + sourceIndex.ToString() + ", " + destinationIndex.ToString() + ", " + length.ToString() + "source length: " + rawdata.Length + " dest length: " + result.Length + " " + "Inner exception: " + e );
+                                throw new Exception(" source, destindex, length: " + sourceIndex.ToString() + ", " + destinationIndex.ToString() + ", " + length.ToString() + "source length: " + rawdata.Length + " dest length: " + result.Length + " " + "Inner exception: " + e);
                             }
-                                sourceIndex += length;
-                                destinationIndex += Xwidth * components * sizeof(float);
+                            sourceIndex += length;
+                            destinationIndex += Xwidth * components * sizeof(float);
                         }
                     }
                     rawdata = null;
@@ -2308,7 +2326,7 @@ namespace TurbulenceService
             bool error_flag = false;
             bool exception_flag = false;
             string exception_text = "";
-            
+
             for (int s = 0; s < serverCount; s++)
             {
                 if (connections[s] != null)
@@ -2417,13 +2435,13 @@ namespace TurbulenceService
                 {
                     sqlcmds[s] = connections[s].CreateCommand();
                     // quick fix for filedb.  Should filedb be a separate worker?
-                    
+
                     if (dbtype == 0)
                     {
                         sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteMHDWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @dataset, "
                                                 + " @workerType, @blobDim, @time, "
                                                 + " @spatialInterp, @temporalInterp, @arg, @inputSize, @tempTable",
-                                                codeDatabase[s]);                        
+                                                codeDatabase[s]);
                     }
                     else
                     {
@@ -2698,7 +2716,7 @@ namespace TurbulenceService
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
                     int cutoutbytesize = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * 3 * sizeof(float); //TODO Fix this by passing in components if this works.
                     byte[] cutout = new byte[cutoutbytesize];
-                    
+
                     sqlcmds[s] = connections[s].CreateCommand();
                     sqlcmds[s].CommandText = String.Format(//"DECLARE @blob varbinary(max) " +
                         "EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, @turbinfodb, @turbinfoserver, "
@@ -2810,8 +2828,8 @@ namespace TurbulenceService
             return asyncRes;
         }
 
-        private IAsyncResult[] ExecuteGetThreshold(DataInfo.DataSets dataset_enum, string tableName, int workerType, 
-            int timestep, int spatialInterp, double threshold, 
+        private IAsyncResult[] ExecuteGetThreshold(DataInfo.DataSets dataset_enum, string tableName, int workerType,
+            int timestep, int spatialInterp, double threshold,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
         {
             // initiate reader requests
@@ -3182,7 +3200,7 @@ namespace TurbulenceService
             int Twidth = 1;
             GetServerParameters4RawData(X, Y, Z, timestep, Xwidth, Ywidth, Zwidth, Twidth, serverX, serverY, serverZ, serverT, serverXwidth, serverYwidth, serverZwidth, serverTwidth);
 
-            IAsyncResult[] asyncRes = ExecuteGetThreshold(dataset_enum, tableName.ToString(), worker, timestep, (int)spatial, threshold, 
+            IAsyncResult[] asyncRes = ExecuteGetThreshold(dataset_enum, tableName.ToString(), worker, timestep, (int)spatial, threshold,
                 serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
             return GetThresholdResults(asyncRes, result);
         }
@@ -3315,8 +3333,8 @@ namespace TurbulenceService
             int number_of_crossings = 0;
             ManualResetEvent doneEvent = new ManualResetEvent(false);
             Exception exception = null;
-             
-            string executeStr="";
+
+            string executeStr = "";
             if (dataset == DataInfo.DataSets.channel)
             {
                 executeStr = "ExecuteParticleTrackingChannelWorkerTaskParallel";
@@ -3326,7 +3344,7 @@ namespace TurbulenceService
                 executeStr = "ExecuteParticleTrackingChannelDBWorkerTaskParallel";
                 //ExecuteParticleTrackingChannelDBWorkerTaskParallel2 can only use local DB files
             }
-            else if(dbtype==0)
+            else if (dbtype == 0)
             {
                 executeStr = "ExecuteParticleTrackingWorkerTaskParallel"; //PJ 2015: call regular or channel flow worker
             }
@@ -3379,13 +3397,13 @@ namespace TurbulenceService
             }
 
             doneEvent.WaitOne();
-            
+
             if (exception != null)
             {
                 msg = exception.Message + "\n SQL parameters: " + tempTableName + " " + tableName;
                 for (int s = 0; s < serverCount; s++)
                 {
-                    msg = msg + " Server num " + s + "Command: " + sqlcmds[s] + "\n SQL parameters: " + servers[s] + " " + tableName + " " + databases[s] + " " + dataset +"\n";
+                    msg = msg + " Server num " + s + "Command: " + sqlcmds[s] + "\n SQL parameters: " + servers[s] + " " + tableName + " " + databases[s] + " " + dataset + "\n";
                 }
                 throw new Exception(msg, exception.InnerException);
             }
@@ -3404,13 +3422,13 @@ namespace TurbulenceService
                         }
                         msg = msg + " Server num " + s + "Command: " + query + "\n SQL parameters: " + servers[s] + " " + tableName + " " + databases[s] + " " + dataset + "\n";
                     }
-                    else if (connections[s] != null && datatables[s].Rows.Count ==0)
+                    else if (connections[s] != null && datatables[s].Rows.Count == 0)
                     {
                         msg = msg + "\n Connection not null, but rows 0: " + servers[s];
                     }
                 }
                 //System.IO.File.WriteAllText(@"c:\www\sqloutput-turb.log", msg);
-                
+
             }
 
             return 0;
@@ -3486,7 +3504,7 @@ namespace TurbulenceService
             //DateTime start = DateTime.Now;
             asyncRes = ExecuteGetRawData(tableName.ToString(),
                 timestep, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
-            
+
             GetRawResults(asyncRes, result, components, X, Y, Z, timestep, Xwidth, Ywidth, Zwidth, Twidth, serverX, serverY, serverZ, serverT, serverXwidth, serverYwidth, serverZwidth, serverTwidth);
 
             //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\databaseTime.txt", true);
@@ -3497,12 +3515,12 @@ namespace TurbulenceService
         }
 
         public byte[] GetFilteredData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, 
+            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
             int x_stride, int y_stride, int z_stride, int filter_width)
         {
             IAsyncResult[] asyncRes;
 
-            selectServers(dataset_enum);
+            selectServers(dataset_enum, 1);
 
             //if (channel_grid)
             //{

@@ -189,6 +189,7 @@ public class DataInfo
                                {"isotropic4096", "isotropic4096"},
                                {"strat4096", "strat4096"},
                                {"rotstrat4096", "strat4096"},
+                               {"transition_bl", "bl_zaki"},
                                {"bl_zaki", "bl_zaki"},
                                {"mixing", "mixing"}};
 
@@ -252,7 +253,7 @@ public class DataInfo
         {
             return false;
         }
-        else if (dataset == DataSets.bl_zaki && time > 0.007F)
+        else if (dataset == DataSets.bl_zaki && time > 1175.0F)
         {
             return false;
         }

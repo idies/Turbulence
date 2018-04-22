@@ -74,7 +74,7 @@
           JHTDB project is funded by the US <a href="http://www.nsf.gov/">National
           Science Foundation</a> <a href="http://www.nsf.gov/"><img src="images/nsf.jpg" width="40"  border="0" /></a>.</font></p>
     <p align="left"><font size="2" face="Arial, Helvetica, sans-serif">
-          JHTDB is also supported by the  <a href="http://idies.jhu.edu/"> Institute for Data Intensive Engineering and Science </a> <img src="images/idies-logo.png" width="40"  border="0" />.JHTDB data may also be accessed via <a href="http://www.sciserver.org"> SciServer resources </a> <img src="images/SciServer-logo.png" width="30"  border="0" />.</font></p>
+          JHTDB is also supported by the  <a href="http://idies.jhu.edu/"> Institute for Data Intensive Engineering and Science </a> <img src="images/idies-logo.png" width="40"  border="0" />. JHTDB data may also be accessed via <a href="http://www.sciserver.org"> SciServer resources </a> <img src="images/SciServer-logo.png" width="30"  border="0" />.</font></p>
       <p align="center"><font size="2" color="red">Questions and comments?
             <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a></font></p>
       <p align="center"><span class="style13">

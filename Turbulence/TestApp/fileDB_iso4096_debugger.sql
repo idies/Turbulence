@@ -1,4 +1,5 @@
-﻿USE [turbdev_zw]
+﻿:connect dsp012
+USE [turbdev_zw]
 GO
 
 CREATE TABLE [dbo].[#temp_zw] (
@@ -9,29 +10,27 @@ CREATE TABLE [dbo].[#temp_zw] (
     [z]      REAL   NULL
 );
 INSERT INTO [dbo].[#temp_zw]  
-VALUES (0, 0, 0, 0, 0); 
+VALUES (0, 1207959552, 18.85, 0, 0);
 
 SELECT reqseq, zindex, x, y, z FROM #temp_zw
 
 DECLARE	@return_value Int
 
-EXEC	@return_value = [dbo].[ExecuteMHDFileDBWorker]
+EXEC	@return_value = [dbo].[ExecuteMHDWorker]
 		@serverName = N'dsp012',
-		@dbname = N'strat4096db101',
+		@dbname = N'channeldb06',
 		@codedb = N'turbdev_zw',
 		@turbinfodb = N'turbinfo_test',
 		@turbinfoserver = N'sciserver02',
-		@dataset = N'th',
-		@workerType = 57,
+		@dataset = N'pr',
+		@workerType = 120,
 		@blobDim = 8,
 		@time = 0,
 		@spatialInterp = 0,
-		@temporalInterp = 0,
+		@temporalInterp = 1,
 		@arg = 1,
 		@inputSize = 1,
-		@tempTable = N'#temp_zw',
-		@startz = 0,
-		@endz = 134217727
+		@tempTable = N'#temp_zw'
 SELECT	@return_value as 'Return Value'
 
 GO

@@ -312,24 +312,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVelocity(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVelocity(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVelocity", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVelocityAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVelocityOperationCompleted == null)) {
                 this.GetVelocityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityOperationCompleted);
             }
@@ -339,7 +340,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityOperationCompleted, userState);
         }
         
         private void OnGetVelocityOperationCompleted(object arg) {
@@ -352,24 +354,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityBatch", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVelocityBatch(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVelocityBatch(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVelocityBatch", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityBatchAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityBatchAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityBatchAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVelocityBatchAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityBatchAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityBatchAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVelocityBatchOperationCompleted == null)) {
                 this.GetVelocityBatchOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityBatchOperationCompleted);
             }
@@ -379,7 +382,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityBatchOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityBatchOperationCompleted, userState);
         }
         
         private void OnGetVelocityBatchOperationCompleted(object arg) {
@@ -392,7 +396,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawVelocity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawVelocity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
+        public byte[] GetRawVelocity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
             object[] results = this.Invoke("GetRawVelocity", new object[] {
                         authToken,
                         dataset,
@@ -402,17 +406,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth});
+                        Zwidth,
+                        addr});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawVelocityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
+        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
+            this.GetRawVelocityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
+        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState, string addr  = null) {
             if ((this.GetRawVelocityOperationCompleted == null)) {
                 this.GetRawVelocityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawVelocityOperationCompleted);
             }
@@ -425,7 +430,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth}, this.GetRawVelocityOperationCompleted, userState);
+                        Zwidth,
+                        addr}, this.GetRawVelocityOperationCompleted, userState);
         }
         
         private void OnGetRawVelocityOperationCompleted(object arg) {
@@ -438,24 +444,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Pressure[] GetPressure(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Pressure[] GetPressure(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetPressure", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Pressure[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetPressureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetPressureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetPressureOperationCompleted == null)) {
                 this.GetPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPressureOperationCompleted);
             }
@@ -465,7 +472,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetPressureOperationCompleted, userState);
+                        points,
+                        addr}, this.GetPressureOperationCompleted, userState);
         }
         
         private void OnGetPressureOperationCompleted(object arg) {
@@ -478,7 +486,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawPressure(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
+        public byte[] GetRawPressure(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
             object[] results = this.Invoke("GetRawPressure", new object[] {
                         authToken,
                         dataset,
@@ -488,17 +496,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth});
+                        Zwidth,
+                        addr});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawPressureAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
+        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
+            this.GetRawPressureAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
+        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState, string addr  = null) {
             if ((this.GetRawPressureOperationCompleted == null)) {
                 this.GetRawPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawPressureOperationCompleted);
             }
@@ -511,7 +520,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth}, this.GetRawPressureOperationCompleted, userState);
+                        Zwidth,
+                        addr}, this.GetRawPressureOperationCompleted, userState);
         }
         
         private void OnGetRawPressureOperationCompleted(object arg) {
@@ -524,24 +534,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetMagneticField", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetMagneticField(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetMagneticField(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetMagneticField", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetMagneticFieldAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetMagneticFieldAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetMagneticFieldAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetMagneticFieldAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetMagneticFieldAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetMagneticFieldAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetMagneticFieldOperationCompleted == null)) {
                 this.GetMagneticFieldOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMagneticFieldOperationCompleted);
             }
@@ -551,7 +562,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetMagneticFieldOperationCompleted, userState);
+                        points,
+                        addr}, this.GetMagneticFieldOperationCompleted, userState);
         }
         
         private void OnGetMagneticFieldOperationCompleted(object arg) {
@@ -564,7 +576,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawMagneticField", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawMagneticField(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
+        public byte[] GetRawMagneticField(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
             object[] results = this.Invoke("GetRawMagneticField", new object[] {
                         authToken,
                         dataset,
@@ -574,17 +586,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth});
+                        Zwidth,
+                        addr});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawMagneticFieldAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
+        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
+            this.GetRawMagneticFieldAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
+        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState, string addr  = null) {
             if ((this.GetRawMagneticFieldOperationCompleted == null)) {
                 this.GetRawMagneticFieldOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawMagneticFieldOperationCompleted);
             }
@@ -597,7 +610,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth}, this.GetRawMagneticFieldOperationCompleted, userState);
+                        Zwidth,
+                        addr}, this.GetRawMagneticFieldOperationCompleted, userState);
         }
         
         private void OnGetRawMagneticFieldOperationCompleted(object arg) {
@@ -610,24 +624,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVectorPotential", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVectorPotential(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVectorPotential(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVectorPotential", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVectorPotentialAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVectorPotentialAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVectorPotentialAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVectorPotentialAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVectorPotentialAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVectorPotentialAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVectorPotentialOperationCompleted == null)) {
                 this.GetVectorPotentialOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVectorPotentialOperationCompleted);
             }
@@ -637,7 +652,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVectorPotentialOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVectorPotentialOperationCompleted, userState);
         }
         
         private void OnGetVectorPotentialOperationCompleted(object arg) {
@@ -650,7 +666,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawVectorPotential", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawVectorPotential(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
+        public byte[] GetRawVectorPotential(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
             object[] results = this.Invoke("GetRawVectorPotential", new object[] {
                         authToken,
                         dataset,
@@ -660,17 +676,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth});
+                        Zwidth,
+                        addr});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawVectorPotentialAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
+        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
+            this.GetRawVectorPotentialAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
+        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState, string addr  = null) {
             if ((this.GetRawVectorPotentialOperationCompleted == null)) {
                 this.GetRawVectorPotentialOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawVectorPotentialOperationCompleted);
             }
@@ -683,7 +700,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth}, this.GetRawVectorPotentialOperationCompleted, userState);
+                        Zwidth,
+                        addr}, this.GetRawVectorPotentialOperationCompleted, userState);
         }
         
         private void OnGetRawVectorPotentialOperationCompleted(object arg) {
@@ -696,24 +714,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetDensity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Pressure[] GetDensity(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Pressure[] GetDensity(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetDensity", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Pressure[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetDensityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetDensityAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetDensityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetDensityAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetDensityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetDensityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetDensityOperationCompleted == null)) {
                 this.GetDensityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDensityOperationCompleted);
             }
@@ -723,7 +742,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetDensityOperationCompleted, userState);
+                        points,
+                        addr}, this.GetDensityOperationCompleted, userState);
         }
         
         private void OnGetDensityOperationCompleted(object arg) {
@@ -736,24 +756,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetDensityGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetDensityGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetDensityGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetDensityGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetDensityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetDensityGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetDensityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetDensityGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetDensityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetDensityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetDensityGradientOperationCompleted == null)) {
                 this.GetDensityGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDensityGradientOperationCompleted);
             }
@@ -763,7 +784,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetDensityGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetDensityGradientOperationCompleted, userState);
         }
         
         private void OnGetDensityGradientOperationCompleted(object arg) {
@@ -776,24 +798,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetDensityHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public PressureHessian[] GetDensityHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public PressureHessian[] GetDensityHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetDensityHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((PressureHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetDensityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetDensityHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetDensityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetDensityHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetDensityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetDensityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetDensityHessianOperationCompleted == null)) {
                 this.GetDensityHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDensityHessianOperationCompleted);
             }
@@ -803,7 +826,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetDensityHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetDensityHessianOperationCompleted, userState);
         }
         
         private void OnGetDensityHessianOperationCompleted(object arg) {
@@ -816,7 +840,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawDensity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawDensity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
+        public byte[] GetRawDensity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
             object[] results = this.Invoke("GetRawDensity", new object[] {
                         authToken,
                         dataset,
@@ -826,17 +850,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth});
+                        Zwidth,
+                        addr});
             return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawDensityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
+        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
+            this.GetRawDensityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
+        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState, string addr  = null) {
             if ((this.GetRawDensityOperationCompleted == null)) {
                 this.GetRawDensityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawDensityOperationCompleted);
             }
@@ -849,7 +874,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth}, this.GetRawDensityOperationCompleted, userState);
+                        Zwidth,
+                        addr}, this.GetRawDensityOperationCompleted, userState);
         }
         
         private void OnGetRawDensityOperationCompleted(object arg) {
@@ -862,24 +888,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetForce", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetForce(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetForce(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetForce", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetForceAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetForceAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetForceAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetForceAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetForceAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetForceAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetForceOperationCompleted == null)) {
                 this.GetForceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetForceOperationCompleted);
             }
@@ -889,7 +916,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetForceOperationCompleted, userState);
+                        points,
+                        addr}, this.GetForceOperationCompleted, userState);
         }
         
         private void OnGetForceOperationCompleted(object arg) {
@@ -902,24 +930,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityAndPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3P[] GetVelocityAndPressure(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3P[] GetVelocityAndPressure(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVelocityAndPressure", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3P[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityAndPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityAndPressureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityAndPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVelocityAndPressureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityAndPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityAndPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVelocityAndPressureOperationCompleted == null)) {
                 this.GetVelocityAndPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityAndPressureOperationCompleted);
             }
@@ -929,7 +958,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityAndPressureOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityAndPressureOperationCompleted, userState);
         }
         
         private void OnGetVelocityAndPressureOperationCompleted(object arg) {
@@ -942,24 +972,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetVelocityGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetVelocityGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVelocityGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVelocityGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVelocityGradientOperationCompleted == null)) {
                 this.GetVelocityGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityGradientOperationCompleted);
             }
@@ -969,7 +1000,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityGradientOperationCompleted, userState);
         }
         
         private void OnGetVelocityGradientOperationCompleted(object arg) {
@@ -982,24 +1014,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetMagneticFieldGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetMagneticFieldGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetMagneticFieldGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetMagneticFieldGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetMagneticFieldGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetMagneticFieldGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetMagneticFieldGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetMagneticFieldGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetMagneticFieldGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetMagneticFieldGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetMagneticFieldGradientOperationCompleted == null)) {
                 this.GetMagneticFieldGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMagneticFieldGradientOperationCompleted);
             }
@@ -1009,7 +1042,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetMagneticFieldGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetMagneticFieldGradientOperationCompleted, userState);
         }
         
         private void OnGetMagneticFieldGradientOperationCompleted(object arg) {
@@ -1022,24 +1056,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVectorPotentialGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetVectorPotentialGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetVectorPotentialGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVectorPotentialGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVectorPotentialGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVectorPotentialGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVectorPotentialGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVectorPotentialGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVectorPotentialGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVectorPotentialGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVectorPotentialGradientOperationCompleted == null)) {
                 this.GetVectorPotentialGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVectorPotentialGradientOperationCompleted);
             }
@@ -1049,7 +1084,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVectorPotentialGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVectorPotentialGradientOperationCompleted, userState);
         }
         
         private void OnGetVectorPotentialGradientOperationCompleted(object arg) {
@@ -1062,24 +1098,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPressureGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetPressureGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetPressureGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetPressureGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetPressureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetPressureGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetPressureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetPressureGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetPressureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetPressureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetPressureGradientOperationCompleted == null)) {
                 this.GetPressureGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPressureGradientOperationCompleted);
             }
@@ -1089,7 +1126,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetPressureGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetPressureGradientOperationCompleted, userState);
         }
         
         private void OnGetPressureGradientOperationCompleted(object arg) {
@@ -1102,24 +1140,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPressureHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public PressureHessian[] GetPressureHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public PressureHessian[] GetPressureHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetPressureHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((PressureHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetPressureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetPressureHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetPressureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetPressureHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetPressureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetPressureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetPressureHessianOperationCompleted == null)) {
                 this.GetPressureHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPressureHessianOperationCompleted);
             }
@@ -1129,7 +1168,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetPressureHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetPressureHessianOperationCompleted, userState);
         }
         
         private void OnGetPressureHessianOperationCompleted(object arg) {
@@ -1142,24 +1182,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityHessian[] GetVelocityHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityHessian[] GetVelocityHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVelocityHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVelocityHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVelocityHessianOperationCompleted == null)) {
                 this.GetVelocityHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityHessianOperationCompleted);
             }
@@ -1169,7 +1210,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityHessianOperationCompleted, userState);
         }
         
         private void OnGetVelocityHessianOperationCompleted(object arg) {
@@ -1182,24 +1224,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetMagneticHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityHessian[] GetMagneticHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityHessian[] GetMagneticHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetMagneticHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetMagneticHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetMagneticHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetMagneticHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetMagneticHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetMagneticHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetMagneticHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetMagneticHessianOperationCompleted == null)) {
                 this.GetMagneticHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMagneticHessianOperationCompleted);
             }
@@ -1209,7 +1252,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetMagneticHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetMagneticHessianOperationCompleted, userState);
         }
         
         private void OnGetMagneticHessianOperationCompleted(object arg) {
@@ -1222,24 +1266,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVectorPotentialHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityHessian[] GetVectorPotentialHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityHessian[] GetVectorPotentialHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVectorPotentialHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVectorPotentialHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVectorPotentialHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVectorPotentialHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVectorPotentialHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVectorPotentialHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVectorPotentialHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVectorPotentialHessianOperationCompleted == null)) {
                 this.GetVectorPotentialHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVectorPotentialHessianOperationCompleted);
             }
@@ -1249,7 +1294,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVectorPotentialHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVectorPotentialHessianOperationCompleted, userState);
         }
         
         private void OnGetVectorPotentialHessianOperationCompleted(object arg) {
@@ -1262,24 +1308,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityLaplacian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVelocityLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVelocityLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVelocityLaplacian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVelocityLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVelocityLaplacianOperationCompleted == null)) {
                 this.GetVelocityLaplacianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityLaplacianOperationCompleted);
             }
@@ -1289,7 +1336,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityLaplacianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityLaplacianOperationCompleted, userState);
         }
         
         private void OnGetVelocityLaplacianOperationCompleted(object arg) {
@@ -1302,24 +1350,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetMagneticFieldLaplacian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetMagneticFieldLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetMagneticFieldLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetMagneticFieldLaplacian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetMagneticFieldLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetMagneticFieldLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetMagneticFieldLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetMagneticFieldLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetMagneticFieldLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetMagneticFieldLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetMagneticFieldLaplacianOperationCompleted == null)) {
                 this.GetMagneticFieldLaplacianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMagneticFieldLaplacianOperationCompleted);
             }
@@ -1329,7 +1378,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetMagneticFieldLaplacianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetMagneticFieldLaplacianOperationCompleted, userState);
         }
         
         private void OnGetMagneticFieldLaplacianOperationCompleted(object arg) {
@@ -1342,24 +1392,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVectorPotentialLaplacian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVectorPotentialLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVectorPotentialLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVectorPotentialLaplacian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVectorPotentialLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVectorPotentialLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVectorPotentialLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVectorPotentialLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVectorPotentialLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVectorPotentialLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVectorPotentialLaplacianOperationCompleted == null)) {
                 this.GetVectorPotentialLaplacianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVectorPotentialLaplacianOperationCompleted);
             }
@@ -1369,7 +1420,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVectorPotentialLaplacianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVectorPotentialLaplacianOperationCompleted, userState);
         }
         
         private void OnGetVectorPotentialLaplacianOperationCompleted(object arg) {
@@ -1382,7 +1434,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPosition", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Point3[] GetPosition(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Point3[] GetPosition(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetPosition", new object[] {
                         authToken,
                         dataset,
@@ -1390,17 +1442,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         EndTime,
                         dt,
                         spatialInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Point3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetPositionAsync(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, Point3[] points) {
-            this.GetPositionAsync(authToken, dataset, StartTime, EndTime, dt, spatialInterpolation, points, null);
+        public void GetPositionAsync(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, Point3[] points, string addr  = null) {
+            this.GetPositionAsync(authToken, dataset, StartTime, EndTime, dt, spatialInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetPositionAsync(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, Point3[] points, object userState) {
+        public void GetPositionAsync(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetPositionOperationCompleted == null)) {
                 this.GetPositionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPositionOperationCompleted);
             }
@@ -1411,7 +1464,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         EndTime,
                         dt,
                         spatialInterpolation,
-                        points}, this.GetPositionOperationCompleted, userState);
+                        points,
+                        addr}, this.GetPositionOperationCompleted, userState);
         }
         
         private void OnGetPositionOperationCompleted(object arg) {
@@ -1424,24 +1478,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilter", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetBoxFilter(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetBoxFilter(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetBoxFilter", new object[] {
                         authToken,
                         dataset,
                         field,
                         time,
                         filterwidth,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetBoxFilterAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterAsync(authToken, dataset, field, time, filterwidth, points, null);
+        public void GetBoxFilterAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr  = null) {
+            this.GetBoxFilterAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetBoxFilterAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
+        public void GetBoxFilterAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState, string addr  = null) {
             if ((this.GetBoxFilterOperationCompleted == null)) {
                 this.GetBoxFilterOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterOperationCompleted);
             }
@@ -1451,7 +1506,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         field,
                         time,
                         filterwidth,
-                        points}, this.GetBoxFilterOperationCompleted, userState);
+                        points,
+                        addr}, this.GetBoxFilterOperationCompleted, userState);
         }
         
         private void OnGetBoxFilterOperationCompleted(object arg) {
@@ -1464,24 +1520,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGS", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public SGSTensor[] GetBoxFilterSGS(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public SGSTensor[] GetBoxFilterSGS(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetBoxFilterSGS", new object[] {
                         authToken,
                         dataset,
                         field,
                         time,
                         filterwidth,
-                        points});
+                        points,
+                        addr});
             return ((SGSTensor[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGSAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGSAsync(authToken, dataset, field, time, filterwidth, points, null);
+        public void GetBoxFilterSGSAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr  = null) {
+            this.GetBoxFilterSGSAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGSAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
+        public void GetBoxFilterSGSAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState, string addr  = null) {
             if ((this.GetBoxFilterSGSOperationCompleted == null)) {
                 this.GetBoxFilterSGSOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSOperationCompleted);
             }
@@ -1491,7 +1548,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         field,
                         time,
                         filterwidth,
-                        points}, this.GetBoxFilterSGSOperationCompleted, userState);
+                        points,
+                        addr}, this.GetBoxFilterSGSOperationCompleted, userState);
         }
         
         private void OnGetBoxFilterSGSOperationCompleted(object arg) {
@@ -1504,24 +1562,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSsymtensor", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public SGSTensor[] GetBoxFilterSGSsymtensor(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public SGSTensor[] GetBoxFilterSGSsymtensor(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetBoxFilterSGSsymtensor", new object[] {
                         authToken,
                         dataset,
                         field,
                         time,
                         filterwidth,
-                        points});
+                        points,
+                        addr});
             return ((SGSTensor[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGSsymtensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGSsymtensorAsync(authToken, dataset, field, time, filterwidth, points, null);
+        public void GetBoxFilterSGSsymtensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr  = null) {
+            this.GetBoxFilterSGSsymtensorAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGSsymtensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
+        public void GetBoxFilterSGSsymtensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState, string addr  = null) {
             if ((this.GetBoxFilterSGSsymtensorOperationCompleted == null)) {
                 this.GetBoxFilterSGSsymtensorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSsymtensorOperationCompleted);
             }
@@ -1531,7 +1590,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         field,
                         time,
                         filterwidth,
-                        points}, this.GetBoxFilterSGSsymtensorOperationCompleted, userState);
+                        points,
+                        addr}, this.GetBoxFilterSGSsymtensorOperationCompleted, userState);
         }
         
         private void OnGetBoxFilterSGSsymtensorOperationCompleted(object arg) {
@@ -1544,24 +1604,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGStensor", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetBoxFilterSGStensor(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetBoxFilterSGStensor(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetBoxFilterSGStensor", new object[] {
                         authToken,
                         dataset,
                         field,
                         time,
                         filterwidth,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGStensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGStensorAsync(authToken, dataset, field, time, filterwidth, points, null);
+        public void GetBoxFilterSGStensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr  = null) {
+            this.GetBoxFilterSGStensorAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGStensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
+        public void GetBoxFilterSGStensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState, string addr  = null) {
             if ((this.GetBoxFilterSGStensorOperationCompleted == null)) {
                 this.GetBoxFilterSGStensorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGStensorOperationCompleted);
             }
@@ -1571,7 +1632,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         field,
                         time,
                         filterwidth,
-                        points}, this.GetBoxFilterSGStensorOperationCompleted, userState);
+                        points,
+                        addr}, this.GetBoxFilterSGStensorOperationCompleted, userState);
         }
         
         private void OnGetBoxFilterSGStensorOperationCompleted(object arg) {
@@ -1584,24 +1646,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSvector", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetBoxFilterSGSvector(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetBoxFilterSGSvector(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetBoxFilterSGSvector", new object[] {
                         authToken,
                         dataset,
                         field,
                         time,
                         filterwidth,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGSvectorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGSvectorAsync(authToken, dataset, field, time, filterwidth, points, null);
+        public void GetBoxFilterSGSvectorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr  = null) {
+            this.GetBoxFilterSGSvectorAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGSvectorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
+        public void GetBoxFilterSGSvectorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState, string addr  = null) {
             if ((this.GetBoxFilterSGSvectorOperationCompleted == null)) {
                 this.GetBoxFilterSGSvectorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSvectorOperationCompleted);
             }
@@ -1611,7 +1674,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         field,
                         time,
                         filterwidth,
-                        points}, this.GetBoxFilterSGSvectorOperationCompleted, userState);
+                        points,
+                        addr}, this.GetBoxFilterSGSvectorOperationCompleted, userState);
         }
         
         private void OnGetBoxFilterSGSvectorOperationCompleted(object arg) {
@@ -1623,24 +1687,25 @@ namespace Website.edu.jhu.pha.turbulence {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSscalar", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public float[] GetBoxFilterSGSscalar(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public float[] GetBoxFilterSGSscalar(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetBoxFilterSGSscalar", new object[] {
                         authToken,
                         dataset,
                         field,
                         time,
                         filterwidth,
-                        points});
+                        points,
+                        addr});
             return ((float[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGSscalarAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGSscalarAsync(authToken, dataset, field, time, filterwidth, points, null);
+        public void GetBoxFilterSGSscalarAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr  = null) {
+            this.GetBoxFilterSGSscalarAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetBoxFilterSGSscalarAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
+        public void GetBoxFilterSGSscalarAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState, string addr  = null) {
             if ((this.GetBoxFilterSGSscalarOperationCompleted == null)) {
                 this.GetBoxFilterSGSscalarOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSscalarOperationCompleted);
             }
@@ -1650,7 +1715,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         field,
                         time,
                         filterwidth,
-                        points}, this.GetBoxFilterSGSscalarOperationCompleted, userState);
+                        points,
+                        addr}, this.GetBoxFilterSGSscalarOperationCompleted, userState);
         }
         
         private void OnGetBoxFilterSGSscalarOperationCompleted(object arg) {
@@ -1663,7 +1729,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetBoxFilterGradient(string authToken, string dataset, string field, float time, float filterwidth, float spacing, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetBoxFilterGradient(string authToken, string dataset, string field, float time, float filterwidth, float spacing, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetBoxFilterGradient", new object[] {
                         authToken,
                         dataset,
@@ -1671,17 +1737,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         filterwidth,
                         spacing,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetBoxFilterGradientAsync(string authToken, string dataset, string field, float time, float filterwidth, float spacing, Point3[] points) {
-            this.GetBoxFilterGradientAsync(authToken, dataset, field, time, filterwidth, spacing, points, null);
+        public void GetBoxFilterGradientAsync(string authToken, string dataset, string field, float time, float filterwidth, float spacing, Point3[] points, string addr  = null) {
+            this.GetBoxFilterGradientAsync(authToken, dataset, field, time, filterwidth, spacing, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetBoxFilterGradientAsync(string authToken, string dataset, string field, float time, float filterwidth, float spacing, Point3[] points, object userState) {
+        public void GetBoxFilterGradientAsync(string authToken, string dataset, string field, float time, float filterwidth, float spacing, Point3[] points, object userState, string addr  = null) {
             if ((this.GetBoxFilterGradientOperationCompleted == null)) {
                 this.GetBoxFilterGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterGradientOperationCompleted);
             }
@@ -1692,7 +1759,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         filterwidth,
                         spacing,
-                        points}, this.GetBoxFilterGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetBoxFilterGradientOperationCompleted, userState);
         }
         
         private void OnGetBoxFilterGradientOperationCompleted(object arg) {
@@ -1705,7 +1773,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetThreshold", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
+        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
             object[] results = this.Invoke("GetThreshold", new object[] {
                         authToken,
                         dataset,
@@ -1718,17 +1786,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth});
+                        Zwidth,
+                        addr});
             return ((ThresholdInfo[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetThresholdAsync(authToken, dataset, field, time, threshold, spatialInterpolation, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
+        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr  = null) {
+            this.GetThresholdAsync(authToken, dataset, field, time, threshold, spatialInterpolation, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
+        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState, string addr  = null) {
             if ((this.GetThresholdOperationCompleted == null)) {
                 this.GetThresholdOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetThresholdOperationCompleted);
             }
@@ -1744,7 +1813,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth}, this.GetThresholdOperationCompleted, userState);
+                        Zwidth,
+                        addr}, this.GetThresholdOperationCompleted, userState);
         }
         
         private void OnGetThresholdOperationCompleted(object arg) {
@@ -1757,7 +1827,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetLaplacianOfGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetLaplacianOfGradient(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetLaplacianOfGradient(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetLaplacianOfGradient", new object[] {
                         authToken,
                         dataset,
@@ -1765,17 +1835,18 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetLaplacianOfGradientAsync(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetLaplacianOfGradientAsync(authToken, dataset, field, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetLaplacianOfGradientAsync(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetLaplacianOfGradientAsync(authToken, dataset, field, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetLaplacianOfGradientAsync(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetLaplacianOfGradientAsync(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetLaplacianOfGradientOperationCompleted == null)) {
                 this.GetLaplacianOfGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetLaplacianOfGradientOperationCompleted);
             }
@@ -1786,7 +1857,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetLaplacianOfGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetLaplacianOfGradientOperationCompleted, userState);
         }
         
         private void OnGetLaplacianOfGradientOperationCompleted(object arg) {
@@ -1799,24 +1871,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperature", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Pressure[] GetTemperature(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Pressure[] GetTemperature(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetTemperature", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Pressure[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetTemperatureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetTemperatureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetTemperatureOperationCompleted == null)) {
                 this.GetTemperatureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureOperationCompleted);
             }
@@ -1826,7 +1899,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetTemperatureOperationCompleted, userState);
+                        points,
+                        addr}, this.GetTemperatureOperationCompleted, userState);
         }
         
         private void OnGetTemperatureOperationCompleted(object arg) {
@@ -1839,24 +1913,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperatureGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetTemperatureGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetTemperatureGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetTemperatureGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetTemperatureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetTemperatureGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetTemperatureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetTemperatureGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetTemperatureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetTemperatureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetTemperatureGradientOperationCompleted == null)) {
                 this.GetTemperatureGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureGradientOperationCompleted);
             }
@@ -1866,7 +1941,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetTemperatureGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetTemperatureGradientOperationCompleted, userState);
         }
         
         private void OnGetTemperatureGradientOperationCompleted(object arg) {
@@ -1879,24 +1955,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperatureHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public PressureHessian[] GetTemperatureHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public PressureHessian[] GetTemperatureHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetTemperatureHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((PressureHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetTemperatureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetTemperatureHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetTemperatureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetTemperatureHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetTemperatureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetTemperatureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetTemperatureHessianOperationCompleted == null)) {
                 this.GetTemperatureHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureHessianOperationCompleted);
             }
@@ -1906,7 +1983,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetTemperatureHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetTemperatureHessianOperationCompleted, userState);
         }
         
         private void OnGetTemperatureHessianOperationCompleted(object arg) {
@@ -1919,24 +1997,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityAndTemperature", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3P[] GetVelocityAndTemperature(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3P[] GetVelocityAndTemperature(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetVelocityAndTemperature", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3P[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityAndTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityAndTemperatureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityAndTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetVelocityAndTemperatureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityAndTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityAndTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetVelocityAndTemperatureOperationCompleted == null)) {
                 this.GetVelocityAndTemperatureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityAndTemperatureOperationCompleted);
             }
@@ -1946,7 +2025,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityAndTemperatureOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityAndTemperatureOperationCompleted, userState);
         }
         
         private void OnGetVelocityAndTemperatureOperationCompleted(object arg) {
@@ -1959,24 +2039,25 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetInvariant", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetInvariant(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetInvariant(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr  = null) {
             object[] results = this.Invoke("GetInvariant", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetInvariantAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetInvariantAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetInvariantAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr  = null) {
+            this.GetInvariantAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetInvariantAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetInvariantAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState, string addr  = null) {
             if ((this.GetInvariantOperationCompleted == null)) {
                 this.GetInvariantOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInvariantOperationCompleted);
             }
@@ -1986,7 +2067,8 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetInvariantOperationCompleted, userState);
+                        points,
+                        addr}, this.GetInvariantOperationCompleted, userState);
         }
         
         private void OnGetInvariantOperationCompleted(object arg) {

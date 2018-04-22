@@ -54,9 +54,9 @@ public partial class StoredProcedures
         SqlConnection contextConn;
         string connString;
         if (serverName.Contains("_"))
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
         else
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
 
@@ -373,7 +373,25 @@ public partial class StoredProcedures
                         }
                     }
                 }
+                foreach (int point in input.Keys)
+                {
+                    if (input[point] != null && !input[point].resultSent)
+                    {
+                        record.SetInt32(0, input[point].request);
+                        int r = 0;
+                        for (; r < input[point].result.Length; r++)
+                        {
+                            record.SetSqlSingle(r + 1, (float)input[point].result[r]);
+                        }
+                        //record.SetInt32(r + 1, input[point].cubesRead);
+                        SqlContext.Pipe.SendResultsRow(record);
+                        //input[point].resultSent = true;
 
+                        //input[point].lagInt = null;
+                        //input[point].result = null;
+                        //input[point] = null;
+                    }
+                }
                 //}
                 //catch (Exception ex)
                 //{
@@ -487,7 +505,7 @@ public partial class StoredProcedures
         TurbServerInfo serverinfo = TurbServerInfo.GetTurbServerInfo(codedb, turbinfodb, turbinfoserver);
         SqlConnection standardConn;
         SqlConnection contextConn;
-        string connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
+        string connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
 

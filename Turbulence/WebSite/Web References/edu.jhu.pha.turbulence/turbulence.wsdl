@@ -50,6 +50,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -111,6 +112,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -133,6 +135,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -152,6 +155,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -184,6 +188,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -203,6 +208,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -225,6 +231,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -244,6 +251,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -266,6 +274,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -285,6 +294,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -304,6 +314,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -323,6 +334,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -360,6 +372,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -379,6 +392,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -398,6 +412,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -430,6 +445,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -467,6 +483,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -486,6 +503,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -505,6 +523,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -524,6 +543,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -543,6 +563,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -589,6 +610,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -608,6 +630,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -627,6 +650,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -646,6 +670,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -665,6 +690,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -685,6 +711,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="dt" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -704,6 +731,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -723,6 +751,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -757,6 +786,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -776,6 +806,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -795,6 +826,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -814,6 +846,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -839,6 +872,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="spacing" type="s:float" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -864,6 +898,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -897,6 +932,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -916,6 +952,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -935,6 +972,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -954,6 +992,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -973,6 +1012,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -992,6 +1032,7 @@
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
             <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
             <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfPoint3" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -2234,10 +2275,10 @@
   </wsdl:binding>
   <wsdl:service name="TurbulenceService">
     <wsdl:port name="TurbulenceServiceSoap" binding="tns:TurbulenceServiceSoap">
-      <soap:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
     <wsdl:port name="TurbulenceServiceSoap12" binding="tns:TurbulenceServiceSoap12">
-      <soap12:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap12:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

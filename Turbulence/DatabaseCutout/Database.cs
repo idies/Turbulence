@@ -175,8 +175,8 @@ public class Database
                 break;
             case DataInfo.DataSets.bl_zaki:
                 this.gridResolution = new int[] { 2048, 224, 3320 };
-                this.dx = 0.292210466252391;
-                this.dz = 0.117187500000000;
+                this.dx = 0.292210466240511;
+                this.dz = 0.117244748412311;
                 gridPointsY = new GridPoints(this.GridResolutionY);
                 channel_grid = true;
                 // We need to retrieve the y grid values from the database.
@@ -187,7 +187,7 @@ public class Database
                     string server_name = this.servers[0];
                     if (server_name.Contains("_"))
                         server_name = server_name.Remove(server_name.IndexOf("_"));
-                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;",
+                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;",
                         server_name, codeDatabase[0]);
                     //String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=false; Connect Timeout = 600;",
                     //    server_name, codeDatabase[0], ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"]);
@@ -266,7 +266,7 @@ public class Database
                 this.timeInc = 4;
                 break;
             case DataInfo.DataSets.bl_zaki:
-                this.Dt = 0.001F;
+                this.Dt = 0.25F;
                 this.timeInc = 1;
                 break;
             default:
@@ -326,7 +326,7 @@ public class Database
     /// Initialize servers, connections and input data tables.
     /// </summary>
     /// <param name="worker">Worker type used</param>
-    public void selectServers(DataInfo.DataSets dataset_enum)
+  /*public void selectServers(DataInfo.DataSets dataset_enum)
     {
         String dataset = dataset_enum.ToString();
         //String cString = "Server=gw01;Database=turbinfo;Asynchronous Processing=false;MultipleActiveResultSets=True;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
@@ -336,15 +336,11 @@ public class Database
         SqlConnection conn = new SqlConnection(cString);
         conn.Open();
         SqlCommand cmd = conn.CreateCommand();
-        string DBMapTable = "DatabaseMap";
-        //if (this.development == true)
-        //{
-        //    DBMapTable = "DatabaseMapTest";
-        //}
-        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime, dbType " +
-            "from {0}..{1} where DatasetName = @dataset " +
-            "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, dbType " +
-            "order by minLim", infodb, DBMapTable);
+        //string DBMapTable = "DatabaseMap";
+        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime, dbType, HotSpareActive, HotSpareMachineName " +
+            "from {0}..DatabaseMap where DatasetName = @dataset " +
+            "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, dbType, HotSpareActive, HotSpareMachineName " +
+            "order by minLim", infodb);
         cmd.Parameters.AddWithValue("@dataset", dataset);
         SqlDataReader reader = cmd.ExecuteReader();
         if (reader.HasRows)
@@ -355,7 +351,14 @@ public class Database
             serverBoundaries.Clear();
             while (reader.Read())
             {
-                servers.Add(reader.GetString(0));
+                if (!reader.GetBoolean(8)) //HotSpareActive=false
+                {
+                    servers.Add(reader.GetString(0));
+                }
+                else
+                {
+                    servers.Add(reader.GetString(9));
+                }                
                 databases.Add(reader.GetString(1));
                 if (this.development == false)
                 {
@@ -401,7 +404,7 @@ public class Database
             //this.tempTableNames[i] = "##" + Guid.NewGuid().ToString().Replace("-","");
         }
     }
-
+    */
 
     /// <summary>
     /// Initialize servers, connections and input data tables.
@@ -419,15 +422,11 @@ public class Database
         conn.Open();
 
         SqlCommand cmd = conn.CreateCommand();
-        string DBMapTable = "DatabaseMap";
-        //if (this.development == true)
-        //{
-        //    DBMapTable = "DatabaseMapTest";
-        //}
-        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime, dbType " +
-            "from {0}..{1} where DatasetName = @dataset " +
-            "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, dbType " +
-            "order by minLim", infodb, DBMapTable);
+        //string DBMapTable = "DatabaseMap";
+        cmd.CommandText = String.Format("select ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, MIN(minLim) as minLim, MAX(maxLim) as maxLim, MIN(minTime) as minTime, MAX(maxTime) as maxTime, dbType, HotSpareActive, HotSpareMachineName " +
+            "from {0}..DatabaseMap where DatasetName = @dataset " +
+            "group by ProductionMachineName, ProductionDatabaseName, CodeDatabaseName, dbType, HotSpareActive, HotSpareMachineName " +
+            "order by minLim", infodb);
         cmd.Parameters.AddWithValue("@dataset", dataset);
 
         SqlDataReader reader = cmd.ExecuteReader();
@@ -441,7 +440,16 @@ public class Database
 
             while (reader.Read())
             {
-                servers.Add(reader.GetString(0));
+                if (!reader.GetBoolean(8)) //HotSpareActive=false
+                {
+                    lastserver = reader.GetString(0);
+                }
+                else
+                {
+                    lastserver = reader.GetString(9);
+                    
+                }
+                servers.Add(lastserver);
                 databases.Add(reader.GetString(1));
                 if (this.development == false)
                 {
@@ -458,7 +466,6 @@ public class Database
                 this.dbtype = reader.GetSqlInt32(7).Value; //Not sure we should do this--this assumes all dbs are the same type.  Fix this if we have hybrid filedb/database types.
                                                            /* All servers are added, and then ones in range are selected from this list later */
                 serverBoundaries.Add(new ServerBoundaries(new Morton3D(minLim), new Morton3D(maxLim), minTime, maxTime));
-                lastserver = reader.GetString(0);
             }
         }
         else
@@ -589,7 +596,7 @@ public class Database
                                     string server_name = this.servers[i];
                                     if (server_name.Contains("_"))
                                         server_name = server_name.Remove(server_name.IndexOf("_"));
-                                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;",
+                                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;",
                                         server_name, databases[i]);
 
                                     this.connections[i] = new SqlConnection(cString);

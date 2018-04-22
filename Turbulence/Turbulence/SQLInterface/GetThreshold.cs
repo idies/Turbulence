@@ -42,9 +42,9 @@ public partial class StoredProcedures
         SqlConnection standardConn;
         string connString;
         if (serverName.Contains("_"))
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;Connect Timeout = 600;", serverName.Remove(serverName.IndexOf("_")), cachedb);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;Connect Timeout = 600;", serverName.Remove(serverName.IndexOf("_")), cachedb);
         else
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;Connect Timeout = 600;", serverName, cachedb);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;Connect Timeout = 600;", serverName, cachedb);
         standardConn = new SqlConnection(connString);
         standardConn.Open();
 

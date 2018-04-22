@@ -16,8 +16,8 @@ namespace TurbulenceService
         public bool devmode;
         string logdb;
         string logdb_server;
-        public string cutout_ipadd;
-        public bool cutoutLog = false;
+        //public string cutout_ipadd;
+        //public bool cutoutLog = false;
 
         public Log(string logdb_string, bool devmode)
         {
@@ -35,19 +35,19 @@ namespace TurbulenceService
             start = DateTime.Now;
         }
 
-        public void WriteLog(int id, string dataset, int op, int spatial, int temporal, int count, float time, object endTime, object nt, byte[] access)
+        public void WriteLog(int id, string dataset, int op, int spatial, int temporal, int count, float time, object endTime, object nt, byte[] access, string ipaddr)
         {
             if (devmode) { return; }
             int dataset_int = DataInfo.findDataSetInt(dataset);
             UpdateRecordCount(id, count);
-            WriteVerboseLogRecord(id, dataset_int, op, spatial, temporal, count, time, endTime, nt, access);
+            WriteVerboseLogRecord(id, dataset_int, op, spatial, temporal, count, time, endTime, nt, access, ipaddr);
         }
 
-        public object CreateLog(int id, string dataset, int op, int spatial, int temporal, int count, float time, object endTime, object dt)
+        public object CreateLog(int id, string dataset, int op, int spatial, int temporal, int count, float time, object endTime, object dt, string ipaddr)
         {
             if (devmode) { return null; }
             int dataset_int = DataInfo.findDataSetInt(dataset);
-            return CreateVerboseLogRecord(id, dataset_int, op, spatial, temporal, count, time, endTime, dt);
+            return CreateVerboseLogRecord(id, dataset_int, op, spatial, temporal, count, time, endTime, dt, ipaddr);
         }
 
         public void UpdateRecordCount(int id, int count)
@@ -68,19 +68,26 @@ namespace TurbulenceService
 
 
         // Write a verbose log record
-        public void WriteVerboseLogRecord(int id, int dataset, int op, int spatial, int temporal, int count, float time, object endTime, object nt, byte[] access)
+        public void WriteVerboseLogRecord(int id, int dataset, int op, int spatial, int temporal, int count, float time, object endTime, object nt, byte[] access, string ipaddr)
         {
             if (devmode) { return; }
-            IPAddress addr = new IPAddress(0);
-            if (!cutoutLog)
-            {
-                addr = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
 
-            }
-            else
+            IPAddress addr = new IPAddress(0);
+            if (ipaddr == "" || ipaddr == null)
             {
-                addr = IPAddress.Parse(cutout_ipadd);
+                // Look for a proxy address first
+                ipaddr = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                //string msg1 = "ip1: " + ipaddr + System.Environment.NewLine;
+                //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg1);
+
+                // If there is no proxy, get the standard remote address
+                if (ipaddr == null || ipaddr.ToLower() == "unknown")
+                    ipaddr = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
             }
+
+            //string msg = "ip: " + ipaddr + System.Environment.NewLine;
+            //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
+            addr = IPAddress.Parse(ipaddr);
 
             //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
             String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
@@ -92,40 +99,48 @@ namespace TurbulenceService
                 + " [op], [spatial], [temporal], [records], [exectime], [timestep], [endTimestep], [nt], [access]) "
                 + " VALUES "
                 + " (NEWID(), @uid, @ip, @dataset, @op, @spatial, @temporal, @records, @exectime, @timestep, @endTimestep, @nt, @access) ";
-           cmd.Parameters.AddWithValue("@uid", id);
-           cmd.Parameters.Add("@ip", SqlDbType.Binary, 4).Value = addr.GetAddressBytes();
-           // date is auto-inserted
-           // cmd.Parameters.AddWithValue("@date", this.start);
-           cmd.Parameters.AddWithValue("@dataset", dataset);
-           cmd.Parameters.AddWithValue("@op", op);
-           cmd.Parameters.AddWithValue("@spatial", spatial);
-           cmd.Parameters.AddWithValue("@temporal", temporal);
-           cmd.Parameters.AddWithValue("@records", count);
-           TimeSpan timespan = DateTime.Now - this.start;
-           cmd.Parameters.AddWithValue("@exectime", (float) timespan.TotalSeconds);
-           cmd.Parameters.AddWithValue("@timestep", time);
-           cmd.Parameters.AddWithValue("@endTimestep", endTime ?? DBNull.Value);
-           cmd.Parameters.AddWithValue("@nt", nt ?? DBNull.Value);
-           cmd.Parameters.Add("@access", SqlDbType.VarBinary, access.Length).Value = access;
-           cmd.ExecuteNonQuery();
-           conn.Close();
+            cmd.Parameters.AddWithValue("@uid", id);
+            cmd.Parameters.Add("@ip", SqlDbType.Binary, 4).Value = addr.GetAddressBytes();
+            // date is auto-inserted
+            // cmd.Parameters.AddWithValue("@date", this.start);
+            cmd.Parameters.AddWithValue("@dataset", dataset);
+            cmd.Parameters.AddWithValue("@op", op);
+            cmd.Parameters.AddWithValue("@spatial", spatial);
+            cmd.Parameters.AddWithValue("@temporal", temporal);
+            cmd.Parameters.AddWithValue("@records", count);
+            TimeSpan timespan = DateTime.Now - this.start;
+            cmd.Parameters.AddWithValue("@exectime", (float)timespan.TotalSeconds);
+            cmd.Parameters.AddWithValue("@timestep", time);
+            cmd.Parameters.AddWithValue("@endTimestep", endTime ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("@nt", nt ?? DBNull.Value);
+            cmd.Parameters.Add("@access", SqlDbType.VarBinary, access.Length).Value = access;
+            cmd.ExecuteNonQuery();
+            conn.Close();
         }
 
 
         // Create a verbose log record
         // and return the rowid (IDENTITY) value associated with the record
-        public object CreateVerboseLogRecord(int id, int dataset, int op, int spatial, int temporal, int count, float time, object endTime, object dt)
+        public object CreateVerboseLogRecord(int id, int dataset, int op, int spatial, int temporal, int count, float time, object endTime, object dt, string ipaddr)
         {
             if (devmode) { return null; }
+
             IPAddress addr = new IPAddress(0);
-            if (!cutoutLog)
+            if (ipaddr == "" || ipaddr == null)
             {
-                addr = IPAddress.Parse(System.Web.HttpContext.Current.Request.UserHostAddress);
+                // Look for a proxy address first
+                ipaddr = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                //string msg1 = "ip1: " + ipaddr + System.Environment.NewLine;
+                //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg1);
+
+                // If there is no proxy, get the standard remote address
+                if (ipaddr == null || ipaddr.ToLower() == "unknown")
+                    ipaddr = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
             }
-            else
-            {
-                addr = IPAddress.Parse(cutout_ipadd);
-            }
+
+            //string msg = "ip: " + ipaddr + System.Environment.NewLine;
+            //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
+            addr = IPAddress.Parse(ipaddr);
 
             //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
             String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
@@ -190,11 +205,10 @@ namespace TurbulenceService
             conn.Close();
         }
 
-        public void cutout_ip(string ipaddr)
-        {
-            cutout_ipadd = ipaddr;
-            cutoutLog = true;
-        }
-
+        //public void cutout_ip(string ipaddr)
+        //{
+        //    cutout_ipadd = ipaddr;
+        //    cutoutLog = true;
+        //}
     }
 }

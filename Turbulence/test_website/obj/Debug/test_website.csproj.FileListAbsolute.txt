@@ -4,3 +4,9 @@ C:\Users\zwu27\Documents\Turbulence-for-publish\Turbulence\test_website\bin\Debu
 C:\Users\zwu27\Documents\Turbulence-for-publish\Turbulence\test_website\obj\Debug\TestApp.exe
 C:\Users\zwu27\Documents\Turbulence-for-publish\Turbulence\test_website\obj\Debug\TestApp.pdb
 C:\Users\zwu27\Documents\Turbulence-for-publish\Turbulence\test_website\obj\Debug\test_website.csprojResolveAssemblyReference.cache
+H:\Turbulence-JHTDB\Turbulence\test_website\bin\Debug\TestApp.exe.config
+H:\Turbulence-JHTDB\Turbulence\test_website\bin\Debug\TestApp.exe
+H:\Turbulence-JHTDB\Turbulence\test_website\bin\Debug\TestApp.pdb
+H:\Turbulence-JHTDB\Turbulence\test_website\obj\Debug\test_website.csproj.CoreCompileInputs.cache
+H:\Turbulence-JHTDB\Turbulence\test_website\obj\Debug\TestApp.exe
+H:\Turbulence-JHTDB\Turbulence\test_website\obj\Debug\TestApp.pdb

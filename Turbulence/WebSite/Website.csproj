@@ -26,6 +26,7 @@
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,11 +50,20 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net40\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
@@ -157,7 +167,6 @@
     <Content Include="peoplecredits.aspx" />
     <Content Include="privacy.aspx" />
     <Content Include="publications.aspx" />
-    <Content Include="publications-old.aspx" />
     <Content Include="relatedgrouplinks.aspx" />
     <Content Include="robots.txt" />
     <Content Include="Rotstrat4096.aspx" />
@@ -166,7 +175,9 @@
     <Content Include="Spectra-MHD.txt" />
     <Content Include="images\spectrum.jpg" />
     <Content Include="spectrum.txt" />
+    <Content Include="status\monitor_full.aspx" />
     <Content Include="status\monitor.aspx" />
+    <Content Include="status\stat.aspx" />
     <Content Include="Styles\Site.css" />
     <Content Include="Default.aspx" />
     <Content Include="Global.asax" />
@@ -179,10 +190,6 @@
     <Content Include="tutorial.aspx" />
     <Content Include="vid1.aspx" />
     <Content Include="vid2.aspx" />
-    <Content Include="download\turblib-20150108.tar.gz" />
-    <Content Include="download\turblib-20150108.zip" />
-    <Content Include="download\turbmat-20150108.tar.gz" />
-    <Content Include="download\turbmat-20150108.zip" />
     <Content Include="papers\ByronPoF-2015.pdf" />
     <Content Include="papers\Grahametal15.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -209,11 +216,12 @@
     <Content Include="docs\README-isotropic4096.pdf" />
     <Content Include="download\turblib-20171102.tar.gz" />
     <Content Include="download\turblib-20171102.zip" />
-    <Content Include="download\turbmat-20171102.tar.gz" />
-    <Content Include="download\turbmat-20171102.zip" />
     <Content Include="download\turbmat-20180129.tar.gz" />
     <Content Include="download\turbmat-20180129.zip" />
     <Content Include="docs\README-rotstrat4096.pdf" />
+    <Content Include="download\turbmat-20180411.tar.gz" />
+    <Content Include="download\turbmat-20180411.zip" />
+    <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\dsa004.pubxml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
     <None Include="Properties\Settings.settings">
@@ -242,13 +250,10 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.disco" />
-<<<<<<< HEAD
-=======
     <Content Include="Channel_Flow.aspx" />
     <Content Include="Forced_isotropic_turbulence.aspx" />
     <Content Include="Forced_MHD_turbulence.aspx" />
     <Content Include="Homogeneous_buoyancy_driven_turbulence.aspx" />
->>>>>>> FileDBmerg2
     <Content Include="webquery\query.aspx" />
     <Content Include="webquery\sampledata.txt" />
     <None Include="Web References\edu.jhu.pha.turbulence\turbulence.wsdl" />
@@ -279,6 +284,9 @@
       <DependentUpon>announcements.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="announcements.aspx.designer.cs">
+      <DependentUpon>announcements.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Code\WebService.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -305,9 +313,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="publications.aspx.cs">
-      <DependentUpon>publications.aspx</DependentUpon>
+    <Compile Include="status\monitor_full.aspx.cs">
+      <DependentUpon>monitor_full.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="status\monitor_full.aspx.designer.cs">
+      <DependentUpon>monitor_full.aspx</DependentUpon>
     </Compile>
     <Compile Include="status\monitor.aspx.cs">
       <DependentUpon>monitor.aspx</DependentUpon>
@@ -315,6 +326,13 @@
     </Compile>
     <Compile Include="status\monitor.aspx.designer.cs">
       <DependentUpon>monitor.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="status\stat.aspx.cs">
+      <DependentUpon>stat.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="status\stat.aspx.designer.cs">
+      <DependentUpon>stat.aspx</DependentUpon>
     </Compile>
     <Compile Include="Web References\edu.jhu.pha.turbulence\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -393,38 +411,6 @@
     <Content Include="docs\README-isotropic.pdf" />
     <None Include="docs\README-MHD.doc" />
     <Content Include="docs\README-MHD.pdf" />
-    <Content Include="download\turblib-20071108.tar.gz" />
-    <Content Include="download\turblib-20080215.tar.gz" />
-    <Content Include="download\turblib-20080312.tar.gz" />
-    <Content Include="download\turblib-20080409.tar.gz" />
-    <Content Include="download\turblib-20090709.tar.gz" />
-    <Content Include="download\turblib-20090808.tar.gz" />
-    <Content Include="download\turblib-20090809.tar.gz" />
-    <Content Include="download\turblib-20091206.tar.gz" />
-    <Content Include="download\turblib-20100309.tar.gz" />
-    <Content Include="download\turblib-20100331.tar.gz" />
-    <Content Include="download\turblib-20100419.tar.gz" />
-    <Content Include="download\turblib-20111031.tar.gz" />
-    <Content Include="download\turblib-20120913.tar.gz" />
-    <Content Include="download\turblib-20130128.tar.gz" />
-    <Content Include="download\turblib-20130214.tar.gz" />
-    <Content Include="download\turblib-20131113.tar.gz" />
-    <Content Include="download\turblib-20131113.zip" />
-    <Content Include="download\turblib-20140606.tar.gz" />
-    <Content Include="download\turblib-20140606.zip" />
-    <Content Include="download\turblib-20141017.tar.gz" />
-    <Content Include="download\turblib-20141017.zip" />
-    <Content Include="download\Turbmat-0.2.0.tar.gz" />
-    <Content Include="download\Turbmat-0.2.0.zip" />
-    <Content Include="download\turbmat-20110428.tar.gz" />
-    <Content Include="download\turbmat-20131113.tar.gz" />
-    <Content Include="download\turbmat-20131113.zip" />
-    <Content Include="download\turbmat-20140606.tar.gz" />
-    <Content Include="download\turbmat-20140606.zip" />
-    <Content Include="download\turbmat-20141017.tar.gz" />
-    <Content Include="download\turbmat-20141017.zip" />
-    <Content Include="download\Turbmat-Tools-0.3.1.tar.gz" />
-    <Content Include="download\Turbmat-Tools-0.3.1.zip" />
     <Content Include="download\Turbmat-Tools-0.3.2.tar.gz" />
     <Content Include="download\Turbmat-Tools-0.3.2.zip" />
     <None Include="images\nature12128.flv" />
@@ -456,10 +442,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://turbulence.pha.jhu.edu/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\edu.jhu.pha.turbulence\</RelPath>
-      <UpdateFromURL>http://turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://test.turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

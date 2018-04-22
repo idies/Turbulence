@@ -35,7 +35,7 @@ public partial class StoredProcedures
     {
         const bool DEVEL_MODE = false;
         //const string infodb = "turbinfo";
-        const string infodb = "turbinfo";
+        const string infodb = "turbinfo_test";
 
         const int MAX_READ_LENGTH = 256000000;
         int atomDim = 8;
@@ -144,7 +144,7 @@ public partial class StoredProcedures
                 byte[] rawdata = new byte[size];
                 string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
-                String cString = String.Format("Server={0};Database='{1}';Asynchronous Processing=true;Trusted_Connection=True;Connection Lifetime=7200",
+                String cString = String.Format("Server={0};Database='{1}';Asynchronous Processing=true;User ID='turbquery';Password='aa2465ways2k';Connection Lifetime=7200",
                     database.servers[s], database.codeDatabase[s]);
                 SqlConnection connection = new SqlConnection(cString);
                 connection.Open();
@@ -289,10 +289,6 @@ public partial class StoredProcedures
                 //int destinationIndex = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
                 //Array.Copy(rawdata, 0, result, destinationIndex0, size);
                 rawdata = null;
-                /*Update log record*/
-                log.UpdateLogRecord(rowid, database.Bitfield);
-                log.Reset();
-
 
                 connection.Close();
                 connection = null;
@@ -336,6 +332,9 @@ public partial class StoredProcedures
 
         //record.SetBytes(0, 0, buffer, 0, buffer.Length);
         SqlContext.Pipe.Send(record);
+        /*Update log record*/
+        log.UpdateLogRecord(rowid, database.Bitfield);
+        log.Reset();
         //if (rawdata.Length > 0)
         // {
         //     SqlContext.Pipe.Send(record);

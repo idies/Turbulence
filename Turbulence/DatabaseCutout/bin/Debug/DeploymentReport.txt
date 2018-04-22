@@ -9,7 +9,8 @@
        None
 
 ** User actions
-     Alter
+     Create
        [DatabaseCutout] (Assembly)
+       [dbo].[GetAnyCutout] (Procedure)
 
 ** Supporting actions

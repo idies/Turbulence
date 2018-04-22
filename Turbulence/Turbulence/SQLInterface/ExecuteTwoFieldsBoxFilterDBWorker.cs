@@ -42,9 +42,9 @@ public partial class StoredProcedures
         SqlConnection contextConn;
         string connString;
         if (serverName.Contains("_"))
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName.Remove(serverName.IndexOf("_")), serverinfo.codeDB);
         else
-            connString = String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=True;Pooling=false;", serverName, serverinfo.codeDB);
+            connString = String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, serverinfo.codeDB);
         standardConn = new SqlConnection(connString);
         contextConn = new SqlConnection("context connection=true");
 
@@ -94,9 +94,9 @@ public partial class StoredProcedures
             TurbulenceBlob atom1 = new TurbulenceBlob(table1);
             TurbulenceBlob atom2 = new TurbulenceBlob(table2);
 
-            string pathSource1 = SQLUtility.getDBfilePath(dbname, timestep_int, tableName1, standardConn);
+            string pathSource1 = SQLUtility.getDBfilePath(dbname, timestep_int, tableName1, standardConn, serverName);
             FileStream filedb1 = new FileStream(pathSource1, FileMode.Open, System.IO.FileAccess.Read);
-            string pathSource2 = SQLUtility.getDBfilePath(dbname, timestep_int, tableName2, standardConn);
+            string pathSource2 = SQLUtility.getDBfilePath(dbname, timestep_int, tableName2, standardConn, serverName);
             FileStream filedb2 = new FileStream(pathSource2, FileMode.Open, System.IO.FileAccess.Read);
 
             //This is ok I think because it is a temporary table

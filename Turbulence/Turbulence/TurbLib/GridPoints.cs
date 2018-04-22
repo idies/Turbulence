@@ -82,13 +82,17 @@ namespace Turbulence.TurbLib
                 }
                 else if (indexOfNearest == 0)
                 {
+                    if (value < grid_points[0].Value && value >= 0.0f)  //this is for bl_zaki/transition_bl
+                    {
+                        return 0;
+                    }
                     throw new Exception(String.Format("The given y value is smaller than the smallest allowed grid value for the y dimension: {0}",
-                        value));
+                        value, value >= 0.0f));
                 }
                 else
                 {
                     // The given value is between (indexOfNearest - 1) and indexOfNearest
-                    
+
                     // The cell_index (n) for the y direction is given by:
                     // y_n <= value < y_(n+1) if value <= 0
                     // y_(n-1) < value <= y_n if value > 0
@@ -124,6 +128,10 @@ namespace Turbulence.TurbLib
                 }
                 else if (indexOfNearest == 0)
                 {
+                    if (value < grid_points[0].Value && value >= 0.0f)  //this is for bl_zaki/transition_bl
+                    {
+                        return 0;
+                    }
                     throw new Exception(String.Format("The given y value is smaller than the smallest allowed grid value for the y dimension: {0}",
                         value));
                 }
@@ -162,6 +170,10 @@ namespace Turbulence.TurbLib
                 }
                 else if (indexOfNearest == 0)
                 {
+                    if (value < grid_points[0].Value && value >= 0.0f) //this is for bl_zaki/transition_bl
+                    {
+                        return 0;
+                    }
                     throw new Exception(String.Format("The given y value is smaller than the smallest allowed grid value for the y dimension: {0}",
                         value));
                 }
@@ -175,7 +187,7 @@ namespace Turbulence.TurbLib
                 }
             }
         }
-        
+
         public double GetGridValue(int cell_index)
         {
             // The entries in the List of key-value pairs are sorted on the cell index,

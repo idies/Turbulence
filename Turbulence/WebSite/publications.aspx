@@ -1,4 +1,4 @@
-<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="publications.aspx.cs" Inherits="publications" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
@@ -26,11 +26,64 @@
  <p><span class="style21">Publications and abstracts:</span>
       <br />
       </p>
-<font face="Arial, Helvetica, sans-serif">
+
 <ul>
-<asp:Literal ID="publication" runat="server"></asp:Literal>
-</ul> 
-</font>   
+
+
+<li>
+    <font face="Arial, Helvetica, sans-serif">Y. Li, E. Perlman, M.
+    Wan, Y. Yang, R. Burns, C. Meneveau, R. Burns, S. Chen, A.
+    Szalay &amp; G. Eyink. <a href="papers/Lietal-JHUdatabase2008.pdf" target="_blank">A public turbulence database cluster and applications
+    to study Lagrangian evolution of velocity increments in turbulence.</a>
+        J. Turbulence <strong>9</strong>, No. 31 (2008) 
+        (</font><font size="-1" face="Arial, Helvetica, sans-serif"><i> </i> <font color="#FF0000"><a href="http://www.informaworld.com/smpp/content~db=all~content=a903403151" target="_blank">&copy; Taylor &amp; Francis, see http://www.informaworld.com/smpp/content~db=all~content=a903403151</a> </font></font><font face="Arial, Helvetica, sans-serif">). </font>
+</li> 
+      <li>
+H.&nbsp;Yu, K.&nbsp;Kanov, E.&nbsp;Perlman, J.&nbsp;Graham, E.&nbsp;Frederix, R.&nbsp;Burns, A.&nbsp;Szalay,
+  G.&nbsp;Eyink, and C.&nbsp;Meneveau.
+ <a href="papers/Yuetal-JoT2012.pdf"  target="_blank">Studying lagrangian dynamics of turbulence using on-demand fluid
+  particle tracking in a public turbulence database.</a>
+ <em>Journal of Turbulence</em>, 13(12), 2012.  (&copy; Taylor & Francis, see <a href="http://www.tandfonline.com/doi/abs/10.1080/14685248.2012.674643" target="_blank">
+    http://www.tandfonline.com/doi/abs/10.1080/14685248.2012.674643</a>)
+
+</li>
+<li>
+    <font face="Arial, Helvetica, sans-serif">E. Perlman, R. Burns,
+            Y. Li, and C. Meneveau. <a href="http://sc07.supercomputing.org/schedule/event_detail.php?evid=11075" target="_blank">abstract</a>) [<a href="papers/turb-sc07.pdf" target="_blank">Data Exploration of Turbulence Simulations
+            using a Database Cluster.</a> Supercomputing 2007 ACM, IEEE, </font> 
+</li>
+<li>
+J. Graham, K. Kanov, X.I.A. Yang, M.K. Lee, N. Malaya, C.C. Lalescu, R. Burns, G. Eyink, A. Szalay, R.D. Moser. and C. Meneveau: 
+<a href="papers/Grahametal-JoT-2016-preprint.pdf"  target="_blank">
+A Web Services-accessible database of turbulent channel flow and its use for testing a new integral wall model for LES.
+</a> Journal of Turbulence 17 (2), 181-215, 2016.  (&copy; Taylor & Francis, see <a href="http://www.tandfonline.com/doi/pdf/10.1080/14685248.2015.1088656" target="_blank">http://www.tandfonline.com/doi/pdf/10.1080/14685248.2015.1088656</a>)
+ 
+
+</li>        
+<li>
+<font face="Arial, Helvetica, sans-serif">X. Wang, E. Perlman, R. Burns, T. Malik, T. Budav&aacute;ri, 
+C. Meneveau, &amp; A. Szalay. <a href="papers/wang_sc10.pdf" target="_blank">JAWS: Job-Aware Workload Scheduling for the Exploration of Turbulence Simulations. </a>
+International Conference for High Performance Computing, Networking, Storage and Analysis (SC), IEEE, 2010.
+(<a href="http://sc10.supercomputing.org/schedule/event_detail.php?evid=pap210"  target="_blank">abstract</a>), <a href="papers/wang_sc10.ppt" target="_blank">slides</a>]</font>
+</li> 
+        
+<li>        
+<font face="Arial, Helvetica, sans-serif">K. Kanov, E. Perlman, R. Burns, Y. Ahmad, A. Szalay.
+<a href="papers/kanov_sc2011.pdf" target="_blank">I/O Streaming Evaluation of Batch Queries for Data-Intensive Computational Turbulence. </a>
+International Conference for High Performance Computing, Networking, Storage and Analysis (SC), ACM, 2011.
+(<a href="http://sc11.supercomputing.org/schedule/event_detail.php?evid=pap154" target="_blank">abstract</a>)
+</font>
+</li> 
+        
+<li>
+<font face="Arial, Helvetica, sans-serif">K. Kanov, R. Burns, G. Eyink, C. Meneveau, A. Szalay :
+<a href="papers/kanov_sc2012.pdf" target="_blank">Data-intensive spatial filtering in large numerical simulation datasets.</a>
+International Conference for High Performance Computing, Networking, Storage and Analysis (SC), IEEE, 2012.
+(<a href="http://sc12.supercomputing.org/schedule/event_detail.php?evid=pap154" target="_blank">abstract</a>)
+</font>
+</li>
+
+</ul>    
       <br />
       
       <p><span class="style21">Sample publications of Turbulence Database usage:</span>
@@ -38,9 +91,6 @@
       </p> 
       
 <ul>      
-<<<<<<< HEAD
-<asp:Literal ID="samplepublication" runat="server"></asp:Literal></ul>               
-=======
 
     <li><font face="Arial, Helvetica, sans-serif">
          F. Candelier, J. Einarsson, and B. Mehlig, <a href="http://journals.aps.org/prl/abstract/10.1103/PhysRevLett.117.204501">Angular Dynamics of a Small Particle in Turbulence</a>, Physical Review Letters, 117, 204501, doi:10.1103/PhysRevLett.117.204501 (November 2016)</font>
@@ -464,7 +514,6 @@ Yi&nbsp;Li, Laurent Chevillard, Gregory Eyink, and Charles Meneveau.
                                   
 
       </ul>               
->>>>>>> FileDBmerg2
 <!--       <p align="center"><font face="Arial, Helvetica, sans-serif"><img src="fig3.jpg" width="170" height="176" /></font></p>  -->     
            
     

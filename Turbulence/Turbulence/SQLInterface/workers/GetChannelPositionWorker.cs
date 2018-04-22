@@ -215,22 +215,26 @@ namespace Turbulence.SQLInterface.workers
                     {
                         point.vel_inc.x = point.vel_inc.x - 0.45f * dt;
                     }
+                    //if (database.Contains("bl_zaki"))
+                    //{
+                    //    point.vel_inc.x = point.vel_inc.x - 30.072391161022978f;
+                    //}
                     // For channel predictor, if it goes out of domain, stick it to the wall
-                    point.pre_pos.x = point.pos.x + point.vel_inc.x;                     
+                    point.pre_pos.x = point.pos.x + point.vel_inc.x;
                     point.pre_pos.y = point.pos.y + point.vel_inc.y;
                     point.pre_pos.z = point.pos.z + point.vel_inc.z;
 
                     if (!periodicX)
                     {
-                        point.pre_pos.x = Math.Max(Math.Min(point.pos.x, (float)setInfo.Dx * (setInfo.GridResolutionX - 1)), 0);
+                        point.pre_pos.x = Math.Max(Math.Min(point.pre_pos.x, (float)setInfo.Dx * (setInfo.GridResolutionX - 1)), 0);
                     }
                     if (!periodicY)
                     {
-                        point.pre_pos.y = Math.Max(Math.Min(point.pos.y, (float)grid_points_y[grid_points_y.Length-1]), (float)grid_points_y[0]);
+                        point.pre_pos.y = Math.Max(Math.Min(point.pre_pos.y, (float)grid_points_y[grid_points_y.Length - 1]), (float)grid_points_y[0]);
                     }
                     if (!periodicZ)
                     {
-                        point.pre_pos.z = Math.Max(Math.Min(point.pos.z, (float)setInfo.Dz * (setInfo.GridResolutionZ - 1)), 0);
+                        point.pre_pos.z = Math.Max(Math.Min(point.pre_pos.z, (float)setInfo.Dz * (setInfo.GridResolutionZ - 1)), 0);
                     }
 
                     // For channel flow, if predictor is out of domain, throw Exception
@@ -264,7 +268,7 @@ namespace Turbulence.SQLInterface.workers
                     //Z = LagInterpolation.CalcNode(point.pre_pos.z, setInfo.Dz);
                     //}
                     /* Fix for wrap around */
-                    X = ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;                   
+                    X = ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
                     Z = ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
 
                     point.zindex = new Morton3D(Z, Y, X);
@@ -283,6 +287,10 @@ namespace Turbulence.SQLInterface.workers
                     {
                         point.vel_inc.x = point.vel_inc.x - 0.45f * dt;
                     }
+                    //if (database.Contains("bl_zaki"))
+                    //{
+                    //    point.vel_inc.x = point.vel_inc.x - 30.072391161022978f;
+                    //}
                     // Corrector; update positions
                     point.pos.x = (point.pos.x + point.pre_pos.x + point.vel_inc.x) * 0.5f;
                     point.pos.y = (point.pos.y + point.pre_pos.y + point.vel_inc.y) * 0.5f;
@@ -290,38 +298,77 @@ namespace Turbulence.SQLInterface.workers
 
                     if (!periodicX && (point.pos.x > setInfo.Dx * (setInfo.GridResolutionX - 1) || point.pos.x < 0))
                     {
+                        double temp;
+                        if (database.Contains("channel"))
+                        {
+                            temp = 0.45 * endTime;
+                        }
+                        else if (database.Contains("bl_zaki"))
+                        {
+                            temp = 30.218496172581567;
+                        }
+                        else
+                        {
+                            temp = 0.0;
+                        }
                         bool condition = point.pos.x < 0;
-                        throw new Exception("Particle left domain on corrector step!\nx:"
-                            + (point.pos.x + 0.45 * endTime).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
+                        throw new Exception("Particle left domain in x directionon corrector step!\nx:"
+                            + (point.pos.x + temp).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
                             + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
                             + "\nZ-index:" + point.zindex.ToString()
-                            + "\nx:" + (point.pre_pos.x + 0.45 * endTime).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
-                            + "\ndvx:" + (point.vel_inc.x + 0.45 * endTime).ToString() + "dvy:" + point.vel_inc.y.ToString() + "dvz:" + point.vel_inc.z.ToString()
+                            + "\nx:" + (point.pre_pos.x + temp).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
+                            + "\ndvx:" + (point.vel_inc.x + temp).ToString() + "dvy:" + point.vel_inc.y.ToString() + "dvz:" + point.vel_inc.z.ToString()
                             + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString()
                             + "\nfull server:" + this.full.ToString());
                     }
                     // For channel flow, if corrector is out of domain, throw Exception
-                    if (!periodicY && (point.pos.y > grid_points_y[grid_points_y.Length-1] || point.pos.y < grid_points_y[0]))
+                    if (!periodicY && (point.pos.y > grid_points_y[grid_points_y.Length - 1] || point.pos.y < grid_points_y[0]))
                     {
+                        double temp;
+                        if (database.Contains("channel"))
+                        {
+                            temp = 0.45 * endTime;
+                        }
+                        else if (database.Contains("bl_zaki"))
+                        {
+                            temp = 30.218496172581567;
+                        }
+                        else
+                        {
+                            temp = 0.0;
+                        }
                         bool condition = point.pos.y < grid_points_y[0];
-                        throw new Exception("Particle left domain on corrector step!\nx:"
-                            +(point.pos.x+0.45*endTime).ToString()+"y:"+point.pos.y.ToString()+"z:"+point.pos.z.ToString()
-                            +"\nCondition:"+condition.ToString()+"\nConnection:"+point.numberOfCubes.ToString()
-                            +"\nZ-index:"+point.zindex.ToString()
-                            + "\nx:"+(point.pre_pos.x + 0.45 * endTime).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
-                            +"\ndvx:"+(point.vel_inc.x + 0.45 * endTime).ToString()+"dvy:" + point.vel_inc.y.ToString()+"dvz:"+point.vel_inc.z.ToString()
+                        throw new Exception("Particle left domain in y directionon  on corrector step!\nx:"
+                            + (point.pos.x + temp).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
+                            + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
+                            + "\nZ-index:" + point.zindex.ToString()
+                            + "\nx:" + (point.pre_pos.x + temp).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
+                            + "\ndvx:" + (point.vel_inc.x + temp).ToString() + "dvy:" + point.vel_inc.y.ToString() + "dvz:" + point.vel_inc.z.ToString()
                             + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString()
                             + "\nfull server:" + this.full.ToString());
                     }
                     if (!periodicZ && (point.pos.z > setInfo.Dz * (setInfo.GridResolutionZ - 1) || point.pos.z < 0))
                     {
+                        double temp;
+                        if (database.Contains("channel"))
+                        {
+                            temp = 0.45 * endTime;
+                        }
+                        else if (database.Contains("bl_zaki"))
+                        {
+                            temp = 30.218496172581567;
+                        }
+                        else
+                        {
+                            temp = 0.0;
+                        }
                         bool condition = point.pos.z < 0;
-                        throw new Exception("Particle left domain on corrector step!\nx:"
-                            + (point.pos.x + 0.45 * endTime).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
+                        throw new Exception("Particle left domain in z directionon  on corrector step!\nx:"
+                            + (point.pos.x + temp).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
                             + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
                             + "\nZ-index:" + point.zindex.ToString()
-                            + "\nx:" + (point.pre_pos.x + 0.45 * endTime).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
-                            + "\ndvx:" + (point.vel_inc.x + 0.45 * endTime).ToString() + "dvy:" + point.vel_inc.y.ToString() + "dvz:" + point.vel_inc.z.ToString()
+                            + "\nx:" + (point.pre_pos.x + temp).ToString() + "y:" + point.pre_pos.y.ToString() + "z:" + point.pre_pos.z.ToString()
+                            + "\ndvx:" + (point.vel_inc.x + temp).ToString() + "dvy:" + point.vel_inc.y.ToString() + "dvz:" + point.vel_inc.z.ToString()
                             + "\nvx:" + velocity[0].ToString() + "vy:" + velocity[1].ToString() + "vz:" + velocity[2].ToString()
                             + "\nfull server:" + this.full.ToString());
                     }

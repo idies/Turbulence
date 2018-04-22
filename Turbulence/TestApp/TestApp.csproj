@@ -17,6 +17,7 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <PublishUrl>http://localhost/TestApp/</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -31,7 +32,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -92,6 +92,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <None Include="TestProgram.cs.bak" />
     <Compile Include="TestProgram.cs" />
     <Compile Include="Web References\turbulence\Reference.cs">
       <AutoGen>True</AutoGen>
@@ -200,6 +201,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="turbinfoAnalysis.sql" />
+    <Content Include="xyzToMorton.sql" />
     <Content Include="Datacutout.sql" />
     <Content Include="bl_zaki_debugger.sql" />
     <Content Include="GetPosition.sql" />

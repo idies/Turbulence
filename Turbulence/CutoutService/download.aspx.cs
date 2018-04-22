@@ -80,7 +80,7 @@ namespace CutoutService
         public static extern unsafe void memcpy(void* dest, void* src, ulong count);
          
         Database database = new Database("turbinfo", false);
-        AuthInfo authInfo = new AuthInfo("turbinfo", false);
+        AuthInfo authInfo = new AuthInfo("turbinfo", "sciserver02", false);
         Log log = new Log("turbinfo", false);
 
         //Maximum download size allowed

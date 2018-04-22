@@ -72,6 +72,8 @@ namespace Website
             if (dataset.SelectedValue.Equals("rotstrat4096"))
             {
                 TimeRow.Visible = false;
+                EndTimeRow.Visible = false;
+                DeltaTRow.Visible = false;
                 SnapshotRow.Visible = true;
                 SnapshotRange.Text = "0, 1,..., 4";
             }
@@ -81,6 +83,8 @@ namespace Website
                 // EndTimeRange.Text = "0.0 - 0.0";
                 //DeltaTRange.Text = "DB dt = .0";
                 TimeRow.Visible = false;
+                EndTimeRow.Visible = false;
+                DeltaTRow.Visible = false;
                 SnapshotRow.Visible = true;
                 SnapshotRange.Text = "0";
             }
@@ -101,21 +105,25 @@ namespace Website
                     EndTimeRange.Text = "0.0 - 0.0198";
                     DeltaTRange.Text = "DB dt = .0002";
                 }
-                //else if (dataset.SelectedValue.Equals("rotstrat4096"))
-                //{
-                //    timerange.Text = "0.0 - 0.780";
-                //    EndTimeRange.Text = "0.0 - 0.780";
-                //    DeltaTRange.Text = "DB dt = .195";
-                //}
-               // else if (dataset.SelectedValue.Equals("isotropic4096"))
-                //{
+                else if (dataset.SelectedValue.Equals("rotstrat4096"))
+                {
+                    //    timerange.Text = "0.0 - 0.780";
+                    //    EndTimeRange.Text = "0.0 - 0.780";
+                    //    DeltaTRange.Text = "DB dt = .195";
+                    EndTimeRow.Visible = false;
+                    DeltaTRow.Visible = false;
+                }
+                else if (dataset.SelectedValue.Equals("isotropic4096"))
+                {
                     //  timerange.Text = "0.0 - 0.0";
                     // EndTimeRange.Text = "0.0 - 0.0";
                     //DeltaTRange.Text = "DB dt = .0";
                     //TimeRow.Visible = false;
-                  //  SnapshotRow.Visible = true;
+                    //  SnapshotRow.Visible = true;
                     //SnapshotRange.Text = "0";
-               // }
+                    EndTimeRow.Visible = false;
+                    DeltaTRow.Visible = false;
+                }
                 else if (dataset.SelectedValue.Equals("mhd1024"))
                 {
                     timerange.Text = "0.0 - 2.56";
@@ -134,11 +142,11 @@ namespace Website
                     EndTimeRange.Text = "0.0 - 25.9935";
                     DeltaTRange.Text = "DB dt = .0065";
                 }
-                else if (dataset.SelectedValue.Equals("bl_zaki"))
+                else if (dataset.SelectedValue.Equals("transition_bl"))
                 {
-                    timerange.Text = "0.0 - 0.007";
-                    EndTimeRange.Text = "0.0 - 0.007";
-                    DeltaTRange.Text = "DB dt = .001";
+                    timerange.Text = "0.0 - 1175.0";
+                    EndTimeRange.Text = "0.0 - 1175.0";
+                    DeltaTRange.Text = "DB dt = .25";
                 }
                 else
                 {
@@ -274,11 +282,13 @@ namespace Website
                 }
                 else if (dataset.SelectedValue.Equals("isotropic4096"))
                 {
-                    timerange.Text = "0.0 - 0.0";
+                    timerange.Text = "0";
+                    SnapshotRange.Text = "0";
                 }
                 else if (dataset.SelectedValue.Equals("rotstrat4096"))
                 {
                     timerange.Text = "0, 1,..., 4";
+                    SnapshotRange.Text = "0, 1,..., 4";
                 }
                 else if (dataset.SelectedValue.Equals("mhd1024"))
                 {
@@ -292,9 +302,9 @@ namespace Website
                 {
                     timerange.Text = "0.0 - 25.9935";
                 }
-                else if (dataset.SelectedValue.Equals("bl_zaki"))
+                else if (dataset.SelectedValue.Equals("transition_bl"))
                 {
-                    timerange.Text = "0.0 - 0.007";
+                    timerange.Text = "0.0 - 1175.0";
                 }
             }
             else if (dataset.SelectedValue.Equals("isotropic4096"))
@@ -393,7 +403,7 @@ namespace Website
                     coord_range_details.Text = "Values outside the range are treated as mod(8&pi;), mod(3&pi;) for x and z.<br/>The values for y must be within [-1, 1].";
                 }
             }
-            else if (dataset.SelectedValue.Equals("bl_zaki"))
+            else if (dataset.SelectedValue.Equals("transition_bl"))
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
@@ -407,8 +417,8 @@ namespace Website
                 }
                 else
                 {
-                    x_range.Text = "x [0, 969.8465]";
-                    y_range.Text = "y [0, 26.296]";
+                    x_range.Text = "x [30.21850, 1000.065]";
+                    y_range.Text = "y [0, 26.48795]";
                     z_range.Text = "z [0, 240]";
                     xwidth_range.Visible = false;
                     ywidth_range.Visible = false;
@@ -416,7 +426,7 @@ namespace Website
                     Xwidth.Visible = false;
                     Ywidth.Visible = false;
                     Zwidth.Visible = false;
-                    coord_range_details.Text = "Values outside the range are treated as mod(240) for z.<br/>The values for x and y must be within [0,969.8465] and [0, 26.296], respectively.<br/>*dx=0.292210466252391, dz=0.1171875*";
+                    coord_range_details.Text = "Values outside the range are treated as mod(240) for z.<br/>The values for x and y must be within [30.21850, 1000.065] and [0, 26.48795], respectively.<br/>*dx=0.292210466, dz=0.117244748*";
                 }
             }
         }
@@ -582,7 +592,7 @@ namespace Website
             }
             else if (dataset.SelectedValue.Equals("isotropic4096"))
             {
-                timerange.Text = "0.0 - 0.0<br/>dt = .0";
+                SnapshotRange.Text = "0";
                 this.GetTemperature.Enabled = false;
                 this.GetTemperatureGradient.Enabled = false;
                 this.GetTemperatureHessian.Enabled = false;
@@ -741,9 +751,9 @@ namespace Website
                     fieldList2.SelectedValue = "Velocity";
                 }
             }
-            else if (dataset.SelectedValue.Equals("bl_zaki"))
+            else if (dataset.SelectedValue.Equals("transition_bl"))
             {
-                timerange.Text = "0.0 - 0.007<br/>dt = .001";
+                timerange.Text = "0.0 - 1175.0<br/>dt = .25";
                 this.GetTemperature.Enabled = false;
                 this.GetTemperatureGradient.Enabled = false;
                 this.GetTemperatureHessian.Enabled = false;
@@ -861,7 +871,7 @@ namespace Website
                 case "GetVelocityAndPressure":
                 case "GetVelocityAndTemperature":
                 case "GetDensity":
-                    if (dataset.SelectedValue.Equals("bl_zaki"))
+                    if (dataset.SelectedValue.Equals("transition_bl"))
                     {
                         flags = new string[] { "None", "Lag4" };
                     }
@@ -871,7 +881,7 @@ namespace Website
                     }
                     break;
                 case "GetPosition":
-                    if (dataset.SelectedValue.Equals("bl_zaki"))
+                    if (dataset.SelectedValue.Equals("transition_bl"))
                     {
                         flags = new string[] { "None", "Lag4" };
                     }
@@ -887,7 +897,7 @@ namespace Website
                 case "GetVectorPotentialGradient":
                 case "GetDensityGradient":
                 case "GetInvariant":
-                    if (dataset.SelectedValue.Equals("bl_zaki"))
+                    if (dataset.SelectedValue.Equals("transition_bl"))
                     {
                         flags = new string[] { "FD4NoInt", "FD4Lag4" };
                     }
@@ -902,7 +912,7 @@ namespace Website
                 case "GetMagneticFieldHessian":
                 case "GetVectorPotentialHessian":
                 case "GetDensityHessian":
-                    if (dataset.SelectedValue.Equals("bl_zaki"))
+                    if (dataset.SelectedValue.Equals("transition_bl"))
                     {
                         flags = new string[] { "FD4NoInt", "FD4Lag4" };
                     }
@@ -914,7 +924,7 @@ namespace Website
                 case "GetVelocityLaplacian":
                 case "GetMagneticFieldLaplacian":
                 case "GetVectorPotentialLaplacian":
-                    if (dataset.SelectedValue.Equals("bl_zaki"))
+                    if (dataset.SelectedValue.Equals("transition_bl"))
                     {
                         flags = new string[] { "FD4NoInt", "FD4Lag4" };
                     }
@@ -1112,6 +1122,14 @@ namespace Website
         {
             try
             {
+                // Look for a proxy address first
+                string _ip = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+                // If there is no proxy, get the standard remote address
+                if (_ip == null || _ip.ToLower() == "unknown")
+                    _ip = Request.ServerVariables["REMOTE_ADDR"];
+
+
                 bool showheader = includeHeader.Checked;
                 string delim = "";
                 if (otype == OutputType.Tab)
@@ -1127,10 +1145,10 @@ namespace Website
 
                 float timef = 0;
 
-                if (!dataset.Text.Equals("rotstrat4096"))
+                if (!dataset.Text.Equals("rotstrat4096") & !dataset.Text.Equals("isotropic4096"))
                 {
                     timef = Convert.ToSingle(time.Text);
-                    
+
                 }
                 else
                 {
@@ -1198,8 +1216,7 @@ namespace Website
                 if (method.Text.Equals("GetVelocityAndPressure"))
                 {
                     edu.jhu.pha.turbulence.Vector3P[] results;
-                    results = service.GetVelocityAndPressure(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVelocityAndPressure(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("ux{0}uy{0}uz{0}p\r\n", delim);
@@ -1221,8 +1238,7 @@ namespace Website
                 else if (method.Text.Equals("GetVelocityAndTemperature"))
                 {
                     edu.jhu.pha.turbulence.Vector3P[] results;
-                    results = service.GetVelocityAndTemperature(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVelocityAndTemperature(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("ux{0}uy{0}uz{0}theta\r\n", delim);
@@ -1244,8 +1260,7 @@ namespace Website
                 else if (method.Text.Equals("GetPressure"))
                 {
                     edu.jhu.pha.turbulence.Pressure[] results;
-                    results = service.GetPressure(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetPressure(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("p\r\n");
@@ -1265,8 +1280,7 @@ namespace Website
                 else if (method.Text.Equals("GetTemperature"))
                 {
                     edu.jhu.pha.turbulence.Pressure[] results;
-                    results = service.GetTemperature(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetTemperature(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("theta\r\n");
@@ -1286,8 +1300,7 @@ namespace Website
                 else if (method.Text.Equals("GetVelocity"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetVelocity(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVelocity(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("ux{0}uy{0}uz\r\n", delim);
@@ -1309,8 +1322,7 @@ namespace Website
                 else if (method.Text.Equals("GetMagneticField"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetMagneticField(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetMagneticField(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("bx{0}by{0}bz\r\n", delim);
@@ -1332,8 +1344,7 @@ namespace Website
                 else if (method.Text.Equals("GetVectorPotential"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetVectorPotential(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVectorPotential(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("ax{0}ay{0}az\r\n", delim);
@@ -1355,8 +1366,7 @@ namespace Website
                 else if (method.Text.Equals("GetDensity"))
                 {
                     edu.jhu.pha.turbulence.Pressure[] results;
-                    results = service.GetDensity(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetDensity(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("rho\r\n");
@@ -1376,8 +1386,7 @@ namespace Website
                 else if (method.Text.Equals("GetForce"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetForce(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetForce(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("fx{0}fy{0}fz\r\n", delim);
@@ -1421,8 +1430,7 @@ namespace Website
                 else if (method.Text.Equals("GetInvariant"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetInvariant(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetInvariant(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
 
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
@@ -1445,8 +1453,7 @@ namespace Website
                 else if (method.Text.Equals("GetPressureHessian"))
                 {
                     edu.jhu.pha.turbulence.PressureHessian[] results;
-                    results = service.GetPressureHessian(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetPressureHessian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("d2pdxdx{0}d2pdxdy{0}d2pdxdz{0}d2pdydy{0}d2pdydz{0}d2pdzdz\r\n", delim);
@@ -1469,8 +1476,7 @@ namespace Website
                 else if (method.Text.Equals("GetTemperatureHessian"))
                 {
                     edu.jhu.pha.turbulence.PressureHessian[] results;
-                    results = service.GetTemperatureHessian(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetTemperatureHessian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("d2thetadxdx{0}d2thetadxdy{0}d2thetadxdz{0}d2thetadydy{0}d2thetapdydz{0}d2thetadzdz\r\n", delim);
@@ -1493,8 +1499,7 @@ namespace Website
                 else if (method.Text.Equals("GetDensityHessian"))
                 {
                     edu.jhu.pha.turbulence.PressureHessian[] results;
-                    results = service.GetDensityHessian(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetDensityHessian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("d2rhodxdx{0}d2rhodxdy{0}d2rhodxdz{0}d2rhodydy{0}d2rhodydz{0}d2rhodzdz\r\n", delim);
@@ -1517,8 +1522,7 @@ namespace Website
                 else if (method.Text.Equals("GetVelocityGradient"))
                 {
                     edu.jhu.pha.turbulence.VelocityGradient[] results;
-                    results = service.GetVelocityGradient(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVelocityGradient(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("duxdx{0}duxdy{0}duxdz{0}duydx{0}duydy{0}duydz{0}duzdx{0}duzdy{0}duzdz\r\n", delim);
@@ -1547,8 +1551,7 @@ namespace Website
                 else if (method.Text.Equals("GetMagneticFieldGradient"))
                 {
                     edu.jhu.pha.turbulence.VelocityGradient[] results;
-                    results = service.GetMagneticFieldGradient(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetMagneticFieldGradient(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("dbxdx{0}dbxdy{0}dbxdz{0}dbydx{0}dbydy{0}dbydz{0}dbzdx{0}dbzdy{0}dbzdz\r\n", delim);
@@ -1577,8 +1580,7 @@ namespace Website
                 else if (method.Text.Equals("GetVectorPotentialGradient"))
                 {
                     edu.jhu.pha.turbulence.VelocityGradient[] results;
-                    results = service.GetVectorPotentialGradient(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVectorPotentialGradient(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("daxdx{0}daxdy{0}daxdz{0}daydx{0}daydy{0}daydz{0}dazdx{0}dazdy{0}dazdz\r\n", delim);
@@ -1607,8 +1609,7 @@ namespace Website
                 else if (method.Text.Equals("GetPressureGradient"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetPressureGradient(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetPressureGradient(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("dpdx{0}dpdy{0}dpdz\r\n", delim);
@@ -1631,8 +1632,7 @@ namespace Website
                 else if (method.Text.Equals("GetTemperatureGradient"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetTemperatureGradient(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetTemperatureGradient(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("dthetadx{0}dthetady{0}dthetadz\r\n", delim);
@@ -1655,8 +1655,7 @@ namespace Website
                 else if (method.Text.Equals("GetDensityGradient"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetDensityGradient(authToken,
-                        dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetDensityGradient(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("drhodx{0}drhody{0}drhodz\r\n", delim);
@@ -1679,7 +1678,7 @@ namespace Website
                 else if (method.Text.Equals("GetVelocityHessian"))
                 {
                     edu.jhu.pha.turbulence.VelocityHessian[] results;
-                    results = service.GetVelocityHessian(authToken, dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVelocityHessian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("d2uxdxdx{0}d2uxdxdy{0}d2uxdxdz{0}d2uxdydy{0}d2uxdydz{0}d2uxdzdz{0}d2uydxdx{0}d2uydxdy{0}d2uydxdz{0}d2uydydy{0}d2uydydz{0}d2uydzdz{0}d2uzdxdx{0}d2uzdxdy{0}d2uzdxdz{0}d2uzdydy{0}d2uzdydz{0}d2uzdzdz\r\n", delim);
@@ -1712,7 +1711,7 @@ namespace Website
                 else if (method.Text.Equals("GetMagneticFieldHessian"))
                 {
                     edu.jhu.pha.turbulence.VelocityHessian[] results;
-                    results = service.GetMagneticHessian(authToken, dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetMagneticHessian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("d2bxdxdx{0}d2bxdxdy{0}d2bxdxdz{0}d2bxdydy{0}d2bxdydz{0}d2bxdzdz{0}d2bydxdx{0}d2bydxdy{0}d2bydxdz{0}d2bydydy{0}d2bydydz{0}d2bydzdz{0}d2bzdxdx{0}d2bzdxdy{0}d2bzdxdz{0}d2bzdydy{0}d2bzdydz{0}d2bzdzdz\r\n", delim);
@@ -1745,7 +1744,7 @@ namespace Website
                 else if (method.Text.Equals("GetVectorPotentialHessian"))
                 {
                     edu.jhu.pha.turbulence.VelocityHessian[] results;
-                    results = service.GetVectorPotentialHessian(authToken, dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVectorPotentialHessian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("d2axdxdx{0}d2axdxdy{0}d2axdxdz{0}d2axdydy{0}d2axdydz{0}d2axdzdz{0}d2aydxdx{0}d2aydxdy{0}d2aydxdz{0}d2aydydy{0}d2aydydz{0}d2aydzdz{0}d2azdxdx{0}d2azdxdy{0}d2azdxdz{0}d2azdydy{0}d2azdydz{0}d2azdzdz\r\n", delim);
@@ -1778,7 +1777,7 @@ namespace Website
                 else if (method.Text.Equals("GetVelocityLaplacian"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetVelocityLaplacian(authToken, dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVelocityLaplacian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("grad2ux{0}grad2uy{0}grad2uz\r\n", delim);
@@ -1800,7 +1799,7 @@ namespace Website
                 else if (method.Text.Equals("GetMagneticFieldLaplacian"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetMagneticFieldLaplacian(authToken, dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetMagneticFieldLaplacian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("grad2bx{0}grad2by{0}grad2bz\r\n", delim);
@@ -1822,7 +1821,7 @@ namespace Website
                 else if (method.Text.Equals("GetVectorPotentialLaplacian"))
                 {
                     edu.jhu.pha.turbulence.Vector3[] results;
-                    results = service.GetVectorPotentialLaplacian(authToken, dataset.Text, timef, spatialv, temporalv, points);
+                    results = service.GetVectorPotentialLaplacian(authToken, dataset.Text, timef, spatialv, temporalv, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("grad2ax{0}grad2ay{0}grad2az\r\n", delim);
@@ -1848,17 +1847,14 @@ namespace Website
                     float dtf = Convert.ToSingle(dt.Text);
                     /*if (dataset.SelectedValue.Equals("channel"))
                        {
-                            results = service.GetChannelPosition(authToken,
-                                dataset.Text, timef, EndTimef, dtf, spatialv, points);
+                            results = service.GetChannelPosition(authToken, dataset.Text, timef, EndTimef, dtf, spatialv, points, _ip);
                         }
                         else
                         {
-                            results = service.GetPosition(authToken,
-                                dataset.Text, timef, EndTimef, dtf, spatialv, points);
+                            results = service.GetPosition(authToken, dataset.Text, timef, EndTimef, dtf, spatialv, points, _ip);
                         }
                       */
-                    results = service.GetPosition(authToken,
-                    dataset.Text, timef, EndTimef, dtf, spatialv, points);
+                    results = service.GetPosition(authToken, dataset.Text, timef, EndTimef, dtf, spatialv, points, _ip);
 
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
@@ -1886,8 +1882,7 @@ namespace Website
                     {
                         edu.jhu.pha.turbulence.Vector3[] results;
 
-                        results = service.GetBoxFilter(authToken,
-                            dataset.Text, field, timef, fw, points);
+                        results = service.GetBoxFilter(authToken, dataset.Text, field, timef, fw, points, _ip);
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
                             outputText += String.Format("p\r\n", delim);
@@ -1910,8 +1905,7 @@ namespace Website
                     {
                         edu.jhu.pha.turbulence.Vector3[] results;
 
-                        results = service.GetBoxFilter(authToken,
-                            dataset.Text, field, timef, fw, points);
+                        results = service.GetBoxFilter(authToken, dataset.Text, field, timef, fw, points, _ip);
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
                             outputText += String.Format("rho\r\n", delim);
@@ -1934,8 +1928,7 @@ namespace Website
                     {
                         edu.jhu.pha.turbulence.Vector3[] results;
 
-                        results = service.GetBoxFilter(authToken,
-                            dataset.Text, field, timef, fw, points);
+                        results = service.GetBoxFilter(authToken, dataset.Text, field, timef, fw, points, _ip);
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
                             outputText += String.Format("theta\r\n", delim);
@@ -1958,8 +1951,7 @@ namespace Website
                     {
                         edu.jhu.pha.turbulence.Vector3[] results;
 
-                        results = service.GetBoxFilter(authToken,
-                            dataset.Text, field, timef, fw, points);
+                        results = service.GetBoxFilter(authToken, dataset.Text, field, timef, fw, points, _ip);
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
                             outputText += String.Format("ux{0}uy{0}uz\r\n", delim);
@@ -2000,8 +1992,7 @@ namespace Website
                     string field = string.Concat(field1, field2);
                     float fw = Convert.ToSingle(filterWidth.Text);
 
-                    results = service.GetBoxFilterSGSscalar(authToken,
-                        dataset.Text, field, timef, fw, points);
+                    results = service.GetBoxFilterSGSscalar(authToken, dataset.Text, field, timef, fw, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("{1}{0}\r\n", delim, field);
@@ -2014,7 +2005,7 @@ namespace Website
                         }
                         else if (otype == OutputType.Tab || otype == OutputType.CSV)
                         {
-                            outputText += String.Format("{1}\r\n", result);
+                            outputText += String.Format("{0}\r\n", result);
                         }
                     }
                 }
@@ -2026,8 +2017,7 @@ namespace Website
                     string field = string.Concat(field1, field2);
                     float fw = Convert.ToSingle(filterWidth.Text);
 
-                    results = service.GetBoxFilterSGSvector(authToken,
-                        dataset.Text, field, timef, fw, points);
+                    results = service.GetBoxFilterSGSvector(authToken, dataset.Text, field, timef, fw, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("{1}x{2}{0}{1}y{2}{0}{1}z{2}{0}\r\n", delim, field1, field2);
@@ -2052,8 +2042,7 @@ namespace Website
                     string field = fieldList.Text.ToLower();
                     float fw = Convert.ToSingle(filterWidth.Text);
 
-                    results = service.GetBoxFilterSGS(authToken,
-                        dataset.Text, field, timef, fw, points);
+                    results = service.GetBoxFilterSGS(authToken, dataset.Text, field, timef, fw, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("{1}x{1}x{0}{1}x{1}y{0}{1}x{1}z{0}{1}y{1}y{0}{1}y{1}z{0}{1}z{1}z\r\n", delim, TurbulenceService.DataInfo.GetCharFieldName(field));
@@ -2093,8 +2082,7 @@ namespace Website
                     string field = string.Concat(field1, field2);
                     float fw = Convert.ToSingle(filterWidth.Text);
 
-                    results = service.GetBoxFilterSGStensor(authToken,
-                        dataset.Text, field, timef, fw, points);
+                    results = service.GetBoxFilterSGStensor(authToken, dataset.Text, field, timef, fw, points, _ip);
                     if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                     {
                         outputText += String.Format("{1}x{2}x{0}{1}x{2}y{0}{1}x{2}z{0}{1}y{2}x{0}{1}y{2}y{0}{1}y{2}z{0}{1}z{2}x{0}{1}z{2}y{0}{1}z{2}z{0}\r\n", delim, field1, field2);
@@ -2122,8 +2110,7 @@ namespace Website
                     {
                         edu.jhu.pha.turbulence.VelocityGradient[] results;
 
-                        results = service.GetBoxFilterGradient(authToken,
-                            dataset.Text, field, timef, fw, spacing, points);
+                        results = service.GetBoxFilterGradient(authToken, dataset.Text, field, timef, fw, spacing, points, _ip);
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
                             outputText += String.Format("dpdx{0}dpdy{0}dpdz\r\n", delim);
@@ -2146,8 +2133,7 @@ namespace Website
                     {
                         edu.jhu.pha.turbulence.VelocityGradient[] results;
 
-                        results = service.GetBoxFilterGradient(authToken,
-                            dataset.Text, field, timef, fw, spacing, points);
+                        results = service.GetBoxFilterGradient(authToken, dataset.Text, field, timef, fw, spacing, points, _ip);
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
                             outputText += String.Format("drhodx{0}drhody{0}drhodz\r\n", delim);
@@ -2170,8 +2156,7 @@ namespace Website
                     {
                         edu.jhu.pha.turbulence.VelocityGradient[] results;
 
-                        results = service.GetBoxFilterGradient(authToken,
-                            dataset.Text, field, timef, fw, spacing, points);
+                        results = service.GetBoxFilterGradient(authToken, dataset.Text, field, timef, fw, spacing, points, _ip);
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
                             outputText += String.Format("dthetadx{0}dthetady{0}dthetadz\r\n", delim);
@@ -2193,8 +2178,7 @@ namespace Website
                     else
                     {
                         edu.jhu.pha.turbulence.VelocityGradient[] results;
-                        results = service.GetBoxFilterGradient(authToken,
-                            dataset.Text, field, timef, fw, spacing, points);
+                        results = service.GetBoxFilterGradient(authToken, dataset.Text, field, timef, fw, spacing, points, _ip);
                         if (showheader && (otype == OutputType.Tab || otype == OutputType.CSV))
                         {
                             if (fieldList.Text.Equals("Velocity"))
@@ -2266,7 +2250,7 @@ namespace Website
                     int y_width_int = Convert.ToInt32(Ywidth.Text);
                     int z_width_int = Convert.ToInt32(Zwidth.Text);
                     results = service.GetThreshold(authToken, dataset.Text, field, timef, thresholdValue, spatialv,
-                        X_int, Y_int, Z_int, x_width_int, y_width_int, z_width_int);
+                        X_int, Y_int, Z_int, x_width_int, y_width_int, z_width_int, _ip);
                     if (results.Length == 0)
                     {
                         outputText += "There are no points with values above the specified threshold.";
@@ -2333,82 +2317,94 @@ namespace Website
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
                 {
+                    x.Text = "3.14";
                     y.Text = "3.14";
+                    z.Text = "3.14";
                 }
                 time.Text = "1.0";
-                EndTime.Text = "1.004";
-                dt.Text = "0.001";
+                EndTime.Text = "1.008";
+                dt.Text = "0.002";
             }
             else if (dataset.SelectedValue.Equals("mhd1024"))
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
                 {
+                    x.Text = "3.14";
                     y.Text = "3.14";
                 }
                 time.Text = "1.0";
-                EndTime.Text = "1.004";
-                dt.Text = "0.001";
+                EndTime.Text = "1.02";
+                dt.Text = "0.005";
             }
             else if (dataset.SelectedValue.Equals("isotropic1024fine"))
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
                 {
+                    x.Text = "3.14";
                     y.Text = "3.14";
+                    z.Text = "3.14";
                 }
-                time.Text = "0.0";
-                EndTime.Text = "0.004";
-                dt.Text = "0.001";
+                time.Text = "0.01";
+                EndTime.Text = "0.018";
+                dt.Text = "0.002";
             }
             else if (dataset.SelectedValue.Equals("channel"))
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
                 {
+                    x.Text = "3.14";
                     y.Text = "0.0";
+                    z.Text = "3.14";
                 }
-                time.Text = "5.0";
-                EndTime.Text = "5.08";
-                dt.Text = "0.02";
+                time.Text = "1.0";
+                EndTime.Text = "1.04";
+                dt.Text = "0.01";
             }
             else if (dataset.SelectedValue.Equals("mixing"))
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
                 {
+                    x.Text = "3.14";
                     y.Text = "3.14";
+                    z.Text = "3.14";
                 }
-                time.Text = "5.0";
-                EndTime.Text = "5.08";
-                dt.Text = "0.02";
+                time.Text = "1.0";
+                EndTime.Text = "1.16";
+                dt.Text = "0.04";
             }
             else if (dataset.SelectedValue.Equals("isotropic4096"))
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
                 {
+                    x.Text = "3.14";
                     y.Text = "3.14";
+                    z.Text = "3.14";
                 }
-                time.Text = "0.0";
-                EndTime.Text = "0.0";
-                dt.Text = ".0";
+                SnapshotNumber.Text = "0";  
             }
             else if (dataset.SelectedValue.Equals("rotstrat4096"))
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
                 {
+                    x.Text = "3.14";
                     y.Text = "3.14";
+                    z.Text = "3.14";
                 }
                 SnapshotNumber.Text = "0";
-                //EndTime.Text = "0.4";
-                //dt.Visible = false;
-                //dt.Text = ".1";
+                EndTime.Visible = false;
+                dt.Visible = false;
             }
-            else if (dataset.SelectedValue.Equals("bl_zaki"))
+            else if (dataset.SelectedValue.Equals("transition_bl"))
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
                 {
+                    x.Text = "40.0";
                     y.Text = "1.0";
+                    z.Text = "10.0";
                 }
-                time.Text = "0.0";
-                EndTime.Text = "0.007";
-                dt.Text = "0.001";
+                time.Text = "1.0";
+                EndTime.Text = "2.0";
+                dt.Text = "0.25";
             }
         }
 
@@ -2461,7 +2457,7 @@ namespace Website
                     potentialEntry.Text = "Vector Potential";
                 }
             }
-            else if (dataset.SelectedValue.Equals("bl_zaki"))
+            else if (dataset.SelectedValue.Equals("transition_bl"))
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
@@ -2474,9 +2470,9 @@ namespace Website
                 }
                 else if (previous_selected_method.Equals("GetThreshold"))
                 {
-                    x.Text = "50.0";
+                    x.Text = "40.0";
                     y.Text = "1.0";
-                    z.Text = "50.0";
+                    z.Text = "10.0";
                     velocityEntry.Text = "Velocity";
                     magneticEntry.Text = "Magnetic Field";
                     potentialEntry.Text = "Vector Potential";
@@ -2498,7 +2494,7 @@ namespace Website
             string[] flags;
             if (fieldList.Text.ToLower().Contains("vorticity") || fieldList.Text.Equals("Q"))
             {
-                if (dataset.SelectedValue.Equals("bl_zaki"))
+                if (dataset.SelectedValue.Equals("transition_bl"))
                 {
                     flags = new string[] { "FD4NoInt" };
                 }
