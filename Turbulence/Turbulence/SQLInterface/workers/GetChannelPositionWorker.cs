@@ -14,9 +14,6 @@ namespace Turbulence.SQLInterface.workers
     {
         public const int TIMESTEPS_TO_READ_NO_INTERPOLATION = 1;
         public const int TIMESTEPS_TO_READ_WITH_INTERPOLATION = 4;
-        public bool periodicX;
-        public bool periodicY;
-        public bool periodicZ;
 
         TurbulenceOptions.TemporalInterpolation temporalInterpolation;
         long full;
@@ -129,6 +126,12 @@ namespace Turbulence.SQLInterface.workers
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pos.x, point.pos.y, point.pos.z, ref point.lagInt);
                     //throw new Exception(velocity[0].ToString());
+                    if (database.Contains("bl_zaki") && (point.pos.y==0.0f || (spatialInterp==TurbulenceOptions.SpatialInterpolation.None && point.pos.y < 0.00178944959)))
+                    {
+                        velocity[0] = 0;
+                        velocity[1] = 0;
+                        velocity[2] = 0;
+                    }
 
                     if (dt > 0)
                     {
@@ -161,6 +164,13 @@ namespace Turbulence.SQLInterface.workers
                 else
                 {
                     velocity = turbulence_worker.CalcLagInterpolation(blob, point.pre_pos.x, point.pre_pos.y, point.pre_pos.z, ref point.lagInt);
+                    if (database.Contains("bl_zaki") && (point.pos.y == 0.0f || (spatialInterp == TurbulenceOptions.SpatialInterpolation.None && point.pos.y < 0.00178944959)))
+                    {
+                        velocity[0] = 0;
+                        velocity[1] = 0;
+                        velocity[2] = 0;
+                    }
+
                     dt = priordt;
                 }
 
@@ -230,7 +240,14 @@ namespace Turbulence.SQLInterface.workers
                     }
                     if (!periodicY)
                     {
-                        point.pre_pos.y = Math.Max(Math.Min(point.pre_pos.y, (float)grid_points_y[grid_points_y.Length - 1]), (float)grid_points_y[0]);
+                        if (database.Contains("bl_zaki"))
+                        {
+                            point.pre_pos.y = Math.Max(Math.Min(point.pre_pos.y, (float)grid_points_y[grid_points_y.Length - 1]), 0.0f);
+                        }
+                        else
+                        {
+                            point.pre_pos.y = Math.Max(Math.Min(point.pre_pos.y, (float)grid_points_y[grid_points_y.Length - 1]), (float)grid_points_y[0]);
+                        }
                     }
                     if (!periodicZ)
                     {
@@ -268,8 +285,8 @@ namespace Turbulence.SQLInterface.workers
                     //Z = LagInterpolation.CalcNode(point.pre_pos.z, setInfo.Dz);
                     //}
                     /* Fix for wrap around */
-                    X = ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    Z = ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    X = periodicX ? ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : X;
+                    Z = periodicZ ? ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : Z;
 
                     point.zindex = new Morton3D(Z, Y, X);
                     point.compute_predictor = false;
@@ -312,7 +329,7 @@ namespace Turbulence.SQLInterface.workers
                             temp = 0.0;
                         }
                         bool condition = point.pos.x < 0;
-                        throw new Exception("Particle left domain in x directionon corrector step!\nx:"
+                        throw new Exception("Particle left domain in x direction on corrector step!\nx:"
                             + (point.pos.x + temp).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
                             + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
                             + "\nZ-index:" + point.zindex.ToString()
@@ -322,7 +339,8 @@ namespace Turbulence.SQLInterface.workers
                             + "\nfull server:" + this.full.ToString());
                     }
                     // For channel flow, if corrector is out of domain, throw Exception
-                    if (!periodicY && (point.pos.y > grid_points_y[grid_points_y.Length - 1] || point.pos.y < grid_points_y[0]))
+                    if (!periodicY && (point.pos.y > grid_points_y[grid_points_y.Length - 1] ||
+                        (database.Contains("bl_zaki") && point.pos.y < 0) || (!database.Contains("bl_zaki") && point.pos.y < grid_points_y[0])))
                     {
                         double temp;
                         if (database.Contains("channel"))
@@ -337,8 +355,8 @@ namespace Turbulence.SQLInterface.workers
                         {
                             temp = 0.0;
                         }
-                        bool condition = point.pos.y < grid_points_y[0];
-                        throw new Exception("Particle left domain in y directionon  on corrector step!\nx:"
+                        bool condition = point.pos.y < grid_points_y[0]; //hardcoded for bl_zaki
+                        throw new Exception("Particle left domain in y direction on corrector step!\nx:"
                             + (point.pos.x + temp).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
                             + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
                             + "\nZ-index:" + point.zindex.ToString()
@@ -363,7 +381,7 @@ namespace Turbulence.SQLInterface.workers
                             temp = 0.0;
                         }
                         bool condition = point.pos.z < 0;
-                        throw new Exception("Particle left domain in z directionon  on corrector step!\nx:"
+                        throw new Exception("Particle left domain in z direction on corrector step!\nx:"
                             + (point.pos.x + temp).ToString() + "y:" + point.pos.y.ToString() + "z:" + point.pos.z.ToString()
                             + "\nCondition:" + condition.ToString() + "\nConnection:" + point.numberOfCubes.ToString()
                             + "\nZ-index:" + point.zindex.ToString()
@@ -399,8 +417,8 @@ namespace Turbulence.SQLInterface.workers
                     //Z = LagInterpolation.CalcNode(point.pos.z, setInfo.Dz);
                     //}
                     /* Fix for wrap around */
-                    X = ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    Z = ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    X = periodicX ? ((X % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : X;
+                    Z = periodicZ ? ((Z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : Z;
 
                     point.zindex = new Morton3D(Z, Y, X);
 

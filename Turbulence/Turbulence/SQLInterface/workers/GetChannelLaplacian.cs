@@ -17,9 +17,6 @@ namespace Turbulence.SQLInterface.workers
     // can be moved to a parent abstract class.
     public class GetChannelLaplacian : Worker
     {
-        protected bool periodicX;
-        protected bool periodicY;
-        protected bool periodicZ;
         protected BarycentricWeights weights_x;
         protected BarycentricWeights weights_y;
         protected BarycentricWeights weights_z;
@@ -90,9 +87,9 @@ namespace Turbulence.SQLInterface.workers
                 }
                 else if (dataset.Contains("bl_zaki"))
                 {
-                    diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd6");
-                    diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd6");
-                    diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd6");
+                    //diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd6");
+                    //diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd6");
+                    //diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd6");
                 }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None_Fd8)
@@ -109,9 +106,9 @@ namespace Turbulence.SQLInterface.workers
                 }
                 else if (dataset.Contains("bl_zaki"))
                 {
-                    diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd8");
-                    diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd8");
-                    diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd8");
+                    //diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd8");
+                    //diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd8");
+                    //diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd8");
                 }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
@@ -338,7 +335,7 @@ namespace Turbulence.SQLInterface.workers
                 {
                     endz = weights_z.GetStencilEnd(request.cell_z);
                     endz = diff_matrix_z.GetStencilEnd(endz);
-                }                
+                }
             }
             else
             {
@@ -419,9 +416,9 @@ namespace Turbulence.SQLInterface.workers
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd8:
                     // Wrap the coordinates into the grid space
-                    x = ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                    z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    x = periodicX ? ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : input.cell_x;
+                    y = periodicY ? ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : input.cell_y;
+                    z = periodicZ ? ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : input.cell_x;
 
                     stencil_startx = diff_matrix_x.GetStencilStart(x, FdOrderX);
                     stencil_starty = diff_matrix_y.GetStencilStart(y, FdOrderY);
@@ -432,7 +429,7 @@ namespace Turbulence.SQLInterface.workers
 
                     // Since the given blob may not hold all of the required data
                     // we determine where to start and end the partial computation
-                    blob.GetSubcubeStart(stencil_startz, stencil_starty, stencil_startx, 
+                    blob.GetSubcubeStart(stencil_startz, stencil_starty, stencil_startx,
                         ref startz, ref starty, ref startx);
                     blob.GetSubcubeEnd(stencil_endz, stencil_endy, stencil_endx,
                         ref endz, ref endy, ref endx);
@@ -467,7 +464,7 @@ namespace Turbulence.SQLInterface.workers
                             for (int ix = startx; ix <= endx; ix++)
                             {
                                 //double coeff = diff_matrix_x[iKernelIndexX + ix - startx];
-                                double coeff = periodicX? diff_matrix_x[iKernelIndexX + ix - startx]:
+                                double coeff = periodicX ? diff_matrix_x[iKernelIndexX + ix - startx] :
                                     diff_matrix_x[x, iKernelIndexX + ix - startx];
 
                                 for (int j = 0; j < setInfo.Components; j++)
@@ -510,7 +507,7 @@ namespace Turbulence.SQLInterface.workers
                                 }
                                 off += blob.GetSide * blob.GetSide * setInfo.Components;
                             }
-                        } 
+                        }
                         #endregion
                     }
                     break;
@@ -570,9 +567,9 @@ namespace Turbulence.SQLInterface.workers
                     }
 
                     // Wrap the coordinates into the grid space
-                    x = ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                    z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    x = periodicX ? ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : input.cell_x;
+                    y = periodicY ? ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : input.cell_y;
+                    z = periodicZ ? ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : input.cell_x;
 
                     // This computation has 2 stages:
                     // 4th-order finite difference evaluation of the derivative (see above)
@@ -591,7 +588,7 @@ namespace Turbulence.SQLInterface.workers
                     // [0,0], [0,4], [1,1], [1,3], [3,1], [3,3], [4,0], [4,4] 
                     // the z-coordinate ranges from 2 to 5
                     // Such planer patches will be interpolated according to the lagrange polynomial computation
-                    
+
                     lagInt_stencil_startx = weights_x.GetStencilStart(x, LagIntOrder);
                     stencil_startx = diff_matrix_x.GetStencilStart(lagInt_stencil_startx, FdOrderX);
                     lagInt_stencil_starty = weights_y.GetStencilStart(y, LagIntOrder);
@@ -811,7 +808,7 @@ namespace Turbulence.SQLInterface.workers
             result[0] = ax[0] + ay[0] + az[0];
             result[1] = ax[1] + ay[1] + az[1];
             result[2] = ax[2] + ay[2] + az[2];
-            
+
             return result;
         }
 

@@ -22,6 +22,9 @@ namespace Turbulence.SQLInterface
     /// </summary>
     public abstract class Worker
     {
+        public bool periodicX = true;
+        public bool periodicY = true;
+        public bool periodicZ = true;
         protected const int MAX_NUMBER_THRESHOLD_POINTS = 1024 * 1024;
         //protected TurbDataTable setInfo;
         protected SqlDataRecord record;
@@ -96,9 +99,9 @@ namespace Turbulence.SQLInterface
                     for (int x = startx; x <= endx; x += setInfo.atomDim)
                     {
                         // Wrap the coordinates into the grid space
-                        int xi = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                        int yi = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                        int zi = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                        int xi = periodicX ? ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : x;
+                        int yi = periodicY ? ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : y;
+                        int zi = periodicZ ? ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : z;
 
                         if (setInfo.PointInRange(xi, yi, zi))
                         {

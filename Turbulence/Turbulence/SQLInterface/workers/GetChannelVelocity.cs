@@ -17,7 +17,7 @@ namespace Turbulence.SQLInterface.workers
         public GetChannelVelocity(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             SqlConnection conn)
-            : base (dataset, setInfo, spatialInterp, conn)
+            : base(dataset, setInfo, spatialInterp, conn)
         {
         }
 
@@ -116,11 +116,11 @@ namespace Turbulence.SQLInterface.workers
                 }
 
                 // Wrap the coordinates into the grid space
-                int x = ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                int x = periodicX ? ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : input.cell_x;
                 // NOTE: Shouldn't need to wrap y.
-                int y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                int z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
-                
+                int y = periodicY ? ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : input.cell_y;
+                int z = periodicZ ? ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : input.cell_z;
+
                 stencil_startz = weights_z.GetStencilStart(z, kernelSize);
                 stencil_starty = weights_y.GetStencilStart(y, kernelSize);
                 stencil_startx = weights_x.GetStencilStart(x, kernelSize);
@@ -130,7 +130,7 @@ namespace Turbulence.SQLInterface.workers
 
                 float[] data = blob.data;
                 int startz = 0, starty = 0, startx = 0, endz = 0, endy = 0, endx = 0;
-                blob.GetSubcubeStart(stencil_startz, stencil_starty, stencil_startx, 
+                blob.GetSubcubeStart(stencil_startz, stencil_starty, stencil_startx,
                     ref startz, ref starty, ref startx);
                 blob.GetSubcubeEnd(stencil_endz, stencil_endy, stencil_endx,
                     ref endz, ref endy, ref endx);
@@ -141,7 +141,7 @@ namespace Turbulence.SQLInterface.workers
                     iLagIntx -= setInfo.GridResolutionX;
                 else if (iLagIntx < 0)
                     iLagIntx += setInfo.GridResolutionX;
-                
+
                 int iLagInty = blob.GetRealY + starty - stencil_starty;
                 if (iLagInty >= setInfo.GridResolutionY)
                     iLagInty -= setInfo.GridResolutionY;

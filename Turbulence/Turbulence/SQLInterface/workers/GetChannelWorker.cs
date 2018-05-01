@@ -14,15 +14,12 @@ namespace Turbulence.SQLInterface.workers
 {
     public abstract class GetChannelWorker : Worker
     {
-        protected bool periodicX;
-        protected bool periodicY;
-        protected bool periodicZ;
         protected BarycentricWeights weights_x;
         protected BarycentricWeights weights_y;
         protected BarycentricWeights weights_z;
 
         int numPointsInKernel = 0;
-        
+
         public GetChannelWorker(string dataset, TurbDataTable setInfo,
             TurbulenceOptions.SpatialInterpolation spatialInterp,
             SqlConnection conn)
@@ -98,9 +95,9 @@ namespace Turbulence.SQLInterface.workers
                 }
                 else if (dataset.Contains("bl_zaki"))
                 {
-                    weights_x.GetWeightsFromDB(conn, "BL_barycentric_weights_x_6");
-                    weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_6");
-                    weights_z.GetWeightsFromDB(conn, "BL_barycentric_weights_z_6");
+                    //weights_x.GetWeightsFromDB(conn, "BL_barycentric_weights_x_6");
+                    //weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_6");
+                    //weights_z.GetWeightsFromDB(conn, "BL_barycentric_weights_z_6");
                 }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Lag8)
@@ -114,9 +111,9 @@ namespace Turbulence.SQLInterface.workers
                 }
                 else if (dataset.Contains("bl_zaki"))
                 {
-                    weights_x.GetWeightsFromDB(conn, "BL_barycentric_weights_x_8");
-                    weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_8");
-                    weights_z.GetWeightsFromDB(conn, "BL_barycentric_weights_z_8");
+                    //weights_x.GetWeightsFromDB(conn, "BL_barycentric_weights_x_8");
+                    //weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_8");
+                    //weights_z.GetWeightsFromDB(conn, "BL_barycentric_weights_z_8");
                 }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None)
@@ -171,8 +168,8 @@ namespace Turbulence.SQLInterface.workers
 
             // For Lagrange Polynomial interpolation we need a cube of data 
 
-            int startz = weights_z.GetStencilStart(request.cell_z, kernelSize), 
-                starty = weights_y.GetStencilStart(request.cell_y, kernelSize), 
+            int startz = weights_z.GetStencilStart(request.cell_z, kernelSize),
+                starty = weights_y.GetStencilStart(request.cell_y, kernelSize),
                 startx = weights_x.GetStencilStart(request.cell_x, kernelSize);
             int endx = periodicX ? startx + kernelSize - 1 : weights_x.GetStencilEnd(request.cell_x);
             int endy = periodicY ? starty + kernelSize - 1 : weights_y.GetStencilEnd(request.cell_y);
@@ -195,10 +192,10 @@ namespace Turbulence.SQLInterface.workers
                     for (int x = startx; x <= endx; x += setInfo.atomDim)
                     {
                         // Wrap the coordinates into the grid space
-                        int xi = ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
+                        int xi = periodicX ? ((x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : x;
                         // NOTE: We shouldn't need to wrap y.
-                        int yi = ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                        int zi = ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                        int yi = periodicY ? ((y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : y;
+                        int zi = periodicZ ? ((z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : z;
 
                         if (setInfo.PointInRange(xi, yi, zi))
                         {

@@ -35,7 +35,7 @@ namespace TestApp
         public static BatchWorkerQueue batchQueue = null;
 
         Database database = new Database(infodb_string, DEVEL_MODE);
-        //AuthInfo authInfo = new AuthInfo(infodb, "mydbsql", DEVEL_MODE);
+        AuthInfo authInfo;
         Log log = new Log(infodb_string, DEVEL_MODE);
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace TestApp
             try
             {
                 DateTime beginTime, stopTime;
-                int pointsize = 1 * 1;
+                int pointsize = 1 * 2;
                 Point3[] points = new Point3[pointsize];
                 turbulence.Point3[] points1 = new turbulence.Point3[pointsize];
                 //Point3[] positions = new Point3[pointsize];
@@ -70,14 +70,21 @@ namespace TestApp
                 {
                     for (int j = 0; j < 1; j++)
                     {
-                        points[i * 100 + j].x = 3.14f;// dd * 2048;
-                        points[i * 100 + j].y = 0.0f;// dd * 2048;
-                        points[i * 100 + j].z = 3.14f;// dd * 2048;
+                        points[i * 100 + j].x = 30.218496172581567f;// dd * 2048;
+                        points[i * 100 + j].y = 0f;// dd * 2048;
+                        points[i * 100 + j].z = 9.84855886663f;// dd * 2048;
                     }
                 }
 
-                float time = 0.009f;
+                float time = 0f;
                 service.Timeout = -1;
+
+                points[0].x = 30.218496172581567f;
+                points[0].y = 0f;
+                points[0].z = 10f;
+                points[1].x = 30.218496172581567f;
+                points[1].y = 0.1f;
+                points[1].z = 10f;
 
                 beginTime = DateTime.Now;
                 Console.WriteLine("Calling GetVelocity");
@@ -86,13 +93,37 @@ namespace TestApp
                 stopTime = DateTime.Now;
                 Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
+                //for (int i = 0; i < 1; i++)
+                //{
+                //    for (int j = 0; j < 1; j++)
+                //    {
+                //        points[i * 100 + j].x = 30.218496172581567f;// dd * 2048;
+                //        points[i * 100 + j].y = 0.00357889929984090f;// dd * 2048;
+                //        points[i * 100 + j].z = 9.84855886663f;// dd * 2048;
+                //    }
+                //}
+
+                //beginTime = DateTime.Now;
+                //Console.WriteLine("Calling GetVelocity");
+                //Pressure[] result_pr = testp.GetPressure(authToken, "bl_zaki", time,
+                //    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
+                //stopTime = DateTime.Now;
+                //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
+
                 beginTime = DateTime.Now;
                 Console.WriteLine("Calling GetVelocityGradient");
-                VelocityGradient[] result_vel_grad = testp.GetVelocityGradient(authToken, "bl_zaki", time,
-                    TurbulenceOptions.SpatialInterpolation.Fd4Lag4, TurbulenceOptions.TemporalInterpolation.None, points);
+                Vector3[] result_vel_grad = testp.GetPressureGradient(authToken, "bl_zaki", time,
+                    TurbulenceOptions.SpatialInterpolation.None_Fd4, TurbulenceOptions.TemporalInterpolation.None, points);
                 stopTime = DateTime.Now;
                 Console.WriteLine("Execution time: {0}", stopTime - beginTime);
-                
+
+                //beginTime = DateTime.Now;
+                //Console.WriteLine("Calling GetVelocityGradient");
+                //VelocityHessian[] result_vel_hess = testp.GetVelocityHessian(authToken, "bl_zaki", time,
+                //    TurbulenceOptions.SpatialInterpolation.Fd4Lag4, TurbulenceOptions.TemporalInterpolation.None, points);
+                //stopTime = DateTime.Now;
+                //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
+
             }
             catch (Exception E)
             {
@@ -126,14 +157,14 @@ namespace TestApp
             }
         }
 
-        private Vector3[] GetVelocity(string authToken, string dataset, float time,
+        public Vector3[] GetVelocity(string authToken, string dataset, float time,
             TurbulenceOptions.SpatialInterpolation spatialInterpolation,
             TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, string addr = null)
         {
             //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
+            if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
                 log.devmode = true;//This makes sure we don't log the monitoring service.
             }
@@ -150,149 +181,85 @@ namespace TestApp
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
-                    GetMHDData(auth, dataset, dataset_enum, DataInfo.TableNames.isotropic1024fine_vel, worker,
+                    GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.isotropic1024fine_vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096: //check this
                 case DataInfo.DataSets.strat4096:
-                    GetMHDData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
+                    GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.mhd1024:
-                    GetMHDData(auth, dataset, dataset_enum, DataInfo.TableNames.velocity08, worker,
+                    GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.velocity08, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                    worker = (int)Worker.Workers.GetChannelVelocity;
+                    GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
+                    break;
                 case DataInfo.DataSets.bl_zaki:
                     worker = (int)Worker.Workers.GetChannelVelocity;
-                    GetMHDData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
-                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
+
+                    List<int> idx = new List<int>();
+                    List<int> idx_not0 = new List<int>();
+                    for (int i = 0; i < points.Length; i++)
+                    {
+                        if (points[i].y < 0.00178944959)
+                            idx.Add(i);
+                        else
+                            idx_not0.Add(i);
+                    }
+
+                    if (idx_not0.Count > 0)
+                    {
+                        Point3[] points1 = new Point3[idx_not0.Count];
+                        Vector3[] result1 = new Vector3[idx_not0.Count];
+                        for (int i = 0; i < idx_not0.Count; i++)
+                        {
+                            points1[i].x = points[idx_not0[i]].x;
+                            points1[i].y = points[idx_not0[i]].y;
+                            points1[i].z = points[idx_not0[i]].z;
+                        }
+                        GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
+                            time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid, addr);
+                        for (int i = 0; i < idx_not0.Count; i++)
+                        {
+                            result[idx_not0[i]] = result1[i];
+                        }
+                    }
+
+                    if (idx.Count > 0)
+                    {
+                        database.Initialize(dataset_enum, num_virtual_servers);
+                        object rowid1 = null;
+                        Point3[] points1 = new Point3[idx.Count];
+                        Vector3[] result1 = new Vector3[idx.Count];
+                        for (int i = 0; i < idx.Count; i++)
+                        {
+                            points1[i].x = (float)(Math.Round((points[idx[i]].x - 30.218496172581567) / 0.292210466240511) * 0.292210466240511 + 30.218496172581567);
+                            points1[i].y = 0.0f;
+                            points1[i].z = (float)(Math.Round(points[idx[i]].z / 0.117244748412311) * 0.117244748412311);
+                        }
+                        spatialInterpolation = TurbulenceOptions.SpatialInterpolation.Lag4;
+                        GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
+                            time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid1, addr);
+                        for (int i = 0; i < idx.Count; i++)
+                        {
+                            result[idx[i]].x = 0.0f;
+                            result[idx[i]].y = 0.0f;
+                            result[idx[i]].z = 0.0f;
+                        }
+                        log.UpdateLogRecord(rowid1, database.Bitfield);
+                    }
+
+
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-            log.UpdateLogRecord(rowid, database.Bitfield);
-            return result;
-        }
-
-        public Pressure[] GetPressure(string authToken, string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
-            Point3[] points, string addr = null)
-        {
-            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
-            Pressure[] result = new Pressure[points.Length];
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            object rowid = null;
-            DataInfo.verifyTimeInRange(dataset_enum, time);
-
-            bool round = spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None ? true : false;
-            int kernelSize = -1;
-            int kernelSizeY = -1;
-
-            DataInfo.TableNames tableName;
-            int worker;
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                    tableName = DataInfo.TableNames.isotropic1024fine_pr;
-                    worker = (int)Worker.Workers.GetMHDPressure;
-                    break;
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.mixing:
-                case DataInfo.DataSets.isotropic4096: //check this
-                    tableName = DataInfo.TableNames.pr;
-                    worker = (int)Worker.Workers.GetMHDPressure;
-                    break;
-                case DataInfo.DataSets.channel:
-                case DataInfo.DataSets.bl_zaki:
-                    tableName = DataInfo.TableNames.pr;
-                    worker = (int)Worker.Workers.GetChannelPressure;
-                    break;
-                case DataInfo.DataSets.mhd1024:
-                    tableName = DataInfo.TableNames.pressure08;
-                    worker = (int)Worker.Workers.GetMHDPressure;
-                    break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
-            }
-
-            bool IsChannelGrid = (dataset_enum == DataInfo.DataSets.channel || dataset_enum == DataInfo.DataSets.bl_zaki) ? true : false;
-            TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
-
-            rowid = log.CreateLog(auth.Id, dataset, worker,
-                (int)spatialInterpolation,
-                (int)temporalInterpolation,
-               points.Length, time, null, null, addr);
-            log.UpdateRecordCount(auth.Id, points.Length);
-
-            database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
-
-            database.ExecuteGetMHDData(tableName, worker, time,
-                spatialInterpolation, temporalInterpolation, result);
-
-            log.UpdateLogRecord(rowid, database.Bitfield);
-            return result;
-        }
-
-        public VelocityGradient[] GetVelocityGradient(string authToken, string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
-            Point3[] points, string addr  = null)
-        {
-            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
-            VelocityGradient[] result = new VelocityGradient[points.Length];
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
-            object rowid = null;
-
-            int worker = (int)Worker.Workers.GetMHDVelocityGradient;
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                    GetMHDGradient(auth, dataset, dataset_enum, DataInfo.TableNames.isotropic1024fine_vel, worker,
-                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
-                    break;
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.mixing:
-                case DataInfo.DataSets.isotropic4096:
-                case DataInfo.DataSets.strat4096:
-                    GetMHDGradient(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
-                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
-                    break;
-                case DataInfo.DataSets.mhd1024:
-                    GetMHDGradient(auth, dataset, dataset_enum, DataInfo.TableNames.velocity08, worker,
-                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
-                    break;
-                case DataInfo.DataSets.channel:
-                case DataInfo.DataSets.bl_zaki:
-                    GetMHDGradient(auth, dataset, dataset_enum, DataInfo.TableNames.vel, (int)Worker.Workers.GetChannelVelocityGradient,
-                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
-                    break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
-            }
-
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
@@ -304,7 +271,7 @@ namespace TestApp
         {
             //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
             AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
+            if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
                 log.devmode = true;//This makes sure we don't log the monitoring service.
             }
@@ -316,192 +283,89 @@ namespace TestApp
             DataInfo.verifyTimeInRange(dataset_enum, time);
             object rowid = null;
 
-            bool round = true;
-            int kernelSize = -1;
-            int kernelSizeY = -1;
-
-            DataInfo.TableNames tableName;
-            int worker;
+            int worker = (int)Worker.Workers.GetMHDPressureGradient;
 
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
-                    tableName = DataInfo.TableNames.isotropic1024fine_pr;
-                    worker = (int)Worker.Workers.GetMHDPressureGradient;
+                    GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.isotropic1024fine_pr, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
-                case DataInfo.DataSets.isotropic4096: //check this
-                    tableName = DataInfo.TableNames.pr;
-                    worker = (int)Worker.Workers.GetMHDPressureGradient;
+                case DataInfo.DataSets.isotropic4096: //check this                  
+                    GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.mhd1024:
-                    tableName = DataInfo.TableNames.pressure08;
-                    worker = (int)Worker.Workers.GetMHDPressureGradient;
+                    GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.pressure08, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
-                case DataInfo.DataSets.bl_zaki:
-                    tableName = DataInfo.TableNames.pr;
                     worker = (int)Worker.Workers.GetChannelPressureGradient;
+                    GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
-            }
-
-            bool IsChannelGrid = (dataset_enum == DataInfo.DataSets.channel || dataset_enum == DataInfo.DataSets.bl_zaki) ? true : false;
-            TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
-
-            rowid = log.CreateLog(auth.Id, dataset, worker,
-                (int)spatialInterpolation,
-                (int)temporalInterpolation,
-               points.Length, time, null, null, addr);
-            log.UpdateRecordCount(auth.Id, points.Length);
-
-            database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
-
-            database.ExecuteGetMHDData(tableName, worker, time,
-                spatialInterpolation, temporalInterpolation, result, 1.0f);
-
-            log.UpdateLogRecord(rowid, database.Bitfield);
-
-            return result;
-        }
-
-        public PressureHessian[] GetPressureHessian(string authToken, string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
-            Point3[] points, string addr = null)
-        {
-            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
-            PressureHessian[] result = new PressureHessian[points.Length];
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
-
-            object rowid = null;
-
-            bool round = true;
-            int kernelSize = -1;
-            int kernelSizeY = -1;
-
-            DataInfo.TableNames tableName;
-            int worker;
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024fine:
-                    tableName = DataInfo.TableNames.isotropic1024fine_pr;
-                    worker = (int)Worker.Workers.GetMHDPressureHessian;
-                    break;
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.mixing:
-                case DataInfo.DataSets.isotropic4096: //check this
-                    tableName = DataInfo.TableNames.pr;
-                    worker = (int)Worker.Workers.GetMHDPressureHessian;
-                    break;
-                case DataInfo.DataSets.mhd1024:
-                    tableName = DataInfo.TableNames.pressure08;
-                    worker = (int)Worker.Workers.GetMHDPressureHessian;
-                    break;
-                case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.bl_zaki:
-                    tableName = DataInfo.TableNames.pr;
-                    worker = (int)Worker.Workers.GetChannelPressureHessian;
+                    worker = (int)Worker.Workers.GetChannelPressureGradient;
+
+                    if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None_Fd4)
+                    {
+                        List<int> idx = new List<int>();
+                        List<int> idx_not0 = new List<int>();
+                        for (int i = 0; i < points.Length; i++)
+                        {
+                            if (points[i].y < 0.00178944959)
+                                idx.Add(i);
+                            else
+                                idx_not0.Add(i);
+                        }
+                        Point3[] points1 = new Point3[idx_not0.Count];
+                        Vector3[] result1 = new Vector3[idx_not0.Count];
+                        for (int i = 0; i < idx_not0.Count; i++)
+                        {
+                            points1[i].x = points[idx_not0[i]].x;
+                            points1[i].y = points[idx_not0[i]].y;
+                            points1[i].z = points[idx_not0[i]].z;
+                        }
+                        GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                            time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid, addr);
+                        for (int i = 0; i < idx_not0.Count; i++)
+                        {
+                            result[idx_not0[i]] = result1[i];
+                        }
+
+                        points1 = new Point3[idx.Count];
+                        result1 = new Vector3[idx.Count];
+                        for (int i = 0; i < idx.Count; i++)
+                        {
+                            points1[i].x = (float)(Math.Round((points[idx[i]].x - 30.218496172581567) / 0.292210466240511) * 0.292210466240511 + 30.218496172581567);
+                            points1[i].y = 0.0f;
+                            points1[i].z = (float)(Math.Round(points[idx[i]].z / 0.117244748412311) * 0.117244748412311);
+                        }
+                        spatialInterpolation = TurbulenceOptions.SpatialInterpolation.Fd4Lag4;
+                        GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                            time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid, addr);
+                        for (int i = 0; i < idx.Count; i++)
+                        {
+                            result[idx[i]] = result1[i];
+                        }
+                    }
+                    else
+                    {
+                        worker = (int)Worker.Workers.GetChannelVelocity;
+                        GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                            time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
+                    }
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-
-            if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q4 ||
-                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q6 ||
-                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q8 ||
-                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q10 ||
-                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q12 ||
-                spatialInterpolation == TurbulenceOptions.SpatialInterpolation.M1Q14)
-            {
-                throw new Exception("This interpolation option does not support second order derivatives!");
-            }
-
-            bool IsChannelGrid = (dataset_enum == DataInfo.DataSets.channel || dataset_enum == DataInfo.DataSets.bl_zaki) ? true : false;
-            TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
-
-            rowid = log.CreateLog(auth.Id, dataset, worker,
-                (int)spatialInterpolation,
-                (int)temporalInterpolation,
-               points.Length, time, null, null, addr);
-            log.UpdateRecordCount(auth.Id, points.Length);
-
-            database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
-
-            database.ExecuteGetMHDPressureHessian(tableName, worker, time,
-                spatialInterpolation, temporalInterpolation, result);
-
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }
 
-        public Pressure[] GetTemperature(string authToken, string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
-            Point3[] points, string addr = null)
-        {
-            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
-            Pressure[] result = new Pressure[points.Length];
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            object rowid = null;
-            DataInfo.verifyTimeInRange(dataset_enum, time);
-
-            bool round = spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None ? true : false;
-            int kernelSize = -1;
-            int kernelSizeY = -1;
-
-            DataInfo.TableNames tableName;
-            int worker;
-
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.strat4096:
-                    tableName = DataInfo.TableNames.th;
-                    worker = (int)Worker.Workers.GetMHDPressure;
-                    break;
-                default:
-                    throw new Exception(String.Format("Invalid dataset specified!"));
-            }
-
-            bool IsChannelGrid = (dataset_enum == DataInfo.DataSets.channel || dataset_enum == DataInfo.DataSets.bl_zaki) ? true : false;
-            TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
-
-            rowid = log.CreateLog(auth.Id, dataset, worker,
-                (int)spatialInterpolation,
-                (int)temporalInterpolation,
-               points.Length, time, null, null, addr);
-            log.UpdateRecordCount(auth.Id, points.Length);
-
-            database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
-
-            database.ExecuteGetMHDData(tableName, worker, time,
-                spatialInterpolation, temporalInterpolation, result);
-
-            log.UpdateLogRecord(rowid, database.Bitfield);
-            return result;
-        }
-
-        private void GetMHDData(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
+        private void GetVectorData(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, Vector3[] result, ref object rowid, string addr = null)
         {
@@ -524,11 +388,38 @@ namespace TestApp
             //database.AddBulkParticles(points, round, spatialInterpolation, worker);
             database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
 
-            database.ExecuteGetMHDData(tableName, worker, time,
-                spatialInterpolation, temporalInterpolation, result, 1.0f);
+            database.ExecuteGetVectorData(tableName, worker, time,
+                spatialInterpolation, temporalInterpolation, result);
         }
 
-        private void GetMHDGradient(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
+        private void GetScalarData(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
+            float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
+            Point3[] points, Pressure[] result, ref object rowid, string addr = null)
+        {
+            bool round = spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None ? true : false;
+            int kernelSize = -1;
+            int kernelSizeY = -1;
+
+            bool IsChannelGrid = (dataset_enum == DataInfo.DataSets.channel || dataset_enum == DataInfo.DataSets.bl_zaki) ? true : false;
+            TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
+            if (auth.name == "edu.jhu.pha.turbulence-monitor" || auth.name == "edu.jhu.pha.turbulence-dev")
+            {
+                log.devmode = true;//This makes sure we don't log the monitoring service.
+            }
+            rowid = log.CreateLog(auth.Id, dataset, worker,
+                (int)spatialInterpolation,
+                (int)temporalInterpolation,
+               points.Length, time, null, null, addr);
+            log.UpdateRecordCount(auth.Id, points.Length);
+
+            //database.AddBulkParticles(points, round, spatialInterpolation, worker);
+            database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
+
+            database.ExecuteGetScalarData(tableName, worker, time,
+                spatialInterpolation, temporalInterpolation, result);
+        }
+
+        private void GetVectorGradient(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, VelocityGradient[] result, ref object rowid, string addr = null)
         {
@@ -551,262 +442,35 @@ namespace TestApp
 
             database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
 
-            database.ExecuteGetMHDGradient(tableName, worker, time,
+            database.ExecuteGetVectorGradient(tableName, worker, time,
                 spatialInterpolation, temporalInterpolation, result);
         }
 
-        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold,
-            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
+        private void GetScalarGradient(AuthInfo.AuthToken auth, string dataset, DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int worker,
+            float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
+            Point3[] points, Vector3[] result, ref object rowid, string addr = null)
         {
-            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
+            bool round = true;
+            int kernelSize = -1;
+            int kernelSizeY = -1;
+
+            bool IsChannelGrid = (dataset_enum == DataInfo.DataSets.channel || dataset_enum == DataInfo.DataSets.bl_zaki) ? true : false;
+            TurbulenceOptions.GetKernelSize(spatialInterpolation, ref kernelSize, ref kernelSizeY, IsChannelGrid, worker);
+            if (auth.name == "edu.jhu.pha.turbulence-monitor" || auth.name == "edu.jhu.pha.turbulence-dev")
             {
                 log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            int num_virtual_servers = 4;
-            database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, time);
-            object rowid = null;
-
-            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field);
-
-            int worker;
-            switch (dataset_enum)
-            {
-                case DataInfo.DataSets.isotropic1024coarse:
-                case DataInfo.DataSets.isotropic1024fine:
-                case DataInfo.DataSets.mhd1024:
-                case DataInfo.DataSets.mixing:
-                case DataInfo.DataSets.isotropic4096:
-                case DataInfo.DataSets.strat4096:
-                    if (field.Contains("vorticity"))
-                    {
-                        worker = (int)Worker.Workers.GetCurlThreshold;
-                    }
-                    else if (field.Contains("q"))
-                    {
-                        worker = (int)Worker.Workers.GetQThreshold;
-                    }
-                    else if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel"))
-                    {
-                        worker = (int)Worker.Workers.GetVelocityThreshold;
-                    }
-                    else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
-                    {
-                        worker = (int)Worker.Workers.GetMagneticThreshold;
-                    }
-                    else if (field.Equals("a") || field.Contains("vec") || field.Contains("pot") || field.Contains("Vec"))
-                    {
-                        worker = (int)Worker.Workers.GetPotentialThreshold;
-                    }
-                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
-                    {
-                        worker = (int)Worker.Workers.GetPressureThreshold;
-                    }
-                    else if (field.Equals("d") || field.Contains("density") || field.Contains("Density"))
-                    {
-                        worker = (int)Worker.Workers.GetDensityThreshold;
-                    }
-                    else if (field.Equals("t") || field.Contains("th") || field.Contains("Th") || field.Contains("tem") || field.Contains("Tem") || field.Contains("phi") || field.Contains("Phi"))
-                    {
-                        worker = (int)Worker.Workers.GetPressureThreshold;
-                    }
-                    else
-                    {
-                        throw new Exception("Invalid field specified");
-                    }
-                    break;
-                case DataInfo.DataSets.channel:
-                case DataInfo.DataSets.bl_zaki:
-                    switch (field)
-                    {
-                        case "vorticity":
-                            worker = (int)Worker.Workers.GetChannelCurlThreshold;
-                            break;
-                        case "q":
-                            worker = (int)Worker.Workers.GetChannelQThreshold;
-                            break;
-                        case "velocity":
-                            worker = (int)Worker.Workers.GetChannelVelocityThreshold;
-                            break;
-                        case "pressure":
-                            worker = (int)Worker.Workers.GetChannelPressureThreshold;
-                            break;
-                        default:
-                            throw new Exception("Invalid field specified");
-                    }
-                    break;
-                default:
-                    throw new Exception("Invalid dataset specified");
             }
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
                 (int)spatialInterpolation,
-                (int)TurbulenceOptions.TemporalInterpolation.None,
-                Xwidth * Ywidth * Zwidth, time, null, null, addr);
-            log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
-
-            List<ThresholdInfo> points_above_threshold = new List<ThresholdInfo>();
-            database.ExecuteGetThreshold(dataset_enum, tableName, worker, time, spatialInterpolation, threshold,
-                X, Y, Z, Xwidth, Ywidth, Zwidth, points_above_threshold);
-
-            log.UpdateLogRecord(rowid, database.Bitfield);
-
-            points_above_threshold.Sort((t1, t2) => -1 * t1.value.CompareTo(t2.value));
-
-            return points_above_threshold.ToArray();
-        }
-
-        public Vector3[] GetBoxFilter(string authToken, string dataset, string field, float time,
-            float filterwidth, Point3[] points, string addr = null)
-        {
-            int num_virtual_servers = 4;
-            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            if (dataset_enum == DataInfo.DataSets.channel || dataset_enum == DataInfo.DataSets.bl_zaki)
-            {
-                throw new Exception(String.Format("GetBoxFilter is not available for the channel flow datasets!"));
-            }
-            DataInfo.verifyTimeInRange(dataset_enum, time);
-
-            double dx = 0;
-            if ((dataset == "isotropic4096") || (dataset == "strat4096"))
-            {
-                dx = (2.0 * Math.PI) / 4096;
-            }
-            else
-            {
-                dx = (2.0 * Math.PI) / (double)database.GridResolutionX;
-            }
-            int int_filterwidth = (int)Math.Round(filterwidth / dx);
-
-            if (int_filterwidth % 2 == 0)
-            {
-                if (filterwidth <= dx * int_filterwidth)
-                {
-                    int_filterwidth--;
-                    filterwidth = (float)dx * int_filterwidth;
-                }
-                else
-                {
-                    int_filterwidth++;
-                    filterwidth = (float)dx * int_filterwidth;
-                }
-                //throw new Exception("Only filter widths that are an uneven multiple of the grid resolution are supported!");
-            }
-
-            bool round = true;
-            if (num_virtual_servers == 1 && database.CheckInputForWrapAround(points, int_filterwidth, round))
-                num_virtual_servers = 2;
-
-            database.Initialize(dataset_enum, num_virtual_servers);
-            //database.selectServers(dataset_enum, num_virtual_servers);
-
-            Vector3[] result = new Vector3[points.Length];
-            object rowid = null;
-
-            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field);
-
-            int worker = (int)Worker.Workers.GetMHDBoxFilter;
-
-            //database.AddBulkParticles(points, filter_width, round);
-            worker = database.AddBulkParticlesFiltering(points, int_filterwidth, round, worker, time);
-
-            rowid = log.CreateLog(auth.Id, dataset, worker, 0, 0,
+                (int)temporalInterpolation,
                points.Length, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, points.Length);
 
-            if (worker == (int)Worker.Workers.GetMHDBoxFilter)
-            {
-                database.ExecuteGetMHDData(tableName, worker, time,
-                    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
-            }
-            else
-            {
-                database.ExecuteGetBoxFilter(tableName, worker, time,
-                    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, result, filterwidth);
-            }
+            database.AddBulkParticles(points, kernelSize, kernelSizeY, kernelSize, round, time);
 
-            log.UpdateLogRecord(rowid, database.Bitfield);
-            return result;
-        }
-
-        public Point3[] GetPosition(string authToken, string dataset, float StartTime, float EndTime,
-            float dt, TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            Point3[] points, string addr = null)
-        {
-            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
-            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
-            if (auth.name == "dev")
-            {
-                log.devmode = true;//This makes sure we don't log the monitoring service.
-            }
-            dataset = DataInfo.findDataSet(dataset);
-            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
-            DataInfo.verifyTimeInRange(dataset_enum, StartTime);
-            DataInfo.verifyTimeInRange(dataset_enum, EndTime);
-            int num_virtual_servers = 1;
-            database.Initialize(dataset_enum, num_virtual_servers);
-
-            if (Math.Abs(EndTime - StartTime) - Math.Abs(dt) < -0.000001)
-                throw new Exception(String.Format("The time step dt cannot be greater than the StartTime : EndTime range!"));
-
-            object rowid = null;
-
-            TurbulenceOptions.TemporalInterpolation temporalInterpolation = TurbulenceOptions.TemporalInterpolation.PCHIP;
-
-            bool round;
-            int integralSteps;
-
-            rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetPosition,
-                (int)spatialInterpolation,
-                (int)temporalInterpolation,
-                points.Length, StartTime, EndTime, dt, addr);
-
-            round = spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None ? true : false;
-            int kernelSize = -1;
-            if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.Lag4)
-                kernelSize = 4;
-            else if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.Lag6)
-                kernelSize = 6;
-            else if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.Lag8)
-                kernelSize = 8;
-            else if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None)
-                kernelSize = 0;
-            else
-                throw new Exception("Invalid interpolation option specified!");
-
-            if ((StartTime > EndTime && dt > 0) || (StartTime < EndTime && dt < 0))
-            {
-                dt = -dt;
-            }
-
-            integralSteps = (int)Math.Abs((EndTime - StartTime) / dt);
-
-            int numParticles = points.Length;
-            // We query the database 2 * integralSteps number of times 
-            //(the computation has 2 steps for the second order Runge Kutta)
-            log.UpdateRecordCount(auth.Id, 2 * (integralSteps + 1) * numParticles);
-
-            database.AddBulkParticlesSingleServer(points, kernelSize, kernelSize, kernelSize, round, StartTime);
-            database.ExecuteGetPosition(dataset_enum, spatialInterpolation, TurbulenceOptions.TemporalInterpolation.PCHIP,
-                DataInfo.getTableName(dataset_enum, "velocity").ToString(), StartTime, EndTime, dt, points);
-
-            database.Close();
-
-            log.UpdateLogRecord(rowid, database.Bitfield);
-
-            return points;
+            database.ExecuteGetScalarGradient(tableName, worker, time,
+                spatialInterpolation, temporalInterpolation, result);
         }
     }
 }

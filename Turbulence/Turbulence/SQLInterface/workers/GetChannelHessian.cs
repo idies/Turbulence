@@ -17,9 +17,6 @@ namespace Turbulence.SQLInterface.workers
     // can be moved to a parent abstract class.
     public class GetChannelHessian : Worker
     {
-        protected bool periodicX;
-        protected bool periodicY;
-        protected bool periodicZ;
         protected BarycentricWeights weights_x;
         protected BarycentricWeights weights_y;
         protected BarycentricWeights weights_z;
@@ -105,12 +102,12 @@ namespace Turbulence.SQLInterface.workers
                 }
                 else if (dataset.Contains("bl_zaki"))
                 {
-                    diff_matrix_x_r1 = GetNonuniformWeights(conn, "BL_diff_matrix_x_r1_fd6");
-                    diff_matrix_y_r1 = GetNonuniformWeights(conn, "BL_diff_matrix_y_r1_fd6");
-                    diff_matrix_z_r1 = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r1_fd6");
-                    diff_matrix_x_r2 = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd6");
-                    diff_matrix_y_r2 = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd6");
-                    diff_matrix_z_r2 = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd6");
+                    //diff_matrix_x_r1 = GetNonuniformWeights(conn, "BL_diff_matrix_x_r1_fd6");
+                    //diff_matrix_y_r1 = GetNonuniformWeights(conn, "BL_diff_matrix_y_r1_fd6");
+                    //diff_matrix_z_r1 = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r1_fd6");
+                    //diff_matrix_x_r2 = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd6");
+                    //diff_matrix_y_r2 = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd6");
+                    //diff_matrix_z_r2 = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd6");
                 }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.None_Fd8)
@@ -131,12 +128,12 @@ namespace Turbulence.SQLInterface.workers
                 }
                 else if (dataset.Contains("bl_zaki"))
                 {
-                    diff_matrix_x_r1 = GetNonuniformWeights(conn, "BL_diff_matrix_x_r1_fd8");
-                    diff_matrix_y_r1 = GetNonuniformWeights(conn, "BL_diff_matrix_y_r1_fd8");
-                    diff_matrix_z_r1 = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r1_fd8");
-                    diff_matrix_x_r2 = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd8");
-                    diff_matrix_y_r2 = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd8");
-                    diff_matrix_z_r2 = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd8");
+                    //diff_matrix_x_r1 = GetNonuniformWeights(conn, "BL_diff_matrix_x_r1_fd8");
+                    //diff_matrix_y_r1 = GetNonuniformWeights(conn, "BL_diff_matrix_y_r1_fd8");
+                    //diff_matrix_z_r1 = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r1_fd8");
+                    //diff_matrix_x_r2 = GetNonuniformWeights(conn, "BL_diff_matrix_x_r2_fd8");
+                    //diff_matrix_y_r2 = GetNonuniformWeights(conn, "BL_diff_matrix_y_r2_fd8");
+                    //diff_matrix_z_r2 = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r2_fd8");
                 }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
@@ -149,7 +146,7 @@ namespace Turbulence.SQLInterface.workers
                 //this.FdOrderY_r1 = 4;
                 //this.FdOrderY_r2 = 5;
                 this.LagIntOrder = 4;
-                
+
                 if (dataset.Contains("channel"))
                 {
                     weights_x = GetUniformWeights(conn, "barycentric_weights_x_4");
@@ -519,7 +516,7 @@ namespace Turbulence.SQLInterface.workers
         {
             double[] result = new double[GetResultSize()]; // Result value for the user
             // Temp variables for the partial computations
-            double[] ax = new double[setInfo.Components], ay = new double[setInfo.Components], az = new double[setInfo.Components], 
+            double[] ax = new double[setInfo.Components], ay = new double[setInfo.Components], az = new double[setInfo.Components],
                 axy = new double[setInfo.Components], axz = new double[setInfo.Components], ayz = new double[setInfo.Components];
 
             float[] data = blob.data;
@@ -537,9 +534,9 @@ namespace Turbulence.SQLInterface.workers
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd8:
                     // Wrap the coordinates into the grid space
-                    x = ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                    z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    x = periodicX ? ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : input.cell_x;
+                    y = periodicY ? ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : input.cell_y;
+                    z = periodicZ ? ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : input.cell_z;
 
                     stencil_startx = diff_matrix_x_r2.GetStencilStart(x, FdOrderX_r2);
                     stencil_starty = diff_matrix_y_r2.GetStencilStart(y, FdOrderY_r2);
@@ -550,9 +547,9 @@ namespace Turbulence.SQLInterface.workers
 
                     // Since the given blob may not hold all of the required data
                     // we determine where to start and end the partial computation
-                    blob.GetSubcubeStart(stencil_startz, stencil_starty, stencil_startx, 
+                    blob.GetSubcubeStart(stencil_startz, stencil_starty, stencil_startx,
                         ref startz, ref starty, ref startx);
-                    blob.GetSubcubeEnd(stencil_endz, stencil_endy, stencil_endx, 
+                    blob.GetSubcubeEnd(stencil_endz, stencil_endy, stencil_endx,
                         ref endz, ref endy, ref endx);
 
                     // We also need to determine where we are starting, e.g. f(x_(n-2)), f(x_(n-1)), etc.
@@ -628,7 +625,7 @@ namespace Turbulence.SQLInterface.workers
                                 }
                                 off += blob.GetSide * blob.GetSide * setInfo.Components;
                             }
-                        } 
+                        }
                         #endregion
                         #region mixed derivatives
                         // the mixed derivatives need data from a planar patch (either x-y, x-z or y-z)
@@ -736,7 +733,7 @@ namespace Turbulence.SQLInterface.workers
                                     }
                                 }
                             }
-                        } 
+                        }
                         #endregion
                     }
                     break;
@@ -795,9 +792,9 @@ namespace Turbulence.SQLInterface.workers
                     }
 
                     // Wrap the coordinates into the grid space
-                    x = ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                    z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    x = periodicX ? ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : input.cell_x;
+                    y = periodicY ? ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : input.cell_y;
+                    z = periodicZ ? ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : input.cell_z;
 
                     // This computation has 2 stages:
                     // 4th-order finite difference evaluation of the derivative (see above)
@@ -913,7 +910,7 @@ namespace Turbulence.SQLInterface.workers
                                         // the Y and Z dimensions range from the 2nd to the 5th row in the cube
                                         // since for the 4th-order Lagrange Polynomial interpolation we need the 4 nearest rows in each dim.
                                         // to the target point
-                                        if (KernelIndexY >= lagint_index_starty && KernelIndexY <= lagint_index_endy && 
+                                        if (KernelIndexY >= lagint_index_starty && KernelIndexY <= lagint_index_endy &&
                                             KernelIndexZ >= lagint_index_startz && KernelIndexZ <= lagint_index_endz)
                                         {
                                             // Each point may be part of up to LagIntOrder interplation kernels
@@ -943,7 +940,7 @@ namespace Turbulence.SQLInterface.workers
                                         #region d2uidydy
                                         // Same as for d2uidxdx, with the exception that we don't check at this point
                                         // which kernel the point falls into, since these are lines in the y-direction
-                                        if (KernelIndexX >= lagint_index_startx && KernelIndexX <= lagint_index_endx && 
+                                        if (KernelIndexX >= lagint_index_startx && KernelIndexX <= lagint_index_endx &&
                                             KernelIndexZ >= lagint_index_startz && KernelIndexZ <= lagint_index_endz)
                                         {
                                             double c = lagint[KernelIndexX - lagint_index_startx];
@@ -956,7 +953,7 @@ namespace Turbulence.SQLInterface.workers
                                         #region d2uidzdz
                                         // Same as for d2uidxdx, with the exception that we don't check at this point
                                         // which kernel the point falls into, since these are lines in the z-direction
-                                        if (KernelIndexX >= lagint_index_startx && KernelIndexX <= lagint_index_endx && 
+                                        if (KernelIndexX >= lagint_index_startx && KernelIndexX <= lagint_index_endx &&
                                             KernelIndexY >= lagint_index_starty && KernelIndexY <= lagint_index_endy)
                                         {
                                             double c = lagint[KernelIndexX - lagint_index_startx];
@@ -1042,7 +1039,7 @@ namespace Turbulence.SQLInterface.workers
                                                             //double c = coeff_z * lagint[i] * diff_matrix_x_r1[KernelIndexX - i];
                                                             double c = periodicX ? coeff_z * lagint[i] * diff_matrix_x_r1[FDIndex] :
                                                                 coeff_z * lagint[i] * diff_matrix_x_r1[x, FDIndex];
-                                                            
+
                                                             for (int k = 0; k < setInfo.Components; k++)
                                                             {
                                                                 cxz[k] += c * fdata[off + k];
@@ -1190,7 +1187,7 @@ namespace Turbulence.SQLInterface.workers
                 result[4 + 6 * i] = ayz[i];
                 result[5 + 6 * i] = az[i];
             }
-            
+
             return result;
         }
 

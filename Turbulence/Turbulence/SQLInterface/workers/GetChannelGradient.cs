@@ -12,9 +12,6 @@ namespace Turbulence.SQLInterface.workers
 {
     public class GetChannelGradient : Worker
     {
-        protected bool periodicX;
-        protected bool periodicY;
-        protected bool periodicZ;
         protected BarycentricWeights weights_x;
         protected BarycentricWeights weights_y;
         protected BarycentricWeights weights_z;
@@ -77,9 +74,9 @@ namespace Turbulence.SQLInterface.workers
                 }
                 else if (dataset.Contains("bl_zaki"))
                 {
-                    diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r1_fd6");
-                    diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r1_fd6");
-                    diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r1_fd6");
+                    //diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r1_fd6");
+                    //diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r1_fd6");
+                    //diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r1_fd6");
                 }
                 this.numPointsInKernel = 3 * kernelSize;
             }
@@ -95,9 +92,9 @@ namespace Turbulence.SQLInterface.workers
                 }
                 else if (dataset.Contains("bl_zaki"))
                 {
-                    diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r1_fd8");
-                    diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r1_fd8");
-                    diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r1_fd8");
+                    //diff_matrix_x = GetNonuniformWeights(conn, "BL_diff_matrix_x_r1_fd8");
+                    //diff_matrix_y = GetNonuniformWeights(conn, "BL_diff_matrix_y_r1_fd8");
+                    //diff_matrix_z = GetUniformDiffMatrix(conn, "BL_diff_matrix_z_r1_fd8");
                 }
                 this.numPointsInKernel = 3 * kernelSize;
             }
@@ -412,9 +409,9 @@ namespace Turbulence.SQLInterface.workers
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd8:
                     // Wrap the coordinates into the grid space
-                    x = ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                    z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    x = periodicX ? ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : input.cell_x;
+                    y = periodicY ? ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : input.cell_y;
+                    z = periodicZ ? ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : input.cell_z;
 
                     stencil_startx = diff_matrix_x.GetStencilStart(x, FdOrder);
                     stencil_starty = diff_matrix_y.GetStencilStart(y, FdOrder);
@@ -458,7 +455,7 @@ namespace Turbulence.SQLInterface.workers
                             off = startx * setInfo.Components + (y - blob.GetBaseY) * blob.GetSide * setInfo.Components + (z - blob.GetBaseZ) * blob.GetSide * blob.GetSide * setInfo.Components;
                             for (int ix = startx; ix <= endx; ix++)
                             {
-                                double coeff = periodicX ? diff_matrix_x[iKernelIndexX + ix - startx] : 
+                                double coeff = periodicX ? diff_matrix_x[iKernelIndexX + ix - startx] :
                                     diff_matrix_x[x, iKernelIndexX + ix - startx];
                                 for (int j = 0; j < setInfo.Components; j++)
                                 {
@@ -554,9 +551,9 @@ namespace Turbulence.SQLInterface.workers
                     }
 
                     // Wrap the coordinates into the grid space
-                    x = ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX;
-                    y = ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY;
-                    z = ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ;
+                    x = periodicX ? ((input.cell_x % setInfo.GridResolutionX) + setInfo.GridResolutionX) % setInfo.GridResolutionX : input.cell_x;
+                    y = periodicY ? ((input.cell_y % setInfo.GridResolutionY) + setInfo.GridResolutionY) % setInfo.GridResolutionY : input.cell_y;
+                    z = periodicZ ? ((input.cell_z % setInfo.GridResolutionZ) + setInfo.GridResolutionZ) % setInfo.GridResolutionZ : input.cell_z;
 
                     // This computation has 2 stages:
                     // 4th-order finite difference evaluation of the derivative (see above)

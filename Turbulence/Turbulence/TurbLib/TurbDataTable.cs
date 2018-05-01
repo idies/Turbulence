@@ -37,7 +37,7 @@ namespace Turbulence.TurbLib
         public int atomDim { get { return blobDim; } }
         public int EdgeRegion { get { return edgeRegion; } }
         public int Components { get { return components; } }
-        public string [] DataDescription { get { return dataDescription; } }
+        public string[] DataDescription { get { return dataDescription; } }
         public string DataName { get { return dataName; } }
         public string TableName { get { return tableName; } }
         public int TimeStart { get { return timestart; } }
@@ -208,7 +208,7 @@ namespace Turbulence.TurbLib
         public TurbDataTable(string dataName,
             string tableName, int gridResolution, int blobDim,
             int edgeRegion,
-            int components, string [] dataDescription,
+            int components, string[] dataDescription,
             float dt, int timestart, int timeend, int timeinc, int timeoff, short dbtype)
         {
             this.dataName = dataName;
@@ -255,14 +255,14 @@ namespace Turbulence.TurbLib
                 this.gridResolution[1] = 4096;
                 this.gridResolution[2] = 4096;
             }
-                        
+
             this.dx = (2.0 * Math.PI) / (double)gridResolution[2];
             this.dy = (2.0 * Math.PI) / (double)gridResolution[1];
             this.dz = (2.0 * Math.PI) / (double)gridResolution[0];
-            
+
             this.SqlArrayHeader = 6 * sizeof(int);
             this.serverBoundaries = new ServerBoundaries();
-            
+
             #region VirtualServers
 
             int num_virtual_servers = -1;
@@ -307,7 +307,7 @@ namespace Turbulence.TurbLib
             SqlConnection turbinfoConn = new SqlConnection(cString);
             turbinfoConn.Open();
             SqlCommand command = turbinfoConn.CreateCommand();
-            command.CommandText = String.Format("SELECT MIN(minLim), MAX(maxLim) FROM {0}.dbo.databasemap "+
+            command.CommandText = String.Format("SELECT MIN(minLim), MAX(maxLim) FROM {0}.dbo.databasemap " +
                 "WHERE productiondatabasename = '{1}'", serverinfo.infoDB, dbName);
             //SqlCommand command = new SqlCommand(String.Format("SELECT MIN(minLim), MAX(maxLim) FROM turbinfo.dbo.databasemap where productiondatabasename = '{1}'", dbName), conn);
             using (SqlDataReader reader = command.ExecuteReader())
@@ -356,7 +356,7 @@ namespace Turbulence.TurbLib
             serverBoundaries.endz = end.Z;
 
             serverBoundaries = serverBoundaries.getVirtualServerBoundaries(num_virtual_servers)[server];
-             
+
             #endregion
         }
 
@@ -364,7 +364,7 @@ namespace Turbulence.TurbLib
         {
             if (serverBoundaries.startx <= x && x <= serverBoundaries.endx)
                 if (serverBoundaries.starty <= y && y <= serverBoundaries.endy)
-                    if (serverBoundaries.startz <= z && z <= serverBoundaries.endz)                        
+                    if (serverBoundaries.startz <= z && z <= serverBoundaries.endz)
                         return true;
             return false;
         }
@@ -379,40 +379,40 @@ namespace Turbulence.TurbLib
         /// </remarks>
         public static TurbDataTable GetTableInfo(string tableName)
         {
-          if (tableName.Equals("isotropic1024coarse") || tableName.Equals("isotropic1024old"))
-          {
-            return new TurbDataTable("isotropic turbulence with a resolution of 1024",
-                "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -10, 4700, 10, 0, 0);
-          }
-          else if (tableName.Equals("isotropic1024fine") || tableName.Equals("isotropic1024fine_old"))
-          {
-            return new TurbDataTable("isotropic turbulence with a resolution of 1024",
-                "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -1, 100, 1, 0, 0);
-          }
-          else if (tableName.Equals("isotropic4096"))
+            if (tableName.Equals("isotropic1024coarse") || tableName.Equals("isotropic1024old"))
+            {
+                return new TurbDataTable("isotropic turbulence with a resolution of 1024",
+                    "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+                    0.0002f, -10, 4700, 10, 0, 0);
+            }
+            else if (tableName.Equals("isotropic1024fine") || tableName.Equals("isotropic1024fine_old"))
+            {
+                return new TurbDataTable("isotropic turbulence with a resolution of 1024",
+                    "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+                    0.0002f, -1, 100, 1, 0, 0);
+            }
+            else if (tableName.Equals("isotropic4096"))
             {/* Check to see if this really gets executed...*/
                 return new TurbDataTable("isotropic turbulence with a resolution of 4096",
                "isotropic4096", 4096, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
                0.0002f, 0, 0, 1, 0, 1);
             }
-          else if (tableName.Equals("strat4096"))
+            else if (tableName.Equals("strat4096"))
             {/* Check to see if this really gets executed...*/
                 return new TurbDataTable("roration and stratified turbulence with a resolution of 4096",
                "strat4096", 4096, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
                1f, 0, 4, 1, 0, 1);
             }
-          else if (tableName.Equals("testing"))
-          { 
-            return new TurbDataTable("testing table",
-                "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
-                0.0002f, -1, 100, 1, 0, 0);
-          }
-          else
-          {
-            throw new Exception(String.Format("Unknown dataset: {0}", tableName));
-          }
+            else if (tableName.Equals("testing"))
+            {
+                return new TurbDataTable("testing table",
+                    "isotropic1024data", 1024, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+                    0.0002f, -1, 100, 1, 0, 0);
+            }
+            else
+            {
+                throw new Exception(String.Format("Unknown dataset: {0}", tableName));
+            }
 
         }
 
@@ -627,13 +627,13 @@ namespace Turbulence.TurbLib
         {
             if (tableName.Equals("vel") || tableName.Contains("vel_"))
             {
-                return new TurbDataTable("velocity", tableName, 1024, blobDim, 0, 3, 
+                return new TurbDataTable("velocity", tableName, 1024, blobDim, 0, 3,
                     new string[] { "Ux", "Uy", "Uz" },
                     0.0002f, -1, 100, 10, 0, 0);
             }
             else if (tableName.Equals("velocity08"))
             {
-                return new TurbDataTable("velocity", tableName, 1024, blobDim, 0, 3, 
+                return new TurbDataTable("velocity", tableName, 1024, blobDim, 0, 3,
                     new string[] { "Ux", "Uy", "Uz" },
                     0.00025f, -1, 100, 10, 0, 0);
             }
@@ -728,7 +728,7 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.None_Fd4:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd6:
                 case TurbulenceOptions.SpatialInterpolation.None_Fd8:
-                    //return gridPointsY.GetCellIndex(value, 0.0); //TODO: should I correct here?
+                //return gridPointsY.GetCellIndex(value, 0.0); //TODO: should I correct here?
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -753,7 +753,7 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.M4Q10:
                 case TurbulenceOptions.SpatialInterpolation.M4Q12:
                 case TurbulenceOptions.SpatialInterpolation.M4Q14:
-                    //return gridPointsY.GetCellIndex(value); //TODO: should I correct here?
+                //return gridPointsY.GetCellIndex(value); //TODO: should I correct here?
                 case TurbulenceOptions.SpatialInterpolation.None:
                     return gridPointsY.GetCellIndexRound(value);
                 default:

@@ -3023,102 +3023,85 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDData(DataInfo.TableNames tableName, int worker, float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            Pressure[] result)
-        {
-            IAsyncResult[] asyncRes = ExecuteMHDWorker(tableName.ToString(),
-                        worker, time, (int)spatial, (int)temporal, 0);
-            return GetPressureResults(asyncRes, result);
-        }
+        
 
-        public int ExecuteGetPressure(string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            Pressure[] result)
-        {
+        //public int ExecuteGetPressure(string dataset, float time,
+        //    TurbulenceOptions.SpatialInterpolation spatial,
+        //    TurbulenceOptions.TemporalInterpolation temporal,
+        //    Pressure[] result)
+        //{
 
-            IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
-                Worker.Workers.GetPressure, time, spatial, temporal, 0);
+        //    IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
+        //        Worker.Workers.GetPressure, time, spatial, temporal, 0);
 
-            return GetPressureResults(asyncRes, result);
-        }
+        //    return GetPressureResults(asyncRes, result);
+        //}
 
-        public int ExecuteGetVelocityAndPressure(string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            Vector3P[] result)
-        {
+        //public int ExecuteGetVelocityAndPressure(string dataset, float time,
+        //    TurbulenceOptions.SpatialInterpolation spatial,
+        //    TurbulenceOptions.TemporalInterpolation temporal,
+        //    Vector3P[] result)
+        //{
 
-            IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
-                Worker.Workers.GetVelocityWithPressure, time, spatial, temporal, 0);
+        //    IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
+        //        Worker.Workers.GetVelocityWithPressure, time, spatial, temporal, 0);
 
-            return GetXYZPResults(asyncRes, result);
-        }
+        //    return GetXYZPResults(asyncRes, result);
+        //}
 
-        public int ExecutePressureHessian(string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            PressureHessian[] result)
-        {
+        //public int ExecutePressureHessian(string dataset, float time,
+        //    TurbulenceOptions.SpatialInterpolation spatial,
+        //    TurbulenceOptions.TemporalInterpolation temporal,
+        //    PressureHessian[] result)
+        //{
 
-            IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
-                Worker.Workers.GetPressureHessian, time, spatial, temporal, 0);
+        //    IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
+        //        Worker.Workers.GetPressureHessian, time, spatial, temporal, 0);
 
-            return GetPressureHessianResults(asyncRes, result);
-        }
+        //    return GetPressureHessianResults(asyncRes, result);
+        //}
 
-        public int ExecuteVelocityHessian(string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            VelocityHessian[] result)
-        {
+        //public int ExecuteVelocityHessian(string dataset, float time,
+        //    TurbulenceOptions.SpatialInterpolation spatial,
+        //    TurbulenceOptions.TemporalInterpolation temporal,
+        //    VelocityHessian[] result)
+        //{
 
-            IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
-                Worker.Workers.GetVelocityHessian, time, spatial, temporal, 0);
+        //    IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
+        //        Worker.Workers.GetVelocityHessian, time, spatial, temporal, 0);
 
-            return GetVelocityHessianResults(asyncRes, result);
+        //    return GetVelocityHessianResults(asyncRes, result);
 
-        }
+        //}
 
-        public int ExecuteVelocityLaplacian(string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            Vector3[] result)
-        {
+        //public int ExecuteVelocityLaplacian(string dataset, float time,
+        //    TurbulenceOptions.SpatialInterpolation spatial,
+        //    TurbulenceOptions.TemporalInterpolation temporal,
+        //    Vector3[] result)
+        //{
 
-            IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
-                Worker.Workers.GetVelocityLaplacian, time, spatial, temporal, 0);
+        //    IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
+        //        Worker.Workers.GetVelocityLaplacian, time, spatial, temporal, 0);
 
-            return GetVelocityLaplacianResults(asyncRes, result);
-        }
+        //    return GetVelocityLaplacianResults(asyncRes, result);
+        //}
 
-        public int ExecuteGetVelocityGradient(string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            VelocityGradient[] result)
-        {
+        //public int ExecuteGetVelocityGradient(string dataset, float time,
+        //    TurbulenceOptions.SpatialInterpolation spatial,
+        //    TurbulenceOptions.TemporalInterpolation temporal,
+        //    VelocityGradient[] result)
+        //{
 
-            IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
-                Worker.Workers.GetVelocityGradient, time, spatial, temporal, 0);
+        //    IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
+        //        Worker.Workers.GetVelocityGradient, time, spatial, temporal, 0);
 
-            return GetVelocityGradientResults(asyncRes, result);
-        }
+        //    return GetVelocityGradientResults(asyncRes, result);
+        //}
 
         /// <remarks>
         /// Also used for LaplacianOfVelocityGradient
         /// </remarks>
-        public int ExecuteGetMHDGradient(DataInfo.TableNames tableName, int worker, float time,
-            TurbulenceOptions.SpatialInterpolation spatial,
-            TurbulenceOptions.TemporalInterpolation temporal,
-            VelocityGradient[] result)
-        {
-            IAsyncResult[] asyncRes;
-            asyncRes = ExecuteMHDWorker(tableName.ToString(),
-                        worker, time, (int)spatial, (int)temporal, 0);
-            return GetVelocityGradientResults(asyncRes, result);
-        }
+
 
         public int ExecuteGetMHDFilterGradient(DataInfo.TableNames tableName, int worker, float time,
             int spatial, float filter_width,
@@ -3130,18 +3113,38 @@ namespace TurbulenceService
             return GetVelocityGradientResults(asyncRes, result);
         }
 
-        public int ExecuteGetPressureGradient(string dataset, float time,
+        public int ExecuteGetVectorData(DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result)
         {
-            IAsyncResult[] asyncRes = ExecuteTurbulenceWorker(dataset,
-                Worker.Workers.GetPressureGradient, time, spatial, temporal, 0);
-
+            IAsyncResult[] asyncRes = ExecuteMHDWorker(tableName.ToString(),
+                        worker, time, (int)spatial, (int)temporal, 0);
             return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDLaplacian(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetScalarData(DataInfo.TableNames tableName, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            Pressure[] result)
+        {
+            IAsyncResult[] asyncRes = ExecuteMHDWorker(tableName.ToString(),
+                        worker, time, (int)spatial, (int)temporal, 0);
+            return GetPressureResults(asyncRes, result);
+        }
+
+        public int ExecuteGetVectorGradient(DataInfo.TableNames tableName, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            VelocityGradient[] result)
+        {
+            IAsyncResult[] asyncRes;
+            asyncRes = ExecuteMHDWorker(tableName.ToString(),
+                        worker, time, (int)spatial, (int)temporal, 0);
+            return GetVelocityGradientResults(asyncRes, result);
+        }
+
+        public int ExecuteGetScalarGradient(DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             Vector3[] result)
@@ -3149,10 +3152,10 @@ namespace TurbulenceService
             IAsyncResult[] asyncRes;
             asyncRes = ExecuteMHDWorker(tableName.ToString(),
                         worker, time, (int)spatial, (int)temporal, 0);
-            return GetVelocityLaplacianResults(asyncRes, result);
+            return GetXYZResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDHessian(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetVectorHessian(DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             VelocityHessian[] result)
@@ -3163,7 +3166,7 @@ namespace TurbulenceService
             return GetVelocityHessianResults(asyncRes, result);
         }
 
-        public int ExecuteGetMHDPressureHessian(DataInfo.TableNames tableName, int worker, float time,
+        public int ExecuteGetScalarHessian(DataInfo.TableNames tableName, int worker, float time,
             TurbulenceOptions.SpatialInterpolation spatial,
             TurbulenceOptions.TemporalInterpolation temporal,
             PressureHessian[] result)
@@ -3171,6 +3174,17 @@ namespace TurbulenceService
             IAsyncResult[] asyncRes = ExecuteMHDWorker(tableName.ToString(),
                         worker, time, (int)spatial, (int)temporal, 0);
             return GetPressureHessianResults(asyncRes, result);
+        }
+
+        public int ExecuteGetVectorLaplacian(DataInfo.TableNames tableName, int worker, float time,
+            TurbulenceOptions.SpatialInterpolation spatial,
+            TurbulenceOptions.TemporalInterpolation temporal,
+            Vector3[] result)
+        {
+            IAsyncResult[] asyncRes;
+            asyncRes = ExecuteMHDWorker(tableName.ToString(),
+                        worker, time, (int)spatial, (int)temporal, 0);
+            return GetVelocityLaplacianResults(asyncRes, result);
         }
 
         public int ExecuteGetThreshold(DataInfo.DataSets dataset_enum,

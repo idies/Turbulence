@@ -9,7 +9,7 @@ CREATE TABLE [dbo].[#temp_zw] (
     [z]      REAL   NULL
 );
 INSERT INTO [dbo].[#temp_zw]  
-VALUES (0, 543279, 3.14, 1, 3.14);
+VALUES (0, 1065216, 0, 0, 9.84855886663);
 
 SELECT reqseq, zindex, x, y, z FROM #temp_zw
 
@@ -25,7 +25,7 @@ EXEC	@return_value = [dbo].[ExecuteParticleTrackingChannelDBWorkerTaskParallel]
 		@tableName = N'vel',
 		@atomDim = 8,
 		@workerType = 22,
-		@spatialInterp = 0,
+		@spatialInterp = 4,
 		@temporalInterp = 1,
 		@inputSize = 1,
 		@tempTable = N'#temp_zw',
@@ -35,6 +35,8 @@ EXEC	@return_value = [dbo].[ExecuteParticleTrackingChannelDBWorkerTaskParallel]
 SELECT	@return_value as 'Return Value'
 
 GO
+
+DROP TABLE #temp_zw
 --56: //velocity
 --64: //velocity gradient
 --71: //velocity hessian

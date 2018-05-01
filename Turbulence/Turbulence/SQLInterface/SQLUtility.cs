@@ -9,7 +9,6 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using Microsoft.SqlServer.Server;
 using Turbulence.TurbLib.DataTypes;
-
 using System.Collections;
 
 
@@ -304,10 +303,10 @@ namespace Turbulence.SQLInterface
             //conn.Close();
             return tableName;
         }
-        
+
         // customize batching
         //same as above, but returns a different map and an array
-        public static Dictionary<long, List<int>> ReadTempTableGetCubesToReadBatch(string tempTable, 
+        public static Dictionary<long, List<int>> ReadTempTableGetCubesToReadBatch(string tempTable,
             Worker[] worker,
             int[] boundaries, int[] result_sizel, int[] nOrderl, SqlConnection conn,
             Dictionary<int, MHDInputRequest> input, float time,
@@ -319,7 +318,7 @@ namespace Turbulence.SQLInterface
             MHDInputRequest request;
 
             int total_points = 0;
-            
+
             //SqlConnection conn = new SqlConnection(connString);
             //conn.Open();
             SqlCommand cmd = new SqlCommand(
@@ -463,7 +462,7 @@ namespace Turbulence.SQLInterface
             //if (getPosition)
             //    query = String.Format("SELECT reqseq, zindex, x, y, z, pre_x, pre_y, pre_z, Vx, Vy, Vz FROM {0}", tempTable);
             //else
-                query = String.Format("SELECT reqseq, zindex, x, y, z FROM {0}", tempTable);
+            query = String.Format("SELECT reqseq, zindex, x, y, z FROM {0}", tempTable);
             SqlCommand cmd = new SqlCommand(query, conn);
             SqlDataReader reader = cmd.ExecuteReader();
 
@@ -503,7 +502,7 @@ namespace Turbulence.SQLInterface
 
             return map;
         }
-        
+
         //same as above, but returns a different map and an array
         public static Dictionary<long, List<int>> ReadTempTableGetAtomsToRead(string tempTable,
             Worker worker, Worker.Workers workerType,
@@ -519,7 +518,7 @@ namespace Turbulence.SQLInterface
 
             // Bitmask to ignore low order bits of address
             long mask = ~(long)(worker.DataTable.atomDim * worker.DataTable.atomDim * worker.DataTable.atomDim - 1);
-            
+
             long zindex = 0;
             int result_size = worker.GetResultSize();
             //HashSet<long> atoms = new HashSet<long>(); //NOTE: HashSet requires .Net 3.5
@@ -553,16 +552,16 @@ namespace Turbulence.SQLInterface
                 request.cell_x = worker.DataTable.CalcNodeX(request.x, worker.spatialInterp);
                 request.cell_y = worker.DataTable.CalcNodeY(request.y, worker.spatialInterp);
                 request.cell_z = worker.DataTable.CalcNodeZ(request.z, worker.spatialInterp);
-                
+
                 if (worker.KernelSize > 0)
                 {
                     worker.GetAtomsForPoint(request, mask, 0, map, ref total_points);
                 }
                 else
                 {
-                    int x = ((request.cell_x % worker.DataTable.GridResolutionX) + worker.DataTable.GridResolutionX) % worker.DataTable.GridResolutionX;
-                    int y = ((request.cell_y % worker.DataTable.GridResolutionY) + worker.DataTable.GridResolutionY) % worker.DataTable.GridResolutionY;
-                    int z = ((request.cell_z % worker.DataTable.GridResolutionZ) + worker.DataTable.GridResolutionZ) % worker.DataTable.GridResolutionZ;
+                    int x = worker.periodicX ? ((request.cell_x % worker.DataTable.GridResolutionX) + worker.DataTable.GridResolutionX) % worker.DataTable.GridResolutionX : request.cell_x;
+                    int y = worker.periodicY ? ((request.cell_y % worker.DataTable.GridResolutionY) + worker.DataTable.GridResolutionY) % worker.DataTable.GridResolutionY : request.cell_y;
+                    int z = worker.periodicZ ? ((request.cell_z % worker.DataTable.GridResolutionZ) + worker.DataTable.GridResolutionZ) % worker.DataTable.GridResolutionZ : request.cell_z;
                     zindex = new Morton3D(z, y, x) & mask;
                     //zindex = reader.GetSqlInt64(1).Value & mask;
 
@@ -624,7 +623,7 @@ namespace Turbulence.SQLInterface
 
                 //input[reqseq] = request;
                 input.Add(request);
-                
+
                 X = LagInterpolation.CalcNodeWithRound(x, worker.DataTable.Dx);
                 Y = LagInterpolation.CalcNodeWithRound(y, worker.DataTable.Dx);
                 Z = LagInterpolation.CalcNodeWithRound(z, worker.DataTable.Dx);
@@ -719,14 +718,14 @@ namespace Turbulence.SQLInterface
                     endz = worker.DataTable.EndZ - worker.DataTable.atomDim + 1;
             }
             InputTableDataReader.Close();
-            
+
             if (startx > endx || starty > endy || startz > endz)
                 throw new Exception("Given input not appropriate for this server!");
-            
+
             xwidth = endx - startx + worker.DataTable.atomDim;
             ywidth = endy - starty + worker.DataTable.atomDim;
             zwidth = endz - startz + worker.DataTable.atomDim;
-            
+
             string jointableName = "##query" + Guid.NewGuid().ToString().Replace("-", "");
 
             // Create the temporary table, in which the values are to be inserted
@@ -1028,7 +1027,7 @@ namespace Turbulence.SQLInterface
         {
             SqlConnection turbInfoConn = new SqlConnection(
                 String.Format("Server={0};Database={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;", serverinfo.infoDB_server, serverinfo.infoDB));
-            
+
             /*then, we find the path/dbname need to be read and the corresponding z-index Limit*/
             serverName = new List<string>();
             dbname = new List<string>();
@@ -1064,7 +1063,7 @@ namespace Turbulence.SQLInterface
                 else
                 {
                     serverName_add = reader.GetString(6);
-                }                
+                }
                 string dbname_add = reader.GetString(1);
                 string codedb_add = reader.GetString(2);
                 long minLim_add = reader.GetInt64(3);
@@ -1118,5 +1117,4 @@ namespace Turbulence.SQLInterface
             }
         }
     }
-
 }

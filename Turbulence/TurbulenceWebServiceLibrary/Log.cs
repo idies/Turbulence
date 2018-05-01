@@ -177,32 +177,35 @@ namespace TurbulenceService
         // Write a verbose log record
         public void UpdateLogRecord(object rowid, byte[] access)
         {
-            if (devmode) { return; }
+            if (rowid != null)
+            {
+                if (devmode) { return; }
 
-            //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
-            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
-                            logdb_server, logdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
-            SqlConnection conn = new SqlConnection(cString);
-            conn.Open();
-            SqlCommand cmd = conn.CreateCommand();
-            if (access == null)
-            {
-                cmd.CommandText = @"UPDATE [" + logdb + "].[dbo].[usage] "
-                    + " SET [exectime] = @exectime "
-                    + " WHERE rowid = @rowid ";
+                //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
+                String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
+                                logdb_server, logdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
+                SqlConnection conn = new SqlConnection(cString);
+                conn.Open();
+                SqlCommand cmd = conn.CreateCommand();
+                if (access == null)
+                {
+                    cmd.CommandText = @"UPDATE [" + logdb + "].[dbo].[usage] "
+                        + " SET [exectime] = @exectime "
+                        + " WHERE rowid = @rowid ";
+                }
+                else
+                {
+                    cmd.CommandText = @"UPDATE [" + logdb + "].[dbo].[usage] "
+                        + " SET [exectime] = @exectime, [access] = @access "
+                        + " WHERE rowid = @rowid ";
+                    cmd.Parameters.Add("@access", SqlDbType.VarBinary, access.Length).Value = access;
+                }
+                TimeSpan timespan = DateTime.Now - this.start;
+                cmd.Parameters.AddWithValue("@exectime", (float)timespan.TotalSeconds);
+                cmd.Parameters.AddWithValue("@rowid", rowid);
+                cmd.ExecuteNonQuery();
+                conn.Close();
             }
-            else
-            {
-                cmd.CommandText = @"UPDATE [" + logdb + "].[dbo].[usage] "
-                    + " SET [exectime] = @exectime, [access] = @access "
-                    + " WHERE rowid = @rowid ";
-                cmd.Parameters.Add("@access", SqlDbType.VarBinary, access.Length).Value = access;
-            }
-            TimeSpan timespan = DateTime.Now - this.start;
-            cmd.Parameters.AddWithValue("@exectime", (float)timespan.TotalSeconds);
-            cmd.Parameters.AddWithValue("@rowid", rowid);
-            cmd.ExecuteNonQuery();
-            conn.Close();
         }
 
         //public void cutout_ip(string ipaddr)

@@ -219,8 +219,8 @@
     <Content Include="download\turbmat-20180129.tar.gz" />
     <Content Include="download\turbmat-20180129.zip" />
     <Content Include="docs\README-rotstrat4096.pdf" />
-    <Content Include="download\turbmat-20180411.tar.gz" />
-    <Content Include="download\turbmat-20180411.zip" />
+    <Content Include="download\turbmat-20180430.tar.gz" />
+    <Content Include="download\turbmat-20180430.zip" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\dsa004.pubxml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
