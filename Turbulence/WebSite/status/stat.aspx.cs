@@ -628,7 +628,7 @@ order by {3}", turbinfodb, dateparttext, grouptext, ordertext, tempTableName, re
                     {
                         dt.Columns.Add(country[country_no]);
                     }
-                    else
+                    else if (country[country_no] == "N/A")
                     {
                         NA = true;
                     }
@@ -716,7 +716,6 @@ EXEC sp_executesql @DynamicPivotQuery;", selecttext, ordertext, tempTableName, r
             return dt;
 
         }
-
 
         protected void Page_Load(object sender, EventArgs e)
         {

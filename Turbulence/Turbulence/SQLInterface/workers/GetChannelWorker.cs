@@ -80,8 +80,17 @@ namespace Turbulence.SQLInterface.workers
                 else if (dataset.Contains("bl_zaki"))
                 {
                     weights_x.GetWeightsFromDB(conn, "BL_barycentric_weights_x_4");
-                    weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_4");
+                    //weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_4");
                     weights_z.GetWeightsFromDB(conn, "BL_barycentric_weights_z_4");
+
+                    if (setInfo.TableName=="vel") //for transition_bl (bl_zaki)
+                    {
+                        weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_4_vel");
+                    }
+                    else
+                    {
+                        weights_y.GetWeightsFromDB(conn, "BL_barycentric_weights_y_4");
+                    }
                 }
             }
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Lag6)

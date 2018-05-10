@@ -698,7 +698,10 @@ namespace Turbulence.TurbLib
             double[] grid_values = new double[interpolationOrder];
             for (int i = 0; i < interpolationOrder; i++)
             {
-                grid_values[i] = gridPointsY.GetGridValue(stencil_start_index + i);
+                if (stencil_start_index + i == -1) //for transition_bl (bl_zaki)
+                    grid_values[i] = 0;
+                else
+                    grid_values[i] = gridPointsY.GetGridValue(stencil_start_index + i);
             }
             return grid_values;
         }

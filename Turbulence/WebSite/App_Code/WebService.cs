@@ -26,9 +26,9 @@ namespace TurbulenceService
          */
 
         public const bool DEVEL_MODE = false;
-        //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
+        public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
         public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
-        public const string infodb_string = "turbinfo_test_conn";
+        //public const string infodb_string = "turbinfo_test_conn";
         public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
 
         // batch scheduler queue
@@ -117,59 +117,65 @@ namespace TurbulenceService
                 case DataInfo.DataSets.bl_zaki:
                     worker = (int)Worker.Workers.GetChannelVelocity;
 
-                    List<int> idx = new List<int>();
-                    List<int> idx_not0 = new List<int>();
-                    for (int i = 0; i < points.Length; i++)
+                    if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None)
                     {
-                        if (points[i].y < 0.00178944959)
-                            idx.Add(i);
-                        else
-                            idx_not0.Add(i);
-                    }
-                    
-                    if (idx_not0.Count > 0)
-                    {
-                        Point3[] points1 = new Point3[idx_not0.Count];
-                        Vector3[] result1 = new Vector3[idx_not0.Count];
-                        for (int i = 0; i < idx_not0.Count; i++)
+                        List<int> idx = new List<int>();
+                        List<int> idx_not0 = new List<int>();
+                        for (int i = 0; i < points.Length; i++)
                         {
-                            points1[i].x = points[idx_not0[i]].x;
-                            points1[i].y = points[idx_not0[i]].y;
-                            points1[i].z = points[idx_not0[i]].z;
+                            if (points[i].y < 0.00178944959)
+                                idx.Add(i);
+                            else
+                                idx_not0.Add(i);
                         }
+
+                        if (idx_not0.Count > 0)
+                        {
+                            Point3[] points1 = new Point3[idx_not0.Count];
+                            Vector3[] result1 = new Vector3[idx_not0.Count];
+                            for (int i = 0; i < idx_not0.Count; i++)
+                            {
+                                points1[i].x = points[idx_not0[i]].x;
+                                points1[i].y = points[idx_not0[i]].y;
+                                points1[i].z = points[idx_not0[i]].z;
+                            }
+                            GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
+                                time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid, addr);
+                            for (int i = 0; i < idx_not0.Count; i++)
+                            {
+                                result[idx_not0[i]] = result1[i];
+                            }
+                        }
+
+                        if (idx.Count > 0)
+                        {
+                            database.Initialize(dataset_enum, num_virtual_servers);
+                            object rowid1 = null;
+                            Point3[] points1 = new Point3[idx.Count];
+                            Vector3[] result1 = new Vector3[idx.Count];
+                            for (int i = 0; i < idx.Count; i++)
+                            {
+                                points1[i].x = (float)(Math.Round((points[idx[i]].x - 30.218496172581567) / 0.292210466240511) * 0.292210466240511 + 30.218496172581567);
+                                points1[i].y = 0.0f;
+                                points1[i].z = (float)(Math.Round(points[idx[i]].z / 0.117244748412311) * 0.117244748412311);
+                            }
+                            spatialInterpolation = TurbulenceOptions.SpatialInterpolation.Lag4;
+                            GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
+                                time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid1, addr);
+                            for (int i = 0; i < idx.Count; i++)
+                            {
+                                result[idx[i]].x = 0.0f;
+                                result[idx[i]].y = 0.0f;
+                                result[idx[i]].z = 0.0f;
+                            }
+                            log.UpdateLogRecord(rowid1, database.Bitfield);
+                        }
+                    }
+                    else
+                    {
                         GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
-                            time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid, addr);
-                        for (int i = 0; i < idx_not0.Count; i++)
-                        {
-                            result[idx_not0[i]] = result1[i];
-                        }
+                                time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     }
-
-                    if (idx.Count > 0)
-                    {
-                        database.Initialize(dataset_enum, num_virtual_servers);
-                        object rowid1 = null;
-                        Point3[] points1 = new Point3[idx.Count];
-                        Vector3[] result1 = new Vector3[idx.Count];
-                        for (int i = 0; i < idx.Count; i++)
-                        {
-                            points1[i].x = (float)(Math.Round((points[idx[i]].x - 30.218496172581567) / 0.292210466240511) * 0.292210466240511 + 30.218496172581567);
-                            points1[i].y = 0.0f;
-                            points1[i].z = (float)(Math.Round(points[idx[i]].z / 0.117244748412311) * 0.117244748412311);
-                        }
-                        spatialInterpolation = TurbulenceOptions.SpatialInterpolation.Lag4;
-                        GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
-                            time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid1, addr);
-                        for (int i = 0; i < idx.Count; i++)
-                        {
-                            result[idx[i]].x = 0.0f;
-                            result[idx[i]].y = 0.0f;
-                            result[idx[i]].z = 0.0f;
-                        }
-                        log.UpdateLogRecord(rowid1, database.Bitfield);
-                    }
-
-
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
@@ -358,7 +364,6 @@ namespace TurbulenceService
                     }
                     else
                     {
-                        worker = (int)Worker.Workers.GetChannelVelocity;
                         GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
                             time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     }

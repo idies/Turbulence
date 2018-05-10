@@ -87,11 +87,14 @@
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.js" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.min.js" />
     <Content Include="citing.aspx" />
+    <Content Include="docs\transition_bl\y.txt" />
     <Content Include="images\channel-small.jpg" />
     <Content Include="images\iso1024-small.jpg" />
     <Content Include="images\isotropic4096.jpg" />
     <Content Include="images\mhd-small.jpg" />
     <Content Include="images\rotstrat4096.jpg" />
+    <Content Include="images\transition_bl.png" />
+    <Content Include="Transition_bl.aspx" />
     <Content Include="Isotropic4096.aspx" />
     <Content Include="newcutout.aspx" />
     <Content Include="oldcutout.aspx" />
@@ -221,6 +224,7 @@
     <Content Include="docs\README-rotstrat4096.pdf" />
     <Content Include="download\turbmat-20180430.tar.gz" />
     <Content Include="download\turbmat-20180430.zip" />
+    <Content Include="docs\README-transition_bl.pdf" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\dsa004.pubxml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
@@ -442,10 +446,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://turbulence.pha.jhu.edu/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\edu.jhu.pha.turbulence\</RelPath>
-      <UpdateFromURL>http://test.turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
