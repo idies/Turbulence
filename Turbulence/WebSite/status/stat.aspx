@@ -53,6 +53,13 @@
 				<asp:ListItem>Requests</asp:ListItem>
 			</asp:DropDownList></td>
 
+		<td valign="top">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Country or City: </td>
+		<td>
+			<asp:DropDownList ID="countrycity" runat="server">
+				<asp:ListItem>Country</asp:ListItem>
+				<asp:ListItem>City</asp:ListItem>
+			</asp:DropDownList></td>
+
 		<td valign="top">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Production or test website: </td>
 		<td>
 			<asp:DropDownList ID="prod_test" runat="server">

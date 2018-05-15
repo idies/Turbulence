@@ -594,19 +594,33 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
                 selecttext = "dates";
             }
 
+            string countrytext = "";
+            string citygroup = "";            
+            if (countrycity.Text.Equals("Country"))
+            {
+                countrytext = "(case when (country_name is null or country_name='') then 'N/A' else country_name end) as country_name";
+                citygroup = "";
+            }
+            else if (countrycity.Text.Equals("City"))
+            {
+                countrytext = "((case when (country_name is null or country_name='') then 'N/A' else country_name end) +" +
+                    "(case when (city_name is null or city_name='') then '' else (' - ' + city_name) end)) as country_name";
+                citygroup = "city_name,";
+            }
+
             string tempTableName = "##" + Guid.NewGuid().ToString().Replace("-", "");
             cmd.CommandText = String.Format(@"
-select sum({5}) as {5}, (case when (country_name is null or country_name='') then 'N/A' else country_name end) as country_name, {1}
+select sum({5}) as {5}, {6}, {1}
 into tempdb..{4}
 from {0}..usage_summary
 where total_exectime is not null and dates>=@startdates and dates<=@enddates-- and country_name is not null and country_name!=''
-group by country_name, {2}
+group by country_name, {7} {2}
 union
 select sum({5}) as {5}, 'Total' as country_name, {1}
 from {0}..usage_summary
 where total_exectime is not null and dates>=@startdates and dates<=@enddates-- and country_name is not null and country_name!=''
 group by {2}
-order by {3}", turbinfodb, dateparttext, grouptext, ordertext, tempTableName, requestspoint.Text.ToLower());
+order by {3}", turbinfodb, dateparttext, grouptext, ordertext, tempTableName, requestspoint.Text.ToLower(), countrytext, citygroup);
             cmd.Parameters.AddWithValue("@startdates", startdate.ToString("yyyy-MM-dd"));
             cmd.Parameters.AddWithValue("@enddates", enddate.ToString("yyyy-MM-dd"));
             cmd.ExecuteNonQuery();
