@@ -47,6 +47,7 @@
 													<asp:DropDownList ID="dataset" runat="server" AutoPostBack="True"
 														OnSelectedIndexChanged="dataset_SelectedIndexChanged">
 														<asp:ListItem>channel</asp:ListItem>
+														<asp:ListItem>channel5200</asp:ListItem>
 														<asp:ListItem>isotropic1024coarse</asp:ListItem>
 														<asp:ListItem>isotropic1024fine</asp:ListItem>
 														<asp:ListItem>isotropic4096</asp:ListItem>

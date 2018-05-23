@@ -10,7 +10,7 @@
 namespace Website {
     
     
-    public partial class status_monitor3 {
+    public partial class status_stat {
         
         /// <summary>
         /// form1 control.

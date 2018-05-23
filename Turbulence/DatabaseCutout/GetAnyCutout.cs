@@ -372,7 +372,6 @@ public partial class StoredProcedures
                 break;
             case DataInfo.DataSets.isotropic4096:
             case DataInfo.DataSets.strat4096:
-                /* Adding 100 timesteps to coarse */
                 if (!(tlow >= 0 && thigh <= 1) ||
                     !(xlow >= 0 && xhigh <= 4096) ||
                     !(ylow >= 0 && yhigh <= 4096) ||

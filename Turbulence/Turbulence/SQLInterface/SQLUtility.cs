@@ -1089,8 +1089,8 @@ namespace Turbulence.SQLInterface
             try
             {
                 SqlCommand cmd1 = new SqlCommand(
-                        String.Format(@"SELECT * " +
-                        "FROM {0}.dbo.{1}", dbname.Substring(0, dbname.Length - 3), dbname),
+                        String.Format(@"SELECT startZ, endZ, blobBefore " +
+                        "FROM {0}.dbo.zorderList WHERE dbNo={1}", dbname.Substring(0, dbname.Length - 3), dbname.Substring(dbname.Length - 3, 3)),
                         sqlConn);
                 cmd1.CommandTimeout = 3600;
                 using (SqlDataReader reader = cmd1.ExecuteReader())

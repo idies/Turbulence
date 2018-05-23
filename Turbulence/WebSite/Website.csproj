@@ -225,7 +225,9 @@
     <Content Include="download\turbmat-20180430.tar.gz" />
     <Content Include="download\turbmat-20180430.zip" />
     <Content Include="docs\README-transition_bl.pdf" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\dsa004.pubxml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
     <None Include="Properties\Settings.settings">
@@ -446,10 +448,10 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://turbulence.pha.jhu.edu/service/turbulence.asmx">
+    <WebReferenceUrl Include="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\edu.jhu.pha.turbulence\</RelPath>
-      <UpdateFromURL>http://turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
+      <UpdateFromURL>http://test.turbulence.pha.jhu.edu/service/turbulence.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>

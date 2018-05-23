@@ -1043,6 +1043,29 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetRawTemperature">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRawTemperatureResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetRawTemperatureResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="NullOpSoapIn">
@@ -1297,6 +1320,12 @@
   <wsdl:message name="GetRawDensitySoapOut">
     <wsdl:part name="parameters" element="tns:GetRawDensityResponse" />
   </wsdl:message>
+  <wsdl:message name="GetRawTemperatureSoapIn">
+    <wsdl:part name="parameters" element="tns:GetRawTemperature" />
+  </wsdl:message>
+  <wsdl:message name="GetRawTemperatureSoapOut">
+    <wsdl:part name="parameters" element="tns:GetRawTemperatureResponse" />
+  </wsdl:message>
   <wsdl:portType name="TurbulenceServiceSoap">
     <wsdl:operation name="NullOp">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Perform a null operation -- for testing throughput</wsdl:documentation>
@@ -1509,6 +1538,11 @@
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a cube of the raw density data with the given width cornered at the specified coordinates for the given time.</wsdl:documentation>
       <wsdl:input message="tns:GetRawDensitySoapIn" />
       <wsdl:output message="tns:GetRawDensitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetRawTemperature">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a cube of the raw density data with the given width cornered at the specified coordinates for the given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetRawTemperatureSoapIn" />
+      <wsdl:output message="tns:GetRawTemperatureSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="TurbulenceServiceSoap" type="tns:TurbulenceServiceSoap">
@@ -1884,6 +1918,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetRawDensity">
       <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetRawDensity" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRawTemperature">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetRawTemperature" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>
@@ -2272,13 +2315,22 @@
         <soap12:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetRawTemperature">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetRawTemperature" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:service name="TurbulenceService">
     <wsdl:port name="TurbulenceServiceSoap" binding="tns:TurbulenceServiceSoap">
-      <soap:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
     <wsdl:port name="TurbulenceServiceSoap12" binding="tns:TurbulenceServiceSoap12">
-      <soap12:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap12:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

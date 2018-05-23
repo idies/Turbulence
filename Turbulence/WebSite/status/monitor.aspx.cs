@@ -484,7 +484,7 @@ namespace Website
                     }
                 }
                 output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "isotropic1024", 0.0f,
-                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
+                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points, null);
 
                 partition_size = 512;
                 server_size = 8;
@@ -498,9 +498,9 @@ namespace Website
                     points[i].z = rnd.Next(4096) * (float)Math.PI * 2.0f / 4096.0f;
                 }
                 output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "isotropic4096", 0.0f,
-                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
+                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points, null);
                 output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "rotstrat4096", 0.0f,
-                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
+                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points, null);
 
                 partition_size = 512;
                 server_size = 8;
@@ -514,7 +514,7 @@ namespace Website
 
                 }
                 output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "bl_zaki", 0.0f,
-                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
+                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points, null);
 
                 // There are only 4 servers for the MHD dataset.
                 // There will be some extra points, but that is OK.
@@ -533,7 +533,7 @@ namespace Website
                     }
                 }
                 output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "mhd1024", 0.0f,
-                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
+                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points, null);
 
                 num_servers = 8;
                 server_size = 134217728;
@@ -550,7 +550,7 @@ namespace Website
                     }
                 }
                 output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "mixing", 4.0f,
-                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
+                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points, null);
 
                 //output = service.NullOp("edu.jhu.pha.turbulence-monitor", points);
 
@@ -569,7 +569,7 @@ namespace Website
                     points[i].z = z.Z * 3.0f * (float)Math.PI / 1536;
                 }
                 output = service.GetVelocity("edu.jhu.pha.turbulence-monitor", "channel", 0.0f,
-                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points);
+                    edu.jhu.pha.turbulence.SpatialInterpolation.None, edu.jhu.pha.turbulence.TemporalInterpolation.None, points, null);
                 pass = true;
             }
             catch (Exception e)

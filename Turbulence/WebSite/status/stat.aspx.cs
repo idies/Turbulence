@@ -19,7 +19,7 @@ using System.Globalization;
 //using Turbulence.TurbLib.DataTypes;
 namespace Website
 {
-    public partial class status_monitor3 : System.Web.UI.Page
+    public partial class status_stat : System.Web.UI.Page
     {
         bool error = false;
         protected int sqlConnectionTimeout = 3;

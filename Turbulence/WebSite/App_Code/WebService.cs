@@ -26,9 +26,9 @@ namespace TurbulenceService
          */
 
         public const bool DEVEL_MODE = false;
-        public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
+        //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
         public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
-        //public const string infodb_string = "turbinfo_test_conn";
+        public const string infodb_string = "turbinfo_test_conn";
         public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
 
         // batch scheduler queue
@@ -4488,6 +4488,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.strat4096:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetRawMagneticField is available only for MHD datasets!"));
@@ -4538,6 +4539,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.strat4096:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetRawVectorPotential is available only for MHD datasets!"));
@@ -4590,6 +4592,7 @@ namespace TurbulenceService
                     tableName = DataInfo.TableNames.isotropic1024fine_pr;
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
+                case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.mixing:
                     tableName = DataInfo.TableNames.pr;
                     break;
@@ -4643,6 +4646,50 @@ namespace TurbulenceService
             {
                 case DataInfo.DataSets.mixing:
                     tableName = DataInfo.TableNames.density;
+                    break;
+                default:
+                    throw new Exception(String.Format("Invalid dataset specified!"));
+            }
+            rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawDensity,
+                (int)TurbulenceOptions.SpatialInterpolation.None,
+                (int)TurbulenceOptions.TemporalInterpolation.None,
+               Xwidth * Ywidth * Zwidth, time, null, null, addr);
+            log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
+
+            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+
+            log.UpdateLogRecord(rowid, database.Bitfield);
+
+            return result;
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetRawTemperature",
+        Description = @"Get a cube of the raw density data with the given width cornered at the specified coordinates for the given time.")]
+        public byte[] GetRawTemperature(string authToken, string dataset, float time,
+            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
+        {
+            AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
+            if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
+            {
+                log.devmode = true;//This makes sure we don't log the monitoring service.
+            }
+            dataset = DataInfo.findDataSet(dataset);
+            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int num_virtual_servers = 1;
+            database.Initialize(dataset_enum, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_enum, time);
+            //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
+            object rowid = null;
+            // we return a cube of data with the specified width
+            // for the scalar pressure field
+            int components = 1;
+            byte[] result = null;
+            DataInfo.TableNames tableName;
+
+            switch (dataset_enum)
+            {
+                case DataInfo.DataSets.strat4096:
+                    tableName = DataInfo.TableNames.th;
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));

@@ -2660,7 +2660,7 @@ namespace TurbulenceService
                     sqlcmds[s] = connections[s].CreateCommand();
                     // quick fix for filedb.  Should filedb be a separate worker?
 
-                    if (dbtype == 1)
+                    if (dbtype == 0)
                     {
                         sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[ExecuteTwoFieldsBoxFilterWorker] @serverName, @dbname, @codedb, @turbinfodb, @turbinfoserver, @field1, @field2 "
                                             + " @workerType, @blobDim, @time, "
@@ -2718,10 +2718,21 @@ namespace TurbulenceService
                     byte[] cutout = new byte[cutoutbytesize];
 
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format(//"DECLARE @blob varbinary(max) " +
-                        "EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, @turbinfodb, @turbinfoserver, "
-                                            + "@dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT",
-                                            codeDatabase[s]);
+
+                    if (dbtype == 0)
+                    {
+                        sqlcmds[s].CommandText = String.Format(//"DECLARE @blob varbinary(max) " +
+                            "EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, " +
+                            "@turbinfodb, @turbinfoserver, @dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT",
+                            codeDatabase[s]);
+                    }
+                    else
+                    {
+                        sqlcmds[s].CommandText = String.Format(
+                            "EXEC [{0}].[dbo].[GetDataFileDBCutout2] @serverName, @dbname, @codedb, " +
+                            "@turbinfodb, @turbinfoserver, @dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT ",
+                            codeDatabase[s]);
+                    }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@database", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
@@ -2766,9 +2777,19 @@ namespace TurbulenceService
                     string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @dbname, @codedb, "
-                                            + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @QueryBox ",
-                                            codeDatabase[s]);
+
+                    if (dbtype == 0)
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @dbname, @codedb, "
+                            + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @QueryBox ",
+                            codeDatabase[s]);
+                    }
+                    else
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @dbname, @codedb, " //TODO: Modify for filedb.
+                            + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @QueryBox ",
+                            codeDatabase[s]);
+                    }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
@@ -2804,9 +2825,20 @@ namespace TurbulenceService
                     string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
                     sqlcmds[s] = connections[s].CreateCommand();
-                    sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedDataCutout] @serverName, @dbname, @codedb, "
-                                            + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @QueryBox ",
-                                            codeDatabase[s]);
+
+                    if (dbtype==0)
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedDataCutout] @serverName, @dbname, @codedb, "
+                            + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @QueryBox ",
+                            codeDatabase[s]);
+                    }
+                    else
+                    {
+                        sqlcmds[s].CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedFileDBDataCutout] @serverName, @dbname, @codedb, "
+                            + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @QueryBox ",
+                            codeDatabase[s]);
+                    }
+                    
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
@@ -3023,7 +3055,7 @@ namespace TurbulenceService
             return GetXYZResults(asyncRes, result);
         }
 
-        
+
 
         //public int ExecuteGetPressure(string dataset, float time,
         //    TurbulenceOptions.SpatialInterpolation spatial,
