@@ -24,7 +24,13 @@ namespace Turbulence.SQLInterface.workers
             TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             SqlConnection conn)
         {
-            if (dataset.Contains("channel"))
+            if (dataset.Contains("channel5200"))
+            {
+                periodicX = true;
+                periodicY = false;
+                periodicZ = true;
+            }
+            else if (dataset.Contains("channel"))
             {
                 periodicX = true;
                 periodicY = false;
@@ -221,7 +227,7 @@ namespace Turbulence.SQLInterface.workers
                     //point.pre_pos.z = point.pos.z + point.vel_inc.z;
 
                     // When tracking, grid->phys correction, subtract grid velocity
-                    if (database.Contains("channel"))
+                    if (database.Contains("channel") && !database.Contains("channel5200"))
                     {
                         point.vel_inc.x = point.vel_inc.x - 0.45f * dt;
                     }
@@ -300,7 +306,7 @@ namespace Turbulence.SQLInterface.workers
                 else
                 {
                     // When tracking, grid->phys correction, subtract grid velocity
-                    if (database.Contains("channel"))
+                    if (database.Contains("channel") && !database.Contains("channel5200"))
                     {
                         point.vel_inc.x = point.vel_inc.x - 0.45f * dt;
                     }
@@ -316,7 +322,7 @@ namespace Turbulence.SQLInterface.workers
                     if (!periodicX && (point.pos.x > setInfo.Dx * (setInfo.GridResolutionX - 1) || point.pos.x < 0))
                     {
                         double temp;
-                        if (database.Contains("channel"))
+                        if (database.Contains("channel") && !database.Contains("channel5200"))
                         {
                             temp = 0.45 * endTime;
                         }
@@ -343,7 +349,7 @@ namespace Turbulence.SQLInterface.workers
                         (database.Contains("bl_zaki") && point.pos.y < 0) || (!database.Contains("bl_zaki") && point.pos.y < grid_points_y[0])))
                     {
                         double temp;
-                        if (database.Contains("channel"))
+                        if (database.Contains("channel") && !database.Contains("channel5200"))
                         {
                             temp = 0.45 * endTime;
                         }
@@ -368,7 +374,7 @@ namespace Turbulence.SQLInterface.workers
                     if (!periodicZ && (point.pos.z > setInfo.Dz * (setInfo.GridResolutionZ - 1) || point.pos.z < 0))
                     {
                         double temp;
-                        if (database.Contains("channel"))
+                        if (database.Contains("channel") && !database.Contains("channel5200"))
                         {
                             temp = 0.45 * endTime;
                         }

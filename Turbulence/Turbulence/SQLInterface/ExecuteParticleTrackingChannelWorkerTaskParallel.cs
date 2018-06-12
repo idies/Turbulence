@@ -644,7 +644,7 @@ public partial class StoredProcedures
     static void GenerateChannelResultRowFinalPosition(SqlDataRecord record, SQLUtility.TrackingInputRequest temp_point, float endTime, string database)
     {
         record.SetInt32(0, temp_point.request);
-        if (database.Contains("channel"))
+        if (database.Contains("channel") && !database.Contains("channel5200"))
         {
             record.SetFloat(1, temp_point.pos.x + 0.45f * endTime); // PJ 2015... add shift at end back to physical location
         }

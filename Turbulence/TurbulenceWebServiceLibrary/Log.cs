@@ -134,13 +134,20 @@ namespace TurbulenceService
                 //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg1);
 
                 // If there is no proxy, get the standard remote address
-                if (ipaddr == null || ipaddr.ToLower() == "unknown")
+                if (ipaddr == "" || ipaddr == null || ipaddr.ToLower() == "unknown")
                     ipaddr = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
             }
 
             //string msg = "ip: " + ipaddr + System.Environment.NewLine;
             //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
-            addr = IPAddress.Parse(ipaddr);
+            try
+            {
+                addr = IPAddress.Parse(ipaddr);
+            }
+            catch
+            {
+                addr = new IPAddress(0);
+            }
 
             //String cString = ConfigurationManager.ConnectionStrings[logdb].ConnectionString;
             String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",

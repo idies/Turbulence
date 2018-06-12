@@ -28,7 +28,11 @@ namespace Turbulence.TurbLib
         public void GetGridPointsFromDB(SqlConnection conn, string dataset)
         {
             SqlCommand GetGridPointsCommand = null;
-            if (dataset.Contains("channel")) //this should be Dataset Name or Production Dataset Name
+            if (dataset.Contains("channel5200"))
+            {
+                GetGridPointsCommand = new SqlCommand(String.Format("SELECT cell_index, value FROM channel5200_grid_points_y ORDER BY cell_index"), conn);
+            }
+            else if (dataset.Contains("channel")) //this should be Dataset Name or Production Dataset Name
             {
                 GetGridPointsCommand = new SqlCommand(String.Format("SELECT cell_index, value FROM grid_points_y ORDER BY cell_index"), conn);
             }

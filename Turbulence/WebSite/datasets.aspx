@@ -52,6 +52,10 @@
 					<p>
 						<img src="images/transition_bl.png" height="100" width="100" />
 					</p>
+					<br />
+					<p>
+						<img src="images/channel5200.png" height="100" width="100" />
+					</p>
 				</div>
 				<div id="centercolumn">
 
@@ -83,7 +87,7 @@
 					<p style="margin-left: 25px;">
 						Direct numerical simulation (DNS) of channel flow turbulence in a domain of size 8&pi; &times; 2  &times; 3&pi;, 
 						using 2048 &times; 512 &times; 1536 nodes. 
-						The full time evolution is available, over a flow-through time across across the 8&pi channel
+						The full time evolution is available, over a flow-through time across across the 8&pi; channel
 					</p>
 					<br />
 					<br />
@@ -109,7 +113,8 @@
 						<a href="Rotstrat4096.aspx">6. Rotating stratified turbulence dataset on 4096<sup>3</sup> Grid:</a>
 					</p>
 					<p style="margin-left: 25px;">
-						Direct numerical simulation (DNS) of rotating stratified turbulence using 4096<sup>3</sup> nodes. A total of 5 snapshots are available.
+						Direct numerical simulation (DNS) of rotating stratified turbulence using 4096<sup>3</sup> nodes. 
+						A total of 5 snapshots are available.
 					</p>
 					<br />
 					<br />
@@ -117,7 +122,19 @@
 						<a href="Transition_bl.aspx">7. Transitional boundary layer:</a>
 					</p>
 					<p style="margin-left: 25px;">
-						Direct numerical simulation (DNS) of a transitional boundary layer using a finite volume DNS code. Data are stored on 3320 &times; 224 &times; 2048 grid points. The full time evolution is available, over about 1 flow-through time across the length of simulation domain.
+						Direct numerical simulation (DNS) of a transitional boundary layer using a finite volume DNS code. 
+						Data are stored on 3320 &times; 224 &times; 2048 grid points. 
+						The full time evolution is available, over about 1 flow-through time across the length of simulation domain.
+					</p>
+					<br />
+					<br />
+					<p align="left" class="style20">
+						<a href="Channel5200.aspx">8. Channel flow with Re&tau;=5200:</a>
+					</p>
+					<p style="margin-left: 25px;">
+						Direct numerical simulation (DNS) of channel flow turbulence in a domain of size 8&pi; &times; 2  &times; 3&pi;, 
+						using 10240 &times; 1536 &times; 7680 nodes. 
+						A total of 11 snapshots are available.
 					</p>
 					<%--<br></br><br></br>--%>
 				</div>

@@ -41,7 +41,13 @@ namespace Turbulence.SQLInterface.workers
             this.setInfo = setInfo;
             this.spatialInterp = spatialInterp;
 
-            if (dataset.Contains("channel"))
+            if (dataset.Contains("channel5200"))
+            {
+                periodicX = true;
+                periodicY = false;
+                periodicZ = true;
+            }
+            else if (dataset.Contains("channel"))
             {
                 periodicX = true;
                 periodicY = false;
@@ -60,7 +66,13 @@ namespace Turbulence.SQLInterface.workers
                 //this.kernelSizeY = 6;
                 this.FdOrder = 4;
                 //this.FdOrderY = 5;
-                if (dataset.Contains("channel"))
+                if (dataset.Contains("channel5200"))
+                {
+                    diff_matrix_x = GetUniformDiffMatrix(conn, "channel5200_diff_matrix_x_r2_fd4");
+                    diff_matrix_y = GetNonuniformWeights(conn, "channel5200_diff_matrix_y_r2_fd4");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "channel5200_diff_matrix_z_r2_fd4");
+                }
+                else if (dataset.Contains("channel"))
                 {
                     diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd4");
                     diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd4");
@@ -79,7 +91,13 @@ namespace Turbulence.SQLInterface.workers
                 //this.kernelSizeY = 8;
                 this.FdOrder = 6;
                 //this.FdOrderY = 7;
-                if (dataset.Contains("channel"))
+                if (dataset.Contains("channel5200"))
+                {
+                    diff_matrix_x = GetUniformDiffMatrix(conn, "channel5200_diff_matrix_x_r2_fd6");
+                    diff_matrix_y = GetNonuniformWeights(conn, "channel5200_diff_matrix_y_r2_fd6");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "channel5200_diff_matrix_z_r2_fd6");
+                }
+                else if (dataset.Contains("channel"))
                 {
                     diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd6");
                     diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd6");
@@ -98,7 +116,13 @@ namespace Turbulence.SQLInterface.workers
                 //this.kernelSizeY = 10;
                 this.FdOrder = 8;
                 //this.FdOrderY = 9;
-                if (dataset.Contains("channel"))
+                if (dataset.Contains("channel5200"))
+                {
+                    diff_matrix_x = GetUniformDiffMatrix(conn, "channel5200_diff_matrix_x_r2_fd8");
+                    diff_matrix_y = GetNonuniformWeights(conn, "channel5200_diff_matrix_y_r2_fd8");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "channel5200_diff_matrix_z_r2_fd8");
+                }
+                else if (dataset.Contains("channel"))
                 {
                     diff_matrix_x = GetUniformDiffMatrix(conn, "diff_matrix_x_r2_fd8");
                     diff_matrix_y = GetNonuniformWeights(conn, "diff_matrix_y_r2_fd8");
@@ -120,7 +144,17 @@ namespace Turbulence.SQLInterface.workers
                 this.FdOrder = 4;
                 //this.FdOrderY = 5;
                 this.LagIntOrder = 4;
-                if (dataset.Contains("channel"))
+                if (dataset.Contains("channel5200"))
+                {
+                    weights_x = GetUniformWeights(conn, "channel5200_barycentric_weights_x_4");
+                    weights_y = GetNonuniformWeights(conn, "channel5200_barycentric_weights_y_4");
+                    weights_z = GetUniformWeights(conn, "channel5200_barycentric_weights_z_4");
+
+                    diff_matrix_x = GetUniformDiffMatrix(conn, "channel5200_diff_matrix_x_r2_fd4");
+                    diff_matrix_y = GetNonuniformWeights(conn, "channel5200_diff_matrix_y_r2_fd4");
+                    diff_matrix_z = GetUniformDiffMatrix(conn, "channel5200_diff_matrix_z_r2_fd4");
+                }
+                else if (dataset.Contains("channel"))
                 {
                     weights_x = GetUniformWeights(conn, "barycentric_weights_x_4");
                     weights_y = GetNonuniformWeights(conn, "barycentric_weights_y_4");

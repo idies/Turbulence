@@ -90,9 +90,6 @@ namespace Website
             }
             if (dataset.SelectedValue.Equals("channel5200"))
             {
-                //  timerange.Text = "0.0 - 0.0";
-                // EndTimeRange.Text = "0.0 - 0.0";
-                //DeltaTRange.Text = "DB dt = .0";
                 TimeRow.Visible = false;
                 EndTimeRow.Visible = false;
                 DeltaTRow.Visible = false;

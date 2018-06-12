@@ -110,6 +110,7 @@ namespace TurbulenceService
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelVelocity;
                     GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -210,6 +211,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetMagneticField is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
@@ -250,6 +252,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetVectorPotential is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
@@ -303,6 +306,7 @@ namespace TurbulenceService
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelPressure;
                     GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -477,6 +481,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.mhd1024:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.isotropic4096: //check this
                 case DataInfo.DataSets.bl_zaki:
                     Vector3[] velocities = GetVelocity(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points1, addr);
@@ -632,6 +637,7 @@ namespace TurbulenceService
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelVelocityGradient;
                     GetVectorGradient(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -730,6 +736,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetMagneticField is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
@@ -770,6 +777,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetVectorPotential is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
@@ -823,6 +831,7 @@ namespace TurbulenceService
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelPressureGradient;
                     GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -1058,6 +1067,7 @@ namespace TurbulenceService
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelVelocityHessian;
                     GetVectorHessian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -1156,6 +1166,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetMagnetic is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
@@ -1196,6 +1207,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetVectorPotential is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
@@ -1250,6 +1262,7 @@ namespace TurbulenceService
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelPressureHessian;
                     GetScalarHessian(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -1506,6 +1519,7 @@ namespace TurbulenceService
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelVelocityLaplacian;
                     GetVectorLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -1604,6 +1618,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetMagneticField is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
@@ -1644,6 +1659,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetVectorPotential is available only for MHD datasets!"));
                 case DataInfo.DataSets.mhd1024:
@@ -1832,6 +1848,7 @@ namespace TurbulenceService
                     }
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     switch (field)
                     {
@@ -2037,6 +2054,7 @@ namespace TurbulenceService
                         time, spatialInterpolation, temporalInterpolation, points, vel_grad, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelVelocityGradient;
                     GetVectorGradient(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, vel_grad, ref rowid, addr);
@@ -4352,6 +4370,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception("Batching only supported for MHD");
 
@@ -4441,6 +4460,7 @@ namespace TurbulenceService
                 //    components = 2;
                 //    break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     tableName = DataInfo.TableNames.vel;
                     break;
@@ -4490,6 +4510,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.strat4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetRawMagneticField is available only for MHD datasets!"));
 
@@ -4541,6 +4562,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic4096:
                 case DataInfo.DataSets.strat4096:
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     throw new Exception(String.Format("GetRawVectorPotential is available only for MHD datasets!"));
 
@@ -4600,6 +4622,7 @@ namespace TurbulenceService
                     tableName = DataInfo.TableNames.pressure08;
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
                     tableName = DataInfo.TableNames.pr;
                     break;

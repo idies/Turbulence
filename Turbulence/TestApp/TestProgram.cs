@@ -58,7 +58,7 @@ namespace TestApp
             try
             {
                 DateTime beginTime, stopTime;
-                int pointsize = 1 * 2;
+                int pointsize = 1 * 1;
                 Point3[] points = new Point3[pointsize];
                 turbulence.Point3[] points1 = new turbulence.Point3[pointsize];
                 //Point3[] positions = new Point3[pointsize];
@@ -79,16 +79,16 @@ namespace TestApp
                 float time = 0f;
                 service.Timeout = -1;
 
-                points[0].x = 30.218496172581567f;
-                points[0].y = 0f;
-                points[0].z = 10f;
-                points[1].x = 30.218496172581567f;
-                points[1].y = 0.1f;
-                points[1].z = 10f;
+                points[0].x = 2.51f;
+                points[0].y = 0.488f;
+                points[0].z = 0.627f;
+                //points[1].x = 0.1f;
+                //points[1].y = -0.99f;
+                //points[1].z = 0.1f;
 
                 beginTime = DateTime.Now;
                 Console.WriteLine("Calling GetVelocity");
-                Vector3[] result = testp.GetVelocity(authToken, "bl_zaki", time,
+                Vector3[] result = testp.GetVelocity(authToken, "channel5200", time,
                     TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
                 stopTime = DateTime.Now;
                 Console.WriteLine("Execution time: {0}", stopTime - beginTime);
@@ -196,6 +196,7 @@ namespace TestApp
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
                 case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
                     worker = (int)Worker.Workers.GetChannelVelocity;
                     GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);

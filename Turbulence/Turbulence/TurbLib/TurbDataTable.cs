@@ -452,6 +452,12 @@ namespace Turbulence.TurbLib
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
                         0.0013f, 132005, 152015, 5, 132010, 0);
                 }
+                else if (dbName.Contains("channel5200db"))
+                {
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
+                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
+                        1.0f, 0, 10, 1, 0, 2);
+                }
                 else if (dbName.Contains("bl_zaki"))
                 {
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
@@ -530,6 +536,12 @@ namespace Turbulence.TurbLib
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
                         0.0013f, 132005, 152015, 5, 132010, 0);
+                }
+                else if (dbName.Contains("channel5200db"))
+                {
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
+                        tableName, blobDim, 0, 1, new string[] { "P" },
+                        1.0f, 0, 10, 1, 0, 2);
                 }
                 else if (dbName.Contains("bl_zaki"))
                 {
@@ -772,7 +784,13 @@ namespace Turbulence.TurbLib
             : base(serverName, dbName, serverinfo, dataName, tableName, blobDim, edgeRegion, components, dataDescription,
             dt, timestart, timeend, timeinc, timeoff, dbtype)
         {
-            if (dbName.Contains("channel"))
+            if (dbName.Contains("channel5200"))
+            {
+                this.gridResolution = new int[] { 7680, 1536, 10240 };
+                this.dx = (8.0 * Math.PI) / (double)gridResolution[2];
+                this.dz = (3.0 * Math.PI) / (double)gridResolution[0];
+            }
+            else if (dbName.Contains("channel"))
             {
                 this.gridResolution = new int[] { 1536, 512, 2048 };
                 this.dx = (8.0 * Math.PI) / (double)gridResolution[2];

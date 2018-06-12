@@ -89,13 +89,14 @@ namespace Website
             string turbinfoServerdb = builder.DataSource;
             string turbinfodb = builder.InitialCatalog;
 
-            String cString1 = String.Format("Server={0};Database={1};;Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+            String cString1 = String.Format("Server={0};Database={1};;Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;Connection Timeout=1200",
                 turbinfoServerdb, turbinfodb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
 
             SqlConnection conn = new SqlConnection(cString1);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
 
+            cmd.CommandTimeout = 1200;
             cmd.CommandText = String.Format(@"
 insert into {0}..usage_summary 
 select max(rowid) as rowid, CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))) as dates,
@@ -166,15 +167,16 @@ order by rowid", turbinfodb);
                 ordertext = "dates desc";
             }
 
+            cmd.CommandTimeout = 30;
             cmd.CommandText = String.Format(@"
 select sum(total) as total, sum(mhd) as mhd, sum(iso1024coarse) as iso1024coarse, sum(iso1024fine) as iso1024fine, 
 	sum(channel) as channel, sum(mixing) as mixing, sum(iso4096) as iso4096, sum(rotstrat4096) as rotstrat4096, 
-	sum(bl_zaki) as bl_zaki, sum(other_dataset) as other_dataset, sum(Field) as Field, sum(Gradient) as Gradient, 
+	sum(bl_zaki) as bl_zaki, sum(channel5200) as channel5200, sum(other_dataset) as other_dataset, sum(Field) as Field, sum(Gradient) as Gradient, 
 	sum(Hessian) as Hessian, sum(Laplacian) as Laplacian, sum(Forcing) as Forcing, sum(Filter) as Filter, 
 	sum(Particle) as Particle, sum(Cutout) as Cutout, sum(Threshold) as Threshold, sum(other_op) as other_op, sum(incomplete) as incomplete,
 	{1}
 from
-(select usage_summary.dates, total, mhd, iso1024coarse, iso1024fine, channel, mixing, iso4096, rotstrat4096, bl_zaki, other_dataset, 
+(select usage_summary.dates, total, mhd, iso1024coarse, iso1024fine, channel, mixing, iso4096, rotstrat4096, bl_zaki, channel5200, other_dataset, 
 		Field, Gradient, Hessian, Laplacian, Forcing, Filter, Particle, Cutout, Threshold, other_op, incomplete
 from {0}..usage_summary
 left join
@@ -223,9 +225,14 @@ from {0}..usage_summary
 where total_exectime is not null and datasetID=12 and dates>=@startdates and dates<=@enddates
 group by usage_summary.dates) as j12 on j12.dates=usage_summary.dates
 left join
+(select dates, sum({4}) as channel5200
+from {0}..usage_summary
+where total_exectime is not null and datasetID=13 and dates>=@startdates and dates<=@enddates
+group by usage_summary.dates) as j13 on j13.dates=usage_summary.dates
+left join
 (select dates, sum({4}) as other_dataset
 from {0}..usage_summary
-where total_exectime is not null and (datasetID not in (3, 4, 5, 6, 7, 10, 11, 12)) and dates>=@startdates and dates<=@enddates
+where total_exectime is not null and (datasetID not in (3, 4, 5, 6, 7, 10, 11, 12, 13)) and dates>=@startdates and dates<=@enddates
 group by usage_summary.dates) as jo on jo.dates=usage_summary.dates
 
 left join
@@ -286,7 +293,7 @@ where total_exectime is null and dates>=@startdates and dates<=@enddates
 group by usage_summary.dates) as jnull on jnull.dates=usage_summary.dates
 
 where usage_summary.dates>=@startdates and usage_summary.dates<=@enddates
-group by usage_summary.dates, total, mhd, iso1024coarse, iso1024fine, channel, mixing, iso4096, rotstrat4096, bl_zaki, other_dataset, 
+group by usage_summary.dates, total, mhd, iso1024coarse, iso1024fine, channel, mixing, iso4096, rotstrat4096, bl_zaki, channel5200, other_dataset, 
 		Field, Gradient, Hessian, Laplacian, Forcing, filter, Particle, Cutout, Threshold, other_op, incomplete) as t
 
 group by {2}
@@ -306,6 +313,7 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
             List<long> iso4096 = new List<long>(24);
             List<long> rot4096 = new List<long>(24);
             List<long> bl_zaki = new List<long>(24);
+            List<long> channel5200 = new List<long>(24);
             List<long> other_dataset = new List<long>(24);
             List<long> field = new List<long>(24);
             List<long> gradient = new List<long>(24);
@@ -330,6 +338,7 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
             dt.Columns.Add("iso4096");
             dt.Columns.Add("rotstrat4096");
             dt.Columns.Add("transition_bl");
+            dt.Columns.Add("channel5200");
             dt.Columns.Add("other datasets");
             dt.Columns.Add("Simulation field");
             dt.Columns.Add("Gradient");
@@ -351,16 +360,16 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
                 {
                     if (queryunit.Text.Equals("month"))
                     {
-                        dates.Add(reader.GetSqlInt32(21).Value.ToString() + "-" + reader.GetSqlInt32(22).Value.ToString());
+                        dates.Add(reader.GetSqlInt32(22).Value.ToString() + "-" + reader.GetSqlInt32(23).Value.ToString());
 
                     }
                     else if (queryunit.Text.Equals("week"))
                     {
-                        dates.Add(reader.GetSqlInt32(21).Value.ToString() + "-" + reader.GetSqlInt32(22).Value.ToString());
+                        dates.Add(reader.GetSqlInt32(22).Value.ToString() + "-" + reader.GetSqlInt32(23).Value.ToString());
                     }
                     else if (queryunit.Text.Equals("day"))
                     {
-                        DateTime temp = reader.GetDateTime(21);
+                        DateTime temp = reader.GetDateTime(22);
                         dates.Add(temp.ToString("yyyy-MM-dd"));
                     }
 
@@ -401,52 +410,56 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
                     else
                         bl_zaki.Add(0);
                     if (!reader.IsDBNull(9))
-                        other_dataset.Add(reader.GetSqlInt64(9).Value);
+                        channel5200.Add(reader.GetSqlInt64(9).Value);
+                    else
+                        channel5200.Add(0);
+                    if (!reader.IsDBNull(10))
+                        other_dataset.Add(reader.GetSqlInt64(10).Value);
                     else
                         other_dataset.Add(0);
 
-                    if (!reader.IsDBNull(10))
-                        field.Add(reader.GetSqlInt64(10).Value);
+                    if (!reader.IsDBNull(11))
+                        field.Add(reader.GetSqlInt64(11).Value);
                     else
                         field.Add(0);
-                    if (!reader.IsDBNull(11))
-                        gradient.Add(reader.GetSqlInt64(11).Value);
+                    if (!reader.IsDBNull(12))
+                        gradient.Add(reader.GetSqlInt64(12).Value);
                     else
                         gradient.Add(0);
-                    if (!reader.IsDBNull(12))
-                        hessian.Add(reader.GetSqlInt64(12).Value);
+                    if (!reader.IsDBNull(13))
+                        hessian.Add(reader.GetSqlInt64(13).Value);
                     else
                         hessian.Add(0);
-                    if (!reader.IsDBNull(13))
-                        lapacian.Add(reader.GetSqlInt64(13).Value);
+                    if (!reader.IsDBNull(14))
+                        lapacian.Add(reader.GetSqlInt64(14).Value);
                     else
                         lapacian.Add(0);
-                    if (!reader.IsDBNull(14))
-                        forcing.Add(reader.GetSqlInt64(14).Value);
+                    if (!reader.IsDBNull(15))
+                        forcing.Add(reader.GetSqlInt64(15).Value);
                     else
                         forcing.Add(0);
-                    if (!reader.IsDBNull(15))
-                        filter.Add(reader.GetSqlInt64(15).Value);
+                    if (!reader.IsDBNull(16))
+                        filter.Add(reader.GetSqlInt64(16).Value);
                     else
                         filter.Add(0);
-                    if (!reader.IsDBNull(16))
-                        particle.Add(reader.GetSqlInt64(16).Value);
+                    if (!reader.IsDBNull(17))
+                        particle.Add(reader.GetSqlInt64(17).Value);
                     else
                         particle.Add(0);
-                    if (!reader.IsDBNull(17))
-                        cutout.Add(reader.GetSqlInt64(17).Value);
+                    if (!reader.IsDBNull(18))
+                        cutout.Add(reader.GetSqlInt64(18).Value);
                     else
                         cutout.Add(0);
-                    if (!reader.IsDBNull(18))
-                        threshold.Add(reader.GetSqlInt64(18).Value);
+                    if (!reader.IsDBNull(19))
+                        threshold.Add(reader.GetSqlInt64(19).Value);
                     else
                         threshold.Add(0);
-                    if (!reader.IsDBNull(19))
-                        other_op.Add(reader.GetSqlInt64(19).Value);
+                    if (!reader.IsDBNull(20))
+                        other_op.Add(reader.GetSqlInt64(20).Value);
                     else
                         other_op.Add(0);
-                    if (!reader.IsDBNull(20))
-                        incomplete.Add(reader.GetSqlInt64(20).Value);
+                    if (!reader.IsDBNull(21))
+                        incomplete.Add(reader.GetSqlInt64(21).Value);
                     else
                         incomplete.Add(0);
                     i++;
@@ -464,14 +477,14 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
             if (easyreading.Text.Equals("False"))
             {
                 dt.Rows.Add("Total", total.Sum(), mhd.Sum(), iso1024coarse.Sum(), iso1024fine.Sum(),
-                    channel.Sum(), mixing.Sum(), iso4096.Sum(), rot4096.Sum(), bl_zaki.Sum(), other_dataset.Sum(),
+                    channel.Sum(), mixing.Sum(), iso4096.Sum(), rot4096.Sum(), bl_zaki.Sum(), channel5200.Sum(), other_dataset.Sum(),
                     field.Sum(), gradient.Sum(), hessian.Sum(), lapacian.Sum(), forcing.Sum(), filter.Sum(),
                     particle.Sum(), cutout.Sum(), threshold.Sum(), other_op.Sum(), incomplete.Sum());
             }
             else
             {
                 dt.Rows.Add("Total", ToKMB(total.Sum()), ToKMB(mhd.Sum()), ToKMB(iso1024coarse.Sum()), ToKMB(iso1024fine.Sum()),
-                    ToKMB(channel.Sum()), ToKMB(mixing.Sum()), ToKMB(iso4096.Sum()), ToKMB(rot4096.Sum()), ToKMB(bl_zaki.Sum()), ToKMB(other_dataset.Sum()),
+                    ToKMB(channel.Sum()), ToKMB(mixing.Sum()), ToKMB(iso4096.Sum()), ToKMB(rot4096.Sum()), ToKMB(bl_zaki.Sum()), ToKMB(channel5200.Sum()), ToKMB(other_dataset.Sum()),
                     ToKMB(field.Sum()), ToKMB(gradient.Sum()), ToKMB(hessian.Sum()), ToKMB(lapacian.Sum()), ToKMB(forcing.Sum()), ToKMB(filter.Sum()),
                     ToKMB(particle.Sum()), ToKMB(cutout.Sum()), ToKMB(threshold.Sum()), ToKMB(other_op.Sum()), ToKMB(incomplete.Sum()));
             }
@@ -487,14 +500,14 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
                 if (easyreading.Text.Equals("False"))
                 {
                     dt.Rows.Add(dates[j], total[j], mhd[j], iso1024coarse[j], iso1024fine[j],
-                        channel[j], mixing[j], iso4096[j], rot4096[j], bl_zaki[j], other_dataset[j],
+                        channel[j], mixing[j], iso4096[j], rot4096[j], bl_zaki[j], channel5200[j], other_dataset[j],
                         field[j], gradient[j], hessian[j], lapacian[j], forcing[j], filter[j],
                         particle[j], cutout[j], threshold[j], other_op[j], incomplete[j]);
                 }
                 else
                 {
                     dt.Rows.Add(dates[j], ToKMB(total[j]), ToKMB(mhd[j]), ToKMB(iso1024coarse[j]), ToKMB(iso1024fine[j]),
-                        ToKMB(channel[j]), ToKMB(mixing[j]), ToKMB(iso4096[j]), ToKMB(rot4096[j]), ToKMB(bl_zaki[j]), ToKMB(other_dataset[j]),
+                        ToKMB(channel[j]), ToKMB(mixing[j]), ToKMB(iso4096[j]), ToKMB(rot4096[j]), ToKMB(bl_zaki[j]), ToKMB(channel5200[j]), ToKMB(other_dataset[j]),
                         ToKMB(field[j]), ToKMB(gradient[j]), ToKMB(hessian[j]), ToKMB(lapacian[j]), ToKMB(forcing[j]), ToKMB(filter[j]),
                         ToKMB(particle[j]), ToKMB(cutout[j]), ToKMB(threshold[j]), ToKMB(other_op[j]), ToKMB(incomplete[j]));
                 }
@@ -558,7 +571,7 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
             string turbinfoServerdb = builder.DataSource;
             string turbinfodb = builder.InitialCatalog;
 
-            String cString1 = String.Format("Server={0};Database={1};;Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+            String cString1 = String.Format("Server={0};Database={1};;Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
                 turbinfoServerdb, turbinfodb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
 
             SqlConnection conn = new SqlConnection(cString1);
@@ -609,6 +622,7 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
             }
 
             string tempTableName = "##" + Guid.NewGuid().ToString().Replace("-", "");
+            cmd.CommandTimeout = 30;
             cmd.CommandText = String.Format(@"
 select sum({5}) as {5}, {6}, {1}
 into tempdb..{4}

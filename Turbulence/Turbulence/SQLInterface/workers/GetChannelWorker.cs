@@ -28,7 +28,13 @@ namespace Turbulence.SQLInterface.workers
             this.setInfo = setInfo;
             this.spatialInterp = spatialInterp;
 
-            if (dataset.Contains("channel"))
+            if (dataset.Contains("channel5200"))
+            {
+                periodicX = true;
+                periodicY = false;
+                periodicZ = true;
+            }
+            else if (dataset.Contains("channel"))
             {
                 periodicX = true;
                 periodicY = false;
@@ -68,7 +74,16 @@ namespace Turbulence.SQLInterface.workers
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Lag4)
             {
                 this.kernelSize = 4;
-                if (dataset.Contains("channel"))
+                if (dataset.Contains("channel5200"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "channel5200_barycentric_weights_x_4");
+                    weights_y.GetWeightsFromDB(conn, "channel5200_barycentric_weights_y_4");
+                    weights_z.GetWeightsFromDB(conn, "channel5200_barycentric_weights_z_4");
+                    //SetWeightsX(dataset, conn, "barycentric_weights_x_4");
+                    //SetWeightsY(dataset, conn, "barycentric_weights_y_4");
+                    //SetWeightsZ(dataset, conn, "barycentric_weights_z_4");
+                }
+                else if (dataset.Contains("channel"))
                 {
                     weights_x.GetWeightsFromDB(conn, "barycentric_weights_x_4");
                     weights_y.GetWeightsFromDB(conn, "barycentric_weights_y_4");
@@ -96,7 +111,13 @@ namespace Turbulence.SQLInterface.workers
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Lag6)
             {
                 this.kernelSize = 6;
-                if (dataset.Contains("channel"))
+                if (dataset.Contains("channel5200"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "channel5200_barycentric_weights_x_6");
+                    weights_y.GetWeightsFromDB(conn, "channel5200_barycentric_weights_y_6");
+                    weights_z.GetWeightsFromDB(conn, "channel5200_barycentric_weights_z_6");
+                }
+                else if (dataset.Contains("channel"))
                 {
                     weights_x.GetWeightsFromDB(conn, "barycentric_weights_x_6");
                     weights_y.GetWeightsFromDB(conn, "barycentric_weights_y_6");
@@ -112,7 +133,13 @@ namespace Turbulence.SQLInterface.workers
             else if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Lag8)
             {
                 this.kernelSize = 8;
-                if (dataset.Contains("channel"))
+                if (dataset.Contains("channel5200"))
+                {
+                    weights_x.GetWeightsFromDB(conn, "channel5200_barycentric_weights_x_8");
+                    weights_y.GetWeightsFromDB(conn, "channel5200_barycentric_weights_y_8");
+                    weights_z.GetWeightsFromDB(conn, "channel5200_barycentric_weights_z_8");
+                }
+                else if (dataset.Contains("channel"))
                 {
                     weights_x.GetWeightsFromDB(conn, "barycentric_weights_x_8");
                     weights_y.GetWeightsFromDB(conn, "barycentric_weights_y_8");
@@ -141,7 +168,12 @@ namespace Turbulence.SQLInterface.workers
 
         private void SetWeightsX(string dataset, SqlConnection conn, string tableName)
         {
-            if (dataset.Contains("channel"))
+            if (dataset.Contains("channel5200"))
+            {
+                weights_x = new UniformBarycentricWeights();
+                weights_x.GetWeightsFromDB(conn, tableName);
+            }
+            else if (dataset.Contains("channel"))
             {
                 weights_x = new UniformBarycentricWeights();
                 weights_x.GetWeightsFromDB(conn, tableName);

@@ -29,7 +29,11 @@ namespace Turbulence.SQLInterface.workers
                 switch (spatialInterp)
                 {
                     case TurbulenceOptions.SpatialInterpolation.M1Q4:
-                        if (dataset.Contains("channel"))
+                        if (dataset.Contains("channel5200"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("channel5200_spline_coeff_y_m1q4_d{0}", i));
+                        }
+                        else if (dataset.Contains("channel"))
                         {
                             weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m1q4_d{0}", i));
                         }
@@ -39,7 +43,11 @@ namespace Turbulence.SQLInterface.workers
                         }
                         break;
                     case TurbulenceOptions.SpatialInterpolation.M2Q8:
-                        if (dataset.Contains("channel"))
+                        if (dataset.Contains("channel5200"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("channel5200_spline_coeff_y_m2q8_d{0}", i));
+                        }
+                        else if (dataset.Contains("channel"))
                         {
                             weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m2q8_d{0}", i));
                         }
@@ -49,7 +57,11 @@ namespace Turbulence.SQLInterface.workers
                         }
                         break;
                     case TurbulenceOptions.SpatialInterpolation.M2Q14:
-                        if (dataset.Contains("channel"))
+                        if (dataset.Contains("channel5200"))
+                        {
+                            weights_y[i].GetWeightsFromDB(conn, String.Format("channel5200_spline_coeff_y_m2q14_d{0}", i));
+                        }
+                        else if (dataset.Contains("channel"))
                         {
                             weights_y[i].GetWeightsFromDB(conn, String.Format("spline_coeff_y_m2q14_d{0}", i));
                         }
