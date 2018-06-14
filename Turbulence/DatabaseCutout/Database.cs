@@ -173,6 +173,32 @@ public class Database
                     throw new Exception("Servers not initialized!");
                 }
                 break;
+            case DataInfo.DataSets.channel5200:
+                this.gridResolution = new int[] { 7680, 1536, 10240 };
+                this.dx = (8.0 * Math.PI) / (double)this.GridResolutionX;
+                this.dz = (3.0 * Math.PI) / (double)this.GridResolutionZ;
+                gridPointsY = new GridPoints(this.GridResolutionY);
+                channel_grid = true;
+                // We need to retrieve the y grid values from the database.
+                // TODO: Maybe randomize the node that we query so that we don't always hit the same server...
+                //String cString = ConfigurationManager.ConnectionStrings["dsp085"].ConnectionString;
+                if (servers.Count > 0)
+                {
+                    string server_name = this.servers[0];
+                    if (server_name.Contains("_"))
+                        server_name = server_name.Remove(server_name.IndexOf("_"));
+                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;",
+                        server_name, codeDatabase[0]);
+                    SqlConnection sqlConn = new SqlConnection(cString);
+                    sqlConn.Open();
+                    gridPointsY.GetGridPointsFromDB(sqlConn, dataset.ToString());
+                    sqlConn.Close();
+                }
+                else
+                {
+                    throw new Exception("Servers not initialized!");
+                }
+                break;
             case DataInfo.DataSets.bl_zaki:
                 this.gridResolution = new int[] { 2048, 224, 3320 };
                 this.dx = 0.292210466240511;
@@ -214,6 +240,7 @@ public class Database
             case DataInfo.DataSets.isotropic1024coarse:
             case DataInfo.DataSets.mhd1024:
             case DataInfo.DataSets.channel:
+            case DataInfo.DataSets.channel5200:
             case DataInfo.DataSets.mixing:
             case DataInfo.DataSets.isotropic4096:
             case DataInfo.DataSets.strat4096:
@@ -255,6 +282,10 @@ public class Database
                 this.Dt = 0.0013F;
                 this.timeInc = 5;
                 this.timeOff = 132010;
+                break;
+            case DataInfo.DataSets.channel5200:
+                this.Dt = 1.0F;
+                this.timeInc = 1;
                 break;
             case DataInfo.DataSets.mixing:
                 this.Dt = 0.04F;
@@ -651,7 +682,7 @@ public class Database
             //TODO: what is this value?
             else if (GridResolutionX == 4096)
             {
-                bit = (int)(sfc / (long)(1 << 27));
+                bit = (int)(sfc / (long)(1 << 24));
             }
             else
             {
@@ -660,10 +691,20 @@ public class Database
         }
         else
         {
-            // The channel flow grid is divided into regions of 64x64x96.
-            int num_x_regions = GridResolutionX / 64;
-            int num_y_regions = GridResolutionY / 64;
-            bit = sfc.X / 64 + sfc.Y / 64 * num_x_regions + sfc.Z / 96 * num_x_regions * num_y_regions;
+            if (databases[0].Contains("channel5200"))
+            {
+                // The channel5200 flow grid is divided into regions of 640x96x480.
+                int num_x_regions = GridResolutionX / 640;
+                int num_y_regions = GridResolutionY / 96;
+                bit = sfc.X / 640 + sfc.Y / 96 * num_x_regions + sfc.Z / 480 * num_x_regions * num_y_regions;
+            }
+            else
+            {
+                // The channel flow grid is divided into regions of 64x64x96.
+                int num_x_regions = GridResolutionX / 64;
+                int num_y_regions = GridResolutionY / 64;
+                bit = sfc.X / 64 + sfc.Y / 64 * num_x_regions + sfc.Z / 96 * num_x_regions * num_y_regions;
+            }
         }
         int off = bit / 8;
         bitfield[off] |= (byte)(1 << (bit % 8));

@@ -6,13 +6,14 @@ using Microsoft.SqlServer.Server;
 using Turbulence.TurbLib;
 using Turbulence.SQLInterface;
 using System.Collections.Generic;
-using System.Collections;
-using System.Threading;
+//using System.Collections;
+//using System.Threading;
 //using System.Diagnostics;
 //using System.Threading.Tasks;
 //
 /* Added for FileDB*/
 using System.IO;
+//using System.IO.MemoryMappedFiles;
 using System.Text;
 public partial class StoredProcedures
 {
@@ -171,7 +172,7 @@ public partial class StoredProcedures
 
         //Stopwatch stopWatch = new Stopwatch();
         //Stopwatch stopWatch1 = new Stopwatch();
-        if (zlist.Count > 4096)
+        if (zlist.Count > 4096 && filedb.Length< (2147483648- 0))
         {
             //stopWatch.Start();
             z_rawdata = File.ReadAllBytes(pathSource); /*Read it all in at once*/
@@ -221,10 +222,10 @@ public partial class StoredProcedures
             }
             else
             {
-                //stopWatch1.Start();
+                //stopWatch.Start();
                 filedb.Seek(offset, SeekOrigin.Begin);
                 int bytes = filedb.Read(rawdata, 0, table.BlobByteSize);
-                //stopWatch1.Stop();
+                //stopWatch.Stop();
             }
 
             x = new Morton3D(thisBlob).X;
@@ -259,10 +260,16 @@ public partial class StoredProcedures
                 }
             }
         }
+        filedb.Close();
+
         //file.WriteLine("Data processing 1:");
         //file.WriteLine(stopWatch.Elapsed);
         //file.WriteLine("Data processing 2:");
         //file.WriteLine(stopWatch1.Elapsed);
+        //if (cutout==cutout1)
+        //    file.WriteLine("True");
+        //else
+        //    file.WriteLine("False");
         //file.WriteLine("Data processing 3:");
         //file.WriteLine(DateTime.Now - start);
         //file.Close();

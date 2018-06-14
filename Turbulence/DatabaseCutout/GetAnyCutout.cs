@@ -34,8 +34,8 @@ public partial class StoredProcedures
         int time_step)
     {
         const bool DEVEL_MODE = false;
-        const string infodb = "turbinfo";
-        //const string infodb = "turbinfo_test";
+        //const string infodb = "turbinfo";
+        const string infodb = "turbinfo_test";
 
         const int MAX_READ_LENGTH = 256000000;
         int atomDim = 8;

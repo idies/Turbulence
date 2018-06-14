@@ -4,11 +4,11 @@ GO
 DECLARE	@return_value Int
 
 EXEC	@return_value = [dbo].[GetAnyCutout]
-		@dataset = N'bl_zaki',
-		@fields = N'p',
+		@dataset = N'channel5200',
+		@fields = N'u',
 		@authToken = N'edu.jhu.pha.turbulence-dev',
 		@ipaddr = N'0.0.0.0',
-		@tlow = 30,
+		@tlow = 0,
 		@xlow = 0,
 		@ylow = 0,
 		@zlow = 0,
@@ -17,9 +17,9 @@ EXEC	@return_value = [dbo].[GetAnyCutout]
 		@z_step = 1,
 		@t_step = 1,
 		@twidth = 1,
-		@xwidth = 10,
-		@ywidth = 10,
-		@zwidth = 10,
+		@xwidth = 700,
+		@ywidth = 500,
+		@zwidth = 500,
 		@filter_width = 1,
 		@time_step = 1
 

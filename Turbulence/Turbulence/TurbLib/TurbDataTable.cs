@@ -446,17 +446,17 @@ namespace Turbulence.TurbLib
             }
             else if (tableName.Equals("vel") || tableName.Contains("vel_"))
             {
-                if (dbName.Contains("channeldb"))
-                {
-                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
-                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0013f, 132005, 152015, 5, 132010, 0);
-                }
-                else if (dbName.Contains("channel5200db"))
+                if (dbName.Contains("channel5200"))
                 {
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
                         1.0f, 0, 10, 1, 0, 2);
+                }
+                else if (dbName.Contains("channeldb"))
+                {
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
+                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
+                        0.0013f, 132005, 152015, 5, 132010, 0);
                 }
                 else if (dbName.Contains("bl_zaki"))
                 {
@@ -531,17 +531,17 @@ namespace Turbulence.TurbLib
             }
             else if (tableName.Equals("pr") || tableName.Contains("pr_"))
             {
-                if (dbName.Contains("channeldb"))
-                {
-                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
-                        tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.0013f, 132005, 152015, 5, 132010, 0);
-                }
-                else if (dbName.Contains("channel5200db"))
+                if (dbName.Contains("channel5200"))
                 {
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
                         1.0f, 0, 10, 1, 0, 2);
+                }
+                else if (dbName.Contains("channel"))
+                {
+                    return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
+                        tableName, blobDim, 0, 1, new string[] { "P" },
+                        0.0013f, 132005, 152015, 5, 132010, 0);
                 }
                 else if (dbName.Contains("bl_zaki"))
                 {

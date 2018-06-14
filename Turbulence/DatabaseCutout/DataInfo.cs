@@ -25,6 +25,7 @@ public class DataInfo
         isotropic4096 = 10,
         strat4096 = 11,
         bl_zaki = 12,
+        channel5200 = 13,
     }
 
     // TODO: This needs to be refactored. We probably don't want to keep track of
@@ -100,6 +101,13 @@ public class DataInfo
                 else
                     throw new Exception("Invalid field specified!");
             case DataSets.channel:
+                if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                    return TableNames.vel;
+                else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                    return TableNames.pr;
+                else
+                    throw new Exception("Invalid field specified!");
+            case DataSets.channel5200:
                 if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                     return TableNames.vel;
                 else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
@@ -186,6 +194,7 @@ public class DataInfo
                                {"rmhd", "rmhd"},
                                {"mhd1024", "mhd1024"},
                                {"channel", "channel"},
+                               {"channel5200", "channel5200"},
                                {"isotropic4096", "isotropic4096"},
                                {"strat4096", "strat4096"},
                                {"rotstrat4096", "strat4096"},
@@ -238,6 +247,10 @@ public class DataInfo
             return false;
         }
         else if (dataset == DataSets.channel && time > 25.9935F)
+        {
+            return false;
+        }
+        else if (dataset == DataSets.channel5200 && time > 10.0F)
         {
             return false;
         }
