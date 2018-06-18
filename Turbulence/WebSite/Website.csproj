@@ -86,9 +86,14 @@
     <Content Include="bootstrap-3.2.0-dist\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.js" />
     <Content Include="bootstrap-3.2.0-dist\js\bootstrap.min.js" />
+    <Content Include="Channel5200.aspx" />
     <Content Include="citing.aspx" />
+    <Content Include="docs\channel5200\channel5200-y.txt" />
+    <Content Include="docs\channel5200\channel5200-y-knots.txt" />
     <Content Include="docs\transition_bl\y.txt" />
     <Content Include="images\channel-small.jpg" />
+    <Content Include="images\channel5200-small.png" />
+    <Content Include="images\channel5200.png" />
     <Content Include="images\iso1024-small.jpg" />
     <Content Include="images\isotropic4096.jpg" />
     <Content Include="images\mhd-small.jpg" />
@@ -219,12 +224,13 @@
     <Content Include="docs\README-isotropic4096.pdf" />
     <Content Include="download\turblib-20171102.tar.gz" />
     <Content Include="download\turblib-20171102.zip" />
-    <Content Include="download\turbmat-20180129.tar.gz" />
-    <Content Include="download\turbmat-20180129.zip" />
     <Content Include="docs\README-rotstrat4096.pdf" />
     <Content Include="download\turbmat-20180430.tar.gz" />
     <Content Include="download\turbmat-20180430.zip" />
     <Content Include="docs\README-transition_bl.pdf" />
+    <Content Include="download\JHTDB-Sample-assignment-2018.pdf" />
+    <Content Include="download\JHTDB-Sample-assignment-scripts-2018.zip" />
+    <Content Include="download\JHTDB-Sample-assignment-SolutionSet-2018.pdf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

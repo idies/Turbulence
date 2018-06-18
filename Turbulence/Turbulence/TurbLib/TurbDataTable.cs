@@ -452,7 +452,7 @@ namespace Turbulence.TurbLib
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
                         1.0f, 0, 10, 1, 0, 2);
                 }
-                else if (dbName.Contains("channeldb"))
+                else if (dbName.Contains("channel"))
                 {
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
@@ -510,7 +510,7 @@ namespace Turbulence.TurbLib
             }
             else if (tableName.Equals("velocity08"))
             {
-                if (dbName.Contains("channeldb"))
+                if (dbName.Contains("channel") && !dbName.Contains("channel5200"))
                 {
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
@@ -570,7 +570,7 @@ namespace Turbulence.TurbLib
             }
             else if (tableName.Equals("pressure08"))
             {
-                if (dbName.Contains("channeldb"))
+                if (dbName.Contains("channel") && !dbName.Contains("channel5200"))
                 {
                     return new ChannelFlowDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },

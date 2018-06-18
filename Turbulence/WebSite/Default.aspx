@@ -79,7 +79,8 @@
 							The datasets comprise over 20 Terabytes for the isotropic turbulence data, 
 							56 Terabytes for the MHD data, 130 Terabytes for the channel flow data, 
 							27 Terabytes for the homogeneous buoyancy driven turbulence data, 
-							5 Terabytes for rotating stratified turbulence data and 105 Terabytes for transitional boundary layer. 
+							5 Terabytes for rotating stratified turbulence data, 105 Terabytes for transitional boundary layer data
+							and 20 Terabytes for channel flow at Re<sub>&tau;</sub>=5200 data. 
 							Basic characteristics of the data sets can be found in the <a href="datasets.aspx">datasets description page</a>.
 							Technical details about the database techniques used for this project are described in the <a href="publications.aspx">publications</a>.
 						</font>

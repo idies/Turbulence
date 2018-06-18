@@ -54,7 +54,7 @@
 					</p>
 					<br />
 					<p>
-						<img src="images/channel5200.png" height="100" width="100" />
+						<img src="images/channel5200-small.png" height="100" width="100" />
 					</p>
 				</div>
 				<div id="centercolumn">
@@ -129,7 +129,7 @@
 					<br />
 					<br />
 					<p align="left" class="style20">
-						<a href="Channel5200.aspx">8. Channel flow with Re&tau;=5200:</a>
+						<a href="Channel5200.aspx">8. Channel flow at Re<sub>&tau;</sub>=5200:</a>
 					</p>
 					<p style="margin-left: 25px;">
 						Direct numerical simulation (DNS) of channel flow turbulence in a domain of size 8&pi; &times; 2  &times; 3&pi;, 

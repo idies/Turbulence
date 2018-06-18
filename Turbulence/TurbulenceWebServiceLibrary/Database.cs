@@ -1515,7 +1515,7 @@ namespace TurbulenceService
         {
             for (int i = 0; i < points.Length; i++)
             {
-                if (databases[0].Contains("channel"))
+                if (databases[0].Contains("channel") && !databases[0].Contains("channel5200"))
                 {
                     points[i].x -= 0.45f * time;
                 }
@@ -1671,7 +1671,7 @@ namespace TurbulenceService
         {
             for (int i = 0; i < points.Length; i++)
             {
-                if (databases[0].Contains("channel"))
+                if (databases[0].Contains("channel") && !databases[0].Contains("channel5200"))
                 {
                     points[i].x -= 0.45f * time;
                 }

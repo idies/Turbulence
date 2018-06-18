@@ -243,7 +243,7 @@ namespace Website
                             //dt.Rows.Add(servers, connect, memory, true, "No test for isotropic4096", DateTime.Now - startTime);
                             //continue;
                         }
-                        else if (databases[i].Contains("bl_zaki"))
+                        else if (databases[i].Contains("bl_zaki") || databases[i].Contains("channel5200"))
                         {
                             cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
                             ret = cmd.ExecuteScalar();
@@ -354,7 +354,7 @@ namespace Website
                                 //dt.Rows.Add(servers, connect, memory, true, "No test for isotropic4096", DateTime.Now - startTime);
                                 //continue;
                             }
-                            else if (databases[i].Contains("bl_zaki"))
+                            else if (databases[i].Contains("bl_zaki") || databases[i].Contains("channel5200"))
                             {
                                 cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
                                 ret = cmd.ExecuteScalar();

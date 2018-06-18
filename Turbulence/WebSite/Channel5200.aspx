@@ -25,9 +25,9 @@
 					<br />
 					<br />
 					<p>
-						<img src="images/channel.jpg" width="205" />
+						<img src="images/channel5200.png" width="205" />
 					</p>
-					<div style="text-align: center">Channel Flow</div>
+					<div style="text-align: center">Channel Flow at Re<sub>&tau;</sub>=5200</div>
 					<br />
 
 				</div>
@@ -37,34 +37,35 @@
 						<span class="style20">Dataset description</span>
 					</p>
 
-					<p align="left" class="style20">Channel flow:</p>
+					<p align="left" class="style20">Channel Flow at Re<sub>&tau;</sub>=5200:</p>
 					<p style="margin-left: 25px;">
 						Simulation data provenance: Collaboration of UT Texas and JHU, using the UT Texas DNS code 
-            (see <a href="docs/README-CHANNEL.pdf" target="_blank">README-CHANNEL</a> for more details).
+            (see <a href="docs/README-CHANNEL5200.pdf" target="_blank">README-CHANNEL</a> for more details).
 					</p>
 					<ul>
-						<li>Direct numerical simulation (DNS) of channel flow in a domain of size 8&pi; x 2  x 3&pi; , using 2048 x 512 x 1536 nodes.</li>
+						<li>Direct numerical simulation (DNS) of channel flow in a domain of size 8&pi; &times; 2 &times; 3&pi; , using 10240 &times; 1536 &times; 7680 nodes.</li>
 						<li>Incompressible Navier-Stokes equations are solved using the pseudo-spectral (Fourier-Galerkin) method in wall-parallel (x, z) planes, and the 7th-order B-spline collocation method in the wall-normal (y) direction.</li>
-						<li>Simulation is run and equilibrated using prescribed bulk velocity=1, then switched to imposed pressure gradient 
-							(dP/dx = 0.0025) and further equilibrated.</li>
-						<li>After the simulation has reached a (nearly) statistical stationary state, 4,000 frames of data with 
-							3 velocity components and pressure are stored in the database. The frames are stored at every 5 time-steps of the DNS. 
-							This corresponds to about one channel flow-through time. Intermediate times can be queried using temporal-interpolation.</li>
-						<li>The friction velocity is u<sub>&tau;</sub> = 0.0499.</li>
-						<li>The viscosity is &nu; = 5 x 10<sup>-5</sup>.</li>
-						<li>The friction velocity Reynolds number is Re<sub>&tau;</sub> ~ 1000.</li>
-						<li>The y-locations of the grid points in the vertical direction can be downloaded from this <a href="docs/channel/y.txt" target="_blank">text file</a>; the corresponding B-spline knot locations can be obtained from this <a href="docs/channel/y-knots.txt" target="_blank">text file</a>.</li>
+						<li>Simulation is run and equilibrated using prescribed bulk velocity=1.</li>
+						<li>After the simulation has reached a (nearly) statistical stationary state, 10 frames of data with 
+							3 velocity components and pressure are stored in the database. The frames are apart from each other for 0.7 flow-through time. 
+							This corresponds to about one channel flow-through time.</li>
+						<li>The friction velocity is u<sub>&tau;</sub> = 0.0414872.</li>
+						<li>The viscosity is &nu; = 8 &times; 10<sup>-6</sup>.</li>
+						<li>The friction velocity Reynolds number is Re<sub>&tau;</sub> = 5185.897.</li>
+						<li>The y-locations of the grid points in the vertical direction can be downloaded from this <a href="docs/channel5200/channel5200-y.txt" target="_blank">text file</a>; the corresponding B-spline knot locations can be obtained from this <a href="docs/channel5200/channel5200-y-knots.txt" target="_blank">text file</a>.</li>
 						<!--<li>More details about the DNS are provided in the accompanying <a href="docs/README-CHANNEL.pdf">README-CHANNEL</a> document.</li>-->
-						<li>A table with the time history of friction velocity Reynolds number can be downloaded from this <a href="docs/channel/re-tau.txt" target="_blank">text file</a>.</li>
-						<li>A table with the vertical profiles of mean velocity, Reynolds shear stresses, viscous stress, normal stress, 
-							mean pressure, pressure variance and pressure-velocity covariance in viscous units, can be downloaded from this <a href="docs/channel/profiles.txt" target="_blank">text file</a>.</li>
-						<li>Files with tables of the streamwise (k<sub>x</sub>) spectra of u, v, w, p at various heights can be downloaded for the following y+ values: 
+						<%--<li>A table with the time history of friction velocity Reynolds number can be downloaded from this <a href="docs/channel/re-tau.txt" target="_blank">text file</a>.</li>--%>
+						<li>Mean profiles of mean velocity, Reynolds stresses, vorticity variance,
+							mean pressure, pressure variance, pressure-velocity covariance, 
+							terms in Reynolds stress transport equation and 1D energy spectra, 
+							can be found <a href="http://turbulence.ices.utexas.edu/channel2015/content/Data_2015_5200.html" target="_blank">here</a>.</li>
+<%--						<li>Files with tables of the streamwise (k<sub>x</sub>) spectra of u, v, w, p at various heights can be downloaded for the following y+ values: 
        
 							<a href="docs/channel/spectra-kx-yplus-10.11.txt" target="_blank">10.11</a>, <a href="docs/channel/spectra-kx-yplus-29.89.txt" target="_blank">29.89</a>, <a href="docs/channel/spectra-kx-yplus-99.75.txt" target="_blank">99.75</a>, <a href="docs/channel/spectra-kx-yplus-371.6.txt" target="_blank">371.6</a>, and <a href="docs/channel/spectra-kx-yplus-999.7.txt" target="_blank">999.7</a>.</li>
 						<li>Files with tables of the spanwise (k<sub>z</sub>) spectra of u, v, w, p at various heights can be downloaded for the following y+ values: 
        
-							<a href="docs/channel/spectra-kz-yplus-10.11.txt" target="_blank">10.11</a>, <a href="docs/channel/spectra-kz-yplus-29.89.txt" target="_blank">29.89</a>, <a href="docs/channel/spectra-kz-yplus-99.75.txt" target="_blank">99.75</a>, <a href="docs/channel/spectra-kz-yplus-371.6.txt" target="_blank">371.6</a>, and <a href="docs/channel/spectra-kz-yplus-999.7.txt" target="_blank">999.7</a>.</li>
-						<%--<li>GetPosition and Filtering functions not yet implemented for the channel flow dataset.</li>--%>
+							<a href="docs/channel/spectra-kz-yplus-10.11.txt" target="_blank">10.11</a>, <a href="docs/channel/spectra-kz-yplus-29.89.txt" target="_blank">29.89</a>, <a href="docs/channel/spectra-kz-yplus-99.75.txt" target="_blank">99.75</a>, <a href="docs/channel/spectra-kz-yplus-371.6.txt" target="_blank">371.6</a>, and <a href="docs/channel/spectra-kz-yplus-999.7.txt" target="_blank">999.7</a>.</li>--%>
+						<li>GetPosition and Filtering functions are not implemented for this dataset.</li>
 					</ul>
 
 

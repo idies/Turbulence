@@ -1,6 +1,7 @@
 ﻿USE [turbdev_zw]
 GO
 
+
 CREATE TABLE [dbo].[#temp_zw] (
     [reqseq] INT    NULL,
     [zindex] BIGINT NULL,
@@ -9,15 +10,15 @@ CREATE TABLE [dbo].[#temp_zw] (
     [z]      REAL   NULL
 );
 INSERT INTO [dbo].[#temp_zw]  
-VALUES (0, 536870911, 2.51, 0.488, 0.627);
+VALUES (0, 1207959552, 18.8495559215, -1, 0);
 
 SELECT reqseq, zindex, x, y, z FROM #temp_zw
 
 DECLARE	@return_value Int
 
-EXEC	@return_value = [dbo].[ExecuteMHDFileDBWorker]
+EXEC	@return_value = [dbo].[ExecuteMHDWorker]
 		@serverName = N'dsp012',
-		@dbname = N'channel5200db001',
+		@dbname = N'channeldb06',
 		@codedb = N'turbdev_zw',
 		@turbinfodb = N'turbinfo_test',
 		@turbinfoserver = N'sciserver02',
@@ -25,13 +26,13 @@ EXEC	@return_value = [dbo].[ExecuteMHDFileDBWorker]
 		@workerType = 120,
 		@blobDim = 8,
 		@time = 0,
-		@spatialInterp = 0,
+		@spatialInterp = 104,
 		@temporalInterp = 0,
 		@arg = 0,
 		@inputSize = 1,
-		@tempTable = N'#temp_zw',
-		@startz = 0,
-		@endz = 536870911
+		@tempTable = N'#temp_zw'
+		--@startz = 0,
+		--@endz = 536870911
 SELECT	@return_value as 'Return Value'
 
 GO

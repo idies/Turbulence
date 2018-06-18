@@ -76,12 +76,12 @@ namespace TestApp
                     }
                 }
 
-                float time = 0f;
+                float time = 1f;
                 service.Timeout = -1;
 
-                points[0].x = 2.51f;
-                points[0].y = 0.488f;
-                points[0].z = 0.627f;
+                points[0].x = 24.5437f;
+                points[0].y = 1f;
+                points[0].z = 9.424f;
                 //points[1].x = 0.1f;
                 //points[1].y = -0.99f;
                 //points[1].z = 0.1f;

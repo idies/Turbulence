@@ -96,7 +96,15 @@
 						<p>
 							T.A. Zaki.
 							&quot;From streaks to spots and on to turbulence: exploring the dynamics of boundary layer transition&quot;.
-							Flow, turbulence and combustion 91(3), 451-473, 2013.
+							Flow, Turbulence and Combustion 91(3), 451-473, 2013.
+						</p>
+					</blockquote>
+					<p>For articles that use the channel flow at Re<sub>&tau;</sub>=5200 data, we suggest also including:</p>
+					<blockquote>
+						<p>
+							Myoungkyu Lee and Robert D. Moser, 
+							&quot;Direct numerical simulation of turbulent channel flow up to Re_tau = 5200&quot;.
+							Journal of Fluid Mechanics 774, 395-415, 2015.
 						</p>
 					</blockquote>
 					<p>For articles that use the Lagrangian tracking GetPosition function, we suggest also including:</p>
@@ -122,6 +130,8 @@
 						Rotating Stratified Turbulence Dataset on 4096<sup>3</sup> Grid: <a href="https://doi.org/10.7281/T1J964JJ">https://doi.org/10.7281/T1J964JJ</a>
 						<br /><br />
 						Developing Boundary Layer Dataset: <a href="https://doi.org/10.7281/T17S7KX8">https://doi.org/10.7281/T17S7KX8</a>
+						<br /><br />
+						Turbulent Channel Flow at Re<sub>&tau;</sub>=5200: <a href="https://doi.org/xxxxx">https://doi.org/xxxxx</a>
 						<%--<br />--%>
 					</blockquote>
 
