@@ -231,6 +231,7 @@
     <Content Include="download\JHTDB-Sample-assignment-2018.pdf" />
     <Content Include="download\JHTDB-Sample-assignment-scripts-2018.zip" />
     <Content Include="download\JHTDB-Sample-assignment-SolutionSet-2018.pdf" />
+    <Content Include="docs\README-CHANNEL5200.pdf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

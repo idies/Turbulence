@@ -39,16 +39,16 @@
 
 					<p align="left" class="style20">Channel Flow at Re<sub>&tau;</sub>=5200:</p>
 					<p style="margin-left: 25px;">
-						Simulation data provenance: Collaboration of UT Texas and JHU, using the UT Texas DNS code 
-            (see <a href="docs/README-CHANNEL5200.pdf" target="_blank">README-CHANNEL</a> for more details).
+						Simulation data provenance: UT Texas using the UT Texas DNS code 
+            (see <a href="docs/README-CHANNEL5200.pdf" target="_blank">README-CHANNEL5200</a> for more details).
 					</p>
 					<ul>
-						<li>Direct numerical simulation (DNS) of channel flow in a domain of size 8&pi; &times; 2 &times; 3&pi; , using 10240 &times; 1536 &times; 7680 nodes.</li>
+						<li>Direct numerical simulation (DNS) of channel flow in a domain of size 8&pi; &times; 2 &times; 3&pi;, using 10240 &times; 1536 &times; 7680 nodes.</li>
 						<li>Incompressible Navier-Stokes equations are solved using the pseudo-spectral (Fourier-Galerkin) method in wall-parallel (x, z) planes, and the 7th-order B-spline collocation method in the wall-normal (y) direction.</li>
 						<li>Simulation is run and equilibrated using prescribed bulk velocity=1.</li>
-						<li>After the simulation has reached a (nearly) statistical stationary state, 10 frames of data with 
-							3 velocity components and pressure are stored in the database. The frames are apart from each other for 0.7 flow-through time. 
-							This corresponds to about one channel flow-through time.</li>
+						<li>After the simulation has reached a statistical stationary state, 
+							11 frames of data with 3 velocity components and pressure are stored in the database. 
+							The frames are apart from each other for 0.7 flow-through time.</li>
 						<li>The friction velocity is u<sub>&tau;</sub> = 0.0414872.</li>
 						<li>The viscosity is &nu; = 8 &times; 10<sup>-6</sup>.</li>
 						<li>The friction velocity Reynolds number is Re<sub>&tau;</sub> = 5185.897.</li>
