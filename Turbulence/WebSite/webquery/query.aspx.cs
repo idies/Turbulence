@@ -94,7 +94,7 @@ namespace Website
                 EndTimeRow.Visible = false;
                 DeltaTRow.Visible = false;
                 SnapshotRow.Visible = true;
-                SnapshotRange.Text = "0";
+                SnapshotRange.Text = "0, 1,..., 10";
             }
             if (method.SelectedValue.Equals("GetPosition"))
             {

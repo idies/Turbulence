@@ -161,7 +161,7 @@ public class Database
                     string server_name = this.servers[0];
                     if (server_name.Contains("_"))
                         server_name = server_name.Remove(server_name.IndexOf("_"));
-                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;",
+                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;",
                         server_name, codeDatabase[0]);
                     SqlConnection sqlConn = new SqlConnection(cString);
                     sqlConn.Open();
@@ -187,7 +187,7 @@ public class Database
                     string server_name = this.servers[0];
                     if (server_name.Contains("_"))
                         server_name = server_name.Remove(server_name.IndexOf("_"));
-                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;Trusted_Connection=True;Pooling=false; Connect Timeout = 600;",
+                    String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;",
                         server_name, codeDatabase[0]);
                     SqlConnection sqlConn = new SqlConnection(cString);
                     sqlConn.Open();
