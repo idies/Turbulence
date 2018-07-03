@@ -39,7 +39,7 @@
 
 					<p align="left" class="style20">Channel flow:</p>
 					<p style="margin-left: 25px;">
-						Simulation data provenance: Collaboration of UT Texas and JHU, using the UT Texas DNS code 
+						Simulation data provenance: Collaboration of UT Austin and JHU, using the UT Austin DNS code 
             (see <a href="docs/README-CHANNEL.pdf" target="_blank">README-CHANNEL</a> for more details).
 					</p>
 					<ul>

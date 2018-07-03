@@ -39,7 +39,7 @@
 
 					<p align="left" class="style20">Channel Flow at Re<sub>&tau;</sub>=5200:</p>
 					<p style="margin-left: 25px;">
-						Simulation data provenance: UT Texas using the UT Texas DNS code 
+						Simulation data provenance: UT Austin using the UT Austin DNS code 
             (see <a href="docs/README-CHANNEL5200.pdf" target="_blank">README-CHANNEL5200</a> for more details).
 					</p>
 					<ul>
