@@ -36,6 +36,10 @@ public partial class StoredProcedures
         const bool DEVEL_MODE = false;
         const string infodb = "turbinfo";
         //const string infodb = "turbinfo_test";
+        //const string logdb_server = (infodb == "turbinfo") ? "lumberjack" : "sciserver02";
+        //const string logdb = (infodb == "turbinfo") ? "turblog" : "turbinfo_dev";
+        const string logdb_server = "gw01";
+        const string logdb = "turbinfo";
 
         const int MAX_READ_LENGTH = 256000000;
         int atomDim = 8;
@@ -46,8 +50,8 @@ public partial class StoredProcedures
         int zhigh = zlow + zwidth;
         int components;
         Database database = new Database(infodb, DEVEL_MODE);
-        AuthInfo authInfo = new AuthInfo(database.infodb, database.infodb_server, DEVEL_MODE);
-        Log log = new Log(database.infodb, database.infodb_server, DEVEL_MODE);
+        Log log = new Log(logdb, logdb_server, DEVEL_MODE);
+        AuthInfo authInfo = new AuthInfo(log.logdb, log.logdb_server, DEVEL_MODE);
         SqlCommand sqlcmd = new SqlCommand();
 
         long dlsize = DetermineSize(fields, twidth, (xwidth + x_step - 1) / x_step, (ywidth + y_step - 1) / y_step, (zwidth + z_step - 1) / z_step);

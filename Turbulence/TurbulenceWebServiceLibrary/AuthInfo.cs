@@ -15,8 +15,8 @@ namespace TurbulenceService
     public class AuthInfo
     {
         bool devmode;
-        string infodb;
-        string infodb_server;
+        string authdb;
+        string authdb_server;
         /// <summary>
         /// Structure representating a row of the user table
         /// </summary>
@@ -37,10 +37,10 @@ namespace TurbulenceService
             }
         }
 
-        public AuthInfo(string infodb, string infodb_server, bool devmode)
+        public AuthInfo(string authdb, string authdb_server, bool devmode)
         {
-            this.infodb = infodb;
-            this.infodb_server = infodb_server;
+            this.authdb = authdb;
+            this.authdb_server = authdb_server;
             this.devmode = devmode;
         }
 
@@ -72,7 +72,7 @@ namespace TurbulenceService
             AuthToken token = null;
             //String cString = ConfigurationManager.ConnectionStrings[infodb].ConnectionString;
             String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
-                            infodb_server, infodb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
+                            authdb_server, authdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();

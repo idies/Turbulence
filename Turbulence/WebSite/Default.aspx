@@ -73,14 +73,15 @@
 					<p class="style34">
 						<font size="2" face="Arial, Helvetica, sans-serif">
 							To date the Web-services-accessible databases contain a space-time history of a direct numerical simulation (DNS) 
-							of isotropic turbulent flow, in incompressible fluid in 3D,
-							a DNS of the incompressible magneto-hydrodynamic (MHD) equations, a DNS of forced, 
-							fully developed turbulent channel flow, and a DNS of homogeneous buoyancy driven turbulence. 
-							The datasets comprise over 20 Terabytes for the isotropic turbulence data, 
-							56 Terabytes for the MHD data, 130 Terabytes for the channel flow data, 
-							27 Terabytes for the homogeneous buoyancy driven turbulence data, 
-							5 Terabytes for rotating stratified turbulence data, 105 Terabytes for transitional boundary layer data
-							and 20 Terabytes for channel flow at Re<sub>&tau;</sub>=5200 data. 
+							of isotropic turbulent flow in incompressible fluid in 3D (100 Terabytes), 
+							a DNS of the incompressible magneto-hydrodynamic (MHD) equations (50 Terabytes), 
+							a DNS of forced, fully developed turbulent channel flow at Re<sub>&tau;</sub>=1000 (130 Terabytes), 
+							a DNS of homogeneous buoyancy driven turbulence (27 Terabytes), 
+							and a transitional boundary layer flow (105 Terabytes). 
+							Also available are individual snapshots (spatially but not temporally resolved data) of 
+							4096<sup>3</sup> DNS of isotropic turbulence (1 snapshot) 
+							and rotating stratified turbulence (5 snapshots, 5 Terabytes), 
+							and channel flow at Re<sub>&tau;</sub>=5200 (11 snapshots, 20 Terabytes).
 							Basic characteristics of the data sets can be found in the <a href="datasets.aspx">datasets description page</a>.
 							Technical details about the database techniques used for this project are described in the <a href="publications.aspx">publications</a>.
 						</font>

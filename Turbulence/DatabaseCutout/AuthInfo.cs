@@ -13,8 +13,8 @@ using System.Data.SqlClient;
     public class AuthInfo
     {
         bool devmode;
-        string infodb;
-        string infodb_server;
+        string authdb;
+        string authdb_server;
         /// <summary>
         /// Structure representating a row of the user table
         /// </summary>
@@ -35,10 +35,10 @@ using System.Data.SqlClient;
             }
         }
 
-        public AuthInfo(string infodb, string infodb_server, bool devmode)
+        public AuthInfo(string authdb, string authdb_server, bool devmode)
         {
-            this.infodb = infodb;
-            this.infodb_server = infodb_server;
+            this.authdb = authdb;
+            this.authdb_server = authdb_server;
             this.devmode = devmode;
         }
 
@@ -70,7 +70,7 @@ using System.Data.SqlClient;
             AuthToken token = null;
             //String cString = "Server=mydbsql;Database=turbinfo;Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200";
             String cString = String.Format("Server={0};Database={1};Trusted_Connection=True;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
-                        infodb_server, infodb);
+                        authdb_server, authdb);
             SqlConnection conn = new SqlConnection(cString);
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();

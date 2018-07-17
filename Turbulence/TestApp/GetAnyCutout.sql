@@ -6,10 +6,10 @@ DECLARE	@return_value Int
 EXEC	@return_value = [dbo].[GetAnyCutout]
 		@dataset = N'channel5200',
 		@fields = N'u',
-		@authToken = N'edu.jhu.pha.turbulence-dev',
+		@authToken = N'edu.jhu.pha.turbulence.testing-201311',
 		@ipaddr = N'0.0.0.0',
 		@tlow = 0,
-		@xlow = 10239,
+		@xlow = 0,
 		@ylow = 0,
 		@zlow = 0,
 		@x_step = 1,
@@ -17,9 +17,9 @@ EXEC	@return_value = [dbo].[GetAnyCutout]
 		@z_step = 1,
 		@t_step = 1,
 		@twidth = 1,
-		@xwidth = 1,
-		@ywidth = 1536,
-		@zwidth = 7680,
+		@xwidth = 10,
+		@ywidth = 10,
+		@zwidth = 10,
 		@filter_width = 1,
 		@time_step = 1
 

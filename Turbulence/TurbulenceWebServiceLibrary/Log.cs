@@ -14,8 +14,8 @@ namespace TurbulenceService
     {
         DateTime start;
         public bool devmode;
-        string logdb;
-        string logdb_server;
+        public string logdb;
+        public string logdb_server;
         //public string cutout_ipadd;
         //public bool cutoutLog = false;
 

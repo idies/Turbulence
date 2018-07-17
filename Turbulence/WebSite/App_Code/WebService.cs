@@ -41,8 +41,9 @@ namespace TurbulenceService
         public TurbulenceService()
         {
             database = new Database(infodb_string, DEVEL_MODE);
-            authInfo = new AuthInfo(database.infodb, database.infodb_server, DEVEL_MODE);
             log = new Log(logdb_string, DEVEL_MODE);
+            //authInfo = new AuthInfo(database.infodb, database.infodb_server, DEVEL_MODE);
+            authInfo = new AuthInfo(log.logdb, log.logdb_server, DEVEL_MODE);
         }
 
         ~TurbulenceService()

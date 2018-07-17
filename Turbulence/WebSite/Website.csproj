@@ -99,6 +99,7 @@
     <Content Include="images\mhd-small.jpg" />
     <Content Include="images\rotstrat4096.jpg" />
     <Content Include="images\transition_bl.png" />
+    <Content Include="publications.aspx" />
     <Content Include="Transition_bl.aspx" />
     <Content Include="Isotropic4096.aspx" />
     <Content Include="newcutout.aspx" />
@@ -174,7 +175,7 @@
     <Content Include="images\pdf-grad.jpg" />
     <Content Include="peoplecredits.aspx" />
     <Content Include="privacy.aspx" />
-    <Content Include="publications.aspx" />
+    <Content Include="publications_old.aspx" />
     <Content Include="relatedgrouplinks.aspx" />
     <Content Include="robots.txt" />
     <Content Include="Rotstrat4096.aspx" />

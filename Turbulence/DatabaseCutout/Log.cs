@@ -12,8 +12,8 @@ using System.Net;
     {
         DateTime start;
         public bool devmode; //We are going to dual purpose this--if it is a monitor token, we set it to devmode so we don't log.
-        string logdb;
-        string logdb_server;
+        public string logdb;
+        public string logdb_server;
         public Log(string logdb, string logdb_server, bool devmode)
         {
             this.logdb = logdb;
