@@ -201,6 +201,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="GetStridedDataFileDBCutout.sql" />
     <Content Include="turbinfoAnalysis.sql" />
     <Content Include="xyzToMorton.sql" />
     <Content Include="Datacutout.sql" />

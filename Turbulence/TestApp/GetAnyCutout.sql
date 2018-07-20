@@ -1,12 +1,12 @@
-﻿USE [turbdev_zw]
+﻿USE [turblib]
 GO
 
 DECLARE	@return_value Int
 
 EXEC	@return_value = [dbo].[GetAnyCutout]
-		@dataset = N'channel5200',
+		@dataset = N'rotstrat4096',
 		@fields = N'u',
-		@authToken = N'edu.jhu.pha.turbulence.testing-201311',
+		@authToken = N'edu.jhu.pha.turbulence-dev',
 		@ipaddr = N'0.0.0.0',
 		@tlow = 0,
 		@xlow = 0,
@@ -16,7 +16,7 @@ EXEC	@return_value = [dbo].[GetAnyCutout]
 		@y_step = 1,
 		@z_step = 1,
 		@t_step = 1,
-		@twidth = 1,
+		@twidth = 5,
 		@xwidth = 10,
 		@ywidth = 10,
 		@zwidth = 10,

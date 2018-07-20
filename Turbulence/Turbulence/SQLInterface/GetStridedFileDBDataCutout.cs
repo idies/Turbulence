@@ -13,7 +13,7 @@ using System.IO;
 public partial class StoredProcedures
 {
     [Microsoft.SqlServer.Server.SqlProcedure]
-    public static void GetStridedDataFileDBCutout(
+    public static void GetStridedFileDBDataCutout(
         string serverName,
         string dbname,
         string codedb,

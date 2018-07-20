@@ -75,22 +75,22 @@ namespace Website
                 }
             }
 
-            string turbinfo_connectionString;
+            string turblog_connectionString;
             if (prod_test.Text.Equals("Production"))
             {
-                turbinfo_connectionString = ConfigurationManager.ConnectionStrings["turbinfo_conn"].ConnectionString;
+                turblog_connectionString = ConfigurationManager.ConnectionStrings["turblog_conn"].ConnectionString;
             }
             else
             {
-                turbinfo_connectionString = ConfigurationManager.ConnectionStrings["turbinfo_test_conn"].ConnectionString;
+                turblog_connectionString = ConfigurationManager.ConnectionStrings["turbinfo_test_conn"].ConnectionString;
                 
             }
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
-            string turbinfoServerdb = builder.DataSource;
-            string turbinfodb = builder.InitialCatalog;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turblog_connectionString);
+            string turblogServerdb = builder.DataSource;
+            string turblogdb = builder.InitialCatalog;
 
             String cString1 = String.Format("Server={0};Database={1};;Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;Connection Timeout=1200",
-                turbinfoServerdb, turbinfodb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
+                turblogServerdb, turblogdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
 
             SqlConnection conn = new SqlConnection(cString1);
             conn.Open();
@@ -142,7 +142,7 @@ group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VA
 		DataID.DatasetName, usage.dataset,
 		users.authkey, usage.uid,
 		ipl.city_name, ipl.country_name, usage.ip
-order by rowid", turbinfodb);
+order by rowid", turblogdb);
             cmd.ExecuteNonQuery();
 
             string dateparttext = "";
@@ -297,7 +297,7 @@ group by usage_summary.dates, total, mhd, iso1024coarse, iso1024fine, channel, m
 		Field, Gradient, Hessian, Laplacian, Forcing, filter, Particle, Cutout, Threshold, other_op, incomplete) as t
 
 group by {2}
-order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Text.ToLower());
+order by {3};", turblogdb, dateparttext, grouptext, ordertext, requestspoint.Text.ToLower());
             cmd.Parameters.AddWithValue("@startdates", startdate.ToString("yyyy-MM-dd"));
             cmd.Parameters.AddWithValue("@enddates", enddate.ToString("yyyy-MM-dd"));
             //string msg = cmd.CommandText + System.Environment.NewLine;
@@ -557,22 +557,22 @@ order by {3};", turbinfodb, dateparttext, grouptext, ordertext, requestspoint.Te
                 }
             }
 
-            string turbinfo_connectionString;
+            string turblog_connectionString;
             if (prod_test.Text.Equals("Production"))
             {
-                turbinfo_connectionString = ConfigurationManager.ConnectionStrings["turbinfo_conn"].ConnectionString;
+                turblog_connectionString = ConfigurationManager.ConnectionStrings["turblog_conn"].ConnectionString;
             }
             else
             {
-                turbinfo_connectionString = ConfigurationManager.ConnectionStrings["turbinfo_test_conn"].ConnectionString;
+                turblog_connectionString = ConfigurationManager.ConnectionStrings["turbinfo_test_conn"].ConnectionString;
 
             }
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turbinfo_connectionString);
-            string turbinfoServerdb = builder.DataSource;
-            string turbinfodb = builder.InitialCatalog;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turblog_connectionString);
+            string turblogServerdb = builder.DataSource;
+            string turblogdb = builder.InitialCatalog;
 
             String cString1 = String.Format("Server={0};Database={1};;Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;",
-                turbinfoServerdb, turbinfodb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
+                turblogServerdb, turblogdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
 
             SqlConnection conn = new SqlConnection(cString1);
             conn.Open();
@@ -634,7 +634,7 @@ select sum({5}) as {5}, 'Total' as country_name, {1}
 from {0}..usage_summary
 where total_exectime is not null and dates>=@startdates and dates<=@enddates-- and country_name is not null and country_name!=''
 group by {2}
-order by {3}", turbinfodb, dateparttext, grouptext, ordertext, tempTableName, requestspoint.Text.ToLower(), countrytext, citygroup);
+order by {3}", turblogdb, dateparttext, grouptext, ordertext, tempTableName, requestspoint.Text.ToLower(), countrytext, citygroup);
             cmd.Parameters.AddWithValue("@startdates", startdate.ToString("yyyy-MM-dd"));
             cmd.Parameters.AddWithValue("@enddates", enddate.ToString("yyyy-MM-dd"));
             cmd.ExecuteNonQuery();

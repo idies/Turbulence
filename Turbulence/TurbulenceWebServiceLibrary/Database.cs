@@ -2771,7 +2771,7 @@ namespace TurbulenceService
                     if (dbtype == 0)
                     {
                         sqlcmds[s].CommandText = String.Format(//"DECLARE @blob varbinary(max) " +
-                            "EXEC [{0}].[dbo].[GetDataCutout] @serverName, @database, @codedb, " +
+                            "EXEC [{0}].[dbo].[GetDataCutout] @serverName, @dbname, @codedb, " +
                             "@turbinfodb, @turbinfoserver, @dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT",
                             codeDatabase[s]);
                     }
@@ -2783,7 +2783,7 @@ namespace TurbulenceService
                             codeDatabase[s]);
                     }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
-                    sqlcmds[s].Parameters.AddWithValue("@database", databases[s]);
+                    sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);

@@ -313,8 +313,8 @@ public class Database
         //turbinfoservers.Add("dsp033"); /*No SQL server here, just a test*/
         if (infodb == "turbinfo")
         {
-            turbinfoservers.Add("gw01"); /*Using this for testing...remove for production*/
-            turbinfoservers.Add("mydbsql"); /*backup of DatabaseMap*/
+            turbinfoservers.Add("mydbsql"); /*Using this for testing...remove for production*/
+            turbinfoservers.Add("gw01"); /*backup of DatabaseMap*/
         }
         else
         {

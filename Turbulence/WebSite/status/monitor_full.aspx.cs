@@ -399,13 +399,23 @@ namespace Website
                         //string msg = "database: " + databases[i] + " server: " + servers_primary[i] + " dbType: " + dbType[i] + " HotActive: " + (!Primary & Backup) + System.Environment.NewLine;
                         //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
                         cmd = conn.CreateCommand();
-                        cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'true' " +
+                        if (dbType[i]==0)
+                        {
+                            cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'true' " +
                             "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
                             "AND CodeDatabaseName = @codebase AND ProductionDatabaseName = @database;", database.infodb);
+                            cmd.Parameters.AddWithValue("@database", databases[i]);
+                        }
+                        else
+                        {
+                            cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'true' " +
+                            "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
+                            "AND CodeDatabaseName = @codebase AND ProductionDatabaseName like @database;", database.infodb);
+                            cmd.Parameters.AddWithValue("@database", databases[i].Substring(0, databases[i].Length - 3) + "%");
+                        }
                         cmd.Parameters.AddWithValue("@server", servers_primary[i]);
                         cmd.Parameters.AddWithValue("@server2", servers_backup[i]);
                         cmd.Parameters.AddWithValue("@codebase", codeDatabases[i]);
-                        cmd.Parameters.AddWithValue("@database", databases[i]);
                         cmd.CommandTimeout = sqlCommandTimeout;
                         cmd.ExecuteNonQuery();
                     }
@@ -416,13 +426,23 @@ namespace Website
                     {
                         conn.Open();
                         cmd = conn.CreateCommand();
-                        cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'false' " +
+                        if (dbType[i] == 0)
+                        {
+                            cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'false' " +
                             "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
                             "AND CodeDatabaseName = @codebase AND ProductionDatabaseName = @database;", database.infodb);
+                            cmd.Parameters.AddWithValue("@database", databases[i]);
+                        }
+                        else
+                        {
+                            cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'false' " +
+                            "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
+                            "AND CodeDatabaseName = @codebase AND ProductionDatabaseName like @database;", database.infodb);
+                            cmd.Parameters.AddWithValue("@database", databases[i].Substring(0, databases[i].Length - 3) + "%");
+                        }
                         cmd.Parameters.AddWithValue("@server", servers_primary[i]);
                         cmd.Parameters.AddWithValue("@server2", servers_backup[i]);
                         cmd.Parameters.AddWithValue("@codebase", codeDatabases[i]);
-                        cmd.Parameters.AddWithValue("@database", databases[i]);
                         cmd.CommandTimeout = sqlCommandTimeout;
                         cmd.ExecuteNonQuery();
                     }

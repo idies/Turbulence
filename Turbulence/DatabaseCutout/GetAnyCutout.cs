@@ -36,10 +36,8 @@ public partial class StoredProcedures
         const bool DEVEL_MODE = false;
         const string infodb = "turbinfo";
         //const string infodb = "turbinfo_test";
-        //const string logdb_server = (infodb == "turbinfo") ? "lumberjack" : "sciserver02";
-        //const string logdb = (infodb == "turbinfo") ? "turblog" : "turbinfo_dev";
-        const string logdb_server = "gw01";
-        const string logdb = "turbinfo";
+        const string logdb_server = (infodb == "turbinfo") ? "lumberjack" : "sciserver02";
+        const string logdb = (infodb == "turbinfo") ? "turblog" : "turbinfo_test";
 
         const int MAX_READ_LENGTH = 256000000;
         int atomDim = 8;
@@ -58,15 +56,7 @@ public partial class StoredProcedures
         byte[] result = new byte[dlsize];
 
 
-        if (fields.Contains("p"))
-        {
-            components = 1;
-        }
-        else if (fields.Contains("d"))
-        {
-            components = 1;
-        }
-        else if (fields.Contains("t"))
+        if (fields.Contains("p") || fields.Contains("d") || fields.Contains("t")) //pressure, density, temperature
         {
             components = 1;
         }
@@ -126,13 +116,14 @@ public partial class StoredProcedures
         /*Update xwidth. This is required for reassembly when x is strided */
         int destinationIndex;
         bool doFilter = false;
-        if ((x_step > 1) || (y_step > 1) || (z_step > 1) || (filter_width > 1))
+        bool doStride = false;
+        if (filter_width > 1)
         {
             doFilter = true;
         }
-        else
+        else if ((x_step > 1) || (y_step > 1) || (z_step > 1))
         {
-            doFilter = false;
+            doStride = true;
         }
 
             /*Now use the parameters to grab the data pieces*/
@@ -172,6 +163,18 @@ public partial class StoredProcedures
                         sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
                         sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
                     }
+                    else if (doStride)
+                    {
+                        sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedDataCutout] @serverName, @dbname, @codedb, "
+                                                + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                                database.codeDatabase[s]);
+                        sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+
+                        //sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                        sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                        sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                        sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                    }
                     else
                     {
                         sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @dbname, @codedb, "
@@ -204,6 +207,18 @@ public partial class StoredProcedures
                         sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
                         //throw new Exception("We are filtering in filedb, but it isn't implemented yet!");
                     }
+                    else if (doStride)
+                    {
+                        sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedFileDBDataCutout] @serverName, @dbname, @codedb, "
+                                                + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                                database.codeDatabase[s]);
+                        sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+
+                        //sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                        sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                        sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                        sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                    }
                     else
                     {
                         sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataFileDBCutout2] @serverName, @dbname, @codedb, "
@@ -232,7 +247,7 @@ public partial class StoredProcedures
                 sqlcmd.Parameters.AddWithValue("@queryBox", queryBox);
                 sqlcmd.CommandTimeout = 3600;
 
-                if (!doFilter)
+                if (!doFilter && !doStride)
                 {
                     //size = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float);
                     //readLength = size;

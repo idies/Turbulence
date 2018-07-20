@@ -328,7 +328,7 @@ namespace Website
                             //cmd.CommandText = String.Format("SELECT [turbdb].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z);
                             //graywulf fix:  database name is the same as the node name
 
-                            if (databases[i].Contains("turb") || databases[i].Contains("channel") || databases[i].Contains("mixing"))
+                            if (databases[i].Contains("turbdb") || (databases[i].Contains("channeldb")) || databases[i].Contains("mixingdb"))
                             {
                                 cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
                                 ret = cmd.ExecuteScalar();
@@ -337,7 +337,7 @@ namespace Website
                                 cmd.Parameters.AddWithValue("@zindex", zindex[i]);
                                 ret1 = cmd.ExecuteReader();
                             }
-                            else if (databases[i].Contains("mhd"))
+                            else if (databases[i].Contains("mhddb"))
                             {
                                 cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
                                 ret = cmd.ExecuteScalar();
@@ -346,7 +346,7 @@ namespace Website
                                 cmd.Parameters.AddWithValue("@zindex", zindex[i]);
                                 ret1 = cmd.ExecuteReader();
                             }
-                            else if (databases[i].Contains("iso4096") || databases[i].Contains("strat4096"))
+                            else if (databases[i].Contains("iso4096db") || databases[i].Contains("strat4096db"))
                             {
                                 cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
                                 ret = cmd.ExecuteScalar();
@@ -354,7 +354,7 @@ namespace Website
                                 //dt.Rows.Add(servers, connect, memory, true, "No test for isotropic4096", DateTime.Now - startTime);
                                 //continue;
                             }
-                            else if (databases[i].Contains("bl_zaki") || databases[i].Contains("channel5200"))
+                            else if (databases[i].Contains("bl_zakidb") || databases[i].Contains("channel5200db"))
                             {
                                 cmd.CommandText = String.Format("SELECT [{3}].[dbo].[CreateMortonIndex] ({0},{1},{2})", x, y, z, codeDatabases[i]);
                                 ret = cmd.ExecuteScalar();
@@ -399,13 +399,23 @@ namespace Website
                         //string msg = "database: " + databases[i] + " server: " + servers_primary[i] + " dbType: " + dbType[i] + " HotActive: " + (!Primary & Backup) + System.Environment.NewLine;
                         //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
                         cmd = conn.CreateCommand();
-                        cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'true' " +
+                        if (dbType[i] == 0)
+                        {
+                            cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'true' " +
                             "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
                             "AND CodeDatabaseName = @codebase AND ProductionDatabaseName = @database;", database.infodb);
+                            cmd.Parameters.AddWithValue("@database", databases[i]);
+                        }
+                        else
+                        {
+                            cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'true' " +
+                            "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
+                            "AND CodeDatabaseName = @codebase AND ProductionDatabaseName like @database;", database.infodb);
+                            cmd.Parameters.AddWithValue("@database", databases[i].Substring(0, databases[i].Length - 3) + "%");
+                        }
                         cmd.Parameters.AddWithValue("@server", servers_primary[i]);
                         cmd.Parameters.AddWithValue("@server2", servers_backup[i]);
                         cmd.Parameters.AddWithValue("@codebase", codeDatabases[i]);
-                        cmd.Parameters.AddWithValue("@database", databases[i]);
                         cmd.CommandTimeout = sqlCommandTimeout;
                         cmd.ExecuteNonQuery();
                     }
@@ -416,13 +426,23 @@ namespace Website
                     {
                         conn.Open();
                         cmd = conn.CreateCommand();
-                        cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'false' " +
+                        if (dbType[i] == 0)
+                        {
+                            cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'false' " +
                             "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
                             "AND CodeDatabaseName = @codebase AND ProductionDatabaseName = @database;", database.infodb);
+                            cmd.Parameters.AddWithValue("@database", databases[i]);
+                        }
+                        else
+                        {
+                            cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'false' " +
+                            "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
+                            "AND CodeDatabaseName = @codebase AND ProductionDatabaseName like @database;", database.infodb);
+                            cmd.Parameters.AddWithValue("@database", databases[i].Substring(0, databases[i].Length - 3) + "%");
+                        }
                         cmd.Parameters.AddWithValue("@server", servers_primary[i]);
                         cmd.Parameters.AddWithValue("@server2", servers_backup[i]);
                         cmd.Parameters.AddWithValue("@codebase", codeDatabases[i]);
-                        cmd.Parameters.AddWithValue("@database", databases[i]);
                         cmd.CommandTimeout = sqlCommandTimeout;
                         cmd.ExecuteNonQuery();
                     }
