@@ -1,0 +1,330 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+Turbulence Expanded cutout service
+<script type="text/javascript" src="/static/scripts/chosen.jquery.min.js"></script>
+<link rel="stylesheet" href="/static/scripts/chosen.css">
+<style>
+#id_dataset {
+    width: 250px;
+}
+#id_fileformat {
+    width: 80px;
+}
+#id_datafields {
+    width: 350px;
+}
+#id_x {
+    width: 40px;
+}
+#id_y {
+    width: 40px;
+}
+#id_z {
+    width: 40px;
+}
+#id_timestart {
+    width: 40px;
+}
+#id_timeend {
+    width: 40px;
+}
+#id_xEnd {
+    width: 40px;
+}
+#id_yEnd {
+    width: 40px;
+}
+#id_zEnd {
+    width: 40px;
+}
+#id_threshold {
+    width: 40px;
+}
+#id_filter {
+    width: 40px;
+}
+
+</style>
+</head>
+<form method="POST" />{% csrf_token %}
+<table>
+<tr><td>Authorization Token:</td><td>
+{{form.token}}
+
+</td></tr>
+<tr><td>Select Dataset:</td>
+<td>
+
+{{form.dataset}}
+
+</td></tr>
+
+<tr><td>Data Field(s):  </td>
+<td>
+{{form.datafields}}
+
+</td></tr>
+<td></td><td>Or choose a computed field (VTK Only):
+{{form.cdatafields}}
+
+<span id="threshold">
+Threshold: {{form.threshold}}
+</span>
+
+</td></tr>
+<tr><td>File Format</td>
+<td>
+{{form.fileformat}}
+
+
+</td></tr>
+</table>
+<table>
+ 
+<tr>
+
+            <td valign="top" colspan="2">Starting coordinate <br /> index for cutout: [<a href="/datasets.aspx" class="note">?</a>] </td>
+
+            <td valign="top" colspan="2"> &nbsp;Size of cutout: [<a href="/datasets.aspx" class="note">?</a>] <br />
+
+                <span class="style1"> &nbsp;(end index minus start index + 1)</span> </td>            
+
+            <td class="style35" valign="top" colspan="2">
+
+                {{form.step_checkbox}}
+
+                <span id="stepCell" title="Optionally select a step size. If omitted every point in the range will be returned."> &nbsp;
+
+                    <span >Step (optional) :</span>
+
+                </span> 
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td  >m<sub>t</sub> <span id="time_start_range"></span>: </td>
+
+            <td > {{form.timestart}} <br /> </td>
+
+            <td  > &nbsp;M<sub>t</sub> <span id="time_end_range"></span>: </td>
+
+            <td > {{form.timeend}} <br /> </td>
+
+           <td >  </td> <td class="step">s<sub>t</sub>:{{form.tstep}} </td>
+
+            
+
+            <td  rowspan="4">  
+
+                 </td>
+
+         </tr>
+
+         <tr>
+
+            <td  > i<sub>x</sub> <span id="x_start_range"></span>:  </td>
+
+            <td > {{form.x}} <br /> </td>
+
+            <td  > &nbsp;N<sub>x</sub> <span id="x_end_range"></span>:  </td>
+
+            <td > {{form.xEnd}} <br /> </td>
+
+            <td >  </td><td class="step">s<sub>x</sub>:{{form.xstep}} </td>
+
+             
+
+         </tr>
+
+         <tr>
+
+            <td  > j<sub>y</sub> <span id="y_start_range"></span>:  </td>
+
+            <td > {{form.y}}<br /> </td>
+
+            <td  > &nbsp;N<sub>y</sub> <span id="y_end_range"></span>:  </td>
+
+            <td > {{form.yEnd}}<br /> </td>
+
+            <td >  </td><td class="step">s<sub>y</sub>:{{form.ystep}} </td>
+
+             
+
+         </tr>
+
+         <tr>
+
+            <td  > k<sub>z</sub> <span id="z_start_range"></span>:  </td>
+
+            <td > {{form.z}} </td>
+
+            <td  > &nbsp;N<sub>z</sub> <span id="z_end_range"></span>:  </td>
+
+            <td > {{form.zEnd}} </td>
+
+            <td >  </td><td class="step">s<sub>z</sub>:{{form.zstep}} </td>
+
+            
+
+         </tr>    
+</table><br />
+<span class="step">
+Filter Width (optional): {{form.filter}}</span>
+<br />
+<input type="submit" name="Submit" Value="Submit Cutout Parameters" />
+</form>
+<div id="download_link"><a href='{{download_link}}'>{{download_link}}</a></div> 
+<script>
+$("#id_dataset").chosen();
+$("#id_datafields").chosen();
+$("#id_cdatafields").chosen();
+$("#id_fileformat").chosen();
+$('.step').hide();
+
+$(document).ready(function() {
+  if($("#id_step_checkbox").is(':checked')){ 
+    $('.step').show();
+  }
+  if ($("#id_cdatafields").val() == "cvo") {
+      $('#threshold').show();
+  }
+  else if ($("#id_cdatafields").val() == "qcc") {
+      $('#threshold').show();
+  }
+  else {
+      $('#threshold').hide();
+  }
+  //$('#id_dataset').trigger('change');
+  //We can't do the above because it clears out the data fields.
+
+});
+
+
+$('#id_step_checkbox').on('change', function() {    
+   var val = $(this).val();
+   if ($(this).is(":checked"))
+   $('.step').show();  
+  else
+   $('.step').hide();
+});
+
+
+$('#id_datafields').on('change', function() {
+   var dset= $(this).val();
+   //Clear out any values on computed fields
+   $(function() {$("#id_cdatafields").val("none");
+    });
+  $('#id_cdatafields').trigger('chosen:updated');
+});
+
+
+$('#id_cdatafields').on('change', function() {
+   var dset= $(this).val();
+   //Clear out any values on data fields
+   $(function() {$("#id_datafields").val([]);
+    });
+    $('#id_datafields').trigger('chosen:updated');
+      if (dset == "cvo") {
+          $('#threshold').show();
+      }
+      else if (dset == "qcc") {
+          $('#threshold').show();
+      }
+      else {
+          $('#threshold').hide();
+
+      }
+
+});
+
+$('#id_fileformat').on('change', function() {
+   var ftype= $(this).val();
+   if (ftype == 'hdf5')
+       //Clear out any values on computed fields
+       $(function() {$("#id_cdatafields").val([]);
+        });
+        $('#id_cdatafields').trigger('chosen:updated');
+});
+
+
+$('#id_dataset').on('change', function() {
+   var dset= $(this).val();
+   //Clear out any values 
+   //alert('changed');
+   $("#id_datafields").find('option').remove();
+   if (dset == 'isotropic1024coarse'){
+      $("#id_datafields").append($("<option>", {value: 'u', text: 'Velocity'}));
+      $("#id_datafields").append($("<option>", {value: 'p', text: 'Pressure'})); 
+      $("#time_start_range").text("(0-1024)");
+      $("#time_end_range").text("(1-1025)");
+      $("#x_start_range").text("(0-1023)");
+      $("#x_end_range").text("(1-1024)");
+      $("#y_start_range").text("(0-1023)");
+      $("#y_end_range").text("(1-1024)");
+      $("#z_start_range").text("(0-1023)");
+      $("#z_end_range").text("(1-1024)");
+    } 
+   else if (dset == 'isotropic1024fine'){
+      $("#id_datafields").append($("<option>", {value: 'u', text: 'Velocity'}));
+      $("#id_datafields").append($("<option>", {value: 'p', text: 'Pressure'})); 
+      $("#time_start_range").text("(0-1024)");
+      $("#time_end_range").text("(1-100)");
+      $("#x_start_range").text("(0-1023)");
+      $("#x_end_range").text("(1-1024)");
+      $("#y_start_range").text("(0-1023)");
+      $("#y_end_range").text("(1-1024)");
+      $("#z_start_range").text("(0-1023)");
+      $("#z_end_range").text("(1-1024)");
+ 
+    }
+   else if (dset == 'channel'){
+      $("#id_datafields").append($("<option>", {value: 'u', text: 'Velocity'}));
+      $("#id_datafields").append($("<option>", {value: 'p', text: 'Pressure'})); 
+      $("#time_start_range").text("(0-3999)");
+      $("#time_end_range").text("(1-4000)");
+      $("#x_start_range").text("(0-2047)");
+      $("#x_end_range").text("(1-2048)");
+      $("#y_start_range").text("(0-511)");
+      $("#y_end_range").text("(1-512)");
+      $("#z_start_range").text("(0-1535)");
+      $("#z_end_range").text("(1-1536)");
+    }
+   else if (dset == 'mhd1024'){
+      $("#id_datafields").append($("<option>", {value: 'u', text: 'Velocity'}));
+      $("#id_datafields").append($("<option>", {value: 'p', text: 'Pressure'}));
+      $("#id_datafields").append($("<option>", {value: 'b', text: 'Magnetic Field'}));
+      $("#id_datafields").append($("<option>", {value: 'a', text: 'VectorPotential'})); 
+      $("#time_start_range").text("(0-1024)");
+      $("#time_end_range").text("(1-1025)");
+      $("#x_start_range").text("(0-1023)");
+      $("#x_end_range").text("(1-1024)");
+      $("#y_start_range").text("(0-1023)");
+      $("#y_end_range").text("(1-1024)");
+      $("#z_start_range").text("(0-1023)");
+      $("#z_end_range").text("(1-1024)");
+    } 
+    else if (dset == 'mixing'){
+      $("#id_datafields").append($("<option>", {value: 'u', text: 'Velocity'}));
+      $("#id_datafields").append($("<option>", {value: 'p', text: 'Pressure'}));
+      $("#id_datafields").append($("<option>", {value: 'd', text: 'Density'}));
+      $("#time_start_range").text("(0-1011)");
+      $("#time_end_range").text("(1-1025)");
+      $("#x_start_range").text("(0-1012)");
+      $("#x_end_range").text("(1-1024)");
+      $("#y_start_range").text("(0-1023)");
+      $("#y_end_range").text("(1-1024)");
+      $("#z_start_range").text("(0-1023)");
+      $("#z_end_range").text("(1-1024)");
+    }
+
+   
+   $('#id_datafields').trigger('chosen:updated');
+});
+</script>
+
+

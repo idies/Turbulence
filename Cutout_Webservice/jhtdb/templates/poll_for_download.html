@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+    <title>JHTDB Large Cutout</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+<script>
+
+    $(function(){
+        $.ajaxSetup({ cache: false, timeout: 360000 });
+        $( "#progressbar" ).progressbar({
+          value: 0
+        });
+        var url = "/jhtdb/poll_for_download/";
+        var progress_url = "/jhtdb/getprogress/";
+        var i = 0;
+        percent = 0;
+        (function worker() {
+            $.getJSON(url+"?task_id={{task_id}}", function(data){
+                if(data.filename) {
+                    percent = 100;
+                    $("#percentcomplete").html(percent + '% complete');
+                    $( "#progressbar" ).progressbar({
+                              value: percent
+                            });
+                    //var file_url = url+"filename="+data.filename;
+                    var file_url = '/static/cutoutcache/' + data.filename;
+                    $("#content").html("If your download doesn't start automatically, please click <a href='"+file_url+"'>here</a>.");
+                    window.location.href = file_url;
+                } else if(data.result != null)  {
+                    //Since it isn't ready, get progress of build
+                    if (data.result.cubes == 0) {
+                        percent = 0;
+                    }
+                    else {
+                        percent = Math.round(data.result.cubes*100/data.result.total);
+                    }
+                    $("#percentcomplete").html(percent + '% complete');
+                    $("#cubecount").html(data.result.cubes);
+                    $( "#progressbar" ).progressbar({
+                              value: percent
+                            });
+                    setTimeout(worker, 5000);
+                    
+                }
+                 else {
+                    $("#percentcomplete").html('0%');
+                    $( "#progressbar" ).progressbar({
+                              value: 0
+                            });
+                    setTimeout(worker, 5000);
+
+                   }
+            });
+        })();
+        setInterval(function() {
+            
+            i = ++i % 4;
+            if (percent < 100) {
+                $("#loading").html("Building Cutout"+Array(i+1).join("."));
+            }
+            else {
+                $("#loading").html("Compressing"+Array(i+1).join("."));
+            }
+        }, 1000);
+    });
+</script>
+
+</head>
+<body>
+<div id="content"> Please wait for cutout to be built and compressed. <span id="loading"></span></div>
+<div id="progressbar" width='50%'><span id="percentcomplete">0%</span></div>
+
+
+
+</body>
+</html>
+
