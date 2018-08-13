@@ -43,20 +43,20 @@ BEGIN TRANSACTION t1
 
 DECLARE @id INT
 
-INSERT INTO [turbinfo].[dbo].[users]
+INSERT INTO [turblog].[dbo].[users]
           ([authkey]
           ,[limit])
     VALUES
 		(@token, 0)
 SET @ID = SCOPE_IDENTITY()
 
-INSERT INTO [turbinfo].[dbo].[particlecount]
+INSERT INTO [turblog].[dbo].[particlecount]
           ([uid]
           ,[records])
     VALUES
           ( @ID, 0)
 
-INSERT INTO [turbinfo].[dbo].[userinfo]
+INSERT INTO [turblog].[dbo].[userinfo]
           ([uid]
           ,[contact])
     VALUES
