@@ -27,17 +27,32 @@ class Cube:
         #get this from field data in db
         components = Datafield.objects.get(shortname=datafield).components
         DBSTRING = settings.ODBC['db_turblib_string']
-        conn = pyodbc.connect(DBSTRING, autocommit=True)
+        retries = 4
+        attempt = 0
+        while (attempt < retries):
+            try:
+                if attempt < 2:
+                    DBSTRING = settings.ODBC['db_turblib_string']
+                else:
+                    DBSTRING = settings.ODBC['db_turblib_string']
+ 
+                conn = pyodbc.connect(DBSTRING, autocommit=True)
+                attempt = retries
+                print('Connecting succeeded:',DBSTRING)
+            except:
+                print('Connecting failed:',DBSTRING)
+                attempt = attempt+1
+
         cursor = conn.cursor()
         start = time.time()
         #Need to get the time factor which is the multiple of the timestep
         timefactor = Dataset.objects.get(dbname_text=ci.dataset).timefactor
         #It appears this sometimes fails when parallel processing, so we try up to 3 times...
-        retries =3
+        #retries =3
         attempt = 0
-        while (attempt < retries ):
+        while (attempt < retries):
             try:
-                cursor.execute("{CALL turblib.dbo.GetAnyCutout(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
+                cursor.execute("{CALL GetAnyCutout(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}",
                     ci.dataset, datafield, ci.authtoken, ci.ipaddr, timestep*timefactor, self.xstart, self.ystart, self.zstart, self.xstep, self.ystep, self.zstep,1,1,self.xwidth,self.ywidth,self.zwidth,self.filterwidth,1)
                 attempt = retries #success, so don't let it retry.
                 print("SQL Succeeded")
@@ -100,6 +115,5 @@ class Cube:
     def trim ( self, ci ):
         """Trim off the excess data"""
         self.data = self.data [ 0:ci.zlen, 0:ci.ylen, 0:ci.xlen ]
-
 
 

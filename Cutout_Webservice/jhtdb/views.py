@@ -146,6 +146,9 @@ def getcutout(request, webargs):
     print ("From IP2: ")
     print ci.ipaddr
     numpoints = ci.xlen * ci.ylen * ci.zlen
+    #if (numpoints > 50000000): # ~572MB for velocity
+    #    return HttpResponse("Error: cutout service has a limit of 50,000,000 points at a time")
+
     if ((numpoints > 16777215) and (ci.filetype == 'hdf5')): #task out anything larger than 256x256x256 and ignore shape
 
         isValid, limit = jhlib.verify(ci.authtoken,1)

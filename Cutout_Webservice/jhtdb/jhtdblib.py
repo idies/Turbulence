@@ -100,6 +100,7 @@ class JHTDBLib():
                 conn.close()
                 return (False,limit)
         except:
+            print ("connecting failed: ",DBSTRING)
             if attempt == 1:
                 return self.verify(authtoken,2)
             else:
@@ -134,4 +135,3 @@ class JHTDBLib():
             morton += (z & mask) << (2*i+2)
             mask <<= 1
         return morton
-
