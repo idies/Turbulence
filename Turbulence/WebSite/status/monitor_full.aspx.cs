@@ -705,6 +705,21 @@ namespace Website
 
                 pass = true;
             }
+            catch (WebException e)
+            {
+                if (e.Status == WebExceptionStatus.ProtocolError)
+                {
+                    WebResponse resp = e.Response;
+                    using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
+                    {
+                        var text = sr.ReadToEnd();
+                        //Response.Write(sr.ReadToEnd());
+                        //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", text);
+                    }
+                }
+                reportError(test, e);
+                pass = false;
+            }
             catch (Exception e)
             {
                 reportError(test, e);
