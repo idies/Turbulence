@@ -1,0 +1,12 @@
+<HTML>
+<head>
+<script>
+  $(function() {
+    $( "#progressbar" ).progressbar({
+      value: {{ progress }}
+    });
+  });
+
+</script>
+</head>
+<body></body

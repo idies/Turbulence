@@ -1,0 +1,468 @@
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head><title>Johns Hopkins Turbulence Databases (JHTDB)</title> 
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script type="text/javascript" src="/static/scripts/chosen.jquery.min.js"></script>
+<script type="text/javascript" src="/static/scripts/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/static/scripts/jquery-validation-1.14.0/dist/additional-methods.min.js"></script>
+
+<link rel="stylesheet" href="/static/scripts/chosen.css">
+<link rel="stylesheet" href="/static/scripts/jquery-validation-1.14.0/demo/site-demos.css">
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+<style>
+#id_dataset {
+    width: 250px;
+}
+#id_fileformat {
+    width: 80px;
+}
+#id_datafields {
+    width: 350px;
+}
+#id_x {
+    width: 40px;
+}
+#id_y {
+    width: 40px;
+}
+#id_z {
+    width: 40px;
+}
+#id_timestart {
+    width: 40px;
+}
+#id_timeend {
+    width: 40px;
+}
+#id_xEnd {
+    width: 40px;
+}
+#id_yEnd {
+    width: 40px;
+}
+#id_zEnd {
+    width: 40px;
+}
+#id_threshold {
+    width: 40px;
+}
+#id_filter {
+    width: 40px;
+}
+
+</style>
+</head>
+<body>
+<form method="POST" id="cutout_form" />{% csrf_token %}
+<table>
+<tr><td>Authorization Token:[<a href="http://turbulence.pha.jhu.edu/help/authtoken.aspx" class="note" target="_blank">?</a>]</td><td>
+{{form.token}}
+
+</td></tr>
+<tr><td>Select Dataset:[<a href="http://turbulence.pha.jhu.edu/datasets.aspx" class="note" target="_blank">?</a>]</td>
+<td>
+
+{{form.dataset}}<span id="dt"></span>
+
+</td></tr>
+
+<tr><td>Data Field(s): [<a href="http://turbulence.pha.jhu.edu/datasets.aspx" class="note" target="_blank">?</a>] </td>
+<td>
+{{form.datafields}}
+
+</td></tr>
+<td></td><td>Or choose a computed field (VTK Only):
+{{form.cdatafields}}
+
+<span id="threshold">
+Threshold (optional, default is ...): {{form.threshold}}
+</span>
+
+</td></tr>
+<tr><td>File Format</td>
+<td>
+{{form.fileformat}}
+
+
+</td></tr>
+</table>
+<br />
+<span id="datasetcomment"></span>
+
+<table width="600px">
+<tr><td>Specify the cutout parameters below. Select the starting index for the cutout and the size in each dimension. Optionally, a step or stride can be specified to obtain every "other" data point. If a step size is specified the data can olso optionally be filtered using a box filter (except in the case of the channel flow dataset). To get a filtered cutout specify the filter width for the box filter in units of grid points. 
+</td></tr>
+</table>
+<table>
+<tr>
+
+            <td valign="top" colspan="2">Starting coordinate <br /> index for cutout: [<a href="http://turbulence.pha.jhu.edu/datasets.aspx" class="note" target="_blank">?</a>] </td>
+
+            <td valign="top" colspan="2"> &nbsp;Size of cutout: [<a href="http://turbulence.pha.jhu.edu/datasets.aspx" target = "_blank" class="note">?</a>] <br />
+
+                <span class="style1"> &nbsp;(end index minus start index + 1)</span> </td>            
+
+            <td class="style35" valign="top" colspan="2">
+
+                {{form.step_checkbox}}
+
+                <span id="stepCell" title="Optionally select a step size. If omitted every point in the range will be returned."> &nbsp;
+
+                    <span >Step (optional) :</span>
+
+                </span> 
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td  >m<sub>t</sub> <span id="time_start_range"></span>: </td>
+
+            <td > {{form.timestart}} <br /> </td>
+
+            <td  > &nbsp;M<sub>t</sub> <span id="time_end_range"></span>: </td>
+
+            <td > {{form.timeend}} <br /> </td>
+
+           <td >  </td> <td class="step">s<sub>t</sub>:{{form.tstep}} </td>
+
+            
+
+            <td  rowspan="4">  
+
+                 </td>
+
+         </tr>
+
+         <tr>
+
+            <td  > i<sub>x</sub> <span id="x_start_range"></span>:  </td>
+
+            <td > {{form.x}} <br /> </td>
+
+            <td  > &nbsp;N<sub>x</sub> <span id="x_end_range"></span>:  </td>
+
+            <td > {{form.xEnd}} <br /> </td>
+
+            <td >  </td><td class="step">s<sub>x</sub>:{{form.xstep}} </td>
+
+             
+
+         </tr>
+
+         <tr>
+
+            <td  > j<sub>y</sub> <span id="y_start_range"></span>:  </td>
+
+            <td > {{form.y}}<br /> </td>
+
+            <td  > &nbsp;N<sub>y</sub> <span id="y_end_range"></span>:  </td>
+
+            <td > {{form.yEnd}}<br /> </td>
+
+            <td >  </td><td class="step">s<sub>y</sub>:{{form.ystep}} </td>
+
+             
+
+         </tr>
+
+         <tr>
+
+            <td  > k<sub>z</sub> <span id="z_start_range"></span>:  </td>
+
+            <td > {{form.z}} </td>
+
+            <td  > &nbsp;N<sub>z</sub> <span id="z_end_range"></span>:  </td>
+
+            <td > {{form.zEnd}} </td>
+
+            <td >  </td><td class="step">s<sub>z</sub>:{{form.zstep}} </td>
+
+            
+
+         </tr>    
+</table><br />
+<span class="step">
+Filter Width (optional): {{form.filter}}</span>
+<br />
+<div id="download_link"><a href='{{download_link}}'>{{download_link}}</a>
+<br /><div id="progressbar"></div></div> 
+<br />
+<div id="downloadsize"></div>
+
+<div id="preview_link"><a href='{{preview_link}}'>{{preview_link}}</a></div> 
+
+<br />
+<input type="submit" name="Submit" Value="Submit Cutout Parameters" />
+</form>
+<iframe name='getcutout' width='500' height='100' frameBorder='0'></iframe>
+
+<script>
+
+function calcSize() {
+   function componentsize(component) {
+        if ((component == "u") || (component == "a")|| (component == "b")|| (component == "w")) {
+            console.log("return 3: " + component);
+            return 3;
+        }
+        else {
+            console.log("return 1: " + component);
+            return 1;
+        }
+   };
+   components = 0; 
+   component_array = $("#id_datafields").val();
+   console.log("Component array: " +  component_array);
+   for (var component in component_array)
+    {
+        components = components + componentsize(component_array[component]);
+    }
+
+   console.log($("#id_datafields").val());
+   console.log("Was values");
+   //components = 3;
+   sizeoffloat = 4;
+   size = sizeoffloat * $("#id_xEnd").val() * $("#id_yEnd").val() * $("#id_zEnd").val() * components * $("#id_timeend").val()/($("#id_xstep").val()*$("#id_ystep").val()*$("#id_zstep").val()*$("#id_tstep").val());
+   $("#downloadsize").replaceWith("<div id='downloadsize'>Approximate Size (uncompressed): " + formatSize(size) + "</div>");
+}
+
+function formatSize(size) {
+   var text;
+    if (size >= 10 * 1024 * 1024 * 1024) {
+    text = (size / 1024 / 1024 / 1024) + "GB";
+    }
+    else if (size >= 10 * 1024 * 1024) {
+        text = (size / 1024 / 1024) + "MB";
+    }
+    else if (size >= 10 * 1024) {
+        text = (size / 1024) + "KB";
+    }
+    else {
+        text = (size) + "B";
+    }
+    return text;
+}
+
+$("#id_dataset").chosen();  //Chosen and validate don't play well together.
+$("#id_datafields").chosen();
+$("#id_cdatafields").chosen();
+$("#id_fileformat").chosen();
+$('.step').hide();
+ 
+$(document).ready(function() {
+    //Fix dataset issue with chosen and validate
+  $.validator.setDefaults({ ignore: ":hidden:not(select)" })
+
+  $( "#cutout_form" ).validate({
+     submitHandler: function (form) {  
+            //alert('Press ok for url');
+            /* url = "http://" + server + "/jhtdb/getcutout/"+ token + "/" + dataset + "/" + datafields + "/" + ts + "," +te + "/" + xs + "," + xe +"/" + ys + "," + ye +"/" + zs + "," + ze + "/" + filetype + "/"*/
+            server = '{{ request.META.HTTP_HOST }}';
+            if ($("#id_datafields").val() != null && $("#id_datafields").val() != "") {
+                datafields = $("#id_datafields").val();
+                 
+            }
+            else if ($("#id_cdatafields").val() != null  && $("#id_cdatafields").val() != "") {
+                datafields = $("#id_cdatafields").val() + "," + $("#id_threshold").val();
+                    
+            }
+            else {
+            //Nothing checked, Inform client
+                alert('Choose a data field or computed field.');
+                return false;
+            };
+            step = ""
+            if ($("#id_step_checkbox").is(':checked')){
+               step = $("#id_tstep").val() + "," + $("#id_xstep").val() + "," + $("#id_ystep").val() + "," + $("#id_zstep").val() + "/" + $("#id_filter").val() + "/";
+            }
+            url = "http://" +server + "/jhtdb/getcutout/" + $("#id_token").val() + "/" + $("#id_dataset").val() + "/" +
+            datafields + "/" + $("#id_timestart").val() +","+ $("#id_timeend").val() + "/" + $("#id_x").val() + "," + $("#id_xEnd").val()
+            +"/" + $("#id_y").val() + "," + $("#id_yEnd").val() +"/" + $("#id_z").val() + "," + $("#id_zEnd").val() + "/" + 
+            $("#id_fileformat").val() + "/" + step;
+            $("#download_link").replaceWith("<a href='" + url + "' id='download_link' target='getcutout' >" +url + "</a>");
+
+
+            /*Set progress bar to 0.*/
+            $(function() {
+                $( "#progressbar" ).progressbar({
+                  value: 0
+                });
+              });
+            //Update size
+            calcSize();
+            //New feature.  Provide option to view Polydata files in the browser.
+            if ($("#id_cdatafields").val() == "cvo") {
+                previewurl = "http://" +server + "/jhtdb/preview/" + $("#id_token").val() + "/" + $("#id_dataset").val() + "/" +
+                datafields + "/" + $("#id_timestart").val() +","+ $("#id_timeend").val() + "/" + $("#id_x").val() + "," + $("#id_xEnd").val()
+                +"/" + $("#id_y").val() + "," + $("#id_yEnd").val() +"/" + $("#id_z").val() + "," + $("#id_zEnd").val() + "/" + 
+                $("#id_fileformat").val() + "/" + step;
+                $("#preview_link").replaceWith("<br /><a href='" + previewurl + "' id='preview_link' target='_blank'>View Contour in Browser</a><br />");
+            } 
+            /*We never actually post this form since all logic is now handled in javascript. */
+            return false;
+        }
+    }
+  );
+
+  $("#id_token").rules("add", {required: true});
+  $("#id_dataset").rules("add", {required: true});
+  
+  
+  
+  if($("#id_step_checkbox").is(':checked')){ 
+    $('.step').show();
+  }
+  if ($("#id_cdatafields").val() == "cvo") {
+      $('#threshold').show();
+  }
+  else if ($("#id_cdatafields").val() == "qcc") {
+      $('#threshold').show();
+  }
+  else {
+      $('#threshold').hide();
+  }
+  //$('#id_dataset').trigger('change');
+  //We can't do the above because it clears out the data fields.
+  //Instead we just put in the values without clearing the datafields (same code) 
+  var dset = $('#id_dataset').val();
+  $('#id_datafields option').remove();
+  switch(dset) {
+   {% for dset in dataset_list %}
+   case ('{{dset.dbname_text}}'):
+      $('#id_datafields option').remove();
+      {% for dfield in dset.datafield_set.all %}
+           $("#id_datafields").append($("<option>", {value: '{{dfield.shortname}}', text: '{{dfield.longname}}'})); 
+           
+      {% endfor %}
+    
+      if ("{{dset.dbname_text}}" == "channel") {
+	      $("#datasetcomment").text("<span>Channel grid</span>");
+      }
+
+
+      $("#time_start_range").text("({{dset.tstart}}-{{dset.timeend|add:-1}})");
+      $("#time_end_range").text("({{dset.tstart|add:1}}-{{dset.timeend}})");
+      $("#x_start_range").text("({{dset.xstart}}-{{dset.xend|add:-1}})");
+      $("#x_end_range").text("({{dset.xstart|add:1}}-{{dset.xend}})");
+      $("#y_start_range").text("({{dset.ystart}}-{{dset.yend|add:-1}})");
+      $("#y_end_range").text("({{dset.ystart|add:1}}-{{dset.yend}})");
+      $("#z_start_range").text("({{dset.zstart}}-{{dset.zend|add:-1}})");
+      $("#z_end_range").text("({{dset.zstart|add:1}}-{{dset.zend}})");
+    break;
+    {% endfor %}
+    }
+    $('#id_datafields').trigger('chosen:updated');
+});
+$('#id_step_checkbox').on('change', function() {    
+   var val = $(this).val();
+   if ($(this).is(":checked"))
+   $('.step').show();  
+  else
+   $('.step').hide();
+});
+
+
+$('#id_datafields').on('change', function() {
+   var dset= $(this).val();
+   //Clear out any values on computed fields
+   $(function() {$("#id_cdatafields").val("none");
+    });
+  $('#id_cdatafields').trigger('chosen:updated');
+});
+
+
+$('#id_cdatafields').on('change', function() {
+   var dset= $(this).val();
+   //Clear out any values on data fields
+   $(function() {$("#id_datafields").val([]);
+    });
+    $('#id_datafields').trigger('chosen:updated');
+      if (dset == "cvo") {
+          $('#threshold').show();
+      }
+      else if (dset == "qcc") {
+          $('#threshold').show();
+      }
+      else {
+          $('#threshold').hide();
+
+      }
+
+});
+
+$('#id_fileformat').on('change', function() {
+   var ftype= $(this).val();
+   if (ftype == 'hdf5')
+       //Clear out any values on computed fields
+       $(function() {$("#id_cdatafields").val([]);
+        });
+        $('#id_cdatafields').trigger('chosen:updated');
+});
+
+
+$('#id_dataset').on('change', function() {
+   var dset= $(this).val();
+   //Clear out any values 
+   //alert('changed');
+   $("#id_datafields").find('option').remove();
+   
+   switch(dset) {
+   {% for dset in dataset_list %}
+   case ('{{dset.dbname_text}}'):
+
+      {% for dfield in dset.datafield_set.all %}
+           $("#id_datafields").append($("<option>", {value: '{{dfield.shortname}}', text: '{{dfield.longname}}'})); 
+      {% endfor %}
+      $("#time_start_range").text("({{dset.tstart}}-{{dset.timeend|add:-1}})");
+      $("#time_end_range").text("({{dset.tstart|add:1}}-{{dset.timeend}})");
+      $("#x_start_range").text("({{dset.xstart}}-{{dset.xend|add:-1}})");
+      $("#x_end_range").text("({{dset.xstart|add:1}}-{{dset.xend}})");
+      $("#y_start_range").text("({{dset.ystart}}-{{dset.yend|add:-1}})");
+      $("#y_end_range").text("({{dset.ystart|add:1}}-{{dset.yend}})");
+      $("#z_start_range").text("({{dset.zstart}}-{{dset.zend|add:-1}})");
+      $("#z_end_range").text("({{dset.zstart|add:1}}-{{dset.zend}})");
+      $("#dt").text("(dt: {{dset.dt}})");
+      //Update form validation
+      $("#id_x").rules("remove");
+      $("#id_x").rules("add", {required: true, range: [{{dset.xstart}}, {{dset.xend|add:-1}}]  });
+      $("#id_y").rules("remove");
+      $("#id_y").rules("add", {required: true, range: [{{dset.ystart}}, {{dset.yend|add:-1}}]  });
+      $("#id_z").rules("remove");
+      $("#id_z").rules("add", {required: true, range: [{{dset.zstart}}, {{dset.zend|add:-1}}]  });
+      $("#id_timestart").rules("remove");
+      $("#id_timestart").rules("add", {required: true, range: [{{dset.tstart}}, {{dset.timeend|add:-1}}]  });
+
+      $("#id_xEnd").rules("remove");
+      $("#id_xEnd").rules("add", {required: true, range: [{{dset.xstart|add:1}}, {{dset.xend}}]  });
+      $("#id_yEnd").rules("remove");
+      $("#id_yEnd").rules("add", {required: true, range: [{{dset.ystart|add:1}}, {{dset.yend}}]  });
+      $("#id_zEnd").rules("remove");
+      $("#id_zEnd").rules("add", {required: true, range: [{{dset.zstart|add:1}}, {{dset.zend}}]  });
+      $("#id_timeend").rules("remove");
+      $("#id_timeend").rules("add", {required: true, range: [{{dset.tstart|add:1}}, {{dset.timeend}}]  });
+      if ("{{dset.dbname_text}}" == "channel") {
+	   $("#datasetcomment").text("	Note: Simulation was performed in a moving frame and the spatial locations of the data are those of the moving grid.");
+	 }
+
+
+  
+      break;
+    {% endfor %}
+    }
+
+   
+   $('#id_datafields').trigger('chosen:updated');
+
+
+
+
+
+});
+</script>
+</body>
+</html>
+

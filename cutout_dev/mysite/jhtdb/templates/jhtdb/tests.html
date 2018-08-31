@@ -1,0 +1,13 @@
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head><title>Johns Hopkins Turbulence Databases (JHTDB)</title> 
+
+<body>
+Channel point query results: <br /> <br />
+
+{% for time in chantimes %}
+   channeldb {{ forloop.counter }}: {{ time }} <br />
+  
+{% endfor %}
+</body>
+</html>
+

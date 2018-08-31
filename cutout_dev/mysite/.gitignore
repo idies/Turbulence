@@ -1,0 +1,37 @@
+#################
+# Project Files #
+#################
+
+*private.py
+settings.py
+settings_secret.py
+settings_bkup.py
+activation_email.txt
+
+###################
+# Compiled source #
+###################
+*.pyc
+*.py~
+*.o
+*.so
+*.out
+*.exe
+*.a
+*.log
+
+##############
+# Data Files #
+##############
+*.h5
+*.JSON
+dbconn.sh
+*.vti
+*.vtk
+*.vtp
+
+######################
+# OS Generated Files #
+######################
+.DS_Store
+*.swp

@@ -1,0 +1,4 @@
+#/bin/bash
+#export db_channel_string='DSN=channel;UID=turbquery;PWD=aa2465ways2k'
+#export db_connection_string='DSN=turbinfo;UID=turbquery;PWD=aa2465ways2k'
+python manage.py runserver 128.220.144.14:8002

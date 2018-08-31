@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>JHTDB Contour Preview</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #000;
+				color: #fff;
+				margin: 0px;
+				overflow: hidden;
+			}
+			#info {
+				color: #fff;
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+				display:block;
+			}
+			#info a, .button { color: #f00; font-weight: bold; text-decoration: underline; cursor: pointer }
+		</style>
+	</head>
+
+	<body>
+		<div id="info">
+		JHTDB Contour Preview
+		</div>
+
+		<script src="/static/scripts/three.min.js"></script>
+
+		<script src="/static/scripts/js/controls/TrackballControls.js"></script>
+
+		<script src="/static/scripts/js/loaders/VTKLoader.js"></script>
+
+		<script src="/static/scripts/js/Detector.js"></script>
+		<script src="/static/scripts/js/libs/stats.min.js"></script>
+
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			var container, stats;
+
+			var camera, controls, scene, renderer;
+
+			var cross;
+
+			init();
+			animate();
+
+			function init() {
+
+				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.01, 1e10 );
+				camera.position.z = 0.2;
+
+				controls = new THREE.TrackballControls( camera );
+
+				controls.rotateSpeed = 5.0;
+				controls.zoomSpeed = 5;
+				controls.panSpeed = 2;
+
+				controls.noZoom = false;
+				controls.noPan = false;
+
+				controls.staticMoving = true;
+				controls.dynamicDampingFactor = 0.3;
+
+				scene = new THREE.Scene();
+
+				scene.add( camera );
+
+				// light
+
+				var dirLight = new THREE.DirectionalLight( 0xffffff );
+				dirLight.position.set( 200, 200, 1000 ).normalize();
+
+				camera.add( dirLight );
+				camera.add( dirLight.target );
+                // ambient light
+                var amb = new THREE.AmbientLight(0x000055); //Blue light
+				var material = new THREE.MeshLambertMaterial( { color:0xff7777, side: THREE.DoubleSide } );
+
+				var loader = new THREE.VTKLoader();
+				loader.load( "/jhtdb/getcutout/{{getdata_link}}", function ( geometry ) {
+
+					geometry.computeVertexNormals();
+
+					var mesh = new THREE.Mesh( geometry, material );
+					mesh.position.setY( - 0.09 );
+                    //mesh.position.setY( 0.0 );
+					scene.add( mesh );
+
+				} );
+
+				// renderer
+
+				renderer = new THREE.WebGLRenderer( { antialias: false } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+				container.appendChild( renderer.domElement );
+
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+
+				//
+
+				window.addEventListener( 'resize', onWindowResize, false );
+
+			}
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+
+				controls.handleResize();
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				controls.update();
+				renderer.render( scene, camera );
+
+				stats.update();
+
+			}
+
+		</script>
+
+	</body>
+</html>
