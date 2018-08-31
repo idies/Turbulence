@@ -51,10 +51,19 @@ Turbulence/.vs/
 #################
 
 *private.py
-settings.py
+#settings.py
 settings_secret.py
 settings_bkup.py
 activation_email.txt
+
+####
+# virtualenv stuff
+###
+
+vcutout
+
+
+
 
 ###################
 # Compiled source #
