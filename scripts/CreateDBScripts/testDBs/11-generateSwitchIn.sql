@@ -21,11 +21,13 @@ declare @npart int
 declare @sql nvarchar(max)
 DECLARE @NewLine AS CHAR(2) = CHAR(13) + CHAR(10)
 declare @count int
+declare @doExecute bit
 
 --===========================================
 -- SET THIS!
 --===========================================
 set @tablename = 'vel'
+set @doExecute = 1
 
 
 -------------------------------------------
@@ -49,7 +51,9 @@ begin
 	set @sql = 'ALTER TABLE ' + @switchtable +'
 				SWITCH TO ' + @tablename +'
 				PARTITION ' + cast(@count as nvarchar)
-
+	if (@doExecute = 1)
+		exec sp_executesql @sql
+		
 	print @sql
 	print @newline
 
