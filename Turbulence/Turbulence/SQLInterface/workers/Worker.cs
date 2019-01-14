@@ -719,10 +719,10 @@ namespace Turbulence.SQLInterface
             GetMHDPressure = 57,
             GetMHDMagnetic = 58,
             GetMHDPotential = 59,
-            GetRawVelocity = 60,
-            GetRawPressure = 61,
-            GetRawMagnetic = 62,
-            GetRawPotential = 63,
+            //GetRawVelocity = 60,
+            //GetRawPressure = 61,
+            //GetRawMagnetic = 62,
+            //GetRawPotential = 63,
             GetMHDVelocityGradient = 64, //NOTE: At some point there was a separate splines worker with id 133
             GetMHDMagneticGradient = 65,
             GetMHDPotentialGradient = 66,
@@ -765,7 +765,22 @@ namespace Turbulence.SQLInterface
             GetDensity = 150, //NOTE: used to be 140
             GetDensityGradient = 151, //NOTE: used to be 141
             GetDensityHessian = 152, //NOTE: used to be 142
-            GetRawDensity = 153, //NOTE: used to be 143
+            //GetRawDensity = 153, //NOTE: used to be 143
+
+            //worker 2?? is for Cutout Service/Raw Data/Filtered Data
+            GetRawVelocity = 210, //NOTE: used to be 60
+            GetRawMagnetic = 211, //NOTE: used to be 62
+            GetRawPotential = 212, //NOTE: used to be 63
+            GetRawPressure = 220, //NOTE: used to be 64
+            GetRawDensity = 221, //NOTE: used to be 153 and 143
+            GetRawTemperature = 222,
+
+            GetFilteredVelocity = 230,
+            GetFilteredMagnetic = 231,
+            GetFilteredPotential = 232,
+            GetFilteredPressure = 240,
+            GetFilteredDensity = 241,
+            GetFilteredTemperature = 242,
 
             GetVelocityWorkerDirectOpt = 556,
             GetVelocityWorkerDirectWorst = 557

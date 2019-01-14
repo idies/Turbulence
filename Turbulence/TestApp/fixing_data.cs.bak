@@ -1,0 +1,1050 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Turbulence.TurbLib;
+using Turbulence.TurbLib.DataTypes;
+using Turbulence.SQLInterface;
+using Turbulence.TurbBatch;
+using Turbulence.SciLib;
+using TestApp;
+using TurbulenceService;
+
+using System.Data.Sql;
+using System.Data.SqlTypes;
+using System.Data.SqlClient;
+using System.Runtime.InteropServices;
+using System.IO;
+using System.Linq;
+using System.Data;
+
+namespace TestApp
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    /// 
+    struct info_struct
+    {
+        public string Server;
+        public string DB;
+    };
+
+    class TestProgram
+    {
+
+        static Random random = new Random();
+        static double EPSILON = 0.00002;
+        public const bool DEVEL_MODE = false;
+        //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
+        public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
+        public const string infodb_string = "turbinfo_test_conn";
+        public const string logdb_string = "turblog_conn";
+        public const bool debug_flag = false;
+        public const bool update_SQL = false;
+
+        // batch scheduler queue
+        public static BatchWorkerQueue batchQueue = null;
+
+        Database database = new Database(infodb_string, DEVEL_MODE);
+        AuthInfo authInfo;
+        Log log = new Log(infodb_string, DEVEL_MODE);
+
+        /// <summary>
+        /// A small application to test the particle tracking and
+        /// turbulence code libraries.
+        /// </summary>
+        /// <remarks>
+        /// Currently only used to paste & debug snipits of code...
+        /// TODO: Make it a useful, complete, test suite...
+        /// </remarks>
+        /// <param name="args">Command line arguments</param>
+        public static void Main()
+        {
+            TestProgram testp = new TestProgram();
+            turbulence.TurbulenceService service = new turbulence.TurbulenceService();
+            //testMorton();
+
+            //localWS.Service service = new localWS.Service();
+
+            try
+            {
+                DateTime beginTime, stopTime, beginTime1, stopTime1, beginTime2, stopTime2;
+                TimeSpan update_time = new TimeSpan();
+
+                int[,] idx2_tot = index_in_file();
+                int tfile_offset = 4800;
+                List<byte[]> DB201v = new List<byte[]>(24);
+                List<byte[]> DB202v = new List<byte[]>(24);
+                List<byte[]> DB203v = new List<byte[]>(24);
+                List<byte[]> DB204v = new List<byte[]>(24);
+                List<byte[]> DB205v = new List<byte[]>(24);
+                List<byte[]> DB206v = new List<byte[]>(24);
+                List<byte[]> DB207v = new List<byte[]>(24);
+                List<byte[]> DB208v = new List<byte[]>(24);
+                List<byte[]> DB201p = new List<byte[]>(24);
+                List<byte[]> DB202p = new List<byte[]>(24);
+                List<byte[]> DB203p = new List<byte[]>(24);
+                List<byte[]> DB204p = new List<byte[]>(24);
+                List<byte[]> DB205p = new List<byte[]>(24);
+                List<byte[]> DB206p = new List<byte[]>(24);
+                List<byte[]> DB207p = new List<byte[]>(24);
+                List<byte[]> DB208p = new List<byte[]>(24);
+                string cmdText201v = "";
+                string cmdText202v = "";
+                string cmdText203v = "";
+                string cmdText204v = "";
+                string cmdText205v = "";
+                string cmdText206v = "";
+                string cmdText207v = "";
+                string cmdText208v = "";
+                string cmdText201p = "";
+                string cmdText202p = "";
+                string cmdText203p = "";
+                string cmdText204p = "";
+                string cmdText205p = "";
+                string cmdText206p = "";
+                string cmdText207p = "";
+                string cmdText208p = "";
+                int count201 = 0;
+                int count202 = 0;
+                int count203 = 0;
+                int count204 = 0;
+                int count205 = 0;
+                int count206 = 0;
+                int count207 = 0;
+                int count208 = 0;
+
+                Console.WriteLine("Enter start time step: ");
+                int tstart = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Enter end time step: ");
+                int tend = Convert.ToInt32(Console.ReadLine());
+
+                beginTime = DateTime.Now;
+                for (int tstep = tstart; tstep <= tend; tstep = tstep + 10)
+                {
+                    Console.WriteLine("tstep: {0}", tstep);
+                    //beginTime = DateTime.Now;
+                    for (int Z0 = 1000; Z0 < 1024; Z0 = Z0 + 8)
+                    {
+                        beginTime1 = DateTime.Now;
+                        //Console.WriteLine("Z0: {0}", Z0);
+                        int X, Y, Z;
+                        Z = Z0 / 8 * 8;
+                        //int fileoffset = Z * 1024 * 1024;
+                        int SqlArrayHeaderSize = 6 * sizeof(int);
+                        int BlobByteSize_pr = 8 * 8 * 8 * 1 * 4;
+                        int BlobByteSize_vel = 8 * 8 * 8 * 3 * 4;
+                        byte[] rawdata_pr = new byte[BlobByteSize_pr + SqlArrayHeaderSize];
+                        byte[] rawdata_vel = new byte[BlobByteSize_vel + SqlArrayHeaderSize];
+                        byte[] rawdata_pr_tmp = new byte[BlobByteSize_pr + SqlArrayHeaderSize];
+                        byte[] rawdata_vel_tmp = new byte[BlobByteSize_vel + SqlArrayHeaderSize];
+
+                        //********Reading file********//
+                        int t_file = tstep + tfile_offset;
+                        string filePath = "";
+                        if (t_file >= 15050 && t_file <= 15100)
+                        {
+                            filePath = "I:\\snapshots0\\vel_vector" + (tstep + tfile_offset).ToString("D5") + "." + (Z / 8).ToString("D3");
+                        }
+                        else if (t_file >= 15110 && t_file <= 20410)
+                        {
+                            filePath = "I:\\snapshots\\vel_vector" + (tstep + tfile_offset).ToString("D5") + "." + (Z / 8).ToString("D3");
+                        }
+                        else if (t_file >= 20110 && t_file <= 30100)
+                        {
+                            filePath = "I:\\snapshots_2\\vel_vector" + (tstep + tfile_offset).ToString("D5") + "." + (Z / 8).ToString("D3");
+                        }
+                        else if (t_file >= 30110 && t_file <= 55100)
+                        {
+                            filePath = "I:\\snapshots_3\\vel_vector" + (tstep + tfile_offset).ToString("D5") + "." + (Z / 8).ToString("D3");
+                        }
+                        //Console.WriteLine("   file: {0}", filePath);
+                        byte[] raw_data = File.ReadAllBytes(filePath);
+
+
+                        for (int X0 = 0; X0 < 1024; X0 = X0 + 8)
+                        {
+                            int Y0 = 1023;
+                            X = X0 / 8 * 8;
+                            Y = Y0 / 8 * 8;
+                            Morton3D zindex = new Morton3D(Z, Y, X);
+
+                            //********Reading data********//
+                            for (int i = 0; i < 512; i++)
+                            {
+                                for (int ii = 0; ii < 12; ii++)
+                                {
+                                    rawdata_vel[SqlArrayHeaderSize + i * 12 + ii] = raw_data[idx2_tot[X0 / 8, i] + ii + 4];
+                                    if (ii < 4)
+                                    {
+                                        rawdata_pr[SqlArrayHeaderSize + i * 4 + ii] = raw_data[idx2_tot[X0 / 8, i] + ii + 16];
+                                    }
+                                }
+                            }
+
+                            info_struct DB_info = DB_string(zindex);
+                            //********Reading header********//
+                            String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                DB_info.Server, DB_info.DB);
+                            using (SqlConnection conn = new SqlConnection(cString))
+                            {
+                                conn.Open();
+                                string cmdText = String.Format("SELECT data FROM {0}.[dbo].[pr] where timestep={1} and zindex={2}", DB_info.DB, tstep, zindex.Key);
+
+                                using (SqlCommand cmd = new SqlCommand(cmdText, conn))
+                                {
+                                    cmd.CommandTimeout = 3600;
+                                    using (SqlDataReader reader = cmd.ExecuteReader())
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            if (debug_flag)
+                                            {
+                                                int bytes = (int)reader.GetBytes(0, 0, rawdata_pr_tmp, 0, BlobByteSize_pr + SqlArrayHeaderSize);
+                                            }
+                                            else
+                                            {
+                                                int bytes = (int)reader.GetBytes(0, 0, rawdata_pr, 0, SqlArrayHeaderSize);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                cmdText = String.Format("SELECT data FROM {0}.[dbo].[vel] where timestep={1} and zindex={2}", DB_info.DB, tstep, zindex.Key);
+                                using (SqlCommand cmd = new SqlCommand(cmdText, conn))
+                                {
+                                    cmd.CommandTimeout = 3600;
+                                    using (SqlDataReader reader = cmd.ExecuteReader())
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            if (debug_flag)
+                                            {
+                                                int bytes = (int)reader.GetBytes(0, 0, rawdata_vel_tmp, 0, BlobByteSize_vel + SqlArrayHeaderSize);
+                                            }
+                                            else
+                                            {
+                                                int bytes = (int)reader.GetBytes(0, 0, rawdata_vel, 0, SqlArrayHeaderSize);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                byte[] inter_byte_u = new byte[BlobByteSize_vel + SqlArrayHeaderSize];
+                                byte[] inter_byte_p = new byte[BlobByteSize_pr + SqlArrayHeaderSize];
+                                for (int p = 0; p < BlobByteSize_vel + SqlArrayHeaderSize; p++)
+                                {
+                                    inter_byte_u[p] = rawdata_vel[p];
+                                }
+                                for (int p = 0; p < BlobByteSize_pr + SqlArrayHeaderSize; p++)
+                                {
+                                    inter_byte_p[p] = rawdata_pr[p];
+                                }
+
+                                if (DB_info.DB.Contains("201"))
+                                {
+                                    DB201v.Add(inter_byte_u);
+                                    DB201p.Add(inter_byte_p);
+                                    cmdText201v = cmdText201v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count201) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText201p = cmdText201p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count201) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText201v);
+                                    count201++;
+                                }
+                                else if (DB_info.DB.Contains("202"))
+                                {
+                                    DB202v.Add(inter_byte_u);
+                                    DB202p.Add(inter_byte_p);
+                                    cmdText202v = cmdText202v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count202) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText202p = cmdText202p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count202) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText202v);
+                                    count202++;
+                                }
+                                else if (DB_info.DB.Contains("203"))
+                                {
+                                    DB203v.Add(inter_byte_u);
+                                    DB203p.Add(inter_byte_p);
+                                    cmdText203v = cmdText203v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count203) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText203p = cmdText203p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count203) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText203v);
+                                    count203++;
+                                }
+                                else if (DB_info.DB.Contains("204"))
+                                {
+                                    DB204v.Add(inter_byte_u);
+                                    DB204p.Add(inter_byte_p);
+                                    cmdText204v = cmdText204v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count204) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText204p = cmdText204p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count204) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText204v);
+                                    count204++;
+                                }
+                                else if (DB_info.DB.Contains("205"))
+                                {
+                                    DB205v.Add(inter_byte_u);
+                                    DB205p.Add(inter_byte_p);
+                                    cmdText205v = cmdText205v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count205) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText205p = cmdText205p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count205) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText205v);
+                                    count205++;
+                                }
+                                else if (DB_info.DB.Contains("206"))
+                                {
+                                    DB206v.Add(inter_byte_u);
+                                    DB206p.Add(inter_byte_p);
+                                    cmdText206v = cmdText206v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count206) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText206p = cmdText206p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count206) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText206v);
+                                    count206++;
+                                }
+                                else if (DB_info.DB.Contains("207"))
+                                {
+                                    DB207v.Add(inter_byte_u);
+                                    DB207p.Add(inter_byte_p);
+                                    cmdText207v = cmdText207v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count207) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText207p = cmdText207p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count207) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText207v);
+                                    count207++;
+                                }
+                                else if (DB_info.DB.Contains("208"))
+                                {
+                                    DB208v.Add(inter_byte_u);
+                                    DB208p.Add(inter_byte_p);
+                                    cmdText208v = cmdText208v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count208) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText208p = cmdText208p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count208) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText208v);
+                                    count208++;
+                                }
+                            }
+                            if (debug_flag)
+                            {
+                                for (int i = 0; i < rawdata_pr.Length; i++)
+                                {
+                                    rawdata_pr_tmp[i] = (byte)(rawdata_pr_tmp[i] - rawdata_pr[i]);
+                                }
+                                for (int i = 0; i < rawdata_vel.Length; i++)
+                                {
+                                    rawdata_vel_tmp[i] = (byte)(rawdata_vel_tmp[i] - rawdata_vel[i]);
+                                }
+                            }
+                        }
+
+                        for (int Y0 = 0; Y0 < 1024; Y0 = Y0 + 8)
+                        {
+                            int X0 = 1023;
+                            X = X0 / 8 * 8;
+                            Y = Y0 / 8 * 8;
+                            Morton3D zindex = new Morton3D(Z, Y, X);
+
+                            //********Reading data********//
+                            for (int i = 0; i < 512; i++)
+                            {
+                                for (int ii = 0; ii < 12; ii++)
+                                {
+                                    rawdata_vel[SqlArrayHeaderSize + i * 12 + ii] = raw_data[idx2_tot[1024 / 8 + Y0 / 8, i] + ii + 4];
+                                    if (ii < 4)
+                                    {
+                                        rawdata_pr[SqlArrayHeaderSize + i * 4 + ii] = raw_data[idx2_tot[1024 / 8 + Y0 / 8, i] + ii + 16];
+                                    }
+                                }
+                            }
+
+                            info_struct DB_info = DB_string(zindex);
+                            //********Reading header********//
+                            string cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                DB_info.Server, DB_info.DB);
+                            using (SqlConnection conn = new SqlConnection(cString))
+                            {
+                                conn.Open();
+                                string cmdText = String.Format("SELECT data FROM {0}.[dbo].[pr] where timestep={1} and zindex={2}", DB_info.DB, tstep, zindex.Key);
+
+                                using (SqlCommand cmd = new SqlCommand(cmdText, conn))
+                                {
+                                    cmd.CommandTimeout = 3600;
+                                    using (SqlDataReader reader = cmd.ExecuteReader())
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            if (debug_flag)
+                                            {
+                                                int bytes = (int)reader.GetBytes(0, 0, rawdata_pr_tmp, 0, BlobByteSize_pr + SqlArrayHeaderSize);
+                                            }
+                                            else
+                                            {
+                                                int bytes = (int)reader.GetBytes(0, 0, rawdata_pr, 0, SqlArrayHeaderSize);
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                                cmdText = String.Format("SELECT data FROM {0}.[dbo].[vel] where timestep={1} and zindex={2}", DB_info.DB, tstep, zindex.Key);
+                                using (SqlCommand cmd = new SqlCommand(cmdText, conn))
+                                {
+                                    cmd.CommandTimeout = 3600;
+                                    using (SqlDataReader reader = cmd.ExecuteReader())
+                                    {
+                                        while (reader.Read())
+                                        {
+                                            if (debug_flag)
+                                            {
+                                                int bytes = (int)reader.GetBytes(0, 0, rawdata_vel_tmp, 0, BlobByteSize_vel + SqlArrayHeaderSize);
+                                            }
+                                            else
+                                            {
+                                                int bytes = (int)reader.GetBytes(0, 0, rawdata_vel, 0, SqlArrayHeaderSize);
+                                            }
+                                        }
+                                    }
+                                }
+
+                                byte[] inter_byte_u = new byte[BlobByteSize_vel + SqlArrayHeaderSize];
+                                byte[] inter_byte_p = new byte[BlobByteSize_pr + SqlArrayHeaderSize];
+                                for (int p = 0; p < BlobByteSize_vel + SqlArrayHeaderSize; p++)
+                                {
+                                    inter_byte_u[p] = rawdata_vel[p];
+                                }
+                                for (int p = 0; p < BlobByteSize_pr + SqlArrayHeaderSize; p++)
+                                {
+                                    inter_byte_p[p] = rawdata_pr[p];
+                                }
+
+                                if (DB_info.DB.Contains("201"))
+                                {
+                                    DB201v.Add(inter_byte_u);
+                                    DB201p.Add(inter_byte_p);
+                                    cmdText201v = cmdText201v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count201) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText201p = cmdText201p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count201) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText201v);
+                                    count201++;
+                                }
+                                else if (DB_info.DB.Contains("202"))
+                                {
+                                    DB202v.Add(inter_byte_u);
+                                    DB202p.Add(inter_byte_p);
+                                    cmdText202v = cmdText202v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count202) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText202p = cmdText202p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count202) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText202v);
+                                    count202++;
+                                }
+                                else if (DB_info.DB.Contains("203"))
+                                {
+                                    DB203v.Add(inter_byte_u);
+                                    DB203p.Add(inter_byte_p);
+                                    cmdText203v = cmdText203v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count203) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText203p = cmdText203p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count203) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText203v);
+                                    count203++;
+                                }
+                                else if (DB_info.DB.Contains("204"))
+                                {
+                                    DB204v.Add(inter_byte_u);
+                                    DB204p.Add(inter_byte_p);
+                                    cmdText204v = cmdText204v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count204) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText204p = cmdText204p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count204) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText204v);
+                                    count204++;
+                                }
+                                else if (DB_info.DB.Contains("205"))
+                                {
+                                    DB205v.Add(inter_byte_u);
+                                    DB205p.Add(inter_byte_p);
+                                    cmdText205v = cmdText205v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count205) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText205p = cmdText205p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count205) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText205v);
+                                    count205++;
+                                }
+                                else if (DB_info.DB.Contains("206"))
+                                {
+                                    DB206v.Add(inter_byte_u);
+                                    DB206p.Add(inter_byte_p);
+                                    cmdText206v = cmdText206v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count206) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText206p = cmdText206p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count206) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText206v);
+                                    count206++;
+                                }
+                                else if (DB_info.DB.Contains("207"))
+                                {
+                                    DB207v.Add(inter_byte_u);
+                                    DB207p.Add(inter_byte_p);
+                                    cmdText207v = cmdText207v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count207) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText207p = cmdText207p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count207) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText207v);
+                                    count207++;
+                                }
+                                else if (DB_info.DB.Contains("208"))
+                                {
+                                    DB208v.Add(inter_byte_u);
+                                    DB208p.Add(inter_byte_p);
+                                    cmdText208v = cmdText208v + String.Format("update {0}.[dbo].[vel] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count208) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    cmdText208p = cmdText208p + String.Format("update {0}.[dbo].[pr] ", DB_info.DB) + " set data = @BIN" + Convert.ToInt32(count208) + String.Format(" where timestep={0} and zindex={1};", tstep, zindex.Key);
+                                    //Console.WriteLine("{0}", cmdText208v);
+                                    count208++;
+                                }
+                            }
+                            if (debug_flag)
+                            {
+                                for (int i = 0; i < rawdata_pr.Length; i++)
+                                {
+                                    rawdata_pr_tmp[i] = (byte)(rawdata_pr_tmp[i] - rawdata_pr[i]);
+                                }
+                                for (int i = 0; i < rawdata_vel.Length; i++)
+                                {
+                                    rawdata_vel_tmp[i] = (byte)(rawdata_vel_tmp[i] - rawdata_vel[i]);
+                                }
+                            }
+                        }
+                        stopTime1 = DateTime.Now;
+                        //Console.WriteLine("   Sub-time: {0}", stopTime1 - beginTime1);
+
+                        if (update_SQL)
+                        {
+                            beginTime2 = DateTime.Now;
+                            if (count201 > 1900)
+                            {
+                                String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                        "dsp012", "turbdb201_fix");
+                                using (SqlConnection conn = new SqlConnection(cString1))
+                                {
+                                    conn.Open();
+                                    SqlCommand commandv = new SqlCommand(cmdText201v, conn);
+                                    SqlCommand commandp = new SqlCommand(cmdText201p, conn);
+                                    commandv.CommandTimeout = 3600;
+                                    commandp.CommandTimeout = 3600;
+                                    for (int i = 0; i < count201; i++)
+                                    {
+                                        commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB201v[i].Length).Value = DB201v[i];
+                                        commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB201p[i].Length).Value = DB201p[i];
+                                    }
+                                    Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                    rowsAffected = commandp.ExecuteNonQuery();
+                                    Console.WriteLine("turbdb201_fix RowsAffected: {0}", rowsAffected);
+                                }
+                                DB201v = new List<byte[]>(24);
+                                DB201p = new List<byte[]>(24);
+                                cmdText201v = "";
+                                cmdText201p = "";
+                                count201 = 0;
+                            }
+
+                            if (count202 > 1900)
+                            {
+                                String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                        "dsp012", "turbdb202_fix");
+                                using (SqlConnection conn = new SqlConnection(cString1))
+                                {
+                                    conn.Open();
+                                    SqlCommand commandv = new SqlCommand(cmdText202v, conn);
+                                    SqlCommand commandp = new SqlCommand(cmdText202p, conn);
+                                    commandv.CommandTimeout = 3600;
+                                    commandp.CommandTimeout = 3600;
+                                    for (int i = 0; i < count202; i++)
+                                    {
+                                        commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB202v[i].Length).Value = DB202v[i];
+                                        commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB202p[i].Length).Value = DB202p[i];
+                                    }
+                                    Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                    rowsAffected = commandp.ExecuteNonQuery();
+                                    Console.WriteLine("turbdb202_fix RowsAffected: {0}", rowsAffected);
+                                }
+                                DB202v = new List<byte[]>(24);
+                                DB202p = new List<byte[]>(24);
+                                cmdText202v = "";
+                                cmdText202p = "";
+                                count202 = 0;
+                            }
+
+                            if (count203 > 1900)
+                            {
+                                String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                        "dsp015", "turbdb203_fix");
+                                using (SqlConnection conn = new SqlConnection(cString1))
+                                {
+                                    conn.Open();
+                                    SqlCommand commandv = new SqlCommand(cmdText203v, conn);
+                                    SqlCommand commandp = new SqlCommand(cmdText203p, conn);
+                                    commandv.CommandTimeout = 3600;
+                                    commandp.CommandTimeout = 3600;
+                                    for (int i = 0; i < count203; i++)
+                                    {
+                                        commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB203v[i].Length).Value = DB203v[i];
+                                        commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB203p[i].Length).Value = DB203p[i];
+                                    }
+                                    Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                    rowsAffected = commandp.ExecuteNonQuery();
+                                    Console.WriteLine("turbdb203_fix RowsAffected: {0}", rowsAffected);
+                                }
+                                DB203v = new List<byte[]>(24);
+                                DB203p = new List<byte[]>(24);
+                                cmdText203v = "";
+                                cmdText203p = "";
+                                count203 = 0;
+                            }
+
+                            if (count204 > 1900)
+                            {
+                                String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                        "dsp015", "turbdb204_fix");
+                                using (SqlConnection conn = new SqlConnection(cString1))
+                                {
+                                    conn.Open();
+                                    SqlCommand commandv = new SqlCommand(cmdText204v, conn);
+                                    SqlCommand commandp = new SqlCommand(cmdText204p, conn);
+                                    commandv.CommandTimeout = 3600;
+                                    commandp.CommandTimeout = 3600;
+                                    for (int i = 0; i < count204; i++)
+                                    {
+                                        commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB204v[i].Length).Value = DB204v[i];
+                                        commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB204p[i].Length).Value = DB204p[i];
+                                    }
+                                    Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                    rowsAffected = commandp.ExecuteNonQuery();
+                                    Console.WriteLine("turbdb204_fix RowsAffected: {0}", rowsAffected);
+                                }
+                                DB204v = new List<byte[]>(24);
+                                DB204p = new List<byte[]>(24);
+                                cmdText204v = "";
+                                cmdText204p = "";
+                                count204 = 0;
+                            }
+
+                            if (count205 > 1900)
+                            {
+                                String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                        "dsp012", "turbdb205_fix");
+                                using (SqlConnection conn = new SqlConnection(cString1))
+                                {
+                                    conn.Open();
+                                    SqlCommand commandv = new SqlCommand(cmdText205v, conn);
+                                    SqlCommand commandp = new SqlCommand(cmdText205p, conn);
+                                    commandv.CommandTimeout = 3600;
+                                    commandp.CommandTimeout = 3600;
+                                    for (int i = 0; i < count205; i++)
+                                    {
+                                        commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB205v[i].Length).Value = DB205v[i];
+                                        commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB205p[i].Length).Value = DB205p[i];
+                                    }
+                                    Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                    rowsAffected = commandp.ExecuteNonQuery();
+                                    Console.WriteLine("turbdb205_fix RowsAffected: {0}", rowsAffected);
+                                }
+                                DB205v = new List<byte[]>(24);
+                                DB205p = new List<byte[]>(24);
+                                cmdText205v = "";
+                                cmdText205p = "";
+                                count205 = 0;
+                            }
+
+                            if (count206 > 1900)
+                            {
+                                String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                        "dsp012", "turbdb206_fix");
+                                using (SqlConnection conn = new SqlConnection(cString1))
+                                {
+                                    conn.Open();
+                                    SqlCommand commandv = new SqlCommand(cmdText206v, conn);
+                                    SqlCommand commandp = new SqlCommand(cmdText206p, conn);
+                                    commandv.CommandTimeout = 3600;
+                                    commandp.CommandTimeout = 3600;
+                                    for (int i = 0; i < count206; i++)
+                                    {
+                                        commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB206v[i].Length).Value = DB206v[i];
+                                        commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB206p[i].Length).Value = DB206p[i];
+                                    }
+                                    Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                    rowsAffected = commandp.ExecuteNonQuery();
+                                    Console.WriteLine("turbdb206_fix RowsAffected: {0}", rowsAffected);
+                                }
+                                DB206v = new List<byte[]>(24);
+                                DB206p = new List<byte[]>(24);
+                                cmdText206v = "";
+                                cmdText206p = "";
+                                count206 = 0;
+                            }
+
+                            if (count207 > 1900)
+                            {
+                                String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                        "dsp013", "turbdb207_fix");
+                                using (SqlConnection conn = new SqlConnection(cString1))
+                                {
+                                    conn.Open();
+                                    SqlCommand commandv = new SqlCommand(cmdText207v, conn);
+                                    SqlCommand commandp = new SqlCommand(cmdText207p, conn);
+                                    commandv.CommandTimeout = 3600;
+                                    commandp.CommandTimeout = 3600;
+                                    for (int i = 0; i < count207; i++)
+                                    {
+                                        commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB207v[i].Length).Value = DB207v[i];
+                                        commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB207p[i].Length).Value = DB207p[i];
+                                    }
+                                    Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                    rowsAffected = commandp.ExecuteNonQuery();
+                                    Console.WriteLine("turbdb207_fix RowsAffected: {0}", rowsAffected);
+                                }
+                                DB207v = new List<byte[]>(24);
+                                DB207p = new List<byte[]>(24);
+                                cmdText207v = "";
+                                cmdText207p = "";
+                                count207 = 0;
+                            }
+
+                            if (count208 > 1900)
+                            {
+                                String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                        "dsp013", "turbdb208_fix");
+                                using (SqlConnection conn = new SqlConnection(cString1))
+                                {
+                                    conn.Open();
+                                    SqlCommand commandv = new SqlCommand(cmdText208v, conn);
+                                    SqlCommand commandp = new SqlCommand(cmdText208p, conn);
+                                    commandv.CommandTimeout = 3600;
+                                    commandp.CommandTimeout = 3600;
+                                    for (int i = 0; i < count208; i++)
+                                    {
+                                        commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB208v[i].Length).Value = DB208v[i];
+                                        commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB208p[i].Length).Value = DB208p[i];
+                                    }
+                                    Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                    rowsAffected = commandp.ExecuteNonQuery();
+                                    Console.WriteLine("turbdb208_fix RowsAffected: {0}", rowsAffected);
+                                }
+                                DB208v = new List<byte[]>(24);
+                                DB208p = new List<byte[]>(24);
+                                cmdText208v = "";
+                                cmdText208p = "";
+                                count208 = 0;
+                            }
+                            stopTime2 = DateTime.Now;
+                            update_time = update_time + (stopTime2 - beginTime2);
+                        }
+                    }
+
+                    if (update_SQL)
+                    {
+                        beginTime2 = DateTime.Now;
+                        if (count201 > 0)
+                        {
+                            String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                    "dsp012", "turbdb201_fix");
+                            using (SqlConnection conn = new SqlConnection(cString1))
+                            {
+                                conn.Open();
+                                SqlCommand commandv = new SqlCommand(cmdText201v, conn);
+                                SqlCommand commandp = new SqlCommand(cmdText201p, conn);
+                                commandv.CommandTimeout = 3600;
+                                commandp.CommandTimeout = 3600;
+                                for (int i = 0; i < count201; i++)
+                                {
+                                    commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB201v[i].Length).Value = DB201v[i];
+                                    commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB201p[i].Length).Value = DB201p[i];
+                                }
+                                Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                rowsAffected = commandp.ExecuteNonQuery();
+                                Console.WriteLine("turbdb201_fix RowsAffected: {0}", rowsAffected);
+                            }
+                            DB201v = new List<byte[]>(24);
+                            DB201p = new List<byte[]>(24);
+                            cmdText201v = "";
+                            cmdText201p = "";
+                            count201 = 0;
+                        }
+
+                        if (count202 > 0)
+                        {
+                            String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                    "dsp012", "turbdb202_fix");
+                            using (SqlConnection conn = new SqlConnection(cString1))
+                            {
+                                conn.Open();
+                                SqlCommand commandv = new SqlCommand(cmdText202v, conn);
+                                SqlCommand commandp = new SqlCommand(cmdText202p, conn);
+                                commandv.CommandTimeout = 3600;
+                                commandp.CommandTimeout = 3600;
+                                for (int i = 0; i < count202; i++)
+                                {
+                                    commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB202v[i].Length).Value = DB202v[i];
+                                    commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB202p[i].Length).Value = DB202p[i];
+                                }
+                                Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                rowsAffected = commandp.ExecuteNonQuery();
+                                Console.WriteLine("turbdb202_fix RowsAffected: {0}", rowsAffected);
+                            }
+                            DB202v = new List<byte[]>(24);
+                            DB202p = new List<byte[]>(24);
+                            cmdText202v = "";
+                            cmdText202p = "";
+                            count202 = 0;
+                        }
+
+                        if (count203 > 0)
+                        {
+                            String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                    "dsp015", "turbdb203_fix");
+                            using (SqlConnection conn = new SqlConnection(cString1))
+                            {
+                                conn.Open();
+                                SqlCommand commandv = new SqlCommand(cmdText203v, conn);
+                                SqlCommand commandp = new SqlCommand(cmdText203p, conn);
+                                commandv.CommandTimeout = 3600;
+                                commandp.CommandTimeout = 3600;
+                                for (int i = 0; i < count203; i++)
+                                {
+                                    commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB203v[i].Length).Value = DB203v[i];
+                                    commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB203p[i].Length).Value = DB203p[i];
+                                }
+                                Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                rowsAffected = commandp.ExecuteNonQuery();
+                                Console.WriteLine("turbdb203_fix RowsAffected: {0}", rowsAffected);
+                            }
+                            DB203v = new List<byte[]>(24);
+                            DB203p = new List<byte[]>(24);
+                            cmdText203v = "";
+                            cmdText203p = "";
+                            count203 = 0;
+                        }
+
+                        if (count204 > 0)
+                        {
+                            String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                    "dsp015", "turbdb204_fix");
+                            using (SqlConnection conn = new SqlConnection(cString1))
+                            {
+                                conn.Open();
+                                SqlCommand commandv = new SqlCommand(cmdText204v, conn);
+                                SqlCommand commandp = new SqlCommand(cmdText204p, conn);
+                                commandv.CommandTimeout = 3600;
+                                commandp.CommandTimeout = 3600;
+                                for (int i = 0; i < count204; i++)
+                                {
+                                    commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB204v[i].Length).Value = DB204v[i];
+                                    commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB204p[i].Length).Value = DB204p[i];
+                                }
+                                Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                rowsAffected = commandp.ExecuteNonQuery();
+                                Console.WriteLine("turbdb204_fix RowsAffected: {0}", rowsAffected);
+                            }
+                            DB204v = new List<byte[]>(24);
+                            DB204p = new List<byte[]>(24);
+                            cmdText204v = "";
+                            cmdText204p = "";
+                            count204 = 0;
+                        }
+
+                        if (count205 > 0)
+                        {
+                            String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                    "dsp012", "turbdb205_fix");
+                            using (SqlConnection conn = new SqlConnection(cString1))
+                            {
+                                conn.Open();
+                                SqlCommand commandv = new SqlCommand(cmdText205v, conn);
+                                SqlCommand commandp = new SqlCommand(cmdText205p, conn);
+                                commandv.CommandTimeout = 3600;
+                                commandp.CommandTimeout = 3600;
+                                for (int i = 0; i < count205; i++)
+                                {
+                                    commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB205v[i].Length).Value = DB205v[i];
+                                    commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB205p[i].Length).Value = DB205p[i];
+                                }
+                                Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                rowsAffected = commandp.ExecuteNonQuery();
+                                Console.WriteLine("turbdb205_fix RowsAffected: {0}", rowsAffected);
+                            }
+                            DB205v = new List<byte[]>(24);
+                            DB205p = new List<byte[]>(24);
+                            cmdText205v = "";
+                            cmdText205p = "";
+                            count205 = 0;
+                        }
+
+                        if (count206 > 0)
+                        {
+                            String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                    "dsp012", "turbdb206_fix");
+                            using (SqlConnection conn = new SqlConnection(cString1))
+                            {
+                                conn.Open();
+                                SqlCommand commandv = new SqlCommand(cmdText206v, conn);
+                                SqlCommand commandp = new SqlCommand(cmdText206p, conn);
+                                commandv.CommandTimeout = 3600;
+                                commandp.CommandTimeout = 3600;
+                                for (int i = 0; i < count206; i++)
+                                {
+                                    commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB206v[i].Length).Value = DB206v[i];
+                                    commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB206p[i].Length).Value = DB206p[i];
+                                }
+                                Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                rowsAffected = commandp.ExecuteNonQuery();
+                                Console.WriteLine("turbdb206_fix RowsAffected: {0}", rowsAffected);
+                            }
+                            DB206v = new List<byte[]>(24);
+                            DB206p = new List<byte[]>(24);
+                            cmdText206v = "";
+                            cmdText206p = "";
+                            count206 = 0;
+                        }
+
+                        if (count207 > 0)
+                        {
+                            String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                    "dsp013", "turbdb207_fix");
+                            using (SqlConnection conn = new SqlConnection(cString1))
+                            {
+                                conn.Open();
+                                SqlCommand commandv = new SqlCommand(cmdText207v, conn);
+                                SqlCommand commandp = new SqlCommand(cmdText207p, conn);
+                                commandv.CommandTimeout = 3600;
+                                commandp.CommandTimeout = 3600;
+                                for (int i = 0; i < count207; i++)
+                                {
+                                    commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB207v[i].Length).Value = DB207v[i];
+                                    commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB207p[i].Length).Value = DB207p[i];
+                                }
+                                Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                rowsAffected = commandp.ExecuteNonQuery();
+                                Console.WriteLine("turbdb207_fix RowsAffected: {0}", rowsAffected);
+                            }
+                            DB207v = new List<byte[]>(24);
+                            DB207p = new List<byte[]>(24);
+                            cmdText207v = "";
+                            cmdText207p = "";
+                            count207 = 0;
+                        }
+
+                        if (count208 > 0)
+                        {
+                            String cString1 = String.Format("Server={0};Database={1};Asynchronous Processing=true;Integrated Security=true;Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200",
+                                    "dsp013", "turbdb208_fix");
+                            using (SqlConnection conn = new SqlConnection(cString1))
+                            {
+                                conn.Open();
+                                SqlCommand commandv = new SqlCommand(cmdText208v, conn);
+                                SqlCommand commandp = new SqlCommand(cmdText208p, conn);
+                                commandv.CommandTimeout = 3600;
+                                commandp.CommandTimeout = 3600;
+                                for (int i = 0; i < count208; i++)
+                                {
+                                    commandv.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB208v[i].Length).Value = DB208v[i];
+                                    commandp.Parameters.Add("@BIN" + Convert.ToInt32(i), SqlDbType.Binary, DB208p[i].Length).Value = DB208p[i];
+                                }
+                                Int32 rowsAffected = commandv.ExecuteNonQuery();
+                                rowsAffected = commandp.ExecuteNonQuery();
+                                Console.WriteLine("turbdb208_fix RowsAffected: {0}", rowsAffected);
+                            }
+                            DB208v = new List<byte[]>(24);
+                            DB208p = new List<byte[]>(24);
+                            cmdText208v = "";
+                            cmdText208p = "";
+                            count208 = 0;
+                        }
+                        stopTime2 = DateTime.Now;
+                        update_time = update_time + (stopTime2 - beginTime2);
+                    }
+                    
+                    stopTime = DateTime.Now;
+                    Console.WriteLine("Updating SQL: {0}", update_time);
+                    Console.WriteLine("Total time: {0}", stopTime - beginTime);
+                }
+            }
+            catch (Exception E)
+            {
+                Console.WriteLine(E);
+            }
+            Console.WriteLine("Hint enter to quit.");
+            Console.ReadLine();
+
+        }
+
+        public static int[,] index_in_file()
+        {
+            int[,] idx2_tot = new int[1024 / 8 * 2, 512];
+            int Z0 = 0;
+            int Z = Z0 / 8 * 8;
+            for (int X0 = 0; X0 < 1024; X0 = X0 + 8)
+            {
+                int Y0 = 1023;
+                int X = X0 / 8 * 8;
+                int Y = Y0 / 8 * 8;
+
+                //********Reading data********//
+                for (int k = 0; k < 8; k++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        for (int i = 0; i < 8; i++)
+                        {
+                            idx2_tot[X0 / 8, i + j * 8 + k * 64] = ((X + i) + (Y + j) * 1024 + (Z + k) * 1024 * 1024) * 24;
+                        }
+                    }
+                }
+
+            }
+
+            for (int Y0 = 0; Y0 < 1024; Y0 = Y0 + 8)
+            {
+                int X0 = 1023;
+                int X = X0 / 8 * 8;
+                int Y = Y0 / 8 * 8;
+
+                //********Reading data********//
+                for (int k = 0; k < 8; k++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        for (int i = 0; i < 8; i++)
+                        {
+                            idx2_tot[1024 / 8 + Y0 / 8, i + j * 8 + k * 64] = ((X + i) + (Y + j) * 1024 + (Z + k) * 1024 * 1024) * 24;
+                        }
+                    }
+                }
+            }
+            return idx2_tot;
+        }
+
+        public static info_struct DB_string(Morton3D zindex)
+        {
+            info_struct DBs = new info_struct();
+            if (zindex <= 134217727)
+            {
+                DBs.Server = "dsp012";
+                DBs.DB = "turbdb201_fix";
+            }
+            else if (zindex <= 268435455)
+            {
+                DBs.Server = "dsp012";
+                DBs.DB = "turbdb202_fix";
+            }
+            else if (zindex <= 402653183)
+            {
+                DBs.Server = "dsp015";
+                DBs.DB = "turbdb203_fix";
+            }
+            else if (zindex <= 536870911)
+            {
+                DBs.Server = "dsp015";
+                DBs.DB = "turbdb204_fix";
+            }
+            else if (zindex <= 671088639)
+            {
+                DBs.Server = "dsp012";
+                DBs.DB = "turbdb205_fix";
+            }
+            else if (zindex <= 805306367)
+            {
+                DBs.Server = "dsp012";
+                DBs.DB = "turbdb206_fix";
+            }
+            else if (zindex <= 939524095)
+            {
+                DBs.Server = "dsp013";
+                DBs.DB = "turbdb207_fix";
+            }
+            else if (zindex <= 1073741823)
+            {
+                DBs.Server = "dsp013";
+                DBs.DB = "turbdb208_fix";
+            }
+            return DBs;
+        }
+    }
+
+}

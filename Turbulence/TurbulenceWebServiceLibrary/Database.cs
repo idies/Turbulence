@@ -911,6 +911,52 @@ namespace TurbulenceService
             }
         }
 
+        public void GetServerParameters4RawData(int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth,
+            int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth,
+            int x_stride, int y_stride, int z_stride, int T, int Twidth, int dbtype)
+        {
+            for (int i = 0; i < this.serverCount; i++)
+            {
+                if (X + Xwidth > serverBoundaries[i].startx && X <= serverBoundaries[i].endx)
+                    if (Y + Ywidth > serverBoundaries[i].starty && Y <= serverBoundaries[i].endy)
+                        if (Z + Zwidth > serverBoundaries[i].startz && Z <= serverBoundaries[i].endz)
+                        {
+                            if (T + Twidth > serverBoundaries[i].minTime && T <= serverBoundaries[i].maxTime)
+                            {
+                                // If we have no workload for this server yet... create a connection
+                                if (dbtype == 0)
+                                {
+                                    if (this.connections[i] == null)
+                                    {
+                                        string server_name = this.servers[i];
+                                        if (server_name.Contains("_"))
+                                            server_name = server_name.Remove(server_name.IndexOf("_"));
+                                        String cString = String.Format("Server={0};Database={1};Asynchronous Processing=false;User ID='turbquery';Password='aa2465ways2k';Pooling=false; Connect Timeout = 600;",
+                                            server_name, databases[i]);
+
+                                        this.connections[i] = new SqlConnection(cString);
+                                        this.connections[i].Open();
+                                    }
+                                }
+                                GetServerParameters(X, Xwidth, serverBoundaries[i].startx, serverBoundaries[i].endx, ref serverX[i], ref serverXwidth[i], x_stride);
+                                GetServerParameters(Y, Ywidth, serverBoundaries[i].starty, serverBoundaries[i].endy, ref serverY[i], ref serverYwidth[i], y_stride);
+                                GetServerParameters(Z, Zwidth, serverBoundaries[i].startz, serverBoundaries[i].endz, ref serverZ[i], ref serverZwidth[i], z_stride);
+
+                                //For logging purposes we store the 64^3 regions accessed by the query in the usage Log
+                                Morton3D access;
+                                for (int x_i = serverX[i] & (-64); x_i <= serverX[i] + serverXwidth[i] - atomDim; x_i += 64)
+                                    for (int y_i = serverY[i] & (-64); y_i <= serverY[i] + serverYwidth[i] - atomDim; y_i += 64)
+                                        for (int z_i = serverZ[i] & (-64); z_i <= serverZ[i] + serverZwidth[i] - atomDim; z_i += 64)
+                                        {
+                                            access = new Morton3D(z_i, y_i, x_i);
+                                            SetBit(access);
+                                        }
+                            }
+                        }
+
+            }
+        }
+
         private void GetServerParameters(int query_start, int query_width, int server_start, int server_end, ref int start, ref int width)
         {
             start = query_start < server_start ? server_start : query_start;
@@ -1267,7 +1313,6 @@ namespace TurbulenceService
                     int num_y_regions = GridResolutionY / 64;
                     bit = sfc.X / 64 + sfc.Y / 64 * num_x_regions + sfc.Z / 96 * num_x_regions * num_y_regions;
                 }
-                    
             }
             int off = bit / 8;
             bitfield[off] |= (byte)(1 << (bit % 8));
@@ -3693,6 +3738,231 @@ namespace TurbulenceService
             //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\databaseTime.txt", true);
             //time_log.WriteLine(DateTime.Now - start);
             //time_log.Close();
+
+            return result;
+        }
+
+        public byte[] GetCutoutData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int tlow, int components,
+            int xlow, int ylow, int zlow, int xwidth, int ywidth, int zwidth,
+            int x_step, int y_step, int z_step, int filter_width)
+        {
+            int twidth = 1;
+            long dlsize = (long)components * (long)sizeof(float) * (long)(twidth) * (long)((xwidth + x_step - 1) / x_step) * (long)((ywidth + y_step - 1) / y_step) * (long)((zwidth + z_step - 1) / z_step);
+            byte[] result = new byte[dlsize];
+
+            int serverCount = servers.Count;
+            int[] serverX = new int[serverCount];
+            int[] serverY = new int[serverCount];
+            int[] serverZ = new int[serverCount];
+            int[] serverXwidth = new int[serverCount];
+            int[] serverYwidth = new int[serverCount];
+            int[] serverZwidth = new int[serverCount];
+            int[] serverTmin = new int[serverCount];
+            int[] serverTmax = new int[serverCount];
+
+            GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
+                serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step, tlow, twidth, dbtype); //Added time for temporal server location
+            
+            int destinationIndex;
+            bool doFilter = false;
+            bool doStride = false;
+            if (filter_width > 1)
+            {
+                doFilter = true;
+            }
+            else if ((x_step > 1) || (y_step > 1) || (z_step > 1))
+            {
+                doStride = true;
+            }
+
+            SqlCommand sqlcmd = new SqlCommand();
+            /*Now use the parameters to grab the data pieces*/
+            for (int s = 0; s < serverCount; s++)
+            {
+
+                int size;
+                size = ((serverXwidth[s] + x_step - 1) / x_step) * ((serverYwidth[s] + y_step - 1) / y_step) * ((serverZwidth[s] + z_step - 1) / z_step) * components * sizeof(float);
+                int readLength = size;
+                if (size > 0) /* Only connect to servers that have data for us */
+                {
+
+                    byte[] rawdata = new byte[size];
+                    string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
+                            serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
+                    String cString = String.Format("Server={0};Database='{1}';Asynchronous Processing=true;User ID='turbquery';Password='aa2465ways2k';Connection Lifetime=7200",
+                        servers[s], codeDatabase[s]);
+                    SqlConnection connection = new SqlConnection(cString);
+                    connection.Open();
+                    sqlcmd = connection.CreateCommand();
+                    /* Look up this info from the database map table */
+                    if (dbtype == 0)
+                    {
+                        //throw new Exception("We didn't detect as filedb! DB type is: " + database.dbtype.ToString());
+
+                        /*Check to see if we are striding/filtering or not*/
+                        if (doFilter)
+                        {
+                            sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @dbname, @codedb, "
+                                                    + "@turbinfodb, @turbinfoserver, @datasetid, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                                    codeDatabase[s]);
+                            sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+
+                            //sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                            sqlcmd.Parameters.AddWithValue("@filter_width", filter_width);
+                            sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                            sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                            sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                        }
+                        else if (doStride)
+                        {
+                            sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedDataCutout] @serverName, @dbname, @codedb, "
+                                                    + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                                    codeDatabase[s]);
+                            sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+
+                            //sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                            sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                            sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                            sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                        }
+                        else
+                        {
+                            sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataCutout] @serverName, @dbname, @codedb, "
+                                                    + "@turbinfodb, @turbinfoserver, @field, @blobDim, @timestep, @queryBox, @blob OUTPUT ",
+                                                    codeDatabase[s]);
+                            //sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+                            SqlParameter outData = new SqlParameter();
+                            outData.SqlDbType = SqlDbType.VarBinary;
+                            outData.Size = size; // This ensures the proper output size.  On small cutouts, it was setting to 1, causing an error in arraycopy.
+                            outData.Direction = ParameterDirection.Output;
+                            outData.ParameterName = "@blob";
+                            outData.Value = rawdata;
+                            sqlcmd.Parameters.Add(outData);
+                        }
+                    }
+                    else
+                    {
+                        /*Check to see if we are striding/filtering or not*/
+                        if (doFilter)
+                        {
+                            sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetFilteredCutout] @serverName, @dbname, @codedb, " //TODO: Modify for filedb.
+                                                    + "@turbinfodb, @turbinfoserver, @datasetid, @field, @blobDim, @timestep, @filter_width, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                                    codeDatabase[s]);
+                            sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+                            //sqlcmd.Parameters.AddWithValue("@field", tablename.ToString());
+                            //sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                            sqlcmd.Parameters.AddWithValue("@filter_width", filter_width);
+                            sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                            sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                            sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                            //throw new Exception("We are filtering in filedb, but it isn't implemented yet!");
+                        }
+                        else if (doStride)
+                        {
+                            sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetStridedFileDBDataCutout] @serverName, @dbname, @codedb, "
+                                                    + "@turbinfodb, @turbinfoserver, @datasetID, @field, @blobDim, @timestep, @x_stride, @y_stride, @z_stride, @queryBox ",
+                                                    codeDatabase[s]);
+                            sqlcmd.Parameters.AddWithValue("@datasetid", (int)dataset_enum);
+
+                            //sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                            sqlcmd.Parameters.AddWithValue("@x_stride", x_step);
+                            sqlcmd.Parameters.AddWithValue("@y_stride", y_step);
+                            sqlcmd.Parameters.AddWithValue("@z_stride", z_step);
+                        }
+                        else
+                        {
+                            sqlcmd.CommandText = String.Format("EXEC [{0}].[dbo].[GetDataFileDBCutout2] @serverName, @dbname, @codedb, "
+                                                    + "@turbinfodb, @turbinfoserver, @field, @blobDim, @timestep, @queryBox, @blob OUTPUT ",
+                                                    codeDatabase[s]);
+                            //sqlcmd.Parameters.AddWithValue("@dataset", tablename.ToString());
+                            SqlParameter outData = new SqlParameter();
+                            outData.SqlDbType = SqlDbType.VarBinary;
+                            outData.Size = size; // This ensures the proper output size.  On small cutouts, it was setting to 1, causing an error in arraycopy.
+                            outData.Direction = ParameterDirection.Output;
+                            outData.ParameterName = "@blob";
+                            outData.Value = rawdata;
+                            sqlcmd.Parameters.Add(outData);
+                        }
+
+                    }
+
+                    sqlcmd.Parameters.AddWithValue("@field", tableName.ToString());
+                    sqlcmd.Parameters.AddWithValue("@serverName", servers[s]);
+                    sqlcmd.Parameters.AddWithValue("@dbname", databases[s]);
+                    sqlcmd.Parameters.AddWithValue("@codedb", codeDatabase[s]);
+                    sqlcmd.Parameters.AddWithValue("@turbinfodb", infodb);
+                    sqlcmd.Parameters.AddWithValue("@turbinfoserver", infodb_server);
+                    sqlcmd.Parameters.AddWithValue("@blobDim", atomDim);
+                    sqlcmd.Parameters.AddWithValue("@timestep", tlow);
+                    sqlcmd.Parameters.AddWithValue("@queryBox", queryBox);
+                    sqlcmd.CommandTimeout = 3600;
+
+                    if (!doFilter && !doStride)
+                    {
+                        //size = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float);
+                        //readLength = size;
+                        //byte[] rawdata = new byte[size];
+                        SqlDataReader dr = sqlcmd.ExecuteReader();
+                        dr.Close();
+
+                        try
+                        {
+                            rawdata = (byte[])sqlcmd.Parameters["@blob"].Value;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception(
+                                String.Format("Error querying filedb.  Inner exception: {0} query result  {1},  {2}, {3}, {4}, {5}, {6}", ex.Message, servers[s], databases[s], tableName.ToString(), queryBox, tlow, sqlcmd.Parameters["@blob"].Value));
+                        }
+                    }
+                    else
+                    {
+                        SqlDataReader reader = sqlcmd.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            int bytesread = 0;
+                            while (bytesread < size)
+                            {
+                                if (size - bytesread > MAX_READ_LENGTH)
+                                    readLength = MAX_READ_LENGTH;
+                                else
+                                    readLength = size - bytesread;
+                                int bytes = (int)reader.GetBytes(0, bytesread, rawdata, bytesread, readLength);
+                                if (bytes <= 0)
+                                    throw new Exception("Unexpected end of cutout!");
+                                bytesread += bytes;
+                            }
+                        }
+                        reader.Close();
+
+                    }
+                    int sourceIndex = 0;
+                    //int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * ((xwidth) / x_step) + ((serverZ[s] - zlow) / z_step) * ((xwidth) / x_step) *( (ywidth) / y_step)) * sizeof(float);
+                    int destinationIndex0 = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * ((xwidth + x_step - 1) / x_step) + ((serverZ[s] - zlow) / z_step) * ((xwidth + x_step - 1) / x_step) * ((ywidth + y_step - 1) / y_step)) * sizeof(float);
+                    int c = 0;
+                    int length = ((serverXwidth[s] + x_step - 1) / x_step) * sizeof(float) * components;
+                    //int length = ((serverXwidth[s] * components * sizeof(float) ) / x_step)*((serverYwidth[s] * components * sizeof(float) ) / y_step);
+                    for (int k = 0; k < serverZwidth[s]; k += z_step)
+                    {
+                        destinationIndex = destinationIndex0 + c * ((ywidth + y_step - 1) / y_step) * ((xwidth + x_step - 1) / x_step) * components * sizeof(float);
+                        c++;
+                        for (int j = 0; j < serverYwidth[s]; j += y_step)
+                        {
+                            Array.Copy(rawdata, sourceIndex, result, destinationIndex, length);
+                            sourceIndex += length;
+                            destinationIndex += components * sizeof(float) * ((xwidth + x_step - 1) / x_step);
+
+                        }
+                    }
+
+                    //int destinationIndex = components * (((serverX[s] - xlow) / x_step) + ((serverY[s] - ylow) / y_step) * xwidth + ((serverZ[s] - zlow) / z_step) * xwidth * ywidth) * sizeof(float);
+                    //Array.Copy(rawdata, 0, result, destinationIndex0, size);
+                    rawdata = null;
+
+                    connection.Close();
+                    connection = null;
+                }
+            }
 
             return result;
         }

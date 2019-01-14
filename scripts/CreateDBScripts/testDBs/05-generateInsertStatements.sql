@@ -60,7 +60,7 @@ begin
 					  'INSERT ', @vtablename ,' WITH (TABLOCK)'  ,
 					  'SELECT * FROM ', @sourceDB, '.dbo.', @vtable, ' WITH (NOLOCK) ',
 					  'WHERE TIMESTEP IN (10250, 10260) ',
-					  'AND ZINDEX > ', @minLim, ' AND ZINDEX <= ', @maxLim)
+					  'AND ZINDEX >= ', @minLim, ' AND ZINDEX <= ', @maxLim)
 
 	print @sql
 	print @newline
@@ -68,7 +68,7 @@ begin
 	set @sql = concat( 'INSERT ', @ptablename ,' WITH (TABLOCK)'  ,
 					  'SELECT * FROM ', @sourceDB, '.dbo.', @ptable, ' WITH (NOLOCK) ',
 					  'WHERE TIMESTEP IN (10250, 10260) ',
-					  'AND ZINDEX > ', @minLim, ' AND ZINDEX <= ', @maxLim)
+					  'AND ZINDEX >= ', @minLim, ' AND ZINDEX <= ', @maxLim)
 	print @sql
 
 	print @newline

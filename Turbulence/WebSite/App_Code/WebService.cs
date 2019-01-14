@@ -4718,7 +4718,7 @@ namespace TurbulenceService
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
-            rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawDensity,
+            rowid = log.CreateLog(auth.Id, dataset, (int)Worker.Workers.GetRawTemperature,
                 (int)TurbulenceOptions.SpatialInterpolation.None,
                 (int)TurbulenceOptions.TemporalInterpolation.None,
                Xwidth * Ywidth * Zwidth, time, null, null, addr);
@@ -4729,6 +4729,81 @@ namespace TurbulenceService
             log.UpdateLogRecord(rowid, database.Bitfield);
 
             return result;
+        }
+
+        /*//////////////////////////////NEW getRawData functions///////////////////////////////*/
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetAnyCutoutWeb",
+        Description = @"Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!")]
+        public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
+            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
+            int filter_width, string addr = null)
+        {
+            AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
+            if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
+            {
+                log.devmode = true;//This makes sure we don't log the monitoring service.
+            }
+            dataset = DataInfo.findDataSet(dataset);
+            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int num_virtual_servers = 1;
+            database.Initialize(dataset_enum, num_virtual_servers);
+            int time = T * database.TimeInc + database.TimeOff;
+            DataInfo.verifyTimeInRange(dataset_enum, T * database.Dt * database.TimeInc);
+            //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
+            object rowid = null;
+            // we return a cube of data with the specified width
+            // for the scalar pressure field
+            byte[] result = null;
+            int components = new int();
+
+            if (dataset_enum == DataInfo.DataSets.channel)
+            {
+                T = T + 132005;
+            }
+            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field[0].ToString());
+            int worker = new int();
+            switch (field[0])
+            {
+                case 'u':
+                    worker = (int)Worker.Workers.GetFilteredVelocity;
+                    components = 3;
+                    break;
+                case 'a':
+                    worker = (int)Worker.Workers.GetFilteredMagnetic;
+                    components = 3;
+                    break;
+                case 'b':
+                    worker = (int)Worker.Workers.GetFilteredPotential;
+                    components = 3;
+                    break;
+                case 'p':
+                    worker = (int)Worker.Workers.GetFilteredPressure;
+                    components = 1;
+                    break;
+                case 'd':
+                    worker = (int)Worker.Workers.GetFilteredDensity;
+                    components = 1;
+                    break;
+                case 't':
+                    worker = (int)Worker.Workers.GetFilteredTemperature;
+                    components = 1;
+                    break;
+                default:
+                    throw new Exception(String.Format("Invalid dataset specified!"));
+            }
+
+            rowid = log.CreateLog(auth.Id, dataset, worker,
+                (int)TurbulenceOptions.SpatialInterpolation.None,
+                (int)TurbulenceOptions.TemporalInterpolation.None,
+               Xwidth * Ywidth * Zwidth, T * database.Dt * database.TimeInc, null, null, addr);
+            log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
+
+            result= database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,
+                x_step, y_step, z_step, filter_width);
+
+            return result;
+
         }
         #endregion
     }

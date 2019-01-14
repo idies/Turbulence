@@ -114,7 +114,9 @@ namespace Website.edu.jhu.pha.turbulence {
         private System.Threading.SendOrPostCallback GetRawDensityOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetRawTemperatureOperationCompleted;
-        
+
+        private System.Threading.SendOrPostCallback GetAnyCutoutWebOperationCompleted;
+
         private bool useDefaultCredentialsSetExplicitly;
         
         /// <remarks/>
@@ -281,7 +283,10 @@ namespace Website.edu.jhu.pha.turbulence {
         
         /// <remarks/>
         public event GetRawTemperatureCompletedEventHandler GetRawTemperatureCompleted;
-        
+
+        /// <remarks/>
+        public event GetAnyCutoutWebCompletedEventHandler GetAnyCutoutWebCompleted;
+
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/NullOp", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
@@ -2130,7 +2135,72 @@ namespace Website.edu.jhu.pha.turbulence {
                 this.GetRawTemperatureCompleted(this, new GetRawTemperatureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
-        
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetAnyCutoutWeb", RequestNamespace = "http://turbulence.pha.jhu.edu/", ResponseNamespace = "http://turbulence.pha.jhu.edu/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType = "base64Binary")]
+        public byte[] GetAnyCutoutWeb(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, 
+            int x_step, int y_step, int z_step, int filter_width, string addr)
+        {
+            object[] results = this.Invoke("GetAnyCutoutWeb", new object[] {
+                        authToken,
+                        dataset,
+                        T,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        x_step,
+                        y_step,
+                        z_step,
+                        filter_width,
+                        addr});
+            return ((byte[])(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetAnyCutoutWebAsync(string authToken, string dataset, int T, int X, int Y, int Z, 
+            int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step, int filter_width, string addr)
+        {
+            this.GetAnyCutoutWebAsync(authToken, dataset, T, X, Y, Z, Xwidth, Ywidth, Zwidth, x_step, y_step, z_step, filter_width, addr, null);
+        }
+
+        /// <remarks/>
+        public void GetAnyCutoutWebAsync(string authToken, string dataset, int T, int X, int Y, int Z, 
+            int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step, int filter_width, string addr, object userState)
+        {
+            if ((this.GetAnyCutoutWebOperationCompleted == null))
+            {
+                this.GetAnyCutoutWebOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAnyCutoutWebOperationCompleted);
+            }
+            this.InvokeAsync("GetAnyCutoutWeb", new object[] {
+                        authToken,
+                        dataset,
+                        T,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        x_step,
+                        y_step,
+                        z_step,
+                        filter_width,
+                        addr}, this.GetAnyCutoutWebOperationCompleted, userState);
+        }
+
+        private void OnGetAnyCutoutWebOperationCompleted(object arg)
+        {
+            if ((this.GetAnyCutoutWebCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetAnyCutoutWebCompleted(this, new GetAnyCutoutWebCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
         /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
@@ -4112,6 +4182,37 @@ namespace Website.edu.jhu.pha.turbulence {
             }
         }
     }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2558.0")]
+    public delegate void GetAnyCutoutWebCompletedEventHandler(object sender, GetAnyCutoutWebCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2558.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetAnyCutoutWebCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetAnyCutoutWebCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public byte[] Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+
 }
 
 #pragma warning restore 1591

@@ -44,7 +44,7 @@ set @count = 1
 while (@count <= @npart)
 begin
 	
-	declare @pswitchtable sysname
+	declare @switchtable sysname
 
 	set @switchtable = @tablename + '_' + RIGHT('00'+rtrim(CAST(@count as nvarchar)),2)
 

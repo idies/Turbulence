@@ -96,8 +96,35 @@ namespace Website
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
 
-            cmd.CommandTimeout = 1200;
+            //cmd.CommandTimeout = 30;
+            cmd.CommandTimeout = 30;
             cmd.CommandText = String.Format(@"
+select max(rowid) from usage where date<CONVERT(DATE,CAST(year(GETDATE()) AS VARCHAR(4))+'-'+ CAST(month(GETDATE()) AS VARCHAR(2))+'-'+CAST(day(GETDATE()) AS VARCHAR(2)));");
+            long usage_row_count = (long)cmd.ExecuteScalar();
+            long end_rowid = 0;
+
+            bool loopflag = true;
+            while (loopflag == true)
+            {
+                cmd.CommandTimeout = 30;
+                cmd.CommandText = String.Format(@"
+select max(rowid) from usage_summary;");
+                long usage_summary_row_count = (long)cmd.ExecuteScalar();
+
+                if (usage_row_count - usage_summary_row_count > 500000)
+                {
+                    loopflag = true;
+                    end_rowid = usage_summary_row_count + 500000;
+                }
+                else
+                {
+                    loopflag = false;
+                    end_rowid = usage_row_count;
+                }
+
+                //update usage_summary table//
+                cmd.CommandTimeout = 2400;
+                cmd.CommandText = String.Format(@"
 insert into {0}..usage_summary 
 select max(rowid) as rowid, CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))) as dates,
 		count(*) as requests, 
@@ -114,7 +141,7 @@ left join {0}..DataID on DataID.DatasetID= usage.dataset
 left join {0}..users on users.uid= usage.uid
 left join {0}..[GeoLite2-City-Blocks-IPv4] as ips on ips.ip_start<CONVERT(VARBINARY(8), usage.ip) and CONVERT(VARBINARY(8), usage.ip)<ips.ip_end
 left join {0}..[GeoLite2-City-Locations-en] as ipl on ipl.geoname_id=ips.geoname_id
-where exectime is not null and rowid>(select max(rowid) from usage_summary) and date<CONVERT(DATE,CAST(year(GETDATE()) AS VARCHAR(4))+'-'+ CAST(month(GETDATE()) AS VARCHAR(2))+'-'+CAST(day(GETDATE()) AS VARCHAR(2)))
+where exectime is not null and rowid>(select max(rowid) from usage_summary) and rowid<={1}
 group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))), 
 		opID.op_cat, opID.op_name, usage.op,
 		DataID.DatasetName, usage.dataset,
@@ -136,15 +163,19 @@ left join {0}..DataID on DataID.DatasetID= usage.dataset
 left join {0}..users on users.uid= usage.uid
 left join {0}..[GeoLite2-City-Blocks-IPv4] as ips on ips.ip_start<CONVERT(VARBINARY(8), usage.ip) and CONVERT(VARBINARY(8), usage.ip)<ips.ip_end
 left join {0}..[GeoLite2-City-Locations-en] as ipl on ipl.geoname_id=ips.geoname_id
-where exectime is null and rowid>(select max(rowid) from usage_summary) and date<CONVERT(DATE,CAST(year(GETDATE()) AS VARCHAR(4))+'-'+ CAST(month(GETDATE()) AS VARCHAR(2))+'-'+CAST(day(GETDATE()) AS VARCHAR(2)))
+where exectime is null and rowid>(select max(rowid) from usage_summary) and rowid<={1}
 group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))), 
 		opID.op_cat, opID.op_name, usage.op,
 		DataID.DatasetName, usage.dataset,
 		users.authkey, usage.uid,
 		ipl.city_name, ipl.country_name, usage.ip
-order by rowid", turblogdb);
-            cmd.ExecuteNonQuery();
+order by rowid", turblogdb, end_rowid);
 
+                System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", cmd.CommandText);
+                cmd.ExecuteNonQuery();
+            }
+
+//do query//
             string dateparttext = "";
             string grouptext = "";
             string ordertext = "";

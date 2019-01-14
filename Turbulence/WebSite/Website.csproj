@@ -56,6 +56,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net40\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="HDF.PInvoke, Version=1.10.2.0, Culture=neutral, PublicKeyToken=18793c1fcffe58a3, processorArchitecture=MSIL">
+      <HintPath>..\packages\HDF.PInvoke.1.10.2.0\lib\HDF.PInvoke.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -233,7 +236,9 @@
     <Content Include="download\JHTDB-Sample-assignment-scripts-2018.zip" />
     <Content Include="download\JHTDB-Sample-assignment-SolutionSet-2018.pdf" />
     <Content Include="docs\README-CHANNEL5200.pdf" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\PublishProfiles\dsa004.pubxml" />
     <None Include="Properties\PublishProfiles\Profile1.pubxml" />
     <None Include="Properties\Settings.settings">

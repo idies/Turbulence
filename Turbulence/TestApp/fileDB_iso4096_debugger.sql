@@ -1,6 +1,5 @@
-﻿USE [turbdev_zw]
+﻿USE [turblib]
 GO
-
 
 CREATE TABLE [dbo].[#temp_zw] (
     [reqseq] INT    NULL,
@@ -10,23 +9,23 @@ CREATE TABLE [dbo].[#temp_zw] (
     [z]      REAL   NULL
 );
 INSERT INTO [dbo].[#temp_zw]  
-VALUES (0, 1207959552, 18.8495559215, -1, 0);
+VALUES (0, 1082579781, -11.0221233, -1, 1.15968955);
 
 SELECT reqseq, zindex, x, y, z FROM #temp_zw
 
 DECLARE	@return_value Int
 
 EXEC	@return_value = [dbo].[ExecuteMHDWorker]
-		@serverName = N'dsp012',
-		@dbname = N'channeldb06',
-		@codedb = N'turbdev_zw',
-		@turbinfodb = N'turbinfo_test',
-		@turbinfoserver = N'sciserver02',
+		@serverName = N'dsp039',
+		@dbname = N'channeldb05',
+		@codedb = N'turblib',
+		@turbinfodb = N'turbinfo',
+		@turbinfoserver = N'lumberjack',
 		@dataset = N'vel',
 		@workerType = 120,
 		@blobDim = 8,
-		@time = 0,
-		@spatialInterp = 104,
+		@time = 25.9935,
+		@spatialInterp = 6,
 		@temporalInterp = 0,
 		@arg = 0,
 		@inputSize = 1,

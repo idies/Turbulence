@@ -126,22 +126,23 @@ namespace TurbulenceService
             if (devmode) { return null; }
 
             IPAddress addr = new IPAddress(0);
-            if (ipaddr == "" || ipaddr == null)
-            {
-                // Look for a proxy address first
-                ipaddr = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-                //string msg1 = "ip1: " + ipaddr + System.Environment.NewLine;
-                //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg1);
-
-                // If there is no proxy, get the standard remote address
-                if (ipaddr == "" || ipaddr == null || ipaddr.ToLower() == "unknown")
-                    ipaddr = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-            }
-
-            //string msg = "ip: " + ipaddr + System.Environment.NewLine;
-            //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
             try
             {
+                if (ipaddr == "" || ipaddr == null)
+                {
+                    // Look for a proxy address first
+                    ipaddr = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                    //string msg1 = "ip1: " + ipaddr + System.Environment.NewLine;
+                    //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg1);
+
+                    // If there is no proxy, get the standard remote address
+                    if (ipaddr == "" || ipaddr == null || ipaddr.ToLower() == "unknown")
+                        ipaddr = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
+                }
+
+                //string msg = "ip: " + ipaddr + System.Environment.NewLine;
+                //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
+
                 addr = IPAddress.Parse(ipaddr);
             }
             catch

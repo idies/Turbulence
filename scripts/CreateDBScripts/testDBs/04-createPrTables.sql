@@ -109,10 +109,10 @@ begin
 	end
 	else if (@count = @npart)
 	begin
-		set @sql='ALTER TABLE [dbo].['+@tablename+'] ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>'+cast(@minLim as nvarchar)+' and [zindex] is not null))'
+		set @sql='ALTER TABLE [dbo].['+@tablename+'] ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar)+' and [zindex] is not null))'
 	end
 	else --last partition, only min lim
-		set @sql='ALTER TABLE [dbo].['+@tablename+'] ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>'+cast(@minLim as nvarchar) + ' AND [zindex]<='+cast(@maxLim as nvarchar)+' and [zindex] is not null))'
+		set @sql='ALTER TABLE [dbo].['+@tablename+'] ADD CONSTRAINT [ck_'+@tablename+'] CHECK (([zindex]>='+cast(@minLim as nvarchar) + ' AND [zindex]<='+cast(@maxLim as nvarchar)+' and [zindex] is not null))'
 
 	--add with check
 	--set @sql = @sql + '; ALTER TABLE  [dbo].['+@tablename+'] CHECK CONSTRAINT  [ck_'+@tablename+']'
