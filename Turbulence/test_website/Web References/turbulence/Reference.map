@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Results>
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.DiscoveryDocumentReference" url="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx?disco" filename="turbulence.disco" />
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx?wsdl" filename="turbulence.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.DiscoveryDocumentReference" url="http://turbulence.pha.jhu.edu/service/turbulence.asmx?disco" filename="turbulence.disco" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://turbulence.pha.jhu.edu/service/turbulence.asmx?wsdl" filename="turbulence.wsdl" />
   </Results>
 </DiscoveryClientResultsFile>

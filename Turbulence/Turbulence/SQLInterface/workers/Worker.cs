@@ -771,7 +771,7 @@ namespace Turbulence.SQLInterface
             GetRawVelocity = 210, //NOTE: used to be 60
             GetRawMagnetic = 211, //NOTE: used to be 62
             GetRawPotential = 212, //NOTE: used to be 63
-            GetRawPressure = 220, //NOTE: used to be 64
+            GetRawPressure = 220, //NOTE: used to be 61
             GetRawDensity = 221, //NOTE: used to be 153 and 143
             GetRawTemperature = 222,
 

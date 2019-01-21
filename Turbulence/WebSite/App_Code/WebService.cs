@@ -326,7 +326,7 @@ namespace TurbulenceService
                             else
                                 idx_not0.Add(i);
                         }
-                        
+
                         if (idx_not0.Count > 0)
                         {
                             Point3[] points1 = new Point3[idx_not0.Count];
@@ -657,7 +657,7 @@ namespace TurbulenceService
                                 idx_not0.Add(i);
                         }
 
-                        if (idx_not0.Count>0)
+                        if (idx_not0.Count > 0)
                         {
                             Point3[] points1 = new Point3[idx_not0.Count];
                             VelocityGradient[] result1 = new VelocityGradient[idx_not0.Count];
@@ -869,7 +869,7 @@ namespace TurbulenceService
                             }
                         }
 
-                        if(idx.Count>0)
+                        if (idx.Count > 0)
                         {
                             database.Initialize(dataset_enum, num_virtual_servers);
                             object rowid1 = null;
@@ -1539,7 +1539,7 @@ namespace TurbulenceService
                                 idx_not0.Add(i);
                         }
 
-                        if (idx_not0.Count>0)
+                        if (idx_not0.Count > 0)
                         {
                             Point3[] points1 = new Point3[idx_not0.Count];
                             Vector3[] result1 = new Vector3[idx_not0.Count];
@@ -1557,7 +1557,7 @@ namespace TurbulenceService
                             }
                         }
 
-                        if (idx.Count>0)
+                        if (idx.Count > 0)
                         {
                             database.Initialize(dataset_enum, num_virtual_servers);
                             object rowid1 = null;
@@ -4735,7 +4735,7 @@ namespace TurbulenceService
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetAnyCutoutWeb",
         Description = @"Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!")]
-        public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
+        public float[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
             int filter_width, string addr = null)
         {
@@ -4799,10 +4799,30 @@ namespace TurbulenceService
                Xwidth * Ywidth * Zwidth, T * database.Dt * database.TimeInc, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result= database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,
+            result = database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,
                 x_step, y_step, z_step, filter_width);
 
-            return result;
+            float[] data = new float[(long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step)];
+            unsafe
+            {
+                // TODO: This code is still far from optimal...
+                //       Why can't we pass a reference to the float array directly?
+                fixed (byte* brawdata = result)
+                {
+                    fixed (float* fdata = data)
+                    {
+                        float* frawdata = (float*)brawdata;
+                        for (int i = 0; i < data.Length; i++)
+                        {
+                            data[i] = frawdata[i];
+                        }
+                    }
+                }
+            }
+
+            log.UpdateLogRecord(rowid, database.Bitfield);
+
+            return data;
 
         }
         #endregion

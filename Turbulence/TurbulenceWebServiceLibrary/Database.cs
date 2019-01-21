@@ -3762,7 +3762,7 @@ namespace TurbulenceService
 
             GetServerParameters4RawData(xlow, ylow, zlow, xwidth, ywidth, zwidth,
                 serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth, x_step, y_step, z_step, tlow, twidth, dbtype); //Added time for temporal server location
-            
+
             int destinationIndex;
             bool doFilter = false;
             bool doStride = false;
@@ -3776,6 +3776,7 @@ namespace TurbulenceService
             }
 
             SqlCommand sqlcmd = new SqlCommand();
+            IAsyncResult[] asyncRes = new IAsyncResult[serverCount];
             /*Now use the parameters to grab the data pieces*/
             for (int s = 0; s < serverCount; s++)
             {

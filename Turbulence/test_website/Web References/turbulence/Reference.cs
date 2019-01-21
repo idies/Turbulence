@@ -23,7 +23,7 @@ namespace TestApp.turbulence {
     
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="TurbulenceServiceSoap", Namespace="http://turbulence.pha.jhu.edu/")]
@@ -33,33 +33,19 @@ namespace TestApp.turbulence {
         
         private System.Threading.SendOrPostCallback GetVelocityOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetVelocityBatchOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetRawVelocityOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetPressureOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetRawPressureOperationCompleted;
-        
         private System.Threading.SendOrPostCallback GetMagneticFieldOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetRawMagneticFieldOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVectorPotentialOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetRawVectorPotentialOperationCompleted;
+        private System.Threading.SendOrPostCallback GetPressureOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDensityOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetDensityGradientOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetDensityHessianOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetRawDensityOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback GetForceOperationCompleted;
+        private System.Threading.SendOrPostCallback GetTemperatureOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVelocityAndPressureOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetVelocityAndTemperatureOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVelocityGradientOperationCompleted;
         
@@ -69,13 +55,21 @@ namespace TestApp.turbulence {
         
         private System.Threading.SendOrPostCallback GetPressureGradientOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetPressureHessianOperationCompleted;
+        private System.Threading.SendOrPostCallback GetDensityGradientOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetTemperatureGradientOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVelocityHessianOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetMagneticHessianOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVectorPotentialHessianOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetPressureHessianOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetDensityHessianOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetTemperatureHessianOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVelocityLaplacianOperationCompleted;
         
@@ -84,6 +78,12 @@ namespace TestApp.turbulence {
         private System.Threading.SendOrPostCallback GetVectorPotentialLaplacianOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetPositionOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetThresholdOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetForceOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetInvariantOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetBoxFilterOperationCompleted;
         
@@ -99,9 +99,23 @@ namespace TestApp.turbulence {
         
         private System.Threading.SendOrPostCallback GetBoxFilterGradientOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetThresholdOperationCompleted;
-        
         private System.Threading.SendOrPostCallback GetLaplacianOfGradientOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetVelocityBatchOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetRawVelocityOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetRawMagneticFieldOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetRawVectorPotentialOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetRawPressureOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetRawDensityOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetRawTemperatureOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetAnyCutoutWebOperationCompleted;
         
         private bool useDefaultCredentialsSetExplicitly;
         
@@ -148,46 +162,25 @@ namespace TestApp.turbulence {
         public event GetVelocityCompletedEventHandler GetVelocityCompleted;
         
         /// <remarks/>
-        public event GetVelocityBatchCompletedEventHandler GetVelocityBatchCompleted;
-        
-        /// <remarks/>
-        public event GetRawVelocityCompletedEventHandler GetRawVelocityCompleted;
-        
-        /// <remarks/>
-        public event GetPressureCompletedEventHandler GetPressureCompleted;
-        
-        /// <remarks/>
-        public event GetRawPressureCompletedEventHandler GetRawPressureCompleted;
-        
-        /// <remarks/>
         public event GetMagneticFieldCompletedEventHandler GetMagneticFieldCompleted;
-        
-        /// <remarks/>
-        public event GetRawMagneticFieldCompletedEventHandler GetRawMagneticFieldCompleted;
         
         /// <remarks/>
         public event GetVectorPotentialCompletedEventHandler GetVectorPotentialCompleted;
         
         /// <remarks/>
-        public event GetRawVectorPotentialCompletedEventHandler GetRawVectorPotentialCompleted;
+        public event GetPressureCompletedEventHandler GetPressureCompleted;
         
         /// <remarks/>
         public event GetDensityCompletedEventHandler GetDensityCompleted;
         
         /// <remarks/>
-        public event GetDensityGradientCompletedEventHandler GetDensityGradientCompleted;
-        
-        /// <remarks/>
-        public event GetDensityHessianCompletedEventHandler GetDensityHessianCompleted;
-        
-        /// <remarks/>
-        public event GetRawDensityCompletedEventHandler GetRawDensityCompleted;
-        
-        /// <remarks/>
-        public event GetForceCompletedEventHandler GetForceCompleted;
+        public event GetTemperatureCompletedEventHandler GetTemperatureCompleted;
         
         /// <remarks/>
         public event GetVelocityAndPressureCompletedEventHandler GetVelocityAndPressureCompleted;
+        
+        /// <remarks/>
+        public event GetVelocityAndTemperatureCompletedEventHandler GetVelocityAndTemperatureCompleted;
         
         /// <remarks/>
         public event GetVelocityGradientCompletedEventHandler GetVelocityGradientCompleted;
@@ -202,7 +195,10 @@ namespace TestApp.turbulence {
         public event GetPressureGradientCompletedEventHandler GetPressureGradientCompleted;
         
         /// <remarks/>
-        public event GetPressureHessianCompletedEventHandler GetPressureHessianCompleted;
+        public event GetDensityGradientCompletedEventHandler GetDensityGradientCompleted;
+        
+        /// <remarks/>
+        public event GetTemperatureGradientCompletedEventHandler GetTemperatureGradientCompleted;
         
         /// <remarks/>
         public event GetVelocityHessianCompletedEventHandler GetVelocityHessianCompleted;
@@ -212,6 +208,15 @@ namespace TestApp.turbulence {
         
         /// <remarks/>
         public event GetVectorPotentialHessianCompletedEventHandler GetVectorPotentialHessianCompleted;
+        
+        /// <remarks/>
+        public event GetPressureHessianCompletedEventHandler GetPressureHessianCompleted;
+        
+        /// <remarks/>
+        public event GetDensityHessianCompletedEventHandler GetDensityHessianCompleted;
+        
+        /// <remarks/>
+        public event GetTemperatureHessianCompletedEventHandler GetTemperatureHessianCompleted;
         
         /// <remarks/>
         public event GetVelocityLaplacianCompletedEventHandler GetVelocityLaplacianCompleted;
@@ -224,6 +229,15 @@ namespace TestApp.turbulence {
         
         /// <remarks/>
         public event GetPositionCompletedEventHandler GetPositionCompleted;
+        
+        /// <remarks/>
+        public event GetThresholdCompletedEventHandler GetThresholdCompleted;
+        
+        /// <remarks/>
+        public event GetForceCompletedEventHandler GetForceCompleted;
+        
+        /// <remarks/>
+        public event GetInvariantCompletedEventHandler GetInvariantCompleted;
         
         /// <remarks/>
         public event GetBoxFilterCompletedEventHandler GetBoxFilterCompleted;
@@ -247,10 +261,31 @@ namespace TestApp.turbulence {
         public event GetBoxFilterGradientCompletedEventHandler GetBoxFilterGradientCompleted;
         
         /// <remarks/>
-        public event GetThresholdCompletedEventHandler GetThresholdCompleted;
+        public event GetLaplacianOfGradientCompletedEventHandler GetLaplacianOfGradientCompleted;
         
         /// <remarks/>
-        public event GetLaplacianOfGradientCompletedEventHandler GetLaplacianOfGradientCompleted;
+        public event GetVelocityBatchCompletedEventHandler GetVelocityBatchCompleted;
+        
+        /// <remarks/>
+        public event GetRawVelocityCompletedEventHandler GetRawVelocityCompleted;
+        
+        /// <remarks/>
+        public event GetRawMagneticFieldCompletedEventHandler GetRawMagneticFieldCompleted;
+        
+        /// <remarks/>
+        public event GetRawVectorPotentialCompletedEventHandler GetRawVectorPotentialCompleted;
+        
+        /// <remarks/>
+        public event GetRawPressureCompletedEventHandler GetRawPressureCompleted;
+        
+        /// <remarks/>
+        public event GetRawDensityCompletedEventHandler GetRawDensityCompleted;
+        
+        /// <remarks/>
+        public event GetRawTemperatureCompletedEventHandler GetRawTemperatureCompleted;
+        
+        /// <remarks/>
+        public event GetAnyCutoutWebCompletedEventHandler GetAnyCutoutWebCompleted;
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/NullOp", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -287,24 +322,25 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVelocity(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVelocity(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVelocity", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVelocityAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVelocityOperationCompleted == null)) {
                 this.GetVelocityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityOperationCompleted);
             }
@@ -314,7 +350,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityOperationCompleted, userState);
         }
         
         private void OnGetVelocityOperationCompleted(object arg) {
@@ -325,198 +362,27 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityBatch", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVelocityBatch(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetVelocityBatch", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        spatialInterpolation,
-                        temporalInterpolation,
-                        points});
-            return ((Vector3[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetVelocityBatchAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityBatchAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetVelocityBatchAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
-            if ((this.GetVelocityBatchOperationCompleted == null)) {
-                this.GetVelocityBatchOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityBatchOperationCompleted);
-            }
-            this.InvokeAsync("GetVelocityBatch", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        spatialInterpolation,
-                        temporalInterpolation,
-                        points}, this.GetVelocityBatchOperationCompleted, userState);
-        }
-        
-        private void OnGetVelocityBatchOperationCompleted(object arg) {
-            if ((this.GetVelocityBatchCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetVelocityBatchCompleted(this, new GetVelocityBatchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawVelocity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawVelocity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            object[] results = this.Invoke("GetRawVelocity", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth});
-            return ((byte[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawVelocityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
-        }
-        
-        /// <remarks/>
-        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
-            if ((this.GetRawVelocityOperationCompleted == null)) {
-                this.GetRawVelocityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawVelocityOperationCompleted);
-            }
-            this.InvokeAsync("GetRawVelocity", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth}, this.GetRawVelocityOperationCompleted, userState);
-        }
-        
-        private void OnGetRawVelocityOperationCompleted(object arg) {
-            if ((this.GetRawVelocityCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetRawVelocityCompleted(this, new GetRawVelocityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Pressure[] GetPressure(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetPressure", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        spatialInterpolation,
-                        temporalInterpolation,
-                        points});
-            return ((Pressure[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetPressureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
-            if ((this.GetPressureOperationCompleted == null)) {
-                this.GetPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPressureOperationCompleted);
-            }
-            this.InvokeAsync("GetPressure", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        spatialInterpolation,
-                        temporalInterpolation,
-                        points}, this.GetPressureOperationCompleted, userState);
-        }
-        
-        private void OnGetPressureOperationCompleted(object arg) {
-            if ((this.GetPressureCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetPressureCompleted(this, new GetPressureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawPressure(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            object[] results = this.Invoke("GetRawPressure", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth});
-            return ((byte[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawPressureAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
-        }
-        
-        /// <remarks/>
-        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
-            if ((this.GetRawPressureOperationCompleted == null)) {
-                this.GetRawPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawPressureOperationCompleted);
-            }
-            this.InvokeAsync("GetRawPressure", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth}, this.GetRawPressureOperationCompleted, userState);
-        }
-        
-        private void OnGetRawPressureOperationCompleted(object arg) {
-            if ((this.GetRawPressureCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetRawPressureCompleted(this, new GetRawPressureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetMagneticField", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetMagneticField(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetMagneticField(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetMagneticField", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetMagneticFieldAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetMagneticFieldAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetMagneticFieldAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetMagneticFieldAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetMagneticFieldAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetMagneticFieldAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetMagneticFieldOperationCompleted == null)) {
                 this.GetMagneticFieldOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMagneticFieldOperationCompleted);
             }
@@ -526,7 +392,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetMagneticFieldOperationCompleted, userState);
+                        points,
+                        addr}, this.GetMagneticFieldOperationCompleted, userState);
         }
         
         private void OnGetMagneticFieldOperationCompleted(object arg) {
@@ -537,72 +404,27 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawMagneticField", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawMagneticField(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            object[] results = this.Invoke("GetRawMagneticField", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth});
-            return ((byte[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawMagneticFieldAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
-        }
-        
-        /// <remarks/>
-        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
-            if ((this.GetRawMagneticFieldOperationCompleted == null)) {
-                this.GetRawMagneticFieldOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawMagneticFieldOperationCompleted);
-            }
-            this.InvokeAsync("GetRawMagneticField", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth}, this.GetRawMagneticFieldOperationCompleted, userState);
-        }
-        
-        private void OnGetRawMagneticFieldOperationCompleted(object arg) {
-            if ((this.GetRawMagneticFieldCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetRawMagneticFieldCompleted(this, new GetRawMagneticFieldCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVectorPotential", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVectorPotential(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVectorPotential(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVectorPotential", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVectorPotentialAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVectorPotentialAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVectorPotentialAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVectorPotentialAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVectorPotentialAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVectorPotentialAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVectorPotentialOperationCompleted == null)) {
                 this.GetVectorPotentialOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVectorPotentialOperationCompleted);
             }
@@ -612,7 +434,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVectorPotentialOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVectorPotentialOperationCompleted, userState);
         }
         
         private void OnGetVectorPotentialOperationCompleted(object arg) {
@@ -623,72 +446,69 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawVectorPotential", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawVectorPotential(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            object[] results = this.Invoke("GetRawVectorPotential", new object[] {
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Pressure[] GetPressure(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetPressure", new object[] {
                         authToken,
                         dataset,
                         time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth});
-            return ((byte[])(results[0]));
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((Pressure[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawVectorPotentialAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
+        public void GetPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetPressureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
-            if ((this.GetRawVectorPotentialOperationCompleted == null)) {
-                this.GetRawVectorPotentialOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawVectorPotentialOperationCompleted);
+        public void GetPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetPressureOperationCompleted == null)) {
+                this.GetPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPressureOperationCompleted);
             }
-            this.InvokeAsync("GetRawVectorPotential", new object[] {
+            this.InvokeAsync("GetPressure", new object[] {
                         authToken,
                         dataset,
                         time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth}, this.GetRawVectorPotentialOperationCompleted, userState);
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetPressureOperationCompleted, userState);
         }
         
-        private void OnGetRawVectorPotentialOperationCompleted(object arg) {
-            if ((this.GetRawVectorPotentialCompleted != null)) {
+        private void OnGetPressureOperationCompleted(object arg) {
+            if ((this.GetPressureCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetRawVectorPotentialCompleted(this, new GetRawVectorPotentialCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetPressureCompleted(this, new GetPressureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetDensity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Pressure[] GetDensity(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Pressure[] GetDensity(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetDensity", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Pressure[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetDensityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetDensityAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetDensityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetDensityAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetDensityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetDensityAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetDensityOperationCompleted == null)) {
                 this.GetDensityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDensityOperationCompleted);
             }
@@ -698,7 +518,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetDensityOperationCompleted, userState);
+                        points,
+                        addr}, this.GetDensityOperationCompleted, userState);
         }
         
         private void OnGetDensityOperationCompleted(object arg) {
@@ -709,192 +530,69 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetDensityGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperature", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetDensityGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetDensityGradient", new object[] {
+        public Pressure[] GetTemperature(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetTemperature", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
-            return ((Vector3[])(results[0]));
+                        points,
+                        addr});
+            return ((Pressure[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetDensityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetDensityGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetTemperatureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetDensityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
-            if ((this.GetDensityGradientOperationCompleted == null)) {
-                this.GetDensityGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDensityGradientOperationCompleted);
+        public void GetTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetTemperatureOperationCompleted == null)) {
+                this.GetTemperatureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureOperationCompleted);
             }
-            this.InvokeAsync("GetDensityGradient", new object[] {
+            this.InvokeAsync("GetTemperature", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetDensityGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetTemperatureOperationCompleted, userState);
         }
         
-        private void OnGetDensityGradientOperationCompleted(object arg) {
-            if ((this.GetDensityGradientCompleted != null)) {
+        private void OnGetTemperatureOperationCompleted(object arg) {
+            if ((this.GetTemperatureCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetDensityGradientCompleted(this, new GetDensityGradientCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetDensityHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public PressureHessian[] GetDensityHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetDensityHessian", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        spatialInterpolation,
-                        temporalInterpolation,
-                        points});
-            return ((PressureHessian[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetDensityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetDensityHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetDensityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
-            if ((this.GetDensityHessianOperationCompleted == null)) {
-                this.GetDensityHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDensityHessianOperationCompleted);
-            }
-            this.InvokeAsync("GetDensityHessian", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        spatialInterpolation,
-                        temporalInterpolation,
-                        points}, this.GetDensityHessianOperationCompleted, userState);
-        }
-        
-        private void OnGetDensityHessianOperationCompleted(object arg) {
-            if ((this.GetDensityHessianCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetDensityHessianCompleted(this, new GetDensityHessianCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawDensity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawDensity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            object[] results = this.Invoke("GetRawDensity", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth});
-            return ((byte[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetRawDensityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
-        }
-        
-        /// <remarks/>
-        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
-            if ((this.GetRawDensityOperationCompleted == null)) {
-                this.GetRawDensityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawDensityOperationCompleted);
-            }
-            this.InvokeAsync("GetRawDensity", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth}, this.GetRawDensityOperationCompleted, userState);
-        }
-        
-        private void OnGetRawDensityOperationCompleted(object arg) {
-            if ((this.GetRawDensityCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetRawDensityCompleted(this, new GetRawDensityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetForce", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetForce(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetForce", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        spatialInterpolation,
-                        temporalInterpolation,
-                        points});
-            return ((Vector3[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetForceAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetForceAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetForceAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
-            if ((this.GetForceOperationCompleted == null)) {
-                this.GetForceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetForceOperationCompleted);
-            }
-            this.InvokeAsync("GetForce", new object[] {
-                        authToken,
-                        dataset,
-                        time,
-                        spatialInterpolation,
-                        temporalInterpolation,
-                        points}, this.GetForceOperationCompleted, userState);
-        }
-        
-        private void OnGetForceOperationCompleted(object arg) {
-            if ((this.GetForceCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetForceCompleted(this, new GetForceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetTemperatureCompleted(this, new GetTemperatureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityAndPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3P[] GetVelocityAndPressure(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3P[] GetVelocityAndPressure(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVelocityAndPressure", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3P[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityAndPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityAndPressureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityAndPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVelocityAndPressureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityAndPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityAndPressureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVelocityAndPressureOperationCompleted == null)) {
                 this.GetVelocityAndPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityAndPressureOperationCompleted);
             }
@@ -904,7 +602,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityAndPressureOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityAndPressureOperationCompleted, userState);
         }
         
         private void OnGetVelocityAndPressureOperationCompleted(object arg) {
@@ -915,26 +614,69 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityAndTemperature", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3P[] GetVelocityAndTemperature(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetVelocityAndTemperature", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((Vector3P[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetVelocityAndTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVelocityAndTemperatureAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetVelocityAndTemperatureAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetVelocityAndTemperatureOperationCompleted == null)) {
+                this.GetVelocityAndTemperatureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityAndTemperatureOperationCompleted);
+            }
+            this.InvokeAsync("GetVelocityAndTemperature", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetVelocityAndTemperatureOperationCompleted, userState);
+        }
+        
+        private void OnGetVelocityAndTemperatureOperationCompleted(object arg) {
+            if ((this.GetVelocityAndTemperatureCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVelocityAndTemperatureCompleted(this, new GetVelocityAndTemperatureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetVelocityGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetVelocityGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVelocityGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVelocityGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVelocityGradientOperationCompleted == null)) {
                 this.GetVelocityGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityGradientOperationCompleted);
             }
@@ -944,7 +686,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityGradientOperationCompleted, userState);
         }
         
         private void OnGetVelocityGradientOperationCompleted(object arg) {
@@ -957,24 +700,25 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetMagneticFieldGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetMagneticFieldGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetMagneticFieldGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetMagneticFieldGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetMagneticFieldGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetMagneticFieldGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetMagneticFieldGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetMagneticFieldGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetMagneticFieldGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetMagneticFieldGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetMagneticFieldGradientOperationCompleted == null)) {
                 this.GetMagneticFieldGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMagneticFieldGradientOperationCompleted);
             }
@@ -984,7 +728,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetMagneticFieldGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetMagneticFieldGradientOperationCompleted, userState);
         }
         
         private void OnGetMagneticFieldGradientOperationCompleted(object arg) {
@@ -997,24 +742,25 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVectorPotentialGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetVectorPotentialGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetVectorPotentialGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVectorPotentialGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVectorPotentialGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVectorPotentialGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVectorPotentialGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVectorPotentialGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVectorPotentialGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVectorPotentialGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVectorPotentialGradientOperationCompleted == null)) {
                 this.GetVectorPotentialGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVectorPotentialGradientOperationCompleted);
             }
@@ -1024,7 +770,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVectorPotentialGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVectorPotentialGradientOperationCompleted, userState);
         }
         
         private void OnGetVectorPotentialGradientOperationCompleted(object arg) {
@@ -1037,24 +784,25 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPressureGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetPressureGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetPressureGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetPressureGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetPressureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetPressureGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetPressureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetPressureGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetPressureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetPressureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetPressureGradientOperationCompleted == null)) {
                 this.GetPressureGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPressureGradientOperationCompleted);
             }
@@ -1064,7 +812,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetPressureGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetPressureGradientOperationCompleted, userState);
         }
         
         private void OnGetPressureGradientOperationCompleted(object arg) {
@@ -1075,66 +824,111 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPressureHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetDensityGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public PressureHessian[] GetPressureHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetPressureHessian", new object[] {
+        public Vector3[] GetDensityGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetDensityGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
-            return ((PressureHessian[])(results[0]));
+                        points,
+                        addr});
+            return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetPressureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetPressureHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetDensityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetDensityGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetPressureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
-            if ((this.GetPressureHessianOperationCompleted == null)) {
-                this.GetPressureHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPressureHessianOperationCompleted);
+        public void GetDensityGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetDensityGradientOperationCompleted == null)) {
+                this.GetDensityGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDensityGradientOperationCompleted);
             }
-            this.InvokeAsync("GetPressureHessian", new object[] {
+            this.InvokeAsync("GetDensityGradient", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetPressureHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetDensityGradientOperationCompleted, userState);
         }
         
-        private void OnGetPressureHessianOperationCompleted(object arg) {
-            if ((this.GetPressureHessianCompleted != null)) {
+        private void OnGetDensityGradientOperationCompleted(object arg) {
+            if ((this.GetDensityGradientCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetPressureHessianCompleted(this, new GetPressureHessianCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetDensityGradientCompleted(this, new GetDensityGradientCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperatureGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3[] GetTemperatureGradient(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetTemperatureGradient", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((Vector3[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetTemperatureGradientAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureGradientAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetTemperatureGradientOperationCompleted == null)) {
+                this.GetTemperatureGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureGradientOperationCompleted);
+            }
+            this.InvokeAsync("GetTemperatureGradient", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetTemperatureGradientOperationCompleted, userState);
+        }
+        
+        private void OnGetTemperatureGradientOperationCompleted(object arg) {
+            if ((this.GetTemperatureGradientCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetTemperatureGradientCompleted(this, new GetTemperatureGradientCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityHessian[] GetVelocityHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityHessian[] GetVelocityHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVelocityHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVelocityHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVelocityHessianOperationCompleted == null)) {
                 this.GetVelocityHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityHessianOperationCompleted);
             }
@@ -1144,7 +938,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityHessianOperationCompleted, userState);
         }
         
         private void OnGetVelocityHessianOperationCompleted(object arg) {
@@ -1157,24 +952,25 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetMagneticHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityHessian[] GetMagneticHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityHessian[] GetMagneticHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetMagneticHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetMagneticHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetMagneticHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetMagneticHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetMagneticHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetMagneticHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetMagneticHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetMagneticHessianOperationCompleted == null)) {
                 this.GetMagneticHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMagneticHessianOperationCompleted);
             }
@@ -1184,7 +980,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetMagneticHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetMagneticHessianOperationCompleted, userState);
         }
         
         private void OnGetMagneticHessianOperationCompleted(object arg) {
@@ -1197,24 +994,25 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVectorPotentialHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityHessian[] GetVectorPotentialHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityHessian[] GetVectorPotentialHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVectorPotentialHessian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityHessian[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVectorPotentialHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVectorPotentialHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVectorPotentialHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVectorPotentialHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVectorPotentialHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVectorPotentialHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVectorPotentialHessianOperationCompleted == null)) {
                 this.GetVectorPotentialHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVectorPotentialHessianOperationCompleted);
             }
@@ -1224,7 +1022,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVectorPotentialHessianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVectorPotentialHessianOperationCompleted, userState);
         }
         
         private void OnGetVectorPotentialHessianOperationCompleted(object arg) {
@@ -1235,26 +1034,153 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPressureHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public PressureHessian[] GetPressureHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetPressureHessian", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((PressureHessian[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetPressureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetPressureHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetPressureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetPressureHessianOperationCompleted == null)) {
+                this.GetPressureHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPressureHessianOperationCompleted);
+            }
+            this.InvokeAsync("GetPressureHessian", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetPressureHessianOperationCompleted, userState);
+        }
+        
+        private void OnGetPressureHessianOperationCompleted(object arg) {
+            if ((this.GetPressureHessianCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetPressureHessianCompleted(this, new GetPressureHessianCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetDensityHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public PressureHessian[] GetDensityHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetDensityHessian", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((PressureHessian[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetDensityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetDensityHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetDensityHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetDensityHessianOperationCompleted == null)) {
+                this.GetDensityHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDensityHessianOperationCompleted);
+            }
+            this.InvokeAsync("GetDensityHessian", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetDensityHessianOperationCompleted, userState);
+        }
+        
+        private void OnGetDensityHessianOperationCompleted(object arg) {
+            if ((this.GetDensityHessianCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetDensityHessianCompleted(this, new GetDensityHessianCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetTemperatureHessian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public PressureHessian[] GetTemperatureHessian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetTemperatureHessian", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((PressureHessian[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetTemperatureHessianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetTemperatureHessianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetTemperatureHessianOperationCompleted == null)) {
+                this.GetTemperatureHessianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTemperatureHessianOperationCompleted);
+            }
+            this.InvokeAsync("GetTemperatureHessian", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetTemperatureHessianOperationCompleted, userState);
+        }
+        
+        private void OnGetTemperatureHessianOperationCompleted(object arg) {
+            if ((this.GetTemperatureHessianCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetTemperatureHessianCompleted(this, new GetTemperatureHessianCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityLaplacian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVelocityLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVelocityLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVelocityLaplacian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVelocityLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVelocityLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVelocityLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVelocityLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVelocityLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVelocityLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVelocityLaplacianOperationCompleted == null)) {
                 this.GetVelocityLaplacianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityLaplacianOperationCompleted);
             }
@@ -1264,7 +1190,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVelocityLaplacianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVelocityLaplacianOperationCompleted, userState);
         }
         
         private void OnGetVelocityLaplacianOperationCompleted(object arg) {
@@ -1277,24 +1204,25 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetMagneticFieldLaplacian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetMagneticFieldLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetMagneticFieldLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetMagneticFieldLaplacian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetMagneticFieldLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetMagneticFieldLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetMagneticFieldLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetMagneticFieldLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetMagneticFieldLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetMagneticFieldLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetMagneticFieldLaplacianOperationCompleted == null)) {
                 this.GetMagneticFieldLaplacianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMagneticFieldLaplacianOperationCompleted);
             }
@@ -1304,7 +1232,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetMagneticFieldLaplacianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetMagneticFieldLaplacianOperationCompleted, userState);
         }
         
         private void OnGetMagneticFieldLaplacianOperationCompleted(object arg) {
@@ -1317,24 +1246,25 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVectorPotentialLaplacian", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetVectorPotentialLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Vector3[] GetVectorPotentialLaplacian(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetVectorPotentialLaplacian", new object[] {
                         authToken,
                         dataset,
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Vector3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetVectorPotentialLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetVectorPotentialLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetVectorPotentialLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVectorPotentialLaplacianAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetVectorPotentialLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetVectorPotentialLaplacianAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetVectorPotentialLaplacianOperationCompleted == null)) {
                 this.GetVectorPotentialLaplacianOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVectorPotentialLaplacianOperationCompleted);
             }
@@ -1344,7 +1274,8 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetVectorPotentialLaplacianOperationCompleted, userState);
+                        points,
+                        addr}, this.GetVectorPotentialLaplacianOperationCompleted, userState);
         }
         
         private void OnGetVectorPotentialLaplacianOperationCompleted(object arg) {
@@ -1357,7 +1288,7 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetPosition", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Point3[] GetPosition(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public Point3[] GetPosition(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetPosition", new object[] {
                         authToken,
                         dataset,
@@ -1365,17 +1296,18 @@ namespace TestApp.turbulence {
                         EndTime,
                         dt,
                         spatialInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((Point3[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetPositionAsync(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, Point3[] points) {
-            this.GetPositionAsync(authToken, dataset, StartTime, EndTime, dt, spatialInterpolation, points, null);
+        public void GetPositionAsync(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, Point3[] points, string addr) {
+            this.GetPositionAsync(authToken, dataset, StartTime, EndTime, dt, spatialInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetPositionAsync(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, Point3[] points, object userState) {
+        public void GetPositionAsync(string authToken, string dataset, float StartTime, float EndTime, float dt, SpatialInterpolation spatialInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetPositionOperationCompleted == null)) {
                 this.GetPositionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPositionOperationCompleted);
             }
@@ -1386,7 +1318,8 @@ namespace TestApp.turbulence {
                         EndTime,
                         dt,
                         spatialInterpolation,
-                        points}, this.GetPositionOperationCompleted, userState);
+                        points,
+                        addr}, this.GetPositionOperationCompleted, userState);
         }
         
         private void OnGetPositionOperationCompleted(object arg) {
@@ -1397,290 +1330,9 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilter", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetBoxFilter(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetBoxFilter", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points});
-            return ((Vector3[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterAsync(authToken, dataset, field, time, filterwidth, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
-            if ((this.GetBoxFilterOperationCompleted == null)) {
-                this.GetBoxFilterOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterOperationCompleted);
-            }
-            this.InvokeAsync("GetBoxFilter", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points}, this.GetBoxFilterOperationCompleted, userState);
-        }
-        
-        private void OnGetBoxFilterOperationCompleted(object arg) {
-            if ((this.GetBoxFilterCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBoxFilterCompleted(this, new GetBoxFilterCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGS", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public SGSTensor[] GetBoxFilterSGS(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetBoxFilterSGS", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points});
-            return ((SGSTensor[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGSAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGSAsync(authToken, dataset, field, time, filterwidth, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGSAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
-            if ((this.GetBoxFilterSGSOperationCompleted == null)) {
-                this.GetBoxFilterSGSOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSOperationCompleted);
-            }
-            this.InvokeAsync("GetBoxFilterSGS", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points}, this.GetBoxFilterSGSOperationCompleted, userState);
-        }
-        
-        private void OnGetBoxFilterSGSOperationCompleted(object arg) {
-            if ((this.GetBoxFilterSGSCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBoxFilterSGSCompleted(this, new GetBoxFilterSGSCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSsymtensor", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public SGSTensor[] GetBoxFilterSGSsymtensor(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetBoxFilterSGSsymtensor", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points});
-            return ((SGSTensor[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGSsymtensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGSsymtensorAsync(authToken, dataset, field, time, filterwidth, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGSsymtensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
-            if ((this.GetBoxFilterSGSsymtensorOperationCompleted == null)) {
-                this.GetBoxFilterSGSsymtensorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSsymtensorOperationCompleted);
-            }
-            this.InvokeAsync("GetBoxFilterSGSsymtensor", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points}, this.GetBoxFilterSGSsymtensorOperationCompleted, userState);
-        }
-        
-        private void OnGetBoxFilterSGSsymtensorOperationCompleted(object arg) {
-            if ((this.GetBoxFilterSGSsymtensorCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBoxFilterSGSsymtensorCompleted(this, new GetBoxFilterSGSsymtensorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGStensor", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetBoxFilterSGStensor(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetBoxFilterSGStensor", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points});
-            return ((VelocityGradient[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGStensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGStensorAsync(authToken, dataset, field, time, filterwidth, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGStensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
-            if ((this.GetBoxFilterSGStensorOperationCompleted == null)) {
-                this.GetBoxFilterSGStensorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGStensorOperationCompleted);
-            }
-            this.InvokeAsync("GetBoxFilterSGStensor", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points}, this.GetBoxFilterSGStensorOperationCompleted, userState);
-        }
-        
-        private void OnGetBoxFilterSGStensorOperationCompleted(object arg) {
-            if ((this.GetBoxFilterSGStensorCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBoxFilterSGStensorCompleted(this, new GetBoxFilterSGStensorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSvector", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public Vector3[] GetBoxFilterSGSvector(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetBoxFilterSGSvector", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points});
-            return ((Vector3[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGSvectorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGSvectorAsync(authToken, dataset, field, time, filterwidth, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGSvectorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
-            if ((this.GetBoxFilterSGSvectorOperationCompleted == null)) {
-                this.GetBoxFilterSGSvectorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSvectorOperationCompleted);
-            }
-            this.InvokeAsync("GetBoxFilterSGSvector", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points}, this.GetBoxFilterSGSvectorOperationCompleted, userState);
-        }
-        
-        private void OnGetBoxFilterSGSvectorOperationCompleted(object arg) {
-            if ((this.GetBoxFilterSGSvectorCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBoxFilterSGSvectorCompleted(this, new GetBoxFilterSGSvectorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSscalar", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public float[] GetBoxFilterSGSscalar(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetBoxFilterSGSscalar", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points});
-            return ((float[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGSscalarAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points) {
-            this.GetBoxFilterSGSscalarAsync(authToken, dataset, field, time, filterwidth, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterSGSscalarAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, object userState) {
-            if ((this.GetBoxFilterSGSscalarOperationCompleted == null)) {
-                this.GetBoxFilterSGSscalarOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSscalarOperationCompleted);
-            }
-            this.InvokeAsync("GetBoxFilterSGSscalar", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        points}, this.GetBoxFilterSGSscalarOperationCompleted, userState);
-        }
-        
-        private void OnGetBoxFilterSGSscalarOperationCompleted(object arg) {
-            if ((this.GetBoxFilterSGSscalarCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBoxFilterSGSscalarCompleted(this, new GetBoxFilterSGSscalarCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetBoxFilterGradient(string authToken, string dataset, string field, float time, float filterwidth, float spacing, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
-            object[] results = this.Invoke("GetBoxFilterGradient", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        spacing,
-                        points});
-            return ((VelocityGradient[])(results[0]));
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterGradientAsync(string authToken, string dataset, string field, float time, float filterwidth, float spacing, Point3[] points) {
-            this.GetBoxFilterGradientAsync(authToken, dataset, field, time, filterwidth, spacing, points, null);
-        }
-        
-        /// <remarks/>
-        public void GetBoxFilterGradientAsync(string authToken, string dataset, string field, float time, float filterwidth, float spacing, Point3[] points, object userState) {
-            if ((this.GetBoxFilterGradientOperationCompleted == null)) {
-                this.GetBoxFilterGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterGradientOperationCompleted);
-            }
-            this.InvokeAsync("GetBoxFilterGradient", new object[] {
-                        authToken,
-                        dataset,
-                        field,
-                        time,
-                        filterwidth,
-                        spacing,
-                        points}, this.GetBoxFilterGradientOperationCompleted, userState);
-        }
-        
-        private void OnGetBoxFilterGradientOperationCompleted(object arg) {
-            if ((this.GetBoxFilterGradientCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetBoxFilterGradientCompleted(this, new GetBoxFilterGradientCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetThreshold", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
+        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
             object[] results = this.Invoke("GetThreshold", new object[] {
                         authToken,
                         dataset,
@@ -1693,17 +1345,18 @@ namespace TestApp.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth});
+                        Zwidth,
+                        addr});
             return ((ThresholdInfo[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth) {
-            this.GetThresholdAsync(authToken, dataset, field, time, threshold, spatialInterpolation, X, Y, Z, Xwidth, Ywidth, Zwidth, null);
+        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetThresholdAsync(authToken, dataset, field, time, threshold, spatialInterpolation, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, object userState) {
+        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
             if ((this.GetThresholdOperationCompleted == null)) {
                 this.GetThresholdOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetThresholdOperationCompleted);
             }
@@ -1719,7 +1372,8 @@ namespace TestApp.turbulence {
                         Z,
                         Xwidth,
                         Ywidth,
-                        Zwidth}, this.GetThresholdOperationCompleted, userState);
+                        Zwidth,
+                        addr}, this.GetThresholdOperationCompleted, userState);
         }
         
         private void OnGetThresholdOperationCompleted(object arg) {
@@ -1730,9 +1384,388 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetForce", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3[] GetForce(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetForce", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((Vector3[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetForceAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetForceAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetForceAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetForceOperationCompleted == null)) {
+                this.GetForceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetForceOperationCompleted);
+            }
+            this.InvokeAsync("GetForce", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetForceOperationCompleted, userState);
+        }
+        
+        private void OnGetForceOperationCompleted(object arg) {
+            if ((this.GetForceCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetForceCompleted(this, new GetForceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetInvariant", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3[] GetInvariant(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetInvariant", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((Vector3[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetInvariantAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetInvariantAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetInvariantAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetInvariantOperationCompleted == null)) {
+                this.GetInvariantOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInvariantOperationCompleted);
+            }
+            this.InvokeAsync("GetInvariant", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetInvariantOperationCompleted, userState);
+        }
+        
+        private void OnGetInvariantOperationCompleted(object arg) {
+            if ((this.GetInvariantCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetInvariantCompleted(this, new GetInvariantCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilter", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3[] GetBoxFilter(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetBoxFilter", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr});
+            return ((Vector3[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr) {
+            this.GetBoxFilterAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr, object userState) {
+            if ((this.GetBoxFilterOperationCompleted == null)) {
+                this.GetBoxFilterOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterOperationCompleted);
+            }
+            this.InvokeAsync("GetBoxFilter", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr}, this.GetBoxFilterOperationCompleted, userState);
+        }
+        
+        private void OnGetBoxFilterOperationCompleted(object arg) {
+            if ((this.GetBoxFilterCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBoxFilterCompleted(this, new GetBoxFilterCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGS", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public SGSTensor[] GetBoxFilterSGS(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetBoxFilterSGS", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr});
+            return ((SGSTensor[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGSAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr) {
+            this.GetBoxFilterSGSAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGSAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr, object userState) {
+            if ((this.GetBoxFilterSGSOperationCompleted == null)) {
+                this.GetBoxFilterSGSOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSOperationCompleted);
+            }
+            this.InvokeAsync("GetBoxFilterSGS", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr}, this.GetBoxFilterSGSOperationCompleted, userState);
+        }
+        
+        private void OnGetBoxFilterSGSOperationCompleted(object arg) {
+            if ((this.GetBoxFilterSGSCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBoxFilterSGSCompleted(this, new GetBoxFilterSGSCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSsymtensor", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public SGSTensor[] GetBoxFilterSGSsymtensor(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetBoxFilterSGSsymtensor", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr});
+            return ((SGSTensor[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGSsymtensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr) {
+            this.GetBoxFilterSGSsymtensorAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGSsymtensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr, object userState) {
+            if ((this.GetBoxFilterSGSsymtensorOperationCompleted == null)) {
+                this.GetBoxFilterSGSsymtensorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSsymtensorOperationCompleted);
+            }
+            this.InvokeAsync("GetBoxFilterSGSsymtensor", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr}, this.GetBoxFilterSGSsymtensorOperationCompleted, userState);
+        }
+        
+        private void OnGetBoxFilterSGSsymtensorOperationCompleted(object arg) {
+            if ((this.GetBoxFilterSGSsymtensorCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBoxFilterSGSsymtensorCompleted(this, new GetBoxFilterSGSsymtensorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGStensor", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public VelocityGradient[] GetBoxFilterSGStensor(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetBoxFilterSGStensor", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr});
+            return ((VelocityGradient[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGStensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr) {
+            this.GetBoxFilterSGStensorAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGStensorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr, object userState) {
+            if ((this.GetBoxFilterSGStensorOperationCompleted == null)) {
+                this.GetBoxFilterSGStensorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGStensorOperationCompleted);
+            }
+            this.InvokeAsync("GetBoxFilterSGStensor", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr}, this.GetBoxFilterSGStensorOperationCompleted, userState);
+        }
+        
+        private void OnGetBoxFilterSGStensorOperationCompleted(object arg) {
+            if ((this.GetBoxFilterSGStensorCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBoxFilterSGStensorCompleted(this, new GetBoxFilterSGStensorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSvector", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3[] GetBoxFilterSGSvector(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetBoxFilterSGSvector", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr});
+            return ((Vector3[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGSvectorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr) {
+            this.GetBoxFilterSGSvectorAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGSvectorAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr, object userState) {
+            if ((this.GetBoxFilterSGSvectorOperationCompleted == null)) {
+                this.GetBoxFilterSGSvectorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSvectorOperationCompleted);
+            }
+            this.InvokeAsync("GetBoxFilterSGSvector", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr}, this.GetBoxFilterSGSvectorOperationCompleted, userState);
+        }
+        
+        private void OnGetBoxFilterSGSvectorOperationCompleted(object arg) {
+            if ((this.GetBoxFilterSGSvectorCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBoxFilterSGSvectorCompleted(this, new GetBoxFilterSGSvectorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterSGSscalar", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public float[] GetBoxFilterSGSscalar(string authToken, string dataset, string field, float time, float filterwidth, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetBoxFilterSGSscalar", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr});
+            return ((float[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGSscalarAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr) {
+            this.GetBoxFilterSGSscalarAsync(authToken, dataset, field, time, filterwidth, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterSGSscalarAsync(string authToken, string dataset, string field, float time, float filterwidth, Point3[] points, string addr, object userState) {
+            if ((this.GetBoxFilterSGSscalarOperationCompleted == null)) {
+                this.GetBoxFilterSGSscalarOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterSGSscalarOperationCompleted);
+            }
+            this.InvokeAsync("GetBoxFilterSGSscalar", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        points,
+                        addr}, this.GetBoxFilterSGSscalarOperationCompleted, userState);
+        }
+        
+        private void OnGetBoxFilterSGSscalarOperationCompleted(object arg) {
+            if ((this.GetBoxFilterSGSscalarCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBoxFilterSGSscalarCompleted(this, new GetBoxFilterSGSscalarCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetBoxFilterGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public VelocityGradient[] GetBoxFilterGradient(string authToken, string dataset, string field, float time, float filterwidth, float spacing, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetBoxFilterGradient", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        spacing,
+                        points,
+                        addr});
+            return ((VelocityGradient[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterGradientAsync(string authToken, string dataset, string field, float time, float filterwidth, float spacing, Point3[] points, string addr) {
+            this.GetBoxFilterGradientAsync(authToken, dataset, field, time, filterwidth, spacing, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetBoxFilterGradientAsync(string authToken, string dataset, string field, float time, float filterwidth, float spacing, Point3[] points, string addr, object userState) {
+            if ((this.GetBoxFilterGradientOperationCompleted == null)) {
+                this.GetBoxFilterGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBoxFilterGradientOperationCompleted);
+            }
+            this.InvokeAsync("GetBoxFilterGradient", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        time,
+                        filterwidth,
+                        spacing,
+                        points,
+                        addr}, this.GetBoxFilterGradientOperationCompleted, userState);
+        }
+        
+        private void OnGetBoxFilterGradientOperationCompleted(object arg) {
+            if ((this.GetBoxFilterGradientCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBoxFilterGradientCompleted(this, new GetBoxFilterGradientCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetLaplacianOfGradient", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public VelocityGradient[] GetLaplacianOfGradient(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points) {
+        public VelocityGradient[] GetLaplacianOfGradient(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
             object[] results = this.Invoke("GetLaplacianOfGradient", new object[] {
                         authToken,
                         dataset,
@@ -1740,17 +1773,18 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points});
+                        points,
+                        addr});
             return ((VelocityGradient[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetLaplacianOfGradientAsync(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points) {
-            this.GetLaplacianOfGradientAsync(authToken, dataset, field, time, spatialInterpolation, temporalInterpolation, points, null);
+        public void GetLaplacianOfGradientAsync(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetLaplacianOfGradientAsync(authToken, dataset, field, time, spatialInterpolation, temporalInterpolation, points, addr, null);
         }
         
         /// <remarks/>
-        public void GetLaplacianOfGradientAsync(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, object userState) {
+        public void GetLaplacianOfGradientAsync(string authToken, string dataset, string field, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
             if ((this.GetLaplacianOfGradientOperationCompleted == null)) {
                 this.GetLaplacianOfGradientOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetLaplacianOfGradientOperationCompleted);
             }
@@ -1761,13 +1795,417 @@ namespace TestApp.turbulence {
                         time,
                         spatialInterpolation,
                         temporalInterpolation,
-                        points}, this.GetLaplacianOfGradientOperationCompleted, userState);
+                        points,
+                        addr}, this.GetLaplacianOfGradientOperationCompleted, userState);
         }
         
         private void OnGetLaplacianOfGradientOperationCompleted(object arg) {
             if ((this.GetLaplacianOfGradientCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetLaplacianOfGradientCompleted(this, new GetLaplacianOfGradientCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetVelocityBatch", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
+        public Vector3[] GetVelocityBatch(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, [System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)] Point3[] points, string addr) {
+            object[] results = this.Invoke("GetVelocityBatch", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr});
+            return ((Vector3[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetVelocityBatchAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr) {
+            this.GetVelocityBatchAsync(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetVelocityBatchAsync(string authToken, string dataset, float time, SpatialInterpolation spatialInterpolation, TemporalInterpolation temporalInterpolation, Point3[] points, string addr, object userState) {
+            if ((this.GetVelocityBatchOperationCompleted == null)) {
+                this.GetVelocityBatchOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVelocityBatchOperationCompleted);
+            }
+            this.InvokeAsync("GetVelocityBatch", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        spatialInterpolation,
+                        temporalInterpolation,
+                        points,
+                        addr}, this.GetVelocityBatchOperationCompleted, userState);
+        }
+        
+        private void OnGetVelocityBatchOperationCompleted(object arg) {
+            if ((this.GetVelocityBatchCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVelocityBatchCompleted(this, new GetVelocityBatchCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawVelocity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetRawVelocity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            object[] results = this.Invoke("GetRawVelocity", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawVelocityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+            if ((this.GetRawVelocityOperationCompleted == null)) {
+                this.GetRawVelocityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawVelocityOperationCompleted);
+            }
+            this.InvokeAsync("GetRawVelocity", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr}, this.GetRawVelocityOperationCompleted, userState);
+        }
+        
+        private void OnGetRawVelocityOperationCompleted(object arg) {
+            if ((this.GetRawVelocityCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetRawVelocityCompleted(this, new GetRawVelocityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawMagneticField", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetRawMagneticField(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            object[] results = this.Invoke("GetRawMagneticField", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawMagneticFieldAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+            if ((this.GetRawMagneticFieldOperationCompleted == null)) {
+                this.GetRawMagneticFieldOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawMagneticFieldOperationCompleted);
+            }
+            this.InvokeAsync("GetRawMagneticField", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr}, this.GetRawMagneticFieldOperationCompleted, userState);
+        }
+        
+        private void OnGetRawMagneticFieldOperationCompleted(object arg) {
+            if ((this.GetRawMagneticFieldCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetRawMagneticFieldCompleted(this, new GetRawMagneticFieldCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawVectorPotential", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetRawVectorPotential(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            object[] results = this.Invoke("GetRawVectorPotential", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawVectorPotentialAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+            if ((this.GetRawVectorPotentialOperationCompleted == null)) {
+                this.GetRawVectorPotentialOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawVectorPotentialOperationCompleted);
+            }
+            this.InvokeAsync("GetRawVectorPotential", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr}, this.GetRawVectorPotentialOperationCompleted, userState);
+        }
+        
+        private void OnGetRawVectorPotentialOperationCompleted(object arg) {
+            if ((this.GetRawVectorPotentialCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetRawVectorPotentialCompleted(this, new GetRawVectorPotentialCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetRawPressure(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            object[] results = this.Invoke("GetRawPressure", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawPressureAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+            if ((this.GetRawPressureOperationCompleted == null)) {
+                this.GetRawPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawPressureOperationCompleted);
+            }
+            this.InvokeAsync("GetRawPressure", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr}, this.GetRawPressureOperationCompleted, userState);
+        }
+        
+        private void OnGetRawPressureOperationCompleted(object arg) {
+            if ((this.GetRawPressureCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetRawPressureCompleted(this, new GetRawPressureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawDensity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetRawDensity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            object[] results = this.Invoke("GetRawDensity", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawDensityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+            if ((this.GetRawDensityOperationCompleted == null)) {
+                this.GetRawDensityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawDensityOperationCompleted);
+            }
+            this.InvokeAsync("GetRawDensity", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr}, this.GetRawDensityOperationCompleted, userState);
+        }
+        
+        private void OnGetRawDensityOperationCompleted(object arg) {
+            if ((this.GetRawDensityCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetRawDensityCompleted(this, new GetRawDensityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawTemperature", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetRawTemperature(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            object[] results = this.Invoke("GetRawTemperature", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr});
+            return ((byte[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetRawTemperatureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawTemperatureAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetRawTemperatureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+            if ((this.GetRawTemperatureOperationCompleted == null)) {
+                this.GetRawTemperatureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawTemperatureOperationCompleted);
+            }
+            this.InvokeAsync("GetRawTemperature", new object[] {
+                        authToken,
+                        dataset,
+                        time,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        addr}, this.GetRawTemperatureOperationCompleted, userState);
+        }
+        
+        private void OnGetRawTemperatureOperationCompleted(object arg) {
+            if ((this.GetRawTemperatureCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetRawTemperatureCompleted(this, new GetRawTemperatureCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetAnyCutoutWeb", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public float[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step, int filter_width, string addr) {
+            object[] results = this.Invoke("GetAnyCutoutWeb", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        T,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        x_step,
+                        y_step,
+                        z_step,
+                        filter_width,
+                        addr});
+            return ((float[])(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetAnyCutoutWebAsync(string authToken, string dataset, string field, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step, int filter_width, string addr) {
+            this.GetAnyCutoutWebAsync(authToken, dataset, field, T, X, Y, Z, Xwidth, Ywidth, Zwidth, x_step, y_step, z_step, filter_width, addr, null);
+        }
+        
+        /// <remarks/>
+        public void GetAnyCutoutWebAsync(
+                    string authToken, 
+                    string dataset, 
+                    string field, 
+                    int T, 
+                    int X, 
+                    int Y, 
+                    int Z, 
+                    int Xwidth, 
+                    int Ywidth, 
+                    int Zwidth, 
+                    int x_step, 
+                    int y_step, 
+                    int z_step, 
+                    int filter_width, 
+                    string addr, 
+                    object userState) {
+            if ((this.GetAnyCutoutWebOperationCompleted == null)) {
+                this.GetAnyCutoutWebOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAnyCutoutWebOperationCompleted);
+            }
+            this.InvokeAsync("GetAnyCutoutWeb", new object[] {
+                        authToken,
+                        dataset,
+                        field,
+                        T,
+                        X,
+                        Y,
+                        Z,
+                        Xwidth,
+                        Ywidth,
+                        Zwidth,
+                        x_step,
+                        y_step,
+                        z_step,
+                        filter_width,
+                        addr}, this.GetAnyCutoutWebOperationCompleted, userState);
+        }
+        
+        private void OnGetAnyCutoutWebOperationCompleted(object arg) {
+            if ((this.GetAnyCutoutWebCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetAnyCutoutWebCompleted(this, new GetAnyCutoutWebCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1791,7 +2229,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1836,64 +2274,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
-    public partial class ThresholdInfo {
-        
-        private int xField;
-        
-        private int yField;
-        
-        private int zField;
-        
-        private float valueField;
-        
-        /// <remarks/>
-        public int x {
-            get {
-                return this.xField;
-            }
-            set {
-                this.xField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int y {
-            get {
-                return this.yField;
-            }
-            set {
-                this.yField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int z {
-            get {
-                return this.zField;
-            }
-            set {
-                this.zField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public float value {
-            get {
-                return this.valueField;
-            }
-            set {
-                this.valueField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1974,7 +2355,145 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class ThresholdInfo {
+        
+        private int xField;
+        
+        private int yField;
+        
+        private int zField;
+        
+        private float valueField;
+        
+        /// <remarks/>
+        public int x {
+            get {
+                return this.xField;
+            }
+            set {
+                this.xField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int y {
+            get {
+                return this.yField;
+            }
+            set {
+                this.yField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int z {
+            get {
+                return this.zField;
+            }
+            set {
+                this.zField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public float value {
+            get {
+                return this.valueField;
+            }
+            set {
+                this.valueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class PressureHessian {
+        
+        private float d2pdxdxField;
+        
+        private float d2pdxdyField;
+        
+        private float d2pdxdzField;
+        
+        private float d2pdydyField;
+        
+        private float d2pdydzField;
+        
+        private float d2pdzdzField;
+        
+        /// <remarks/>
+        public float d2pdxdx {
+            get {
+                return this.d2pdxdxField;
+            }
+            set {
+                this.d2pdxdxField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public float d2pdxdy {
+            get {
+                return this.d2pdxdyField;
+            }
+            set {
+                this.d2pdxdyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public float d2pdxdz {
+            get {
+                return this.d2pdxdzField;
+            }
+            set {
+                this.d2pdxdzField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public float d2pdydy {
+            get {
+                return this.d2pdydyField;
+            }
+            set {
+                this.d2pdydyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public float d2pdydz {
+            get {
+                return this.d2pdydzField;
+            }
+            set {
+                this.d2pdydzField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public float d2pdzdz {
+            get {
+                return this.d2pdzdzField;
+            }
+            set {
+                this.d2pdzdzField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2199,7 +2718,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2316,7 +2835,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2373,88 +2892,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
-    public partial class PressureHessian {
-        
-        private float d2pdxdxField;
-        
-        private float d2pdxdyField;
-        
-        private float d2pdxdzField;
-        
-        private float d2pdydyField;
-        
-        private float d2pdydzField;
-        
-        private float d2pdzdzField;
-        
-        /// <remarks/>
-        public float d2pdxdx {
-            get {
-                return this.d2pdxdxField;
-            }
-            set {
-                this.d2pdxdxField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public float d2pdxdy {
-            get {
-                return this.d2pdxdyField;
-            }
-            set {
-                this.d2pdxdyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public float d2pdxdz {
-            get {
-                return this.d2pdxdzField;
-            }
-            set {
-                this.d2pdxdzField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public float d2pdydy {
-            get {
-                return this.d2pdydyField;
-            }
-            set {
-                this.d2pdydyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public float d2pdydz {
-            get {
-                return this.d2pdydzField;
-            }
-            set {
-                this.d2pdydzField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public float d2pdzdz {
-            get {
-                return this.d2pdzdzField;
-            }
-            set {
-                this.d2pdzdzField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2475,7 +2913,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2520,7 +2958,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
     public enum SpatialInterpolation {
@@ -2623,7 +3061,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
     public enum TemporalInterpolation {
@@ -2636,11 +3074,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void NullOpCompletedEventHandler(object sender, NullOpCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class NullOpCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2662,11 +3100,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVelocityCompletedEventHandler(object sender, GetVelocityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2688,115 +3126,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetVelocityBatchCompletedEventHandler(object sender, GetVelocityBatchCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetVelocityBatchCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetVelocityBatchCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public Vector3[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((Vector3[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetRawVelocityCompletedEventHandler(object sender, GetRawVelocityCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetRawVelocityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetRawVelocityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public byte[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((byte[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetPressureCompletedEventHandler(object sender, GetPressureCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetPressureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetPressureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public Pressure[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((Pressure[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetRawPressureCompletedEventHandler(object sender, GetRawPressureCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetRawPressureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetRawPressureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public byte[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((byte[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetMagneticFieldCompletedEventHandler(object sender, GetMagneticFieldCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMagneticFieldCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2818,37 +3152,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetRawMagneticFieldCompletedEventHandler(object sender, GetRawMagneticFieldCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetRawMagneticFieldCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetRawMagneticFieldCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public byte[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((byte[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVectorPotentialCompletedEventHandler(object sender, GetVectorPotentialCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVectorPotentialCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2870,37 +3178,37 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetRawVectorPotentialCompletedEventHandler(object sender, GetRawVectorPotentialCompletedEventArgs e);
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetPressureCompletedEventHandler(object sender, GetPressureCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetRawVectorPotentialCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetPressureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetRawVectorPotentialCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetPressureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
         
         /// <remarks/>
-        public byte[] Result {
+        public Pressure[] Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((byte[])(this.results[0]));
+                return ((Pressure[])(this.results[0]));
             }
         }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetDensityCompletedEventHandler(object sender, GetDensityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDensityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2922,115 +3230,37 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetDensityGradientCompletedEventHandler(object sender, GetDensityGradientCompletedEventArgs e);
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetTemperatureCompletedEventHandler(object sender, GetTemperatureCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetDensityGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetTemperatureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetDensityGradientCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetTemperatureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
         
         /// <remarks/>
-        public Vector3[] Result {
+        public Pressure[] Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Vector3[])(this.results[0]));
+                return ((Pressure[])(this.results[0]));
             }
         }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetDensityHessianCompletedEventHandler(object sender, GetDensityHessianCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetDensityHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetDensityHessianCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public PressureHessian[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((PressureHessian[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetRawDensityCompletedEventHandler(object sender, GetRawDensityCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetRawDensityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetRawDensityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public byte[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((byte[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetForceCompletedEventHandler(object sender, GetForceCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetForceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetForceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public Vector3[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((Vector3[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVelocityAndPressureCompletedEventHandler(object sender, GetVelocityAndPressureCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityAndPressureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3052,11 +3282,37 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetVelocityAndTemperatureCompletedEventHandler(object sender, GetVelocityAndTemperatureCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVelocityAndTemperatureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetVelocityAndTemperatureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3P[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3P[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVelocityGradientCompletedEventHandler(object sender, GetVelocityGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3078,11 +3334,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetMagneticFieldGradientCompletedEventHandler(object sender, GetMagneticFieldGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMagneticFieldGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3104,11 +3360,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVectorPotentialGradientCompletedEventHandler(object sender, GetVectorPotentialGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVectorPotentialGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3130,11 +3386,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetPressureGradientCompletedEventHandler(object sender, GetPressureGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPressureGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3156,37 +3412,63 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetPressureHessianCompletedEventHandler(object sender, GetPressureHessianCompletedEventArgs e);
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetDensityGradientCompletedEventHandler(object sender, GetDensityGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetPressureHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class GetDensityGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal GetPressureHessianCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal GetDensityGradientCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
         
         /// <remarks/>
-        public PressureHessian[] Result {
+        public Vector3[] Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((PressureHessian[])(this.results[0]));
+                return ((Vector3[])(this.results[0]));
             }
         }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetTemperatureGradientCompletedEventHandler(object sender, GetTemperatureGradientCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetTemperatureGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetTemperatureGradientCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVelocityHessianCompletedEventHandler(object sender, GetVelocityHessianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3208,11 +3490,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetMagneticHessianCompletedEventHandler(object sender, GetMagneticHessianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMagneticHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3234,11 +3516,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVectorPotentialHessianCompletedEventHandler(object sender, GetVectorPotentialHessianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVectorPotentialHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3260,11 +3542,89 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetPressureHessianCompletedEventHandler(object sender, GetPressureHessianCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetPressureHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetPressureHessianCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public PressureHessian[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((PressureHessian[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetDensityHessianCompletedEventHandler(object sender, GetDensityHessianCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetDensityHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetDensityHessianCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public PressureHessian[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((PressureHessian[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetTemperatureHessianCompletedEventHandler(object sender, GetTemperatureHessianCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetTemperatureHessianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetTemperatureHessianCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public PressureHessian[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((PressureHessian[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVelocityLaplacianCompletedEventHandler(object sender, GetVelocityLaplacianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVelocityLaplacianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3286,11 +3646,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetMagneticFieldLaplacianCompletedEventHandler(object sender, GetMagneticFieldLaplacianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMagneticFieldLaplacianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3312,11 +3672,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetVectorPotentialLaplacianCompletedEventHandler(object sender, GetVectorPotentialLaplacianCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVectorPotentialLaplacianCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3338,11 +3698,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetPositionCompletedEventHandler(object sender, GetPositionCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPositionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3364,193 +3724,11 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetBoxFilterCompletedEventHandler(object sender, GetBoxFilterCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBoxFilterCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBoxFilterCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public Vector3[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((Vector3[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetBoxFilterSGSCompletedEventHandler(object sender, GetBoxFilterSGSCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBoxFilterSGSCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBoxFilterSGSCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public SGSTensor[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((SGSTensor[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetBoxFilterSGSsymtensorCompletedEventHandler(object sender, GetBoxFilterSGSsymtensorCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBoxFilterSGSsymtensorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBoxFilterSGSsymtensorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public SGSTensor[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((SGSTensor[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetBoxFilterSGStensorCompletedEventHandler(object sender, GetBoxFilterSGStensorCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBoxFilterSGStensorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBoxFilterSGStensorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public VelocityGradient[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((VelocityGradient[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetBoxFilterSGSvectorCompletedEventHandler(object sender, GetBoxFilterSGSvectorCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBoxFilterSGSvectorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBoxFilterSGSvectorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public Vector3[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((Vector3[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetBoxFilterSGSscalarCompletedEventHandler(object sender, GetBoxFilterSGSscalarCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBoxFilterSGSscalarCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBoxFilterSGSscalarCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public float[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((float[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    public delegate void GetBoxFilterGradientCompletedEventHandler(object sender, GetBoxFilterGradientCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetBoxFilterGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetBoxFilterGradientCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public VelocityGradient[] Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((VelocityGradient[])(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetThresholdCompletedEventHandler(object sender, GetThresholdCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetThresholdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3572,11 +3750,245 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetForceCompletedEventHandler(object sender, GetForceCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetForceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetForceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetInvariantCompletedEventHandler(object sender, GetInvariantCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetInvariantCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetInvariantCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetBoxFilterCompletedEventHandler(object sender, GetBoxFilterCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBoxFilterCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBoxFilterCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetBoxFilterSGSCompletedEventHandler(object sender, GetBoxFilterSGSCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBoxFilterSGSCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBoxFilterSGSCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public SGSTensor[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((SGSTensor[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetBoxFilterSGSsymtensorCompletedEventHandler(object sender, GetBoxFilterSGSsymtensorCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBoxFilterSGSsymtensorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBoxFilterSGSsymtensorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public SGSTensor[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((SGSTensor[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetBoxFilterSGStensorCompletedEventHandler(object sender, GetBoxFilterSGStensorCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBoxFilterSGStensorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBoxFilterSGStensorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public VelocityGradient[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((VelocityGradient[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetBoxFilterSGSvectorCompletedEventHandler(object sender, GetBoxFilterSGSvectorCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBoxFilterSGSvectorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBoxFilterSGSvectorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetBoxFilterSGSscalarCompletedEventHandler(object sender, GetBoxFilterSGSscalarCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBoxFilterSGSscalarCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBoxFilterSGSscalarCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public float[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((float[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetBoxFilterGradientCompletedEventHandler(object sender, GetBoxFilterGradientCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBoxFilterGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBoxFilterGradientCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public VelocityGradient[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((VelocityGradient[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     public delegate void GetLaplacianOfGradientCompletedEventHandler(object sender, GetLaplacianOfGradientCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.2053.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetLaplacianOfGradientCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3593,6 +4005,214 @@ namespace TestApp.turbulence {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((VelocityGradient[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetVelocityBatchCompletedEventHandler(object sender, GetVelocityBatchCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVelocityBatchCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetVelocityBatchCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public Vector3[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Vector3[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetRawVelocityCompletedEventHandler(object sender, GetRawVelocityCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetRawVelocityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetRawVelocityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public byte[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetRawMagneticFieldCompletedEventHandler(object sender, GetRawMagneticFieldCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetRawMagneticFieldCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetRawMagneticFieldCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public byte[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetRawVectorPotentialCompletedEventHandler(object sender, GetRawVectorPotentialCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetRawVectorPotentialCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetRawVectorPotentialCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public byte[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetRawPressureCompletedEventHandler(object sender, GetRawPressureCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetRawPressureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetRawPressureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public byte[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetRawDensityCompletedEventHandler(object sender, GetRawDensityCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetRawDensityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetRawDensityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public byte[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetRawTemperatureCompletedEventHandler(object sender, GetRawTemperatureCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetRawTemperatureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetRawTemperatureCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public byte[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((byte[])(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    public delegate void GetAnyCutoutWebCompletedEventHandler(object sender, GetAnyCutoutWebCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3062.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetAnyCutoutWebCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetAnyCutoutWebCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public float[] Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((float[])(this.results[0]));
             }
         }
     }

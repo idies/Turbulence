@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Website_edu_jhu_pha_turbulence_TurbulenceService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://test.turbulence.pha.jhu.edu/service/turbulence.asmx</Value>
+      <Value Profile="(Default)">http://turbulence.pha.jhu.edu/service/turbulence.asmx</Value>
     </Setting>
   </Settings>
 </SettingsFile>

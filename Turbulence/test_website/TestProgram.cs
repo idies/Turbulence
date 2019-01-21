@@ -45,9 +45,9 @@ namespace TestApp
             try
             {
                 turbulence.TurbulenceService service = new turbulence.TurbulenceService();
-                string authToken = "edu.jhu.pha.turbulence-dev";
+                string authToken = "uk.ac.manchester.zhao.wu-ea658424";
 
-                string dataset = "isotropic4096";
+                string dataset = "isotropic1024coarse";
                 DateTime beginTime, stopTime;
                 float dd = (float)(2.0 * Math.PI) / 4096;
                 int pointsize = 1;
@@ -78,19 +78,14 @@ namespace TestApp
                 points[pp].y = dd * 5;// (float)(random.NextDouble() * 2.0 * 3.14);
                 points[pp].z = dd * 5;// (float)(random.NextDouble() * 2.0 * 3.14);
                 service.Timeout = -1;
+                Console.WriteLine("start");
                 beginTime = DateTime.Now;
-                turbulence.Vector3P[] result = service.GetVelocityAndPressure(authToken, dataset, time, //modife dsp012/gw01 in Line484, Database.cs
-                    turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points);
+                //turbulence.Vector3P[] result = service.GetVelocityAndPressure(authToken, dataset, time, //modife dsp012/gw01 in Line484, Database.cs
+                //    turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points,"0.0.0.0");
+                float[] result = service.GetAnyCutoutWeb(authToken, dataset, "u", 1, 0, 0, 0, 64, 1024, 1024, 1, 1, 1, 1, null);
+                //byte[] result = service.GetRawVelocity(authToken, dataset, 1.0f, 0, 0, 0, 63, 1024, 1024, null);
                 stopTime = DateTime.Now;
 
-                float[] mean = new float[3];
-                for (int i = 0; i < pointsize; i++)
-                {
-                    mean[0] += result[i].x;
-                    mean[1] += result[i].y;
-                    mean[2] += result[i].z;
-                }
-                mean[0] = mean[0] / 125f; mean[1] = mean[1] / 125f; mean[2] = mean[2] / 125f;
                 //result = service.GetBoxFilter(authToken, dataset, "u", time,
                 //     dd * 5, points);
 
@@ -102,136 +97,136 @@ namespace TestApp
             }
         }
 
-        private static void speedtest()
-        {
-            try
-            {
-                TestProgram TestProgram = new TestProgram();
-                int pointsize = 10;
-                turbulence.Point3[] points = new turbulence.Point3[pointsize];
+        //private static void speedtest()
+        //{
+        //    try
+        //    {
+        //        TestProgram TestProgram = new TestProgram();
+        //        int pointsize = 10;
+        //        turbulence.Point3[] points = new turbulence.Point3[pointsize];
 
-                for (int i = 0; i < pointsize; i++)
-                {
-                    //Console.WriteLine("{0} {0} {0}", i, j, k);
+        //        for (int i = 0; i < pointsize; i++)
+        //        {
+        //            //Console.WriteLine("{0} {0} {0}", i, j, k);
 
-                    points[i] = new turbulence.Point3();
-                    points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
-                    points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
-                    points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
-                }
+        //            points[i] = new turbulence.Point3();
+        //            points[i].x = (float)(random.NextDouble() * 2.0 * 3.14);
+        //            points[i].y = (float)(random.NextDouble() * 2.0 * 3.14);
+        //            points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);
+        //        }
 
-                string dataset1 = "isotropic1024coarse";
-                string dataset2 = "isotropic1024fine";
-                string dataset3 = "isotropic4096";
-                TimeSpan t1 = new TimeSpan();
-                TimeSpan t2 = new TimeSpan();
-                TimeSpan t3 = new TimeSpan();
-                string GetFun = "GetVelocity";
-                for (int i = 0; i < 10; i++)
-                {
-                    t1 += TestProgram.webTest(GetFun, dataset1, points);
-                    t2 += TestProgram.webTest(GetFun, dataset2, points);
-                    t3 += TestProgram.webTest(GetFun, dataset3, points);
-                }
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset1, t1);
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset2, t2);
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset3, t3);
+        //        string dataset1 = "isotropic1024coarse";
+        //        string dataset2 = "isotropic1024fine";
+        //        string dataset3 = "isotropic4096";
+        //        TimeSpan t1 = new TimeSpan();
+        //        TimeSpan t2 = new TimeSpan();
+        //        TimeSpan t3 = new TimeSpan();
+        //        string GetFun = "GetVelocity";
+        //        for (int i = 0; i < 10; i++)
+        //        {
+        //            t1 += TestProgram.webTest(GetFun, dataset1, points);
+        //            t2 += TestProgram.webTest(GetFun, dataset2, points);
+        //            t3 += TestProgram.webTest(GetFun, dataset3, points);
+        //        }
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset1, t1);
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset2, t2);
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset3, t3);
 
-                t1 = new TimeSpan();
-                t2 = new TimeSpan();
-                t3 = new TimeSpan();
-                GetFun = "GetPressure";
-                for (int i = 0; i < 10; i++)
-                {
-                    t1 += TestProgram.webTest(GetFun, dataset1, points);
-                    t2 += TestProgram.webTest(GetFun, dataset2, points);
-                    t3 += TestProgram.webTest(GetFun, dataset3, points);
-                }
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset1, t1);
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset2, t2);
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset3, t3);
+        //        t1 = new TimeSpan();
+        //        t2 = new TimeSpan();
+        //        t3 = new TimeSpan();
+        //        GetFun = "GetPressure";
+        //        for (int i = 0; i < 10; i++)
+        //        {
+        //            t1 += TestProgram.webTest(GetFun, dataset1, points);
+        //            t2 += TestProgram.webTest(GetFun, dataset2, points);
+        //            t3 += TestProgram.webTest(GetFun, dataset3, points);
+        //        }
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset1, t1);
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset2, t2);
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset3, t3);
 
-                t1 = new TimeSpan();
-                t2 = new TimeSpan();
-                t3 = new TimeSpan();
-                GetFun = "GetVelocityGradient";
-                for (int i = 0; i < 10; i++)
-                {
-                    t1 += TestProgram.webTest(GetFun, dataset1, points);
-                    t2 += TestProgram.webTest(GetFun, dataset2, points);
-                    t3 += TestProgram.webTest(GetFun, dataset3, points);
-                }
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset1, t1);
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset2, t2);
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset3, t3);
+        //        t1 = new TimeSpan();
+        //        t2 = new TimeSpan();
+        //        t3 = new TimeSpan();
+        //        GetFun = "GetVelocityGradient";
+        //        for (int i = 0; i < 10; i++)
+        //        {
+        //            t1 += TestProgram.webTest(GetFun, dataset1, points);
+        //            t2 += TestProgram.webTest(GetFun, dataset2, points);
+        //            t3 += TestProgram.webTest(GetFun, dataset3, points);
+        //        }
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset1, t1);
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset2, t2);
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset3, t3);
 
-                t1 = new TimeSpan();
-                t2 = new TimeSpan();
-                t3 = new TimeSpan();
-                GetFun = "GetPressureHessian";
-                for (int i = 0; i < 10; i++)
-                {
-                    t1 += TestProgram.webTest(GetFun, dataset1, points);
-                    t2 += TestProgram.webTest(GetFun, dataset2, points);
-                    t3 += TestProgram.webTest(GetFun, dataset3, points);
-                }
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset1, t1);
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset2, t2);
-                Console.WriteLine("{0} in {1}: {2}", GetFun, dataset3, t3);
-            }
-            catch (Exception E)
-            {
-                Console.WriteLine(E);
-            }
-        }
+        //        t1 = new TimeSpan();
+        //        t2 = new TimeSpan();
+        //        t3 = new TimeSpan();
+        //        GetFun = "GetPressureHessian";
+        //        for (int i = 0; i < 10; i++)
+        //        {
+        //            t1 += TestProgram.webTest(GetFun, dataset1, points);
+        //            t2 += TestProgram.webTest(GetFun, dataset2, points);
+        //            t3 += TestProgram.webTest(GetFun, dataset3, points);
+        //        }
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset1, t1);
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset2, t2);
+        //        Console.WriteLine("{0} in {1}: {2}", GetFun, dataset3, t3);
+        //    }
+        //    catch (Exception E)
+        //    {
+        //        Console.WriteLine(E);
+        //    }
+        //}
 
-        private TimeSpan webTest(string GetFun, string dataset, turbulence.Point3[] points)
-        {
-            DateTime beginTime, stopTime;
+        //private TimeSpan webTest(string GetFun, string dataset, turbulence.Point3[] points)
+        //{
+        //    DateTime beginTime, stopTime;
 
-            float dd = (float)(2.0 * Math.PI) / 4096;
+        //    float dd = (float)(2.0 * Math.PI) / 4096;
 
-            beginTime = DateTime.Now;
-            float time = 0f;
-            service.Timeout = -1;
+        //    beginTime = DateTime.Now;
+        //    float time = 0f;
+        //    service.Timeout = -1;
 
-            switch (GetFun)
-            {
-                case ("GetVelocity"):
-                    turbulence.Vector3[] result;
-                    beginTime = DateTime.Now;
-                    result = service.GetVelocity("uk.ac.manchester.zhao.wu-ea658424", dataset, time, //modife dsp012/gw01 in Line484, Database.cs
-                        turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points);
-                    stopTime = DateTime.Now;
-                    break;
-                case ("GetPressure"):
-                    turbulence.Pressure[] result_p;
-                    beginTime = DateTime.Now;
-                    result_p = service.GetPressure("uk.ac.manchester.zhao.wu-ea658424", dataset, time,
-                        turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points);
-                    stopTime = DateTime.Now;
-                    break;
-                case ("GetVelocityGradient"):
-                    turbulence.VelocityGradient[] result_vel_grad;
-                    beginTime = DateTime.Now;
-                    result_vel_grad = service.GetVelocityGradient("uk.ac.manchester.zhao.wu-ea658424", dataset, time,
-                        turbulence.SpatialInterpolation.None_Fd4, turbulence.TemporalInterpolation.None, points);
-                    stopTime = DateTime.Now;
-                    break;
-                case ("GetPressureHessian"):
-                    turbulence.PressureHessian[] result_pr_hes;
-                    beginTime = DateTime.Now;
-                    result_pr_hes = service.GetPressureHessian("uk.ac.manchester.zhao.wu-ea658424", dataset, time,
-                        turbulence.SpatialInterpolation.None_Fd4, turbulence.TemporalInterpolation.None, points);
-                    stopTime = DateTime.Now;
-                    break;
-                default:
-                    beginTime = DateTime.Now;
-                    stopTime = DateTime.Now;
-                    break;
-            }
-            return stopTime - beginTime;
-        }
+        //    switch (GetFun)
+        //    {
+        //        case ("GetVelocity"):
+        //            turbulence.Vector3[] result;
+        //            beginTime = DateTime.Now;
+        //            result = service.GetVelocity("uk.ac.manchester.zhao.wu-ea658424", dataset, time, //modife dsp012/gw01 in Line484, Database.cs
+        //                turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points);
+        //            stopTime = DateTime.Now;
+        //            break;
+        //        case ("GetPressure"):
+        //            turbulence.Pressure[] result_p;
+        //            beginTime = DateTime.Now;
+        //            result_p = service.GetPressure("uk.ac.manchester.zhao.wu-ea658424", dataset, time,
+        //                turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points);
+        //            stopTime = DateTime.Now;
+        //            break;
+        //        case ("GetVelocityGradient"):
+        //            turbulence.VelocityGradient[] result_vel_grad;
+        //            beginTime = DateTime.Now;
+        //            result_vel_grad = service.GetVelocityGradient("uk.ac.manchester.zhao.wu-ea658424", dataset, time,
+        //                turbulence.SpatialInterpolation.None_Fd4, turbulence.TemporalInterpolation.None, points);
+        //            stopTime = DateTime.Now;
+        //            break;
+        //        case ("GetPressureHessian"):
+        //            turbulence.PressureHessian[] result_pr_hes;
+        //            beginTime = DateTime.Now;
+        //            result_pr_hes = service.GetPressureHessian("uk.ac.manchester.zhao.wu-ea658424", dataset, time,
+        //                turbulence.SpatialInterpolation.None_Fd4, turbulence.TemporalInterpolation.None, points);
+        //            stopTime = DateTime.Now;
+        //            break;
+        //        default:
+        //            beginTime = DateTime.Now;
+        //            stopTime = DateTime.Now;
+        //            break;
+        //    }
+        //    return stopTime - beginTime;
+        //}
 
         public static void Hex2Float()
         {
