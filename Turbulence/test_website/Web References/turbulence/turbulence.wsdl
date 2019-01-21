@@ -933,7 +933,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -956,7 +956,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -979,7 +979,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -1002,7 +1002,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -1025,7 +1025,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -1048,7 +1048,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -1090,7 +1090,7 @@
       <s:element name="GetAnyCutoutWebResponse">
         <s:complexType>
           <s:sequence>
-            <s:element minOccurs="0" maxOccurs="1" name="GetAnyCutoutWebResult" type="tns:ArrayOfFloat" />
+            <s:element minOccurs="0" maxOccurs="1" name="GetAnyCutoutWebResult" type="s:base64Binary" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -2384,10 +2384,10 @@
   </wsdl:binding>
   <wsdl:service name="TurbulenceService">
     <wsdl:port name="TurbulenceServiceSoap" binding="tns:TurbulenceServiceSoap">
-      <soap:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
     <wsdl:port name="TurbulenceServiceSoap12" binding="tns:TurbulenceServiceSoap12">
-      <soap12:address location="http://turbulence.pha.jhu.edu/service/turbulence.asmx" />
+      <soap12:address location="http://test.turbulence.pha.jhu.edu/service/turbulence.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

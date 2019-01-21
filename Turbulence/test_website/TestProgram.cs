@@ -82,14 +82,22 @@ namespace TestApp
                 beginTime = DateTime.Now;
                 //turbulence.Vector3P[] result = service.GetVelocityAndPressure(authToken, dataset, time, //modife dsp012/gw01 in Line484, Database.cs
                 //    turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points,"0.0.0.0");
-                float[] result = service.GetAnyCutoutWeb(authToken, dataset, "u", 1, 0, 0, 0, 64, 1024, 1024, 1, 1, 1, 1, null);
-                //byte[] result = service.GetRawVelocity(authToken, dataset, 1.0f, 0, 0, 0, 63, 1024, 1024, null);
+                byte[] result = service.GetAnyCutoutWeb(authToken, dataset, "p", 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, null);
                 stopTime = DateTime.Now;
 
                 //result = service.GetBoxFilter(authToken, dataset, "u", time,
                 //     dd * 5, points);
 
                 Console.WriteLine("Time in {0}: {1}", dataset, stopTime- beginTime);
+
+                beginTime = DateTime.Now;
+                byte[] result1 = service.GetRawVelocity(authToken, dataset, 1, 0, 0, 0, 10, 10, 10, null);
+                stopTime = DateTime.Now;
+
+                //result = service.GetBoxFilter(authToken, dataset, "u", time,
+                //     dd * 5, points);
+
+                Console.WriteLine("Time in {0}: {1}", dataset, stopTime - beginTime);
             }
             catch (Exception E)
             {

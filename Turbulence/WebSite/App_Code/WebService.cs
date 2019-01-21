@@ -4421,7 +4421,7 @@ namespace TurbulenceService
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetRawVelocity",
         Description = @"Get a cube of the raw velocity data with the given width cornered at the specified coordinates for the given time.")]
-        public byte[] GetRawVelocity(string authToken, string dataset, float time,
+        public byte[] GetRawVelocity(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
@@ -4433,6 +4433,7 @@ namespace TurbulenceService
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
+            float time = T * database.Dt * database.TimeInc;
             DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
@@ -4441,6 +4442,11 @@ namespace TurbulenceService
             int components = 3;
             byte[] result = null;
             DataInfo.TableNames tableName;
+
+            if (dataset_enum == DataInfo.DataSets.channel)
+            {
+                T = T + 132005;
+            }
 
             switch (dataset_enum)
             {
@@ -4475,7 +4481,11 @@ namespace TurbulenceService
                 Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            //DateTime beginTime = DateTime.Now;
+            result = database.GetRawData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            DateTime stopTime = DateTime.Now;
+            //string elapsedTime = String.Format("getrawvelocity done: {0}", stopTime - beginTime);
+            //System.IO.File.AppendAllText(@"C:\www\JHTDB.txt", elapsedTime);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
@@ -4484,7 +4494,7 @@ namespace TurbulenceService
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetRawMagneticField",
         Description = @"Get a cube of the raw magnetic field data with the given width cornered at the specified coordinates for the given time.")]
-        public byte[] GetRawMagneticField(string authToken, string dataset, float time,
+        public byte[] GetRawMagneticField(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
@@ -4496,6 +4506,7 @@ namespace TurbulenceService
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
+            float time = T * database.Dt * database.TimeInc;
             DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
@@ -4503,6 +4514,11 @@ namespace TurbulenceService
             // for the 3 components of the magnetic field
             int components = 3;
             byte[] result = null;
+
+            if (dataset_enum == DataInfo.DataSets.channel)
+            {
+                T = T + 132005;
+            }
 
             switch (dataset_enum)
             {
@@ -4523,7 +4539,7 @@ namespace TurbulenceService
                        Xwidth * Ywidth * Zwidth, time, null, null, addr);
                     log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-                    result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+                    result = database.GetRawData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
                     break;
                 default:
@@ -4536,7 +4552,7 @@ namespace TurbulenceService
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetRawVectorPotential",
         Description = @"Get a cube of the raw vector potential data with the given width cornered at the specified coordinates for the given time.")]
-        public byte[] GetRawVectorPotential(string authToken, string dataset, float time,
+        public byte[] GetRawVectorPotential(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
@@ -4548,6 +4564,7 @@ namespace TurbulenceService
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
+            float time = T * database.Dt * database.TimeInc;
             DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
@@ -4555,6 +4572,11 @@ namespace TurbulenceService
             // for the 3 components of the vector potential field
             int components = 3;
             byte[] result = null;
+
+            if (dataset_enum == DataInfo.DataSets.channel)
+            {
+                T = T + 132005;
+            }
 
             switch (dataset_enum)
             {
@@ -4575,7 +4597,7 @@ namespace TurbulenceService
                        Xwidth * Ywidth * Zwidth, time, null, null, addr);
                     log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-                    result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+                    result = database.GetRawData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
                     break;
                 default:
@@ -4588,7 +4610,7 @@ namespace TurbulenceService
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetRawPressure",
         Description = @"Get a cube of the raw pressure data with the given width cornered at the specified coordinates for the given time.")]
-        public byte[] GetRawPressure(string authToken, string dataset, float time,
+        public byte[] GetRawPressure(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
@@ -4600,6 +4622,7 @@ namespace TurbulenceService
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
+            float time = T * database.Dt * database.TimeInc;
             DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
@@ -4608,6 +4631,11 @@ namespace TurbulenceService
             int components = 1;
             byte[] result = null;
             DataInfo.TableNames tableName;
+
+            if (dataset_enum == DataInfo.DataSets.channel)
+            {
+                T = T + 132005;
+            }
 
             switch (dataset_enum)
             {
@@ -4636,7 +4664,7 @@ namespace TurbulenceService
                Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            result = database.GetRawData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
@@ -4645,7 +4673,7 @@ namespace TurbulenceService
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetRawDensity",
         Description = @"Get a cube of the raw density data with the given width cornered at the specified coordinates for the given time.")]
-        public byte[] GetRawDensity(string authToken, string dataset, float time,
+        public byte[] GetRawDensity(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
@@ -4657,6 +4685,7 @@ namespace TurbulenceService
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
+            float time = T * database.Dt * database.TimeInc;
             DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
@@ -4665,6 +4694,11 @@ namespace TurbulenceService
             int components = 1;
             byte[] result = null;
             DataInfo.TableNames tableName;
+
+            if (dataset_enum == DataInfo.DataSets.channel)
+            {
+                T = T + 132005;
+            }
 
             switch (dataset_enum)
             {
@@ -4680,7 +4714,7 @@ namespace TurbulenceService
                Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            result = database.GetRawData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
@@ -4689,7 +4723,7 @@ namespace TurbulenceService
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetRawTemperature",
         Description = @"Get a cube of the raw density data with the given width cornered at the specified coordinates for the given time.")]
-        public byte[] GetRawTemperature(string authToken, string dataset, float time,
+        public byte[] GetRawTemperature(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
@@ -4701,6 +4735,7 @@ namespace TurbulenceService
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
+            float time = T * database.Dt * database.TimeInc;
             DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
@@ -4709,6 +4744,11 @@ namespace TurbulenceService
             int components = 1;
             byte[] result = null;
             DataInfo.TableNames tableName;
+
+            if (dataset_enum == DataInfo.DataSets.channel)
+            {
+                T = T + 132005;
+            }
 
             switch (dataset_enum)
             {
@@ -4724,7 +4764,7 @@ namespace TurbulenceService
                Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            result = database.GetRawData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
@@ -4735,7 +4775,7 @@ namespace TurbulenceService
 
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetAnyCutoutWeb",
         Description = @"Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!")]
-        public float[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
+        public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
             int filter_width, string addr = null)
         {
@@ -4748,8 +4788,8 @@ namespace TurbulenceService
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
-            int time = T * database.TimeInc + database.TimeOff;
-            DataInfo.verifyTimeInRange(dataset_enum, T * database.Dt * database.TimeInc);
+            float time = T * database.Dt * database.TimeInc;
+            DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
             // we return a cube of data with the specified width
@@ -4796,33 +4836,54 @@ namespace TurbulenceService
             rowid = log.CreateLog(auth.Id, dataset, worker,
                 (int)TurbulenceOptions.SpatialInterpolation.None,
                 (int)TurbulenceOptions.TemporalInterpolation.None,
-               Xwidth * Ywidth * Zwidth, T * database.Dt * database.TimeInc, null, null, addr);
+               Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
+            if ((long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step) > 192000000)
+            {
+                throw new Exception(String.Format("The getCutout query should be less than 64000000 points for vector fields or 192000000 points for scalar fields!"));
+            }
+
+            //DateTime beginTime = DateTime.Now;
             result = database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,
                 x_step, y_step, z_step, filter_width);
+            //DateTime stopTime = DateTime.Now;
+            //string elapsedTime = String.Format("GetCutoutData done: {0}", stopTime - beginTime);
+            //string[] tester = { elapsedTime };
+            //System.IO.File.WriteAllLines(@"C:\www\JHTDB.txt", tester);
 
-            float[] data = new float[(long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step)];
-            unsafe
-            {
-                // TODO: This code is still far from optimal...
-                //       Why can't we pass a reference to the float array directly?
-                fixed (byte* brawdata = result)
-                {
-                    fixed (float* fdata = data)
-                    {
-                        float* frawdata = (float*)brawdata;
-                        for (int i = 0; i < data.Length; i++)
-                        {
-                            data[i] = frawdata[i];
-                        }
-                    }
-                }
-            }
+            //beginTime = DateTime.Now;
+            //float[] data = new float[(long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step)];
+            //unsafe
+            //{
+            //    // TODO: This code is still far from optimal...
+            //    //       Why can't we pass a reference to the float array directly?
+            //    fixed (byte* brawdata = result)
+            //    {
+            //        fixed (float* fdata = data)
+            //        {
+            //            float* frawdata = (float*)brawdata;
+            //            for (int i = 0; i < data.Length; i++)
+            //            {
+            //                data[i] = frawdata[i];
+            //            }
+            //        }
+            //    }
+            //}
+            //stopTime = DateTime.Now;
+            //elapsedTime = String.Format("To float done: {0}", stopTime - beginTime);
+            //System.IO.File.AppendAllText(@"C:\www\JHTDB.txt", elapsedTime);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
-            return data;
+            if (result.Length >= 803666160)
+            {
+                //System.IO.File.AppendAllText(@"C:\www\JHTDB.txt", "BufferOutput = false" + System.Environment.NewLine);
+                HttpContext.Current.Response.BufferOutput = false;
+            }
+            //elapsedTime = String.Format("Transferring data, size: {0}", result.Length);
+            //System.IO.File.AppendAllText(@"C:\www\JHTDB.txt", elapsedTime + System.Environment.NewLine);
+            return result;
 
         }
         #endregion

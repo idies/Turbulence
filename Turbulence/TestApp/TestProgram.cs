@@ -120,13 +120,13 @@ namespace TestApp
                 beginTime = DateTime.Now;
                 Console.WriteLine("Calling GetAnyCutoutWeb");
                 DateTime beginTime1 = DateTime.Now;
-                byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 1,
-                    0, 0, 0, 64, 1024, 1024);
+                //byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 1,
+                //    0, 0, 0, 64, 1024, 1024);
                 //public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
                 //    int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
                 //    int filter_width, string addr = null)
-                //float[] result_raw = testp.GetAnyCutoutWeb(authToken, "channel", "p", 0,
-                //    0, 0, 0, 1, 10, 1, 1, 4, 1, 1);
+                float[] result_raw = testp.GetAnyCutoutWeb(authToken, "isotropic1024coarse", "u", 0,
+                    0, 0, 0, 64, 1024, 1024, 1, 1, 1, 1);
                 Console.WriteLine("   {0}", DateTime.Now - beginTime1);
                 stopTime = DateTime.Now;
                 Console.WriteLine("Execution time: {0}", stopTime - beginTime);
@@ -597,7 +597,7 @@ namespace TestApp
                 spatialInterpolation, temporalInterpolation, result);
         }
 
-        public byte[] GetRawVelocity(string authToken, string dataset, float time,
+        public byte[] GetRawVelocity(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
             //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
@@ -610,6 +610,7 @@ namespace TestApp
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
+            float time = T * database.Dt * database.TimeInc;
             DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
@@ -618,6 +619,11 @@ namespace TestApp
             int components = 3;
             byte[] result = null;
             DataInfo.TableNames tableName;
+
+            if (dataset_enum == DataInfo.DataSets.channel)
+            {
+                T = T + 132005;
+            }
 
             switch (dataset_enum)
             {
@@ -652,7 +658,7 @@ namespace TestApp
                 Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            result = database.GetRawData(dataset_enum, tableName, time, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
+            result = database.GetRawData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth);
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
@@ -726,6 +732,7 @@ namespace TestApp
             byte[] result = database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,
                 x_step, y_step, z_step, filter_width);
             float[] data = new float[(long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step)];
+
             unsafe
             {
                 // TODO: This code is still far from optimal...
@@ -743,7 +750,6 @@ namespace TestApp
                 }
             }
             log.UpdateLogRecord(rowid, database.Bitfield);
-
             return data;
 
         }
