@@ -4443,11 +4443,7 @@ namespace TurbulenceService
             byte[] result = null;
             DataInfo.TableNames tableName;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -4515,11 +4511,7 @@ namespace TurbulenceService
             int components = 3;
             byte[] result = null;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -4573,11 +4565,7 @@ namespace TurbulenceService
             int components = 3;
             byte[] result = null;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -4632,11 +4620,7 @@ namespace TurbulenceService
             byte[] result = null;
             DataInfo.TableNames tableName;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -4695,11 +4679,7 @@ namespace TurbulenceService
             byte[] result = null;
             DataInfo.TableNames tableName;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.mixing:
@@ -4745,11 +4725,7 @@ namespace TurbulenceService
             byte[] result = null;
             DataInfo.TableNames tableName;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.strat4096:
@@ -4797,10 +4773,7 @@ namespace TurbulenceService
             byte[] result = null;
             int components = new int();
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
+            T = T * database.TimeInc + database.TimeOff;
             DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field[0].ToString());
             int worker = new int();
             switch (field[0])

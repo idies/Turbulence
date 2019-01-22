@@ -47,7 +47,7 @@ namespace TestApp
                 turbulence.TurbulenceService service = new turbulence.TurbulenceService();
                 string authToken = "uk.ac.manchester.zhao.wu-ea658424";
 
-                string dataset = "isotropic1024coarse";
+                string dataset = "channel";
                 DateTime beginTime, stopTime;
                 float dd = (float)(2.0 * Math.PI) / 4096;
                 int pointsize = 1;
@@ -82,7 +82,7 @@ namespace TestApp
                 beginTime = DateTime.Now;
                 //turbulence.Vector3P[] result = service.GetVelocityAndPressure(authToken, dataset, time, //modife dsp012/gw01 in Line484, Database.cs
                 //    turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points,"0.0.0.0");
-                byte[] result = service.GetAnyCutoutWeb(authToken, dataset, "p", 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, null);
+                byte[] result = service.GetAnyCutoutWeb(authToken, dataset, "u", 2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, null);
                 stopTime = DateTime.Now;
 
                 //result = service.GetBoxFilter(authToken, dataset, "u", time,

@@ -2211,7 +2211,7 @@ namespace TurbulenceService
                     //p.Direction = ParameterDirection.Output;
                     //rawdata = (byte[])p.Value;
                     //throw new Exception("Here is a cut: " + rawdata );
-                    
+
                     while (reader.Read())
                     {
                         int bytesread = 0;
@@ -2227,7 +2227,7 @@ namespace TurbulenceService
                             bytesread += bytes;
                         }
                     }
-                    
+
                     int sourceIndex = 0;
                     int destinationIndex0 = components * (serverX[s] - X + (serverY[s] - Y) * Xwidth + (serverZ[s] - Z) * Xwidth * Ywidth) * sizeof(float);
                     int destinationIndex;
@@ -2867,7 +2867,7 @@ namespace TurbulenceService
             return asyncRes;
         }
 
-        private IAsyncResult[] ExecuteGetRawData(string dataset,
+        private IAsyncResult[] ExecuteGetRawData(string dataset, int components,
             int timestep,
             int[] serverX, int[] serverY, int[] serverZ, int[] serverXwidth, int[] serverYwidth, int[] serverZwidth)
         {
@@ -2879,7 +2879,7 @@ namespace TurbulenceService
                 {
                     string queryBox = String.Format("box[{0},{1},{2},{3},{4},{5}]", serverX[s], serverY[s], serverZ[s],
                         serverX[s] + serverXwidth[s], serverY[s] + serverYwidth[s], serverZ[s] + serverZwidth[s]);
-                    int cutoutbytesize = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * 3 * sizeof(float); //TODO Fix this by passing in components if this works.
+                    int cutoutbytesize = serverXwidth[s] * serverYwidth[s] * serverZwidth[s] * components * sizeof(float); //TODO Fix this by passing in components if this works.
                     byte[] cutout = new byte[cutoutbytesize];
 
                     sqlcmds[s] = connections[s].CreateCommand();
@@ -2890,20 +2890,21 @@ namespace TurbulenceService
                             "EXEC [{0}].[dbo].[GetDataCutout] @serverName, @dbname, @codedb, " +
                             "@turbinfodb, @turbinfoserver, @dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT",
                             codeDatabase[s]);
+                        sqlcmds[s].Parameters.AddWithValue("@dataset", dataset);
                     }
                     else
                     {
                         sqlcmds[s].CommandText = String.Format(
                             "EXEC [{0}].[dbo].[GetDataFileDBCutout2] @serverName, @dbname, @codedb, " +
-                            "@turbinfodb, @turbinfoserver, @dataset, @blobDim, @timestep, @queryBox, @blob OUTPUT ",
+                            "@turbinfodb, @turbinfoserver, @field, @blobDim, @timestep, @queryBox, @blob OUTPUT ",
                             codeDatabase[s]);
+                        sqlcmds[s].Parameters.AddWithValue("@field", dataset);
                     }
                     sqlcmds[s].Parameters.AddWithValue("@serverName", servers[s]);
                     sqlcmds[s].Parameters.AddWithValue("@dbname", databases[s]);
                     sqlcmds[s].Parameters.AddWithValue("@codedb", codeDatabase[s]);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfodb", infodb);
                     sqlcmds[s].Parameters.AddWithValue("@turbinfoserver", infodb_server);
-                    sqlcmds[s].Parameters.AddWithValue("@dataset", dataset);
                     sqlcmds[s].Parameters.AddWithValue("@blobDim", atomDim);
                     sqlcmds[s].Parameters.AddWithValue("@timestep", timestep);
                     sqlcmds[s].Parameters.AddWithValue("@queryBox", queryBox);
@@ -3683,47 +3684,47 @@ namespace TurbulenceService
                 doneEvent.Set();
         }
 
-        public byte[] GetRawData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
-        {
-            // we return a cube of data with the specified width
-            // for each of the components of the vector or scalar field
-            byte[] result = new byte[Xwidth * Ywidth * Zwidth * components * sizeof(float)];
-            IAsyncResult[] asyncRes;
-            /* I'm not sure why we are doing this again -- it was previously called */
-            //selectServers(dataset_enum);
-            //if (channel_grid)
-            //{
-            //    X = (int)Math.Round(X - 0.45 * time / dx);
-            //    X = ((X % GridResolutionX) + GridResolutionX) % GridResolutionX;
-            //}
-            int[] serverX = new int[serverCount];
-            int[] serverY = new int[serverCount];
-            int[] serverZ = new int[serverCount];
-            int[] serverT = new int[serverCount];
-            int[] serverXwidth = new int[serverCount];
-            int[] serverYwidth = new int[serverCount];
-            int[] serverZwidth = new int[serverCount];
-            int[] serverTwidth = new int[serverCount];
+        //public byte[] GetRawData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, float time, int components,
+        //    int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
+        //{
+        //    // we return a cube of data with the specified width
+        //    // for each of the components of the vector or scalar field
+        //    byte[] result = new byte[Xwidth * Ywidth * Zwidth * components * sizeof(float)];
+        //    IAsyncResult[] asyncRes;
+        //    /* I'm not sure why we are doing this again -- it was previously called */
+        //    //selectServers(dataset_enum);
+        //    //if (channel_grid)
+        //    //{
+        //    //    X = (int)Math.Round(X - 0.45 * time / dx);
+        //    //    X = ((X % GridResolutionX) + GridResolutionX) % GridResolutionX;
+        //    //}
+        //    int[] serverX = new int[serverCount];
+        //    int[] serverY = new int[serverCount];
+        //    int[] serverZ = new int[serverCount];
+        //    int[] serverT = new int[serverCount];
+        //    int[] serverXwidth = new int[serverCount];
+        //    int[] serverYwidth = new int[serverCount];
+        //    int[] serverZwidth = new int[serverCount];
+        //    int[] serverTwidth = new int[serverCount];
 
-            float t = time / Dt;
-            int timestep = (int)Math.Round(t / timeInc) * timeInc + timeOff;
-            int Twidth = 1;
+        //    float t = time / Dt;
+        //    int timestep = (int)Math.Round(t / timeInc) * timeInc + timeOff;
+        //    int Twidth = 1;
 
-            GetServerParameters4RawData(X, Y, Z, timestep, Xwidth, Ywidth, Zwidth, Twidth, serverX, serverY, serverZ, serverT, serverXwidth, serverYwidth, serverZwidth, serverTwidth);
+        //    GetServerParameters4RawData(X, Y, Z, timestep, Xwidth, Ywidth, Zwidth, Twidth, serverX, serverY, serverZ, serverT, serverXwidth, serverYwidth, serverZwidth, serverTwidth);
 
-            //DateTime start = DateTime.Now;
-            asyncRes = ExecuteGetRawData(tableName.ToString(),
-                timestep, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
+        //    //DateTime start = DateTime.Now;
+        //    asyncRes = ExecuteGetRawData(tableName.ToString(),
+        //        timestep, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
 
-            GetRawResults(asyncRes, result, components, X, Y, Z, timestep, Xwidth, Ywidth, Zwidth, Twidth, serverX, serverY, serverZ, serverT, serverXwidth, serverYwidth, serverZwidth, serverTwidth);
+        //    GetRawResults(asyncRes, result, components, X, Y, Z, timestep, Xwidth, Ywidth, Zwidth, Twidth, serverX, serverY, serverZ, serverT, serverXwidth, serverYwidth, serverZwidth, serverTwidth);
 
-            //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\databaseTime.txt", true);
-            //time_log.WriteLine(DateTime.Now - start);
-            //time_log.Close();
+        //    //System.IO.StreamWriter time_log = new System.IO.StreamWriter(@"C:\Documents and Settings\kalin\My Documents\databaseTime.txt", true);
+        //    //time_log.WriteLine(DateTime.Now - start);
+        //    //time_log.Close();
 
-            return result;
-        }
+        //    return result;
+        //}
 
         public byte[] GetRawData(DataInfo.DataSets dataset_enum, DataInfo.TableNames tableName, int timestep, int components,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth)
@@ -3753,7 +3754,7 @@ namespace TurbulenceService
             GetServerParameters4RawData(X, Y, Z, timestep, Xwidth, Ywidth, Zwidth, Twidth, serverX, serverY, serverZ, serverT, serverXwidth, serverYwidth, serverZwidth, serverTwidth);
 
             //DateTime start = DateTime.Now;
-            asyncRes = ExecuteGetRawData(tableName.ToString(),
+            asyncRes = ExecuteGetRawData(tableName.ToString(), components,
                 timestep, serverX, serverY, serverZ, serverXwidth, serverYwidth, serverZwidth);
 
             GetRawResults(asyncRes, result, components, X, Y, Z, timestep, Xwidth, Ywidth, Zwidth, Twidth, serverX, serverY, serverZ, serverT, serverXwidth, serverYwidth, serverZwidth, serverTwidth);

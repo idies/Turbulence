@@ -125,8 +125,7 @@ namespace TestApp
                 //public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
                 //    int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
                 //    int filter_width, string addr = null)
-                float[] result_raw = testp.GetAnyCutoutWeb(authToken, "isotropic1024coarse", "u", 0,
-                    0, 0, 0, 64, 1024, 1024, 1, 1, 1, 1);
+                float[] result_raw = testp.GetAnyCutoutWeb(authToken, "channel", "u", 2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, null);
                 Console.WriteLine("   {0}", DateTime.Now - beginTime1);
                 stopTime = DateTime.Now;
                 Console.WriteLine("Execution time: {0}", stopTime - beginTime);
@@ -687,10 +686,6 @@ namespace TestApp
             int components = new int();
 
             T = T * database.TimeInc+database.TimeOff;
-            //if (dataset_enum == DataInfo.DataSets.channel)
-            //{
-            //    T = T + 132005;
-            //}
             DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field[0].ToString());
             int worker = new int();
             switch (field[0])
