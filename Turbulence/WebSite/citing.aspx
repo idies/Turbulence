@@ -38,7 +38,7 @@
 						The JH Turbulence Database (JHTDB) is developed as an open resource by the Johns Hopkins University, 
 						under the sponsorship of the National Science Foundation. Continued support for the database depends on 
 						demonstrable evidence of the database's value to the scientific community. We kindly request that you 
-						cite the database in your publications and presentations. The following citations are suggested:<br />
+						cite the database in your publications and presentations. The data in Johns Hopkins Turbulence Databases are made available under the Open Data Commons Attribution License (ODC-By) (<a href="http://opendatacommons.org/licenses/by/">http://opendatacommons.org/licenses/by/</a>), which means it is open to use, but requires attribution.  The following citations are suggested:<br />
 					</p>
 					<p>
 						For journal articles, proceedings, etc..,  we suggest:

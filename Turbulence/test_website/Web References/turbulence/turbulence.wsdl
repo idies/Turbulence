@@ -656,12 +656,12 @@
             <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="threshold" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
-            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_end" type="s:int" />
             <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
@@ -1073,12 +1073,12 @@
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
             <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_end" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="x_step" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="y_step" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="z_step" type="s:int" />

@@ -1786,8 +1786,19 @@ namespace TurbulenceService
             Description = @"GetThreshold of the specified field.")]
         public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold,
             TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
+            int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr = null)
         {
+            if (x_start > x_end || y_start > y_end || z_start > z_end)
+            {
+                throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
+            }
+
+            int X = x_start - 1;
+            int Y = y_start - 1;
+            int Z = z_start - 1;
+            int Xwidth = x_end - x_start + 1;
+            int Ywidth = y_end - y_start + 1;
+            int Zwidth = z_end - z_start + 1;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -1885,9 +1896,18 @@ namespace TurbulenceService
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
+
             points_above_threshold.Sort((t1, t2) => -1 * t1.value.CompareTo(t2.value));
 
-            return points_above_threshold.ToArray();
+            ThresholdInfo[] result = points_above_threshold.ToArray();
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i].x = result[i].x + 1;
+                result[i].y = result[i].y + 1;
+                result[i].z = result[i].z + 1;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -4752,9 +4772,22 @@ namespace TurbulenceService
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetAnyCutoutWeb",
         Description = @"Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!")]
         public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
+            int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step,
             int filter_width, string addr = null)
         {
+            if (x_start > x_end || y_start > y_end || z_start > z_end)
+            {
+                throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
+            }
+
+            T = T - 1;
+            int X = x_start - 1;
+            int Y = y_start - 1;
+            int Z = z_start - 1;
+            int Xwidth = x_end - x_start + 1;
+            int Ywidth = y_end - y_start + 1;
+            int Zwidth = z_end - z_start + 1;
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {

@@ -64,7 +64,7 @@
       
       <h2 class="titletext">JHTDB HDF5 and VTK Cutout Service</h2>
       
-      <iframe src='http://128.220.144.14:8001/jhtdb/' width='900' height='500' style="width: 100%; height: 100%"   ></iframe>
+      <iframe src='http://dsp033.pha.jhu.edu/jhtdb/' width='900' height='500' style="width: 100%; height: 100%"   ></iframe>
 
      
 </div>

@@ -58,7 +58,7 @@ namespace TestApp
             try
             {
                 DateTime beginTime, stopTime;
-                int nx = 1, ny = 1;
+                int nx = 1000, ny = 1000;
                 int pointsize = nx * ny * 1;
                 Point3[] points = new Point3[pointsize];
                 turbulence.Point3[] points1 = new turbulence.Point3[pointsize];
@@ -69,31 +69,31 @@ namespace TestApp
                 float dy = (float)(3 * Math.PI / ny);
 
                 beginTime = DateTime.Now;
-                float time = 14.864656326581096f;
+                float time = 3f;
                 service.Timeout = -1;
 
-                points[0].x = 21.936892f;// dd * 2048;
-                points[0].y = -0.9920484f;// dd * 2048;
-                points[0].z = 0.7583949f;// dd * 2048;
+                points[0].x = 19.3895f;// dd * 2048;
+                points[0].y = -1f;// dd * 2048;
+                points[0].z = 4.6142f;// dd * 2048;
                 //points[1].x = dd * 1023;// dd * 2048;
                 //points[1].y = dd * 1000; ;// dd * 2048;
                 //points[1].z = dd * 1000;// dd * 2048;
                 //beginTime = DateTime.Now;
                 //Console.WriteLine("Calling GetVelocity");
                 //Vector3[] result = testp.GetVelocity(authToken, "channel", time,
-                //    TurbulenceOptions.SpatialInterpolation.Lag6, TurbulenceOptions.TemporalInterpolation.None, points);
+                //    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
                 //stopTime = DateTime.Now;
                 //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
-                //for (int i = 0; i < 1; i++)
-                //{
-                //    for (int j = 0; j < 1; j++)
-                //    {
-                //        points[i * 100 + j].x = 30.218496172581567f;// dd * 2048;
-                //        points[i * 100 + j].y = 0.00357889929984090f;// dd * 2048;
-                //        points[i * 100 + j].z = 9.84855886663f;// dd * 2048;
-                //    }
-                //}
+                for (int i = 0; i < 1; i++)
+                {
+                    for (int j = 0; j < 1; j++)
+                    {
+                        points[i * ny + j].x = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
+                        points[i * ny + j].y = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
+                        points[i * ny + j].z = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
+                    }
+                }
 
                 //beginTime = DateTime.Now;
                 //Console.WriteLine("Calling GetVelocity");
@@ -102,12 +102,12 @@ namespace TestApp
                 //stopTime = DateTime.Now;
                 //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
-                //beginTime = DateTime.Now;
-                //Console.WriteLine("Calling GetVelocityGradient");
-                //Vector3[] result_vel_grad = testp.GetPressureGradient(authToken, "channel", time,
-                //    TurbulenceOptions.SpatialInterpolation.None_Fd4, TurbulenceOptions.TemporalInterpolation.None, points);
-                //stopTime = DateTime.Now;
-                //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
+                beginTime = DateTime.Now;
+                Console.WriteLine("Calling GetVelocityGradient");
+                Vector3[] result_vel_grad = testp.GetPressureGradient(authToken, "isotropic1024coarse", time,
+                    TurbulenceOptions.SpatialInterpolation.None_Fd4, TurbulenceOptions.TemporalInterpolation.None, points);
+                stopTime = DateTime.Now;
+                Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
 
                 //beginTime = DateTime.Now;
@@ -117,18 +117,26 @@ namespace TestApp
                 //stopTime = DateTime.Now;
                 //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
-                beginTime = DateTime.Now;
-                Console.WriteLine("Calling GetAnyCutoutWeb");
-                DateTime beginTime1 = DateTime.Now;
-                //byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 1,
-                //    0, 0, 0, 64, 1024, 1024);
+                //beginTime = DateTime.Now;
+                //Console.WriteLine("Calling GetAnyCutoutWeb");
+                //DateTime beginTime1 = DateTime.Now;
+
+                //ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold,
+                //    TurbulenceOptions.SpatialInterpolation spatialInterpolation,
+                //    int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr = null)
+                //ThresholdInfo[] result_raw=testp.GetThreshold(authToken, "isotropic1024coarse", "vorticity", 0.3f, 30, TurbulenceOptions.SpatialInterpolation.None_Fd4, 1, 1, 1, 4, 4, 4);
+
+                //byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 0,
+                //    0, 0, 0, 2, 2, 2);
                 //public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
-                //    int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
+                //    int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step,
                 //    int filter_width, string addr = null)
-                float[] result_raw = testp.GetAnyCutoutWeb(authToken, "channel", "u", 2, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, null);
-                Console.WriteLine("   {0}", DateTime.Now - beginTime1);
-                stopTime = DateTime.Now;
-                Console.WriteLine("Execution time: {0}", stopTime - beginTime);
+                //byte[] result_raw = testp.GetAnyCutoutWeb(authToken, "isotropic4096", "u", 1, 1, 1, 1, 10, 10, 10, 1, 1, 1, 1, null);
+
+
+                //Console.WriteLine("   {0}", DateTime.Now - beginTime1);
+                //stopTime = DateTime.Now;
+                //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
             }
             catch (Exception E)
@@ -664,10 +672,23 @@ namespace TestApp
             return result;
         }
 
-        public float[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
+        public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
+            int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step,
             int filter_width, string addr = null)
         {
+            if (x_start > x_end || y_start > y_end || z_start > z_end)
+            {
+                throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
+            }
+
+            T = T - 1;
+            int X = x_start - 1;
+            int Y = y_start - 1;
+            int Z = z_start - 1;
+            int Xwidth = x_end - x_start + 1;
+            int Ywidth = y_end - y_start + 1;
+            int Zwidth = z_end - z_start + 1;
+
             //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
@@ -678,14 +699,16 @@ namespace TestApp
             DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
             int num_virtual_servers = 1;
             database.Initialize(dataset_enum, num_virtual_servers);
-            DataInfo.verifyTimeInRange(dataset_enum, T * database.Dt * database.TimeInc);
+            float time = T * database.Dt * database.TimeInc;
+            DataInfo.verifyTimeInRange(dataset_enum, time);
             //DataInfo.verifyRawDataParameters(X, Y, Z, Xwidth, Ywidth, Zwidth);
             object rowid = null;
             // we return a cube of data with the specified width
             // for the scalar pressure field
+            byte[] result = null;
             int components = new int();
 
-            T = T * database.TimeInc+database.TimeOff;
+            T = T * database.TimeInc + database.TimeOff;
             DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field[0].ToString());
             int worker = new int();
             switch (field[0])
@@ -721,32 +744,177 @@ namespace TestApp
             rowid = log.CreateLog(auth.Id, dataset, worker,
                 (int)TurbulenceOptions.SpatialInterpolation.None,
                 (int)TurbulenceOptions.TemporalInterpolation.None,
-               Xwidth * Ywidth * Zwidth, T * database.Dt * database.TimeInc, null, null, addr);
+               Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
 
-            byte[] result = database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,
-                x_step, y_step, z_step, filter_width);
-            float[] data = new float[(long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step)];
-
-            unsafe
+            if ((long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step) > 192000000)
             {
-                // TODO: This code is still far from optimal...
-                //       Why can't we pass a reference to the float array directly?
-                fixed (byte* brawdata = result)
-                {
-                    fixed (float* fdata = data)
-                    {
-                        float* frawdata = (float*)brawdata;
-                        for (int i = 0; i < data.Length; i++)
-                        {
-                            data[i] = frawdata[i];
-                        }
-                    }
-                }
+                throw new Exception(String.Format("The getCutout query should be less than 64000000 points for vector fields or 192000000 points for scalar fields!"));
             }
-            log.UpdateLogRecord(rowid, database.Bitfield);
-            return data;
 
+            //DateTime beginTime = DateTime.Now;
+            result = database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,
+                x_step, y_step, z_step, filter_width);
+            //DateTime stopTime = DateTime.Now;
+            //string elapsedTime = String.Format("GetCutoutData done: {0}", stopTime - beginTime);
+            //string[] tester = { elapsedTime };
+            //System.IO.File.WriteAllLines(@"C:\www\JHTDB.txt", tester);
+
+            //beginTime = DateTime.Now;
+            //float[] data = new float[(long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step)];
+            //unsafe
+            //{
+            //    // TODO: This code is still far from optimal...
+            //    //       Why can't we pass a reference to the float array directly?
+            //    fixed (byte* brawdata = result)
+            //    {
+            //        fixed (float* fdata = data)
+            //        {
+            //            float* frawdata = (float*)brawdata;
+            //            for (int i = 0; i < data.Length; i++)
+            //            {
+            //                data[i] = frawdata[i];
+            //            }
+            //        }
+            //    }
+            //}
+            //stopTime = DateTime.Now;
+            //elapsedTime = String.Format("To float done: {0}", stopTime - beginTime);
+            //System.IO.File.AppendAllText(@"C:\www\JHTDB.txt", elapsedTime);
+
+            log.UpdateLogRecord(rowid, database.Bitfield);
+            //elapsedTime = String.Format("Transferring data, size: {0}", result.Length);
+            //System.IO.File.AppendAllText(@"C:\www\JHTDB.txt", elapsedTime + System.Environment.NewLine);
+            return result;
+
+        }
+
+        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold,
+            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
+            int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr = null)
+        {
+            if (x_start > x_end || y_start > y_end || z_start > z_end)
+            {
+                throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
+            }
+
+            int X = x_start - 1;
+            int Y = y_start - 1;
+            int Z = z_start - 1;
+            int Xwidth = x_end - x_start + 1;
+            int Ywidth = y_end - y_start + 1;
+            int Zwidth = z_end - z_start + 1;
+
+            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
+            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
+            if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
+            {
+                log.devmode = true;//This makes sure we don't log the monitoring service.
+            }
+            dataset = DataInfo.findDataSet(dataset);
+            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int num_virtual_servers = 4;
+            database.Initialize(dataset_enum, num_virtual_servers);
+            DataInfo.verifyTimeInRange(dataset_enum, time);
+            object rowid = null;
+
+            DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field);
+
+            int worker;
+            switch (dataset_enum)
+            {
+                case DataInfo.DataSets.isotropic1024coarse:
+                case DataInfo.DataSets.isotropic1024fine:
+                case DataInfo.DataSets.mhd1024:
+                case DataInfo.DataSets.mixing:
+                case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.strat4096:
+                    if (field.Contains("vorticity"))
+                    {
+                        worker = (int)Worker.Workers.GetCurlThreshold;
+                    }
+                    else if (field.Contains("q"))
+                    {
+                        worker = (int)Worker.Workers.GetQThreshold;
+                    }
+                    else if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel"))
+                    {
+                        worker = (int)Worker.Workers.GetVelocityThreshold;
+                    }
+                    else if (field.Equals("b") || field.Contains("mag") || field.Contains("Mag"))
+                    {
+                        worker = (int)Worker.Workers.GetMagneticThreshold;
+                    }
+                    else if (field.Equals("a") || field.Contains("vec") || field.Contains("pot") || field.Contains("Vec"))
+                    {
+                        worker = (int)Worker.Workers.GetPotentialThreshold;
+                    }
+                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                    {
+                        worker = (int)Worker.Workers.GetPressureThreshold;
+                    }
+                    else if (field.Equals("d") || field.Contains("density") || field.Contains("Density"))
+                    {
+                        worker = (int)Worker.Workers.GetDensityThreshold;
+                    }
+                    else if (field.Equals("t") || field.Contains("th") || field.Contains("Th") || field.Contains("tem") || field.Contains("Tem") || field.Contains("phi") || field.Contains("Phi"))
+                    {
+                        worker = (int)Worker.Workers.GetPressureThreshold;
+                    }
+                    else
+                    {
+                        throw new Exception("Invalid field specified");
+                    }
+                    break;
+                case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
+                case DataInfo.DataSets.bl_zaki:
+                    switch (field)
+                    {
+                        case "vorticity":
+                            worker = (int)Worker.Workers.GetChannelCurlThreshold;
+                            break;
+                        case "q":
+                            worker = (int)Worker.Workers.GetChannelQThreshold;
+                            break;
+                        case "velocity":
+                            worker = (int)Worker.Workers.GetChannelVelocityThreshold;
+                            break;
+                        case "pressure":
+                            worker = (int)Worker.Workers.GetChannelPressureThreshold;
+                            break;
+                        default:
+                            throw new Exception("Invalid field specified");
+                    }
+                    break;
+                default:
+                    throw new Exception("Invalid dataset specified");
+            }
+
+            rowid = log.CreateLog(auth.Id, dataset, worker,
+                (int)spatialInterpolation,
+                (int)TurbulenceOptions.TemporalInterpolation.None,
+                Xwidth * Ywidth * Zwidth, time, null, null, addr);
+            log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
+
+            List<ThresholdInfo> points_above_threshold = new List<ThresholdInfo>();
+            database.ExecuteGetThreshold(dataset_enum, tableName, worker, time, spatialInterpolation, threshold,
+                X, Y, Z, Xwidth, Ywidth, Zwidth, points_above_threshold);
+
+            log.UpdateLogRecord(rowid, database.Bitfield);
+
+
+            points_above_threshold.Sort((t1, t2) => -1 * t1.value.CompareTo(t2.value));
+
+            ThresholdInfo[] result = points_above_threshold.ToArray();
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i].x = result[i].x + 1;
+                result[i].y = result[i].y + 1;
+                result[i].z = result[i].z + 1;
+            }
+
+            return result;
         }
     }
 }
