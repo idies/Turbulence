@@ -4812,31 +4812,36 @@ namespace TurbulenceService
             switch (field[0])
             {
                 case 'u':
-                    worker = (int)Worker.Workers.GetFilteredVelocity;
+                    worker = (int)Worker.Workers.GetCutoutVelocity;
                     components = 3;
                     break;
                 case 'a':
-                    worker = (int)Worker.Workers.GetFilteredMagnetic;
+                    worker = (int)Worker.Workers.GetCutoutMagnetic;
                     components = 3;
                     break;
                 case 'b':
-                    worker = (int)Worker.Workers.GetFilteredPotential;
+                    worker = (int)Worker.Workers.GetCutoutPotential;
                     components = 3;
                     break;
                 case 'p':
-                    worker = (int)Worker.Workers.GetFilteredPressure;
+                    worker = (int)Worker.Workers.GetCutoutPressure;
                     components = 1;
                     break;
                 case 'd':
-                    worker = (int)Worker.Workers.GetFilteredDensity;
+                    worker = (int)Worker.Workers.GetCutoutDensity;
                     components = 1;
                     break;
                 case 't':
-                    worker = (int)Worker.Workers.GetFilteredTemperature;
+                    worker = (int)Worker.Workers.GetCutoutTemperature;
                     components = 1;
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
+            }
+
+            if ((long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step) > 192000000)
+            {
+                throw new Exception(String.Format("The getCutout query should be less than 64000000 points for vector fields or 192000000 points for scalar fields!"));
             }
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -4844,11 +4849,6 @@ namespace TurbulenceService
                 (int)TurbulenceOptions.TemporalInterpolation.None,
                Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
-
-            if ((long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step) > 192000000)
-            {
-                throw new Exception(String.Format("The getCutout query should be less than 64000000 points for vector fields or 192000000 points for scalar fields!"));
-            }
 
             //DateTime beginTime = DateTime.Now;
             result = database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,

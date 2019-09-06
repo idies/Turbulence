@@ -768,6 +768,7 @@ namespace Turbulence.SQLInterface
             //GetRawDensity = 153, //NOTE: used to be 143
 
             //worker 2?? is for Cutout Service/Raw Data/Filtered Data
+            //GetRaw... functions are deprecated
             GetRawVelocity = 210, //NOTE: used to be 60
             GetRawMagnetic = 211, //NOTE: used to be 62
             GetRawPotential = 212, //NOTE: used to be 63
@@ -775,12 +776,12 @@ namespace Turbulence.SQLInterface
             GetRawDensity = 221, //NOTE: used to be 153 and 143
             GetRawTemperature = 222,
 
-            GetFilteredVelocity = 230,
-            GetFilteredMagnetic = 231,
-            GetFilteredPotential = 232,
-            GetFilteredPressure = 240,
-            GetFilteredDensity = 241,
-            GetFilteredTemperature = 242,
+            GetCutoutVelocity = 230,
+            GetCutoutMagnetic = 231,
+            GetCutoutPotential = 232,
+            GetCutoutPressure = 240,
+            GetCutoutDensity = 241,
+            GetCutoutTemperature = 242,
 
             GetVelocityWorkerDirectOpt = 556,
             GetVelocityWorkerDirectWorst = 557

@@ -141,7 +141,7 @@ left join {0}..DataID on DataID.DatasetID= usage.dataset
 left join {0}..users on users.uid= usage.uid
 left join {0}..[GeoLite2-City-Blocks-IPv4] as ips on ips.ip_start<CONVERT(VARBINARY(8), usage.ip) and CONVERT(VARBINARY(8), usage.ip)<ips.ip_end
 left join {0}..[GeoLite2-City-Locations-en] as ipl on ipl.geoname_id=ips.geoname_id
-where exectime is not null and rowid>(select max(rowid) from usage_summary) and rowid<={1}
+where rowid>(select max(rowid) from usage_summary) and rowid<={1} and exectime is not null
 group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))), 
 		opID.op_cat, opID.op_name, usage.op,
 		DataID.DatasetName, usage.dataset,
@@ -163,7 +163,7 @@ left join {0}..DataID on DataID.DatasetID= usage.dataset
 left join {0}..users on users.uid= usage.uid
 left join {0}..[GeoLite2-City-Blocks-IPv4] as ips on ips.ip_start<CONVERT(VARBINARY(8), usage.ip) and CONVERT(VARBINARY(8), usage.ip)<ips.ip_end
 left join {0}..[GeoLite2-City-Locations-en] as ipl on ipl.geoname_id=ips.geoname_id
-where exectime is null and rowid>(select max(rowid) from usage_summary) and rowid<={1}
+where rowid>(select max(rowid) from usage_summary) and rowid<={1} and exectime is null
 group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))), 
 		opID.op_cat, opID.op_name, usage.op,
 		DataID.DatasetName, usage.dataset,

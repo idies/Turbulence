@@ -126,8 +126,8 @@ namespace TestApp
                 //    int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr = null)
                 //ThresholdInfo[] result_raw=testp.GetThreshold(authToken, "isotropic1024coarse", "vorticity", 0.3f, 30, TurbulenceOptions.SpatialInterpolation.None_Fd4, 1, 1, 1, 4, 4, 4);
 
-                //byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 0,
-                //    0, 0, 0, 2, 2, 2);
+                byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 0,
+                    0, 0, 0, 2, 2, 2);
                 //public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
                 //    int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step,
                 //    int filter_width, string addr = null)
@@ -714,27 +714,27 @@ namespace TestApp
             switch (field[0])
             {
                 case 'u':
-                    worker = (int)Worker.Workers.GetFilteredVelocity;
+                    worker = (int)Worker.Workers.GetCutoutVelocity;
                     components = 3;
                     break;
                 case 'a':
-                    worker = (int)Worker.Workers.GetFilteredMagnetic;
+                    worker = (int)Worker.Workers.GetCutoutMagnetic;
                     components = 3;
                     break;
                 case 'b':
-                    worker = (int)Worker.Workers.GetFilteredPotential;
+                    worker = (int)Worker.Workers.GetCutoutPotential;
                     components = 3;
                     break;
                 case 'p':
-                    worker = (int)Worker.Workers.GetFilteredPressure;
+                    worker = (int)Worker.Workers.GetCutoutPressure;
                     components = 1;
                     break;
                 case 'd':
-                    worker = (int)Worker.Workers.GetFilteredDensity;
+                    worker = (int)Worker.Workers.GetCutoutDensity;
                     components = 1;
                     break;
                 case 't':
-                    worker = (int)Worker.Workers.GetFilteredTemperature;
+                    worker = (int)Worker.Workers.GetCutoutTemperature;
                     components = 1;
                     break;
                 default:
