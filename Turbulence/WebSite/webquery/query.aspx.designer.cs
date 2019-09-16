@@ -724,58 +724,58 @@ namespace Website {
         protected global::System.Web.UI.WebControls.TextBox z;
         
         /// <summary>
-        /// xwidth_range control.
+        /// xe_range control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal xwidth_range;
+        protected global::System.Web.UI.WebControls.Literal xe_range;
         
         /// <summary>
-        /// ywidth_range control.
+        /// ye_range control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ywidth_range;
+        protected global::System.Web.UI.WebControls.Literal ye_range;
         
         /// <summary>
-        /// zwidth_range control.
+        /// ze_range control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal zwidth_range;
+        protected global::System.Web.UI.WebControls.Literal ze_range;
         
         /// <summary>
-        /// Xwidth control.
+        /// x_end control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Xwidth;
+        protected global::System.Web.UI.WebControls.TextBox x_end;
         
         /// <summary>
-        /// Ywidth control.
+        /// y_end control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Ywidth;
+        protected global::System.Web.UI.WebControls.TextBox y_end;
         
         /// <summary>
-        /// Zwidth control.
+        /// z_end control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox Zwidth;
+        protected global::System.Web.UI.WebControls.TextBox z_end;
         
         /// <summary>
         /// coord_range_details control.

@@ -656,12 +656,12 @@
             <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="threshold" type="s:float" />
             <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
-            <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Xwidth" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Ywidth" type="s:int" />
-            <s:element minOccurs="1" maxOccurs="1" name="Zwidth" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_end" type="s:int" />
             <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
           </s:sequence>
         </s:complexType>
@@ -933,7 +933,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -956,7 +956,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -979,7 +979,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -1002,7 +1002,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -1025,7 +1025,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -1048,7 +1048,7 @@
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
             <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
-            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="X" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Y" type="s:int" />
             <s:element minOccurs="1" maxOccurs="1" name="Z" type="s:int" />
@@ -1063,6 +1063,34 @@
         <s:complexType>
           <s:sequence>
             <s:element minOccurs="0" maxOccurs="1" name="GetRawTemperatureResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAnyCutoutWeb">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="T" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_step" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_step" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_step" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="filter_width" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="addr" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetAnyCutoutWebResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetAnyCutoutWebResult" type="s:base64Binary" />
           </s:sequence>
         </s:complexType>
       </s:element>
@@ -1326,6 +1354,12 @@
   <wsdl:message name="GetRawTemperatureSoapOut">
     <wsdl:part name="parameters" element="tns:GetRawTemperatureResponse" />
   </wsdl:message>
+  <wsdl:message name="GetAnyCutoutWebSoapIn">
+    <wsdl:part name="parameters" element="tns:GetAnyCutoutWeb" />
+  </wsdl:message>
+  <wsdl:message name="GetAnyCutoutWebSoapOut">
+    <wsdl:part name="parameters" element="tns:GetAnyCutoutWebResponse" />
+  </wsdl:message>
   <wsdl:portType name="TurbulenceServiceSoap">
     <wsdl:operation name="NullOp">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Perform a null operation -- for testing throughput</wsdl:documentation>
@@ -1543,6 +1577,11 @@
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Get a cube of the raw density data with the given width cornered at the specified coordinates for the given time.</wsdl:documentation>
       <wsdl:input message="tns:GetRawTemperatureSoapIn" />
       <wsdl:output message="tns:GetRawTemperatureSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetAnyCutoutWeb">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!</wsdl:documentation>
+      <wsdl:input message="tns:GetAnyCutoutWebSoapIn" />
+      <wsdl:output message="tns:GetAnyCutoutWebSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="TurbulenceServiceSoap" type="tns:TurbulenceServiceSoap">
@@ -1934,6 +1973,15 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetAnyCutoutWeb">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetAnyCutoutWeb" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="TurbulenceServiceSoap12" type="tns:TurbulenceServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -2317,6 +2365,15 @@
     </wsdl:operation>
     <wsdl:operation name="GetRawTemperature">
       <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetRawTemperature" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAnyCutoutWeb">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetAnyCutoutWeb" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

@@ -1332,7 +1332,7 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetThreshold", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr) {
             object[] results = this.Invoke("GetThreshold", new object[] {
                         authToken,
                         dataset,
@@ -1340,23 +1340,23 @@ namespace TestApp.turbulence {
                         time,
                         threshold,
                         spatialInterpolation,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth,
+                        x_start,
+                        y_start,
+                        z_start,
+                        x_end,
+                        y_end,
+                        z_end,
                         addr});
             return ((ThresholdInfo[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
-            this.GetThresholdAsync(authToken, dataset, field, time, threshold, spatialInterpolation, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr) {
+            this.GetThresholdAsync(authToken, dataset, field, time, threshold, spatialInterpolation, x_start, y_start, z_start, x_end, y_end, z_end, addr, null);
         }
         
         /// <remarks/>
-        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr, object userState) {
             if ((this.GetThresholdOperationCompleted == null)) {
                 this.GetThresholdOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetThresholdOperationCompleted);
             }
@@ -1367,12 +1367,12 @@ namespace TestApp.turbulence {
                         time,
                         threshold,
                         spatialInterpolation,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth,
+                        x_start,
+                        y_start,
+                        z_start,
+                        x_end,
+                        y_end,
+                        z_end,
                         addr}, this.GetThresholdOperationCompleted, userState);
         }
         
@@ -1851,11 +1851,11 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawVelocity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawVelocity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+        public byte[] GetRawVelocity(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
             object[] results = this.Invoke("GetRawVelocity", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -1867,19 +1867,19 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
-            this.GetRawVelocityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        public void GetRawVelocityAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawVelocityAsync(authToken, dataset, T, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawVelocityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+        public void GetRawVelocityAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
             if ((this.GetRawVelocityOperationCompleted == null)) {
                 this.GetRawVelocityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawVelocityOperationCompleted);
             }
             this.InvokeAsync("GetRawVelocity", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -1899,11 +1899,11 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawMagneticField", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawMagneticField(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+        public byte[] GetRawMagneticField(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
             object[] results = this.Invoke("GetRawMagneticField", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -1915,19 +1915,19 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
-            this.GetRawMagneticFieldAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        public void GetRawMagneticFieldAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawMagneticFieldAsync(authToken, dataset, T, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawMagneticFieldAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+        public void GetRawMagneticFieldAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
             if ((this.GetRawMagneticFieldOperationCompleted == null)) {
                 this.GetRawMagneticFieldOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawMagneticFieldOperationCompleted);
             }
             this.InvokeAsync("GetRawMagneticField", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -1947,11 +1947,11 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawVectorPotential", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawVectorPotential(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+        public byte[] GetRawVectorPotential(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
             object[] results = this.Invoke("GetRawVectorPotential", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -1963,19 +1963,19 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
-            this.GetRawVectorPotentialAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        public void GetRawVectorPotentialAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawVectorPotentialAsync(authToken, dataset, T, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawVectorPotentialAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+        public void GetRawVectorPotentialAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
             if ((this.GetRawVectorPotentialOperationCompleted == null)) {
                 this.GetRawVectorPotentialOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawVectorPotentialOperationCompleted);
             }
             this.InvokeAsync("GetRawVectorPotential", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -1995,11 +1995,11 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawPressure", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawPressure(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+        public byte[] GetRawPressure(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
             object[] results = this.Invoke("GetRawPressure", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -2011,19 +2011,19 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
-            this.GetRawPressureAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        public void GetRawPressureAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawPressureAsync(authToken, dataset, T, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawPressureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+        public void GetRawPressureAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
             if ((this.GetRawPressureOperationCompleted == null)) {
                 this.GetRawPressureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawPressureOperationCompleted);
             }
             this.InvokeAsync("GetRawPressure", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -2043,11 +2043,11 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawDensity", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawDensity(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+        public byte[] GetRawDensity(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
             object[] results = this.Invoke("GetRawDensity", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -2059,19 +2059,19 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
-            this.GetRawDensityAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        public void GetRawDensityAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawDensityAsync(authToken, dataset, T, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawDensityAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+        public void GetRawDensityAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
             if ((this.GetRawDensityOperationCompleted == null)) {
                 this.GetRawDensityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawDensityOperationCompleted);
             }
             this.InvokeAsync("GetRawDensity", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -2091,11 +2091,11 @@ namespace TestApp.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetRawTemperature", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetRawTemperature(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+        public byte[] GetRawTemperature(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
             object[] results = this.Invoke("GetRawTemperature", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -2107,19 +2107,19 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        public void GetRawTemperatureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
-            this.GetRawTemperatureAsync(authToken, dataset, time, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        public void GetRawTemperatureAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+            this.GetRawTemperatureAsync(authToken, dataset, T, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
         }
         
         /// <remarks/>
-        public void GetRawTemperatureAsync(string authToken, string dataset, float time, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+        public void GetRawTemperatureAsync(string authToken, string dataset, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
             if ((this.GetRawTemperatureOperationCompleted == null)) {
                 this.GetRawTemperatureOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetRawTemperatureOperationCompleted);
             }
             this.InvokeAsync("GetRawTemperature", new object[] {
                         authToken,
                         dataset,
-                        time,
+                        T,
                         X,
                         Y,
                         Z,
@@ -2138,29 +2138,30 @@ namespace TestApp.turbulence {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetAnyCutoutWeb", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public float[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step, int filter_width, string addr) {
+        [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
+        public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step, int filter_width, string addr) {
             object[] results = this.Invoke("GetAnyCutoutWeb", new object[] {
                         authToken,
                         dataset,
                         field,
                         T,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth,
+                        x_start,
+                        y_start,
+                        z_start,
+                        x_end,
+                        y_end,
+                        z_end,
                         x_step,
                         y_step,
                         z_step,
                         filter_width,
                         addr});
-            return ((float[])(results[0]));
+            return ((byte[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetAnyCutoutWebAsync(string authToken, string dataset, string field, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step, int filter_width, string addr) {
-            this.GetAnyCutoutWebAsync(authToken, dataset, field, T, X, Y, Z, Xwidth, Ywidth, Zwidth, x_step, y_step, z_step, filter_width, addr, null);
+        public void GetAnyCutoutWebAsync(string authToken, string dataset, string field, int T, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step, int filter_width, string addr) {
+            this.GetAnyCutoutWebAsync(authToken, dataset, field, T, x_start, y_start, z_start, x_end, y_end, z_end, x_step, y_step, z_step, filter_width, addr, null);
         }
         
         /// <remarks/>
@@ -2169,12 +2170,12 @@ namespace TestApp.turbulence {
                     string dataset, 
                     string field, 
                     int T, 
-                    int X, 
-                    int Y, 
-                    int Z, 
-                    int Xwidth, 
-                    int Ywidth, 
-                    int Zwidth, 
+                    int x_start, 
+                    int y_start, 
+                    int z_start, 
+                    int x_end, 
+                    int y_end, 
+                    int z_end, 
                     int x_step, 
                     int y_step, 
                     int z_step, 
@@ -2189,12 +2190,12 @@ namespace TestApp.turbulence {
                         dataset,
                         field,
                         T,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth,
+                        x_start,
+                        y_start,
+                        z_start,
+                        x_end,
+                        y_end,
+                        z_end,
                         x_step,
                         y_step,
                         z_step,
@@ -2229,7 +2230,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2274,7 +2275,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2355,7 +2356,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2412,7 +2413,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2493,7 +2494,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2718,7 +2719,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2835,7 +2836,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2892,7 +2893,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2913,7 +2914,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2958,7 +2959,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
     public enum SpatialInterpolation {
@@ -3061,7 +3062,7 @@ namespace TestApp.turbulence {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3062.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3394.0")]
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
     public enum TemporalInterpolation {
@@ -4209,10 +4210,10 @@ namespace TestApp.turbulence {
         }
         
         /// <remarks/>
-        public float[] Result {
+        public byte[] Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((float[])(this.results[0]));
+                return ((byte[])(this.results[0]));
             }
         }
     }

@@ -271,12 +271,12 @@ namespace Website
             }
             else if (method.SelectedValue.Equals("GetThreshold"))
             {
-                xwidth_range.Visible = true;
-                ywidth_range.Visible = true;
-                zwidth_range.Visible = true;
-                Xwidth.Visible = true;
-                Ywidth.Visible = true;
-                Zwidth.Visible = true;
+                xe_range.Visible = true;
+                ye_range.Visible = true;
+                ze_range.Visible = true;
+                x_end.Visible = true;
+                y_end.Visible = true;
+                z_end.Visible = true;
                 spatialRow.Visible = true;
                 fieldRow.Visible = true;
                 thresholdRow.Visible = true;
@@ -346,12 +346,12 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x_range.Text = "Starting index: <br />i_x [0, 1023]";
-                    y_range.Text = "<br />i_y [0, 1023]";
-                    z_range.Text = "<br />i_z [0, 1023]";
-                    xwidth_range.Text = "Size: <br />N_x [1, 1024]";
-                    ywidth_range.Text = "<br />N_y [1, 1024]";
-                    zwidth_range.Text = "<br />N_z [1, 1024]";
+                    x_range.Text = "Starting index (inclusive): <br />x_s [1, 1024]";
+                    y_range.Text = "<br />y_s [1, 1024]";
+                    z_range.Text = "<br />z_s [1, 1024]";
+                    xe_range.Text = "Ending index (inclusive): <br />x_e [1, 1024]";
+                    ye_range.Text = "<br />y_e [1, 1024]";
+                    ze_range.Text = "<br />z_e [1, 1024]";
                     coord_range_details.Text = "<br />";
                 }
                 else
@@ -359,12 +359,12 @@ namespace Website
                     x_range.Text = "x [0, 2&pi;]";
                     y_range.Text = "y [0, 2&pi;]";
                     z_range.Text = "z [0, 2&pi;]";
-                    xwidth_range.Visible = false;
-                    ywidth_range.Visible = false;
-                    zwidth_range.Visible = false;
-                    Xwidth.Visible = false;
-                    Ywidth.Visible = false;
-                    Zwidth.Visible = false;
+                    xe_range.Visible = false;
+                    ye_range.Visible = false;
+                    ze_range.Visible = false;
+                    x_end.Visible = false;
+                    y_end.Visible = false;
+                    z_end.Visible = false;
                     coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
                 }
             }
@@ -373,12 +373,12 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x_range.Text = "Starting index: <br />i_x [0, 4095]";
-                    y_range.Text = "<br />i_y [0, 4095]";
-                    z_range.Text = "<br />i_z [0, 4095]";
-                    xwidth_range.Text = "Size: <br />N_x [1, 4096]";
-                    ywidth_range.Text = "<br />N_y [1, 4096]";
-                    zwidth_range.Text = "<br />N_z [1, 4096]";
+                    x_range.Text = "Starting index (inclusive): <br />x_s [1, 4096]";
+                    y_range.Text = "<br />y_s [1, 4096]";
+                    z_range.Text = "<br />z_s [1, 4096]";
+                    xe_range.Text = "Ending index (inclusive): <br />x_e [1, 4096]";
+                    ye_range.Text = "<br />y_e [1, 4096]";
+                    ze_range.Text = "<br />z_e [1, 4096]";
                     coord_range_details.Text = "<br />";
                 }
                 else
@@ -386,12 +386,12 @@ namespace Website
                     x_range.Text = "x [0, 2&pi;]";
                     y_range.Text = "y [0, 2&pi;]";
                     z_range.Text = "z [0, 2&pi;]";
-                    xwidth_range.Visible = false;
-                    ywidth_range.Visible = false;
-                    zwidth_range.Visible = false;
-                    Xwidth.Visible = false;
-                    Ywidth.Visible = false;
-                    Zwidth.Visible = false;
+                    xe_range.Visible = false;
+                    ye_range.Visible = false;
+                    ze_range.Visible = false;
+                    x_end.Visible = false;
+                    y_end.Visible = false;
+                    z_end.Visible = false;
                     coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
                 }
             }
@@ -399,12 +399,12 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x_range.Text = "Starting index: <br />i_x [0, 2047]";
-                    y_range.Text = "<br />i_y [0, 511]";
-                    z_range.Text = "<br />i_z [0, 1535]";
-                    xwidth_range.Text = "Size: <br />N_x [1, 2048]";
-                    ywidth_range.Text = "<br />N_y [1, 512]";
-                    zwidth_range.Text = "<br />N_z [1, 1536]";
+                    x_range.Text = "Starting index (inclusive): <br />x_s [1, 2048]";
+                    y_range.Text = "<br />y_s [1, 512]";
+                    z_range.Text = "<br />z_s [1, 1536]";
+                    xe_range.Text = "Ending index (inclusive): <br />x_e [1, 2048]";
+                    ye_range.Text = "<br />y_e [1, 512]";
+                    ze_range.Text = "<br />z_e [1, 1536]";
                     coord_range_details.Text = "<br />";
                 }
                 else
@@ -412,12 +412,12 @@ namespace Website
                     x_range.Text = "x [0, 8&pi;]";
                     y_range.Text = "y [-1, 1]";
                     z_range.Text = "z [0, 3&pi;]";
-                    xwidth_range.Visible = false;
-                    ywidth_range.Visible = false;
-                    zwidth_range.Visible = false;
-                    Xwidth.Visible = false;
-                    Ywidth.Visible = false;
-                    Zwidth.Visible = false;
+                    xe_range.Visible = false;
+                    ye_range.Visible = false;
+                    ze_range.Visible = false;
+                    x_end.Visible = false;
+                    y_end.Visible = false;
+                    z_end.Visible = false;
                     coord_range_details.Text = "Values outside the range are treated as mod(8&pi;), mod(3&pi;) for x and z.<br/>The values for y must be within [-1, 1].";
                 }
             }
@@ -425,12 +425,12 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x_range.Text = "Starting index: <br />i_x [0, 10239]";
-                    y_range.Text = "<br />i_y [0, 1535]";
-                    z_range.Text = "<br />i_z [0, 7679]";
-                    xwidth_range.Text = "Size: <br />N_x [1, 10240]";
-                    ywidth_range.Text = "<br />N_y [1, 1536]";
-                    zwidth_range.Text = "<br />N_z [1, 7680]";
+                    x_range.Text = "Starting index (inclusive): <br />x_s [1, 10240]";
+                    y_range.Text = "<br />y_s [1, 1536]";
+                    z_range.Text = "<br />z_s [1, 7680]";
+                    xe_range.Text = "Ending index (inclusive): <br />x_e [1, 10240]";
+                    ye_range.Text = "<br />y_e [1, 1536]";
+                    ze_range.Text = "<br />z_e [1, 7680]";
                     coord_range_details.Text = "<br />";
                 }
                 else
@@ -438,12 +438,12 @@ namespace Website
                     x_range.Text = "x [0, 8&pi;]";
                     y_range.Text = "y [-1, 1]";
                     z_range.Text = "z [0, 3&pi;]";
-                    xwidth_range.Visible = false;
-                    ywidth_range.Visible = false;
-                    zwidth_range.Visible = false;
-                    Xwidth.Visible = false;
-                    Ywidth.Visible = false;
-                    Zwidth.Visible = false;
+                    xe_range.Visible = false;
+                    ye_range.Visible = false;
+                    ze_range.Visible = false;
+                    x_end.Visible = false;
+                    y_end.Visible = false;
+                    z_end.Visible = false;
                     coord_range_details.Text = "Values outside the range are treated as mod(8&pi;), mod(3&pi;) for x and z.<br/>The values for y must be within [-1, 1].";
                 }
             }
@@ -451,12 +451,12 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x_range.Text = "Starting index: <br />i_x [0, 3319]";
-                    y_range.Text = "<br />i_y [0, 223]";
-                    z_range.Text = "<br />i_z [0, 2047]";
-                    xwidth_range.Text = "Size: <br />N_x [1, 3320]";
-                    ywidth_range.Text = "<br />N_y [1, 224]";
-                    zwidth_range.Text = "<br />N_z [1, 2048]";
+                    x_range.Text = "Starting index (inclusive): <br />x_s [1, 3320]";
+                    y_range.Text = "<br />y_s [1, 224]";
+                    z_range.Text = "<br />z_s [1, 2048]";
+                    xe_range.Text = "Ending index (inclusive): <br />x_e [1, 3320]";
+                    ye_range.Text = "<br />y_e [1, 224]";
+                    ze_range.Text = "<br />z_e [1, 2048]";
                     coord_range_details.Text = "<br />";
                 }
                 else
@@ -464,12 +464,12 @@ namespace Website
                     x_range.Text = "x [30.21850, 1000.065]";
                     y_range.Text = "y [0, 26.48795]";
                     z_range.Text = "z [0, 240]";
-                    xwidth_range.Visible = false;
-                    ywidth_range.Visible = false;
-                    zwidth_range.Visible = false;
-                    Xwidth.Visible = false;
-                    Ywidth.Visible = false;
-                    Zwidth.Visible = false;
+                    xe_range.Visible = false;
+                    ye_range.Visible = false;
+                    ze_range.Visible = false;
+                    x_end.Visible = false;
+                    y_end.Visible = false;
+                    z_end.Visible = false;
                     coord_range_details.Text = "Values outside the range are treated as mod(240) for z.<br/>The values for x and y must be within [30.21850, 1000.065] and [0, 26.48795], respectively.<br/>*dx=0.292210466, dz=0.117244748*";
                 }
             }
@@ -2342,14 +2342,21 @@ namespace Website
                         field = field.Substring(0, field.IndexOf(" magnitude"));
                     }
                     float thresholdValue = Convert.ToSingle(threshold.Text);
-                    int X_int = Convert.ToInt32(x.Text);
-                    int Y_int = Convert.ToInt32(y.Text);
-                    int Z_int = Convert.ToInt32(z.Text);
-                    int x_width_int = Convert.ToInt32(Xwidth.Text);
-                    int y_width_int = Convert.ToInt32(Ywidth.Text);
-                    int z_width_int = Convert.ToInt32(Zwidth.Text);
+                    //int X_int = Convert.ToInt32(x.Text);
+                    //int Y_int = Convert.ToInt32(y.Text);
+                    //int Z_int = Convert.ToInt32(z.Text);
+                    //int x_width_int = Convert.ToInt32(Xwidth.Text);
+                    //int y_width_int = Convert.ToInt32(Ywidth.Text);
+                    //int z_width_int = Convert.ToInt32(Zwidth.Text);
+                    int x_start_int = Convert.ToInt32(x.Text);
+                    int y_start_int = Convert.ToInt32(y.Text);
+                    int z_start_int = Convert.ToInt32(z.Text);
+                    int x_end_int = Convert.ToInt32(x_end.Text);
+                    int y_end_int = Convert.ToInt32(y_end.Text);
+                    int z_end_int = Convert.ToInt32(z_end.Text);
+
                     results = service.GetThreshold(authToken, dataset.Text, field, timef, thresholdValue, spatialv,
-                        X_int, Y_int, Z_int, x_width_int, y_width_int, z_width_int, _ip);
+                        x_start_int, y_start_int, z_start_int, x_end_int, y_end_int, z_end_int, _ip);
                     if (results.Length == 0)
                     {
                         outputText += "There are no points with values above the specified threshold.";
@@ -2528,9 +2535,9 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x.Text = "0";
-                    y.Text = "0";
-                    z.Text = "0";
+                    x.Text = "1";
+                    y.Text = "1";
+                    z.Text = "1";
                     velocityEntry.Text = "Velocity Magnitude";
                     magneticEntry.Text = "Magnetic Field Magnitude";
                     potentialEntry.Text = "Vector Potential Magnitude";
@@ -2549,9 +2556,9 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x.Text = "0";
-                    y.Text = "0";
-                    z.Text = "0";
+                    x.Text = "1";
+                    y.Text = "1";
+                    z.Text = "1";
                     velocityEntry.Text = "Velocity Magnitude";
                     magneticEntry.Text = "Magnetic Field Magnitude";
                     potentialEntry.Text = "Vector Potential Magnitude";
@@ -2570,9 +2577,9 @@ namespace Website
             {
                 if (method.SelectedValue.Equals("GetThreshold"))
                 {
-                    x.Text = "0";
-                    y.Text = "0";
-                    z.Text = "0";
+                    x.Text = "";
+                    y.Text = "1";
+                    z.Text = "1";
                     velocityEntry.Text = "Velocity Magnitude";
                     magneticEntry.Text = "Magnetic Field Magnitude";
                     potentialEntry.Text = "Vector Potential Magnitude";

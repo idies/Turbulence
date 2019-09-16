@@ -47,10 +47,11 @@ namespace TestApp
                 turbulence.TurbulenceService service = new turbulence.TurbulenceService();
                 string authToken = "uk.ac.manchester.zhao.wu-ea658424";
 
-                string dataset = "isotropic1024coarse";
+                string dataset = "channel";
                 DateTime beginTime, stopTime;
                 float dd = (float)(2.0 * Math.PI) / 4096;
-                int pointsize = 1;
+                int nx = 1000, ny = 1000;
+                int pointsize = nx * ny * 1;
 
                 float time = 0f;
 
@@ -73,16 +74,27 @@ namespace TestApp
                 //    //Console.WriteLine("{0} {0} {0}", i, j, k);
                 //}
 
-                points[pp] = new turbulence.Point3();
-                points[pp].x = dd * 5;// (float)(random.NextDouble() * 2.0 * 3.14);
-                points[pp].y = dd * 5;// (float)(random.NextDouble() * 2.0 * 3.14);
-                points[pp].z = dd * 5;// (float)(random.NextDouble() * 2.0 * 3.14);
+                for (int i = 0; i < nx; i++)
+                {
+                    for (int j = 0; j < ny; j++)
+                    {
+                        points[i * ny + j] = new turbulence.Point3();
+                        points[i * ny + j].x = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
+                        points[i * ny + j].y = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
+                        points[i * ny + j].z = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
+                    }
+                }
+
+                //points[pp] = new turbulence.Point3();
+                //points[pp].x = dd * 5;// (float)(random.NextDouble() * 2.0 * 3.14);
+                //points[pp].y = dd * 5;// (float)(random.NextDouble() * 2.0 * 3.14);
+                //points[pp].z = dd * 5;// (float)(random.NextDouble() * 2.0 * 3.14);
                 service.Timeout = -1;
                 Console.WriteLine("start");
                 beginTime = DateTime.Now;
-                //turbulence.Vector3P[] result = service.GetVelocityAndPressure(authToken, dataset, time, //modife dsp012/gw01 in Line484, Database.cs
-                //    turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points,"0.0.0.0");
-                byte[] result = service.GetAnyCutoutWeb(authToken, dataset, "p", 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, null);
+                turbulence.Vector3P[] result = service.GetVelocityAndPressure(authToken, "isotropic1024coarse", 5.0f, //modife dsp012/gw01 in Line484, Database.cs
+                    turbulence.SpatialInterpolation.None, turbulence.TemporalInterpolation.None, points, "0.0.0.0");
+                //byte[] result = service.GetAnyCutoutWeb(authToken, "isotropic4096", "u", 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, null);
                 stopTime = DateTime.Now;
 
                 //result = service.GetBoxFilter(authToken, dataset, "u", time,

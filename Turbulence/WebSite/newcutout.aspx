@@ -61,10 +61,15 @@
 <!--#include file="navbar.htm" -->
 
 <div id="centercolumn-wide">
+	<br />
+	The new cutout service is built on SciServer, a cloud-based data-driven cluster, of The Institute for Data Intensive Engineering and Science (IDIES) at Johns Hopkins University. Users get the advantages of more reliable and faster data access since the SciServer is located close to our turbulence data servers. The new cutout service generates the output only in HDF5 format and a XDMF file, the latter of which can be opened in Paraview to visualize the data. Users need to create a SciServer account before using the new service. Click below to access.
+	</b>
+	<br /> 
+	  <h2 class="titletext"><a href="http://turbulence.idies.jhu.edu/cutout/" target="_blank">JHTDB new Cutout Service via SciServer</a></h2>
       
-      <h2 class="titletext">JHTDB HDF5 and VTK Cutout Service</h2>
+      <%--<h2 class="titletext">JHTDB HDF5 and VTK Cutout Service</h2>--%>
       
-      <iframe src='http://128.220.144.14:8001/jhtdb/' width='900' height='500' style="width: 100%; height: 100%"   ></iframe>
+     <%-- <iframe src='http://dsp033.pha.jhu.edu/jhtdb/' width='900' height='500' style="width: 100%; height: 100%"   ></iframe>--%>
 
      
 </div>

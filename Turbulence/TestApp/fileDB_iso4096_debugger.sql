@@ -9,23 +9,23 @@ CREATE TABLE [dbo].[#temp_zw] (
     [z]      REAL   NULL
 );
 INSERT INTO [dbo].[#temp_zw]  
-VALUES (0, 1082579781, -11.0221233, -1, 1.15968955);
+VALUES (0, 699842561, 12.1895, -1, 4.6142);
 
 SELECT reqseq, zindex, x, y, z FROM #temp_zw
 
 DECLARE	@return_value Int
 
 EXEC	@return_value = [dbo].[ExecuteMHDWorker]
-		@serverName = N'dsp039',
-		@dbname = N'channeldb05',
+		@serverName = N'dsp038',
+		@dbname = N'channeldb04',
 		@codedb = N'turblib',
 		@turbinfodb = N'turbinfo',
 		@turbinfoserver = N'lumberjack',
 		@dataset = N'vel',
 		@workerType = 120,
 		@blobDim = 8,
-		@time = 25.9935,
-		@spatialInterp = 6,
+		@time = 16,
+		@spatialInterp = 0,
 		@temporalInterp = 0,
 		@arg = 0,
 		@inputSize = 1,

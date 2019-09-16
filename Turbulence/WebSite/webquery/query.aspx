@@ -247,19 +247,19 @@
 											</tr>
 											<tr>
 												<th>
-													<asp:Literal ID="xwidth_range" runat="server" Visible="true"></asp:Literal></th>
+													<asp:Literal ID="xe_range" runat="server" Visible="true"></asp:Literal></th>
 												<th>
-													<asp:Literal ID="ywidth_range" runat="server" Visible="true"></asp:Literal></th>
+													<asp:Literal ID="ye_range" runat="server" Visible="true"></asp:Literal></th>
 												<th>
-													<asp:Literal ID="zwidth_range" runat="server" Visible="true"></asp:Literal></th>
+													<asp:Literal ID="ze_range" runat="server" Visible="true"></asp:Literal></th>
 											</tr>
 											<tr>
 												<td>
-													<asp:TextBox ID="Xwidth" runat="server">16</asp:TextBox></td>
+													<asp:TextBox ID="x_end" runat="server">16</asp:TextBox></td>
 												<td>
-													<asp:TextBox ID="Ywidth" runat="server">16</asp:TextBox></td>
+													<asp:TextBox ID="y_end" runat="server">16</asp:TextBox></td>
 												<td>
-													<asp:TextBox ID="Zwidth" runat="server">16</asp:TextBox></td>
+													<asp:TextBox ID="z_end" runat="server">16</asp:TextBox></td>
 											</tr>
 
 											<tr>

@@ -40,7 +40,8 @@ namespace Website
         /// 
         /// TODO: Create another user for status queries.
         /// </summary>
-        public DataTable getUsageStat()
+        /// 
+        public void UpdateUsageSummary()
         {
             //const string infodb_string = TurbulenceService.TurbulenceService.infodb_string;
             //const string infodb_backup_string = TurbulenceService.TurbulenceService.infodb_backup_string;
@@ -83,7 +84,7 @@ namespace Website
             else
             {
                 turblog_connectionString = ConfigurationManager.ConnectionStrings["turbinfo_test_conn"].ConnectionString;
-                
+
             }
             SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turblog_connectionString);
             string turblogServerdb = builder.DataSource;
@@ -96,35 +97,8 @@ namespace Website
             conn.Open();
             SqlCommand cmd = conn.CreateCommand();
 
-            //cmd.CommandTimeout = 30;
-            cmd.CommandTimeout = 30;
+            cmd.CommandTimeout = 1200;
             cmd.CommandText = String.Format(@"
-select max(rowid) from usage where date<CONVERT(DATE,CAST(year(GETDATE()) AS VARCHAR(4))+'-'+ CAST(month(GETDATE()) AS VARCHAR(2))+'-'+CAST(day(GETDATE()) AS VARCHAR(2)));");
-            long usage_row_count = (long)cmd.ExecuteScalar();
-            long end_rowid = 0;
-
-            bool loopflag = true;
-            while (loopflag == true)
-            {
-                cmd.CommandTimeout = 30;
-                cmd.CommandText = String.Format(@"
-select max(rowid) from usage_summary;");
-                long usage_summary_row_count = (long)cmd.ExecuteScalar();
-
-                if (usage_row_count - usage_summary_row_count > 500000)
-                {
-                    loopflag = true;
-                    end_rowid = usage_summary_row_count + 500000;
-                }
-                else
-                {
-                    loopflag = false;
-                    end_rowid = usage_row_count;
-                }
-
-                //update usage_summary table//
-                cmd.CommandTimeout = 2400;
-                cmd.CommandText = String.Format(@"
 insert into {0}..usage_summary 
 select max(rowid) as rowid, CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))) as dates,
 		count(*) as requests, 
@@ -141,7 +115,7 @@ left join {0}..DataID on DataID.DatasetID= usage.dataset
 left join {0}..users on users.uid= usage.uid
 left join {0}..[GeoLite2-City-Blocks-IPv4] as ips on ips.ip_start<CONVERT(VARBINARY(8), usage.ip) and CONVERT(VARBINARY(8), usage.ip)<ips.ip_end
 left join {0}..[GeoLite2-City-Locations-en] as ipl on ipl.geoname_id=ips.geoname_id
-where exectime is not null and rowid>(select max(rowid) from usage_summary) and rowid<={1}
+where rowid>(select max(rowid) from usage_summary) and date<CONVERT(DATE,CAST(year(GETDATE()) AS VARCHAR(4))+'-'+ CAST(month(GETDATE()) AS VARCHAR(2))+'-'+CAST(day(GETDATE()) AS VARCHAR(2))) and exectime is not null
 group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))), 
 		opID.op_cat, opID.op_name, usage.op,
 		DataID.DatasetName, usage.dataset,
@@ -163,19 +137,72 @@ left join {0}..DataID on DataID.DatasetID= usage.dataset
 left join {0}..users on users.uid= usage.uid
 left join {0}..[GeoLite2-City-Blocks-IPv4] as ips on ips.ip_start<CONVERT(VARBINARY(8), usage.ip) and CONVERT(VARBINARY(8), usage.ip)<ips.ip_end
 left join {0}..[GeoLite2-City-Locations-en] as ipl on ipl.geoname_id=ips.geoname_id
-where exectime is null and rowid>(select max(rowid) from usage_summary) and rowid<={1}
+where rowid>(select max(rowid) from usage_summary) and date<CONVERT(DATE,CAST(year(GETDATE()) AS VARCHAR(4))+'-'+ CAST(month(GETDATE()) AS VARCHAR(2))+'-'+CAST(day(GETDATE()) AS VARCHAR(2))) and exectime is null
 group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))), 
 		opID.op_cat, opID.op_name, usage.op,
 		DataID.DatasetName, usage.dataset,
 		users.authkey, usage.uid,
 		ipl.city_name, ipl.country_name, usage.ip
-order by rowid", turblogdb, end_rowid);
+order by rowid", turblogdb);
+            cmd.ExecuteNonQuery();
+        }
 
-                System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", cmd.CommandText);
-                cmd.ExecuteNonQuery();
+        public DataTable GetUsageStat()
+        {
+            //const string infodb_string = TurbulenceService.TurbulenceService.infodb_string;
+            //const string infodb_backup_string = TurbulenceService.TurbulenceService.infodb_backup_string;
+            //const bool development = TurbulenceService.TurbulenceService.DEVEL_MODE;
+            //Database database = new Database(infodb_string, development);
+            //string turbinfoServerdb = database.infodb_server;
+            //string turbinfodb = database.infodb;
+            DateTime startdate = DateTime.Today.AddDays(-1);
+            DateTime enddate = DateTime.Today;
+            if (startdateobx.Text != "")
+            {
+                try
+                {
+                    startdate = Convert.ToDateTime(startdateobx.Text);
+                }
+                catch
+                {
+                    reportError(String.Format("Please enter correct start date."));
+                    error = true;
+                }
+            }
+            if (enddatebox.Text != "")
+            {
+                try
+                {
+                    enddate = Convert.ToDateTime(enddatebox.Text);
+                }
+                catch
+                {
+                    reportError(String.Format("Please enter correct end date."));
+                    error = true;
+                }
             }
 
-//do query//
+            string turblog_connectionString;
+            if (prod_test.Text.Equals("Production"))
+            {
+                turblog_connectionString = ConfigurationManager.ConnectionStrings["turblog_conn"].ConnectionString;
+            }
+            else
+            {
+                turblog_connectionString = ConfigurationManager.ConnectionStrings["turbinfo_test_conn"].ConnectionString;
+
+            }
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(turblog_connectionString);
+            string turblogServerdb = builder.DataSource;
+            string turblogdb = builder.InitialCatalog;
+
+            String cString1 = String.Format("Server={0};Database={1};;Asynchronous Processing=true;User ID={2};Password={3};Pooling=true;Max Pool Size=250;Min Pool Size=20;Connection Lifetime=7200;Connection Timeout=1200",
+                turblogServerdb, turblogdb, ConfigurationManager.AppSettings["turbinfo_uid"], ConfigurationManager.AppSettings["turbinfo_password"]);
+
+            SqlConnection conn = new SqlConnection(cString1);
+            conn.Open();
+            SqlCommand cmd = conn.CreateCommand();
+
             string dateparttext = "";
             string grouptext = "";
             string ordertext = "";
@@ -553,7 +580,7 @@ order by {3};", turblogdb, dateparttext, grouptext, ordertext, requestspoint.Tex
 
         }
 
-        public DataTable getUsageStat_loc()
+        public DataTable GetUsageStat_loc()
         {
             //const string infodb_string = TurbulenceService.TurbulenceService.infodb_string;
             //const string infodb_backup_string = TurbulenceService.TurbulenceService.infodb_backup_string;
@@ -639,7 +666,7 @@ order by {3};", turblogdb, dateparttext, grouptext, ordertext, requestspoint.Tex
             }
 
             string countrytext = "";
-            string citygroup = "";            
+            string citygroup = "";
             if (countrycity.Text.Equals("Country"))
             {
                 countrytext = "(case when (country_name is null or country_name='') then 'N/A' else country_name end) as country_name";
@@ -793,9 +820,10 @@ EXEC sp_executesql @DynamicPivotQuery;", selecttext, ordertext, tempTableName, r
 
             }
 
-            dbstatusgrid.DataSource = getUsageStat();
+
+            dbstatusgrid.DataSource = GetUsageStat();
             dbstatusgrid.DataBind();
-            wsstatusgrid.DataSource = getUsageStat_loc();
+            wsstatusgrid.DataSource = GetUsageStat_loc();
             wsstatusgrid.DataBind();
 
             // Something set an error.  Change status code.
@@ -807,9 +835,17 @@ EXEC sp_executesql @DynamicPivotQuery;", selecttext, ordertext, tempTableName, r
 
         }
 
-        protected void point_Click(object sender, EventArgs e)
+        protected void Point_Click(object sender, EventArgs e)
         {
-            
+            dbstatusgrid.DataSource = GetUsageStat();
+            dbstatusgrid.DataBind();
+            wsstatusgrid.DataSource = GetUsageStat_loc();
+            wsstatusgrid.DataBind();
+        }
+
+        protected void Point_Click2(object sender, EventArgs e)
+        {
+
         }
 
         private static string ToKMB(long num)
@@ -833,6 +869,7 @@ EXEC sp_executesql @DynamicPivotQuery;", selecttext, ordertext, tempTableName, r
                 return num.ToString(CultureInfo.InvariantCulture);
             }
         }
+
         //private static string ToM(this decimal num)
         //{
 

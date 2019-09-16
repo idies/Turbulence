@@ -1786,8 +1786,23 @@ namespace TurbulenceService
             Description = @"GetThreshold of the specified field.")]
         public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold,
             TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
+            int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr = null)
         {
+            if (x_start > x_end || y_start > y_end || z_start > z_end)
+            {
+                throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
+            }
+            if (x_start <=0 || y_start <= 0 || z_start <= 0)
+            {
+                throw new Exception(String.Format("Start index now starts from 1 from Sept 16. Please update your JHTDB library if you have not done so."));
+            }
+
+            int X = x_start - 1;
+            int Y = y_start - 1;
+            int Z = z_start - 1;
+            int Xwidth = x_end - x_start + 1;
+            int Ywidth = y_end - y_start + 1;
+            int Zwidth = z_end - z_start + 1;
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -1885,9 +1900,18 @@ namespace TurbulenceService
 
             log.UpdateLogRecord(rowid, database.Bitfield);
 
+
             points_above_threshold.Sort((t1, t2) => -1 * t1.value.CompareTo(t2.value));
 
-            return points_above_threshold.ToArray();
+            ThresholdInfo[] result = points_above_threshold.ToArray();
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i].x = result[i].x + 1;
+                result[i].y = result[i].y + 1;
+                result[i].z = result[i].z + 1;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -4424,6 +4448,9 @@ namespace TurbulenceService
         public byte[] GetRawVelocity(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            
+            throw new Exception(String.Format("GetRawVelocity has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+            
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4443,11 +4470,7 @@ namespace TurbulenceService
             byte[] result = null;
             DataInfo.TableNames tableName;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -4497,6 +4520,8 @@ namespace TurbulenceService
         public byte[] GetRawMagneticField(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawMagneticField has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4515,11 +4540,7 @@ namespace TurbulenceService
             int components = 3;
             byte[] result = null;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -4555,6 +4576,8 @@ namespace TurbulenceService
         public byte[] GetRawVectorPotential(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawVectorPotential has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4573,11 +4596,7 @@ namespace TurbulenceService
             int components = 3;
             byte[] result = null;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -4613,6 +4632,8 @@ namespace TurbulenceService
         public byte[] GetRawPressure(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawPressure has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4632,11 +4653,7 @@ namespace TurbulenceService
             byte[] result = null;
             DataInfo.TableNames tableName;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.isotropic1024fine:
@@ -4676,6 +4693,8 @@ namespace TurbulenceService
         public byte[] GetRawDensity(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawDensity has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4695,11 +4714,7 @@ namespace TurbulenceService
             byte[] result = null;
             DataInfo.TableNames tableName;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.mixing:
@@ -4726,6 +4741,8 @@ namespace TurbulenceService
         public byte[] GetRawTemperature(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawTemperature has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4745,11 +4762,7 @@ namespace TurbulenceService
             byte[] result = null;
             DataInfo.TableNames tableName;
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
-
+            T = T * database.TimeInc + database.TimeOff;
             switch (dataset_enum)
             {
                 case DataInfo.DataSets.strat4096:
@@ -4776,9 +4789,22 @@ namespace TurbulenceService
         [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetAnyCutoutWeb",
         Description = @"Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!")]
         public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
-            int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step,
+            int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step,
             int filter_width, string addr = null)
         {
+            if (x_start > x_end || y_start > y_end || z_start > z_end)
+            {
+                throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
+            }
+
+            T = T - 1;
+            int X = x_start - 1;
+            int Y = y_start - 1;
+            int Z = z_start - 1;
+            int Xwidth = x_end - x_start + 1;
+            int Ywidth = y_end - y_start + 1;
+            int Zwidth = z_end - z_start + 1;
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4797,40 +4823,42 @@ namespace TurbulenceService
             byte[] result = null;
             int components = new int();
 
-            if (dataset_enum == DataInfo.DataSets.channel)
-            {
-                T = T + 132005;
-            }
+            T = T * database.TimeInc + database.TimeOff;
             DataInfo.TableNames tableName = DataInfo.getTableName(dataset_enum, field[0].ToString());
             int worker = new int();
             switch (field[0])
             {
                 case 'u':
-                    worker = (int)Worker.Workers.GetFilteredVelocity;
+                    worker = (int)Worker.Workers.GetCutoutVelocity;
                     components = 3;
                     break;
                 case 'a':
-                    worker = (int)Worker.Workers.GetFilteredMagnetic;
+                    worker = (int)Worker.Workers.GetCutoutMagnetic;
                     components = 3;
                     break;
                 case 'b':
-                    worker = (int)Worker.Workers.GetFilteredPotential;
+                    worker = (int)Worker.Workers.GetCutoutPotential;
                     components = 3;
                     break;
                 case 'p':
-                    worker = (int)Worker.Workers.GetFilteredPressure;
+                    worker = (int)Worker.Workers.GetCutoutPressure;
                     components = 1;
                     break;
                 case 'd':
-                    worker = (int)Worker.Workers.GetFilteredDensity;
+                    worker = (int)Worker.Workers.GetCutoutDensity;
                     components = 1;
                     break;
                 case 't':
-                    worker = (int)Worker.Workers.GetFilteredTemperature;
+                    worker = (int)Worker.Workers.GetCutoutTemperature;
                     components = 1;
                     break;
                 default:
                     throw new Exception(String.Format("Invalid dataset specified!"));
+            }
+
+            if ((long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step) > 192000000)
+            {
+                throw new Exception(String.Format("The getCutout query should be less than 64000000 points for vector fields or 192000000 points for scalar fields!"));
             }
 
             rowid = log.CreateLog(auth.Id, dataset, worker,
@@ -4838,11 +4866,6 @@ namespace TurbulenceService
                 (int)TurbulenceOptions.TemporalInterpolation.None,
                Xwidth * Ywidth * Zwidth, time, null, null, addr);
             log.UpdateRecordCount(auth.Id, Xwidth * Ywidth * Zwidth);
-
-            if ((long)components * (long)((Xwidth + x_step - 1) / x_step) * (long)((Ywidth + y_step - 1) / y_step) * (long)((Zwidth + z_step - 1) / z_step) > 192000000)
-            {
-                throw new Exception(String.Format("The getCutout query should be less than 64000000 points for vector fields or 192000000 points for scalar fields!"));
-            }
 
             //DateTime beginTime = DateTime.Now;
             result = database.GetCutoutData(dataset_enum, tableName, T, components, X, Y, Z, Xwidth, Ywidth, Zwidth,

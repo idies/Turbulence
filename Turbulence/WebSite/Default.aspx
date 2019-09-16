@@ -68,7 +68,7 @@
 							(for details, see <a href="analysisdoc.aspx">documentation page</a>). 
 							Particle tracking can be performed both forward and backward in time using a second order 
 							accurate Runge-Kutta integration scheme. Subsets of the data can be downloaded in hdf5 file format 
-							using the <a href="cutout.aspx">data cutout service</a>. </font>
+							using the <a href="newcutout.aspx">data cutout service</a>. </font>
 					</p>
 					<p class="style34">
 						<font size="2" face="Arial, Helvetica, sans-serif">
@@ -90,10 +90,7 @@
 						<font size="2" face="Arial, Helvetica, sans-serif">
 							The JHTDB project is funded by the US <a href="http://www.nsf.gov/">National Science Foundation</a> 
 							<a href="http://www.nsf.gov/"> <img src="images/nsf.jpg" width="40" border="0" /></a>.</font>
-					</p>
-					<p align="left">
-						<font size="2" face="Arial, Helvetica, sans-serif">
-							JHTDB is also supported by the  <a href="http://idies.jhu.edu/">Institute for Data Intensive Engineering and Science </a>
+							JHTDB operations is also supported by the  <a href="http://idies.jhu.edu/">Institute for Data Intensive Engineering and Science </a>
 							<img src="images/idies-logo.png" width="40" border="0" />. 
 							JHTDB data may also be accessed via <a href="http://www.sciserver.org">SciServer resources </a>
 							<img src="images/SciServer-logo.png" width="30" border="0" />.</font>
