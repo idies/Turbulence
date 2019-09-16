@@ -1,5 +1,9 @@
 ﻿DECLARE	@Row_ID bigint;
-SET @Row_ID = 950000000;
+SET @Row_ID = (select max(rowid) from usage_summary);
+DECLARE	@Last_Row_ID bigint;
+SET @Last_Row_ID = (select max(rowid) from usage where date<CONVERT(DATE,CAST(year(GETDATE()) AS VARCHAR(4))+'-'+ CAST(month(GETDATE()) AS VARCHAR(2))+'-'+CAST(day(GETDATE()) AS VARCHAR(2))));
+
+--insert into turblog..usage_summary
 select max(rowid) as rowid, CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))) as dates,
 		count(*) as requests, 
 		sum(cast(records as bigint)) as points,
@@ -15,7 +19,7 @@ left join turblog..DataID on DataID.DatasetID= usage.dataset
 left join turblog..users on users.uid= usage.uid
 left join turblog..[GeoLite2-City-Blocks-IPv4] as ips on ips.ip_start<CONVERT(VARBINARY(8), usage.ip) and CONVERT(VARBINARY(8), usage.ip)<ips.ip_end
 left join turblog..[GeoLite2-City-Locations-en] as ipl on ipl.geoname_id=ips.geoname_id
-where rowid>@Row_ID and exectime is not null 
+where rowid>@Row_ID and rowid<=@Last_Row_ID and exectime is not null 
 group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))), 
 		opID.op_cat, opID.op_name, usage.op,
 		DataID.DatasetName, usage.dataset,
@@ -38,7 +42,7 @@ left join turblog..DataID on DataID.DatasetID= usage.dataset
 left join turblog..users on users.uid= usage.uid
 left join turblog..[GeoLite2-City-Blocks-IPv4] as ips on ips.ip_start<CONVERT(VARBINARY(8), usage.ip) and CONVERT(VARBINARY(8), usage.ip)<ips.ip_end
 left join turblog..[GeoLite2-City-Locations-en] as ipl on ipl.geoname_id=ips.geoname_id
-where rowid>@Row_ID and exectime is null
+where rowid>@Row_ID and rowid<=@Last_Row_ID and exectime is null
 group by CONVERT(DATE,CAST(year(date) AS VARCHAR(4))+'-'+ CAST(month(date) AS VARCHAR(2))+'-'+CAST(day(date) AS VARCHAR(2))), 
 		opID.op_cat, opID.op_name, usage.op,
 		DataID.DatasetName, usage.dataset,
@@ -48,9 +52,9 @@ order by rowid
 GO
 
 DECLARE	@startdates DATE;
-SET @startdates = '2019-08-01'; 
+SET @startdates = '2019-09-06'; 
 DECLARE	@enddates DATE;
-SET @enddates = '2019-08-04'; 
+SET @enddates = '2019-09-06'; 
 --DATEPART (DAY,dates) as theday, DATEPART (ISO_WEEK,dates) as theweek,
 select sum(total) as total, sum(mhd) as mhd, sum(iso1024coarse) as iso1024coarse, sum(iso1024fine) as iso1024fine, 
 	sum(channel) as channel, sum(mixing) as mixing, sum(iso4096) as iso4096, sum(rotstrat4096) as rotstrat4096, 

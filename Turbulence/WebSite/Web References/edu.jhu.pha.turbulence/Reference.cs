@@ -1332,7 +1332,7 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetThreshold", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlArrayItemAttribute(IsNullable=false)]
-        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
+        public ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr) {
             object[] results = this.Invoke("GetThreshold", new object[] {
                         authToken,
                         dataset,
@@ -1340,23 +1340,23 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         threshold,
                         spatialInterpolation,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth,
+                        x_start,
+                        y_start,
+                        z_start,
+                        x_end,
+                        y_end,
+                        z_end,
                         addr});
             return ((ThresholdInfo[])(results[0]));
         }
         
         /// <remarks/>
-        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr) {
-            this.GetThresholdAsync(authToken, dataset, field, time, threshold, spatialInterpolation, X, Y, Z, Xwidth, Ywidth, Zwidth, addr, null);
+        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr) {
+            this.GetThresholdAsync(authToken, dataset, field, time, threshold, spatialInterpolation, x_start, y_start, z_start, x_end, y_end, z_end, addr, null);
         }
         
         /// <remarks/>
-        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr, object userState) {
+        public void GetThresholdAsync(string authToken, string dataset, string field, float time, float threshold, SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr, object userState) {
             if ((this.GetThresholdOperationCompleted == null)) {
                 this.GetThresholdOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetThresholdOperationCompleted);
             }
@@ -1367,12 +1367,12 @@ namespace Website.edu.jhu.pha.turbulence {
                         time,
                         threshold,
                         spatialInterpolation,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth,
+                        x_start,
+                        y_start,
+                        z_start,
+                        x_end,
+                        y_end,
+                        z_end,
                         addr}, this.GetThresholdOperationCompleted, userState);
         }
         
@@ -2139,18 +2139,18 @@ namespace Website.edu.jhu.pha.turbulence {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://turbulence.pha.jhu.edu/GetAnyCutoutWeb", RequestNamespace="http://turbulence.pha.jhu.edu/", ResponseNamespace="http://turbulence.pha.jhu.edu/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute(DataType="base64Binary")]
-        public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step, int filter_width, string addr) {
+        public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step, int filter_width, string addr) {
             object[] results = this.Invoke("GetAnyCutoutWeb", new object[] {
                         authToken,
                         dataset,
                         field,
                         T,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth,
+                        x_start,
+                        y_start,
+                        z_start,
+                        x_end,
+                        y_end,
+                        z_end,
                         x_step,
                         y_step,
                         z_step,
@@ -2160,8 +2160,8 @@ namespace Website.edu.jhu.pha.turbulence {
         }
         
         /// <remarks/>
-        public void GetAnyCutoutWebAsync(string authToken, string dataset, string field, int T, int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, int x_step, int y_step, int z_step, int filter_width, string addr) {
-            this.GetAnyCutoutWebAsync(authToken, dataset, field, T, X, Y, Z, Xwidth, Ywidth, Zwidth, x_step, y_step, z_step, filter_width, addr, null);
+        public void GetAnyCutoutWebAsync(string authToken, string dataset, string field, int T, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step, int filter_width, string addr) {
+            this.GetAnyCutoutWebAsync(authToken, dataset, field, T, x_start, y_start, z_start, x_end, y_end, z_end, x_step, y_step, z_step, filter_width, addr, null);
         }
         
         /// <remarks/>
@@ -2170,12 +2170,12 @@ namespace Website.edu.jhu.pha.turbulence {
                     string dataset, 
                     string field, 
                     int T, 
-                    int X, 
-                    int Y, 
-                    int Z, 
-                    int Xwidth, 
-                    int Ywidth, 
-                    int Zwidth, 
+                    int x_start, 
+                    int y_start, 
+                    int z_start, 
+                    int x_end, 
+                    int y_end, 
+                    int z_end, 
                     int x_step, 
                     int y_step, 
                     int z_step, 
@@ -2190,12 +2190,12 @@ namespace Website.edu.jhu.pha.turbulence {
                         dataset,
                         field,
                         T,
-                        X,
-                        Y,
-                        Z,
-                        Xwidth,
-                        Ywidth,
-                        Zwidth,
+                        x_start,
+                        y_start,
+                        z_start,
+                        x_end,
+                        y_end,
+                        z_end,
                         x_step,
                         y_step,
                         z_step,

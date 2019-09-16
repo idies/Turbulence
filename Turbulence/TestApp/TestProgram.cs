@@ -102,12 +102,12 @@ namespace TestApp
                 //stopTime = DateTime.Now;
                 //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
-                beginTime = DateTime.Now;
-                Console.WriteLine("Calling GetVelocityGradient");
-                Vector3[] result_vel_grad = testp.GetPressureGradient(authToken, "isotropic1024coarse", time,
-                    TurbulenceOptions.SpatialInterpolation.None_Fd4, TurbulenceOptions.TemporalInterpolation.None, points);
-                stopTime = DateTime.Now;
-                Console.WriteLine("Execution time: {0}", stopTime - beginTime);
+                //beginTime = DateTime.Now;
+                //Console.WriteLine("Calling GetVelocityGradient");
+                //Vector3[] result_vel_grad = testp.GetPressureGradient(authToken, "isotropic1024coarse", time,
+                //    TurbulenceOptions.SpatialInterpolation.None_Fd4, TurbulenceOptions.TemporalInterpolation.None, points);
+                //stopTime = DateTime.Now;
+                //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
 
                 //beginTime = DateTime.Now;
@@ -124,10 +124,10 @@ namespace TestApp
                 //ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold,
                 //    TurbulenceOptions.SpatialInterpolation spatialInterpolation,
                 //    int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr = null)
-                //ThresholdInfo[] result_raw=testp.GetThreshold(authToken, "isotropic1024coarse", "vorticity", 0.3f, 30, TurbulenceOptions.SpatialInterpolation.None_Fd4, 1, 1, 1, 4, 4, 4);
+                ThresholdInfo[] result_raw = testp.GetThreshold(authToken, "isotropic1024coarse", "vorticity", 0.3f, 30, TurbulenceOptions.SpatialInterpolation.None_Fd4, 1, 1, 1, 4, 4, 4);
 
-                byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 0,
-                    0, 0, 0, 2, 2, 2);
+                //byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 0,
+                //    0, 0, 0, 2, 2, 2);
                 //public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
                 //    int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step,
                 //    int filter_width, string addr = null)

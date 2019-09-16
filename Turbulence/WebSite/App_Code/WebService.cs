@@ -1792,6 +1792,10 @@ namespace TurbulenceService
             {
                 throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
             }
+            if (x_start <=0 || y_start <= 0 || z_start <= 0)
+            {
+                throw new Exception(String.Format("Start index now starts from 1 from Sept 16. Please update your JHTDB library if you have not done so."));
+            }
 
             int X = x_start - 1;
             int Y = y_start - 1;
@@ -4444,6 +4448,9 @@ namespace TurbulenceService
         public byte[] GetRawVelocity(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            
+            throw new Exception(String.Format("GetRawVelocity has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+            
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4513,6 +4520,8 @@ namespace TurbulenceService
         public byte[] GetRawMagneticField(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawMagneticField has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4567,6 +4576,8 @@ namespace TurbulenceService
         public byte[] GetRawVectorPotential(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawVectorPotential has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4621,6 +4632,8 @@ namespace TurbulenceService
         public byte[] GetRawPressure(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawPressure has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4680,6 +4693,8 @@ namespace TurbulenceService
         public byte[] GetRawDensity(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawDensity has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4726,6 +4741,8 @@ namespace TurbulenceService
         public byte[] GetRawTemperature(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
+            throw new Exception(String.Format("GetRawTemperature has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {

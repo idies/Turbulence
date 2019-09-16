@@ -94,6 +94,7 @@
     <Content Include="citing.aspx" />
     <Content Include="docs\channel5200\channel5200-y.txt" />
     <Content Include="docs\channel5200\channel5200-y-knots.txt" />
+    <Content Include="docs\transition_bl\Notes_for_Transition_BL_Time_Averaged_Profiles.txt" />
     <Content Include="docs\transition_bl\y.txt" />
     <Content Include="images\channel-small.jpg" />
     <Content Include="images\channel5200-small.png" />
@@ -104,6 +105,7 @@
     <Content Include="images\rotstrat4096.jpg" />
     <Content Include="images\transition_bl.png" />
     <Content Include="publications.aspx" />
+    <Content Include="publications_old.aspx" />
     <Content Include="Transition_bl.aspx" />
     <Content Include="Isotropic4096.aspx" />
     <Content Include="newcutout.aspx" />
@@ -179,7 +181,7 @@
     <Content Include="images\pdf-grad.jpg" />
     <Content Include="peoplecredits.aspx" />
     <Content Include="privacy.aspx" />
-    <Content Include="publications_old.aspx" />
+    <Content Include="publications_old_old.aspx" />
     <Content Include="relatedgrouplinks.aspx" />
     <Content Include="robots.txt" />
     <Content Include="Rotstrat4096.aspx" />
@@ -237,6 +239,7 @@
     <Content Include="download\JHTDB-Sample-assignment-scripts-2018.zip" />
     <Content Include="download\JHTDB-Sample-assignment-SolutionSet-2018.pdf" />
     <Content Include="docs\README-CHANNEL5200.pdf" />
+    <Content Include="docs\transition_bl\Transition_BL_Time_Averaged_Profiles.h5" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

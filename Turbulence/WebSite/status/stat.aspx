@@ -72,7 +72,7 @@
 		</tr>
 
 		<p>
-			<asp:Button ID="Go" runat="server" Text="Query" OnClick="point_Click" />
+			<asp:Button ID="Go" runat="server" Text="Query" OnClick="Point_Click" />
 		</p>
 
 		<%--<asp:Literal ID="errorheader" runat="server" Visible="false"><hr /><h1>Error Details</h1></asp:Literal>--%>
@@ -103,6 +103,31 @@
 		</asp:DataGrid>
 
 		<br />
+
+		<p>SQL command:</p>
+		<tr runat="server" id="Tr2">
+			<td>
+				<asp:TextBox ID="SQLCommand" runat="server" style="height: 200px; width: 1000px " TextMode="MultiLine" Wrap="True">SELECT authkey, sum(points) as sum_points
+  FROM [turblog].[dbo].[usage_summary]
+  WHERE datasetID=10 AND total_exectime is not null AND dates>='2019-01-01'
+  GROUP BY authkey
+  ORDER BY sum_points desc</asp:TextBox>
+			</td>
+			<td>
+				<asp:Button ID="Execute" runat="server" Text="Execute" OnClick="Point_Click2" />
+			</td>
+		</tr>
+		<h1>SQL query result</h1>
+		<asp:DataGrid ID="SQLqueryResult" runat="server" CellPadding="4"
+			ForeColor="#333333" GridLines="None">
+			<FooterStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
+			<EditItemStyle BackColor="#7C6F57" />
+			<SelectedItemStyle BackColor="#C5BBAF" Font-Bold="True" ForeColor="#333333" />
+			<PagerStyle BackColor="#666666" ForeColor="White" HorizontalAlign="Center" />
+			<AlternatingItemStyle BackColor="White" />
+			<ItemStyle BackColor="#E3EAEB" />
+			<HeaderStyle BackColor="#1C5E55" Font-Bold="True" ForeColor="White" />
+		</asp:DataGrid>
 
 	</form>
 
