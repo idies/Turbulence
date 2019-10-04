@@ -63,7 +63,7 @@
     &nbsp;&nbsp;&nbsp;points[i].z = (float)(random.NextDouble() * 2.0 * 3.14);<br />
     &nbsp;}<br />
     &nbsp;output = service.GetVelocity("jhu.edu.pha.turbulence.testing-200711", "isotropic1024fine", 0.0024f,
-    &nbsp;turbulence.SpatialInterpolation.Lag6, turbulence.TemporalInterpolation.None, points);<br />
+    &nbsp;turbulence.SpatialInterpolation.Lag6, turbulence.TemporalInterpolation.None, points, null); // put null for the last parameter<br />
     &nbsp;for (int r = 0; r < output.Length; r++) {<br />
     &nbsp;&nbsp;&nbsp;Console.WriteLine("X={0} Y={1} Z={2}", output[r].x, output[r].y, output[r].z);<br />
     &nbsp;}<br />
@@ -95,7 +95,7 @@
             been made to ensure that these data are accurate and reliable within
             the limits of the current state of the art, neither JHU nor any other
             party involved in creating, producing or delivering the website shall
-            be liable for any damages arising out of users' access to, or use
+            be liable for any damages arising out of users' access to, or uses
             of, the website or web services. Users use the website and web services
             at their own risk. JHU does not warrant that the functional aspects
             of the website will be uninterrupted or error free, and may make

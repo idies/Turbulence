@@ -1794,7 +1794,7 @@ namespace TurbulenceService
             }
             if (x_start <=0 || y_start <= 0 || z_start <= 0)
             {
-                throw new Exception(String.Format("Start index now starts from 1 from Sept 16. Please update your JHTDB library if you have not done so."));
+                throw new Exception(String.Format("JHTDB started using 1-based indexing from Sept 16. Please update your JHTDB library if you have not done so."));
             }
 
             int X = x_start - 1;
@@ -4795,6 +4795,10 @@ namespace TurbulenceService
             if (x_start > x_end || y_start > y_end || z_start > z_end)
             {
                 throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
+            }
+            if (x_start <= 0 || y_start <= 0 || z_start <= 0 || T <= 0)
+            {
+                throw new Exception(String.Format("JHTDB started using 1-based indexing from Sept 16. Please update your JHTDB library if you have not done so."));
             }
 
             T = T - 1;

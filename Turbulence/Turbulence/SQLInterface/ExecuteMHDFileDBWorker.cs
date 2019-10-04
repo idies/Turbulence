@@ -147,7 +147,7 @@ public partial class StoredProcedures
             FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
             //string[] tester = { "In filedb..."};
             //System.IO.File.WriteAllLines(@"e:\filedb\debug.txt", tester);
-
+            //DateTime start = DateTime.Now;
             //while (reader.Read())
             using (SqlDataReader reader = cmd.ExecuteReader())
             {
@@ -231,8 +231,8 @@ public partial class StoredProcedures
                 }
             }
             //} while (reader.NextResult());
-
-
+            //file.WriteLine(string.Format("reading takes: {0}", DateTime.Now - start));
+            //file.Close();
 
             cmd = new SqlCommand(String.Format(@"DELETE FROM {0}", tempTable), contextConn);
             try

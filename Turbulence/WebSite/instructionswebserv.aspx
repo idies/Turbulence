@@ -45,6 +45,8 @@
     <p><font face="Arial, Helvetica, sans-serif">We provide a Matlab interface for using the gSOAP Web Services. This code has been tested under newer 
     Matlab installations running on Mac OS X, Linux, and Windows.</font></p>
 
+	<h4><font face="Arial, Helvetica, sans-serif"><a href="help/python/">Python</a></font></h4>
+    <p><font face="Arial, Helvetica, sans-serif">We provide a Python interface for using the gSOAP Web Services. This code can be used in <a href="http://www.sciserver.org">SciServer</a> or local computers.</font></p>
 
     <h4><font face="Arial, Helvetica, sans-serif"><a href="help/dotnet/">.NET (C#, VB.NET, C++.NET)</a></font></h4>
     <p><font face="Arial, Helvetica, sans-serif">Visual Studio will automatically generate the stubs for calling Web Services.</font></p>

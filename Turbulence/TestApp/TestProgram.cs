@@ -15,6 +15,9 @@ using System.Data.SqlClient;
 using System.Runtime.InteropServices;
 using System.IO;
 
+using HDF.PInvoke;
+using hid_t = System.Int64;
+
 namespace TestApp
 {
     /// <summary>
@@ -49,6 +52,17 @@ namespace TestApp
         /// <param name="args">Command line arguments</param>
         public static void Main()
         {
+            string fname = Path.GetTempFileName();
+            hid_t file = H5F.create(fname, H5F.ACC_EXCL);
+            // this is expected, because Path.GetTempFileName() creates
+            // an empty file
+            //Assert.IsFalse(file >= 0);
+
+            file = H5F.create(fname, H5F.ACC_TRUNC);
+            //Assert.IsTrue(file >= 0);
+            H5F.close(file);
+            File.Delete(fname);
+
             TestProgram testp = new TestProgram();
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
             //testMorton();
@@ -58,7 +72,7 @@ namespace TestApp
             try
             {
                 DateTime beginTime, stopTime;
-                int nx = 1000, ny = 1000;
+                int nx = 1, ny = 2;
                 int pointsize = nx * ny * 1;
                 Point3[] points = new Point3[pointsize];
                 turbulence.Point3[] points1 = new turbulence.Point3[pointsize];
@@ -69,36 +83,43 @@ namespace TestApp
                 float dy = (float)(3 * Math.PI / ny);
 
                 beginTime = DateTime.Now;
-                float time = 3f;
+                float time = 0f;
                 service.Timeout = -1;
 
-                points[0].x = 19.3895f;// dd * 2048;
-                points[0].y = -1f;// dd * 2048;
-                points[0].z = 4.6142f;// dd * 2048;
-                //points[1].x = dd * 1023;// dd * 2048;
-                //points[1].y = dd * 1000; ;// dd * 2048;
-                //points[1].z = dd * 1000;// dd * 2048;
-                //beginTime = DateTime.Now;
-                //Console.WriteLine("Calling GetVelocity");
-                //Vector3[] result = testp.GetVelocity(authToken, "channel", time,
-                //    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
-                //stopTime = DateTime.Now;
-                //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
+                points[0].x = 0.3f;// dd * 2048;
+                points[0].y = 0.4f;// dd * 2048;
+                points[0].z = 0.5f;// dd * 2048;
+                points[1].x = 4.0f;// dd * 2048;
+                points[1].y = 5.0f; ;// dd * 2048;
+                points[1].z = 6.0f;// dd * 2048;
+                beginTime = DateTime.Now;
+                Console.WriteLine("Calling GetVelocity");
+                Vector3[] result = testp.GetVelocity(authToken, "isotropic1024coarse", time,
+                    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
+                stopTime = DateTime.Now;
+                Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
-                for (int i = 0; i < 1; i++)
-                {
-                    for (int j = 0; j < 1; j++)
-                    {
-                        points[i * ny + j].x = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
-                        points[i * ny + j].y = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
-                        points[i * ny + j].z = (float)(random.NextDouble()) * 2 * 3.14f;// dd * 2048;
-                    }
-                }
+                //for (int i = 0; i < nx; i++)
+                //{
+                //    for (int j = 0; j < ny; j++)
+                //    {
+                //        points[i * ny + j].x = (float)0.0;
+                //        points[i * ny + j].y = (float)(2.0f * Math.PI / 4096) * j;
+                //        points[i * ny + j].z = (float)0.0;
+                //    }
+                //}
 
                 //beginTime = DateTime.Now;
-                //Console.WriteLine("Calling GetVelocity");
-                //Pressure[] result_pr = testp.GetPressure(authToken, "bl_zaki", time,
+                //Console.WriteLine("Calling Pressure");
+                //for (int i = 0; i < 110; i++)
+                //{
+                //    if (i==10)
+                //    {
+                //        beginTime = DateTime.Now;
+                //    }
+                //    Pressure[] result_pr = testp.GetPressure(authToken, "isotropic4096", time,
                 //    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
+                //}
                 //stopTime = DateTime.Now;
                 //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
@@ -124,7 +145,7 @@ namespace TestApp
                 //ThresholdInfo[] GetThreshold(string authToken, string dataset, string field, float time, float threshold,
                 //    TurbulenceOptions.SpatialInterpolation spatialInterpolation,
                 //    int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, string addr = null)
-                ThresholdInfo[] result_raw = testp.GetThreshold(authToken, "isotropic1024coarse", "vorticity", 0.3f, 30, TurbulenceOptions.SpatialInterpolation.None_Fd4, 1, 1, 1, 4, 4, 4);
+                //ThresholdInfo[] result_raw = testp.GetThreshold(authToken, "isotropic1024coarse", "vorticity", 0.3f, 30, TurbulenceOptions.SpatialInterpolation.None_Fd4, 1, 1, 1, 4, 4, 4);
 
                 //byte[] result_raw = testp.GetRawVelocity(authToken, "isotropic1024coarse", 0,
                 //    0, 0, 0, 2, 2, 2);
@@ -391,6 +412,117 @@ namespace TestApp
                     throw new Exception(String.Format("Invalid dataset specified!"));
             }
 
+            log.UpdateLogRecord(rowid, database.Bitfield);
+            return result;
+        }
+
+        public Pressure[] GetPressure(string authToken, string dataset, float time,
+            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
+            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
+            Point3[] points, string addr = null)
+        {
+            //AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, points.Length);
+            AuthInfo.AuthToken auth = new AuthInfo.AuthToken("dev", -1, 0);
+            if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
+            {
+                log.devmode = true;//This makes sure we don't log the monitoring service.
+            }
+            Pressure[] result = new Pressure[points.Length];
+            dataset = DataInfo.findDataSet(dataset);
+            DataInfo.DataSets dataset_enum = (DataInfo.DataSets)Enum.Parse(typeof(DataInfo.DataSets), dataset);
+            int num_virtual_servers = 1;
+            database.Initialize(dataset_enum, num_virtual_servers);
+            object rowid = null;
+            DataInfo.verifyTimeInRange(dataset_enum, time);
+
+            int worker = (int)Worker.Workers.GetMHDPressure;
+
+            switch (dataset_enum)
+            {
+                case DataInfo.DataSets.isotropic1024fine:
+                    GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.isotropic1024fine_pr, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
+                    break;
+                case DataInfo.DataSets.isotropic1024coarse:
+                case DataInfo.DataSets.mixing:
+                case DataInfo.DataSets.isotropic4096: //check this                  
+                    GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
+                    break;
+                case DataInfo.DataSets.mhd1024:
+                    GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pressure08, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
+                    break;
+                case DataInfo.DataSets.channel:
+                case DataInfo.DataSets.channel5200:
+                    worker = (int)Worker.Workers.GetChannelPressure;
+                    GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                        time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
+                    break;
+                case DataInfo.DataSets.bl_zaki:
+                    worker = (int)Worker.Workers.GetChannelPressure;
+
+                    if (spatialInterpolation == TurbulenceOptions.SpatialInterpolation.None)
+                    {
+                        List<int> idx = new List<int>();
+                        List<int> idx_not0 = new List<int>();
+                        for (int i = 0; i < points.Length; i++)
+                        {
+                            if (points[i].y < 0.00178944959)
+                                idx.Add(i);
+                            else
+                                idx_not0.Add(i);
+                        }
+
+                        if (idx_not0.Count > 0)
+                        {
+                            Point3[] points1 = new Point3[idx_not0.Count];
+                            Pressure[] result1 = new Pressure[idx_not0.Count];
+                            for (int i = 0; i < idx_not0.Count; i++)
+                            {
+                                points1[i].x = points[idx_not0[i]].x;
+                                points1[i].y = points[idx_not0[i]].y;
+                                points1[i].z = points[idx_not0[i]].z;
+                            }
+                            GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                                time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid, addr);
+                            for (int i = 0; i < idx_not0.Count; i++)
+                            {
+                                result[idx_not0[i]] = result1[i];
+                            }
+                        }
+
+                        if (idx.Count > 0)
+                        {
+                            database.Initialize(dataset_enum, num_virtual_servers);
+                            object rowid1 = null;
+                            Point3[] points1 = new Point3[idx.Count];
+                            Pressure[] result1 = new Pressure[idx.Count];
+                            for (int i = 0; i < idx.Count; i++)
+                            {
+                                points1[i].x = (float)(Math.Round((points[idx[i]].x - 30.218496172581567) / 0.292210466240511) * 0.292210466240511 + 30.218496172581567);
+                                points1[i].y = 0.0f;
+                                points1[i].z = (float)(Math.Round(points[idx[i]].z / 0.117244748412311) * 0.117244748412311);
+                            }
+                            spatialInterpolation = TurbulenceOptions.SpatialInterpolation.Lag4;
+                            GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                                time, spatialInterpolation, temporalInterpolation, points1, result1, ref rowid1, addr);
+                            for (int i = 0; i < idx.Count; i++)
+                            {
+                                result[idx[i]] = result1[i];
+                            }
+                            log.UpdateLogRecord(rowid1, database.Bitfield);
+                        }
+                    }
+                    else
+                    {
+                        GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
+                            time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
+                    }
+                    break;
+                default:
+                    throw new Exception(String.Format("Invalid dataset specified!"));
+            }
             log.UpdateLogRecord(rowid, database.Bitfield);
             return result;
         }

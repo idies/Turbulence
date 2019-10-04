@@ -67,7 +67,7 @@
 					</ul>
 					<p class="style23">External collaborators:</p>
 					<ul class="style24">
-						<li><a href="https://www.sustech.edu.cn/en/chenshiyi-profile.html">Shiyi Chen</a> (Beijing University, China)</li>
+						<li><a href="https://www.sustech.edu.cn/en/chenshiyi-profile.html">Shiyi Chen</a> (South University of Science and Technology, China)</li>
 						<li><a href="https://sites.google.com/view/mklee">MyoungKyu Lee</a></li>
 						<li>Nicholas Malaya</li>
 						<li><a href="http://www.me.utexas.edu/faculty/faculty-directory/moser">Robert D. Moser</a></li>
