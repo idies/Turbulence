@@ -33,6 +33,7 @@ public partial class StoredProcedures
         int filter_width,
         int time_step)
     {
+        throw new Exception(String.Format("This cutout functionality has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
         const bool DEVEL_MODE = false;
         const string infodb = "turbinfo";
         //const string infodb = "turbinfo_test";

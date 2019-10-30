@@ -31,7 +31,7 @@ public partial class StoredProcedures
     /// for each of the calculation functions removed.
     /// </summary>
     [Microsoft.SqlServer.Server.SqlProcedure]
-    public static void ExecuteMHDFileDBWorker(
+    public static void ExecuteMHDHDF5Worker(
         string serverName,
         string dbname,
         string codedb,
@@ -143,9 +143,8 @@ public partial class StoredProcedures
 
             //Setup the file
 
-            //string pathSource = "e:\\filedb\\isotropic4096";
-            //pathSource = pathSource + "\\" + dbname + "_" + timestep_int + ".bin";
-            string pathSource = SQLUtility.getDBfilePath(dbname, timestep_int, table.DataName, standardConn, serverName);
+            string pathSource = "E:\\isotropic2048_HDF5\\iso2048db101_vel_0.h5";
+            //string pathSource = SQLUtility.getDBfilePath(dbname, timestep_int, table.DataName, standardConn, serverName);
             FileStream filedb = new FileStream(pathSource, FileMode.Open, System.IO.FileAccess.Read);
             //string[] tester = { "In filedb..."};
             //System.IO.File.WriteAllLines(@"e:\filedb\debug.txt", tester);
@@ -554,7 +553,7 @@ public partial class StoredProcedures
     /// for each of the calculation functions removed.
     /// </summary>
     [Microsoft.SqlServer.Server.SqlProcedure]
-    public static void ExecuteMHDWorkerFileDBBatch(string serverName,
+    public static void ExecuteMHDWorkerHDF5Batch(string serverName,
         string dbname,
         string codedb,
         string turbinfodb,

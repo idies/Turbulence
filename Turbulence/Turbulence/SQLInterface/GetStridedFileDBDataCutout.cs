@@ -118,7 +118,7 @@ public partial class StoredProcedures
 
         //Stopwatch stopWatch = new Stopwatch();
         //Stopwatch stopWatch1 = new Stopwatch();
-        if (zlist.Count > 4096)
+        if (zlist.Count > 4096 && filedb.Length < (2147483648 - 0))
         {
             //stopWatch.Start();
             z_rawdata = File.ReadAllBytes(pathSource); /*Read it all in at once*/

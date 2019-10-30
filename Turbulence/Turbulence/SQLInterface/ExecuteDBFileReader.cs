@@ -71,7 +71,7 @@ public partial class StoredProcedures
                 }
             }
 
-            if (zlistCount > 4096)
+            if (zlistCount > 4096 && filedb.Length < (2147483648 - 0))
             {
                 z_rawdata = File.ReadAllBytes(pathSource); /*Read it all in at once*/
                 read_entire_file = true;

@@ -152,7 +152,7 @@ namespace TestApp
                 //public byte[] GetAnyCutoutWeb(string authToken, string dataset, string field, int T,
                 //    int x_start, int y_start, int z_start, int x_end, int y_end, int z_end, int x_step, int y_step, int z_step,
                 //    int filter_width, string addr = null)
-                //byte[] result_raw = testp.GetAnyCutoutWeb(authToken, "isotropic4096", "u", 1, 1, 1, 1, 10, 10, 10, 1, 1, 1, 1, null);
+                byte[] result_raw = testp.GetAnyCutoutWeb(authToken, "channel5200", "p", 1, 1, 1, 1, 200, 200, 200, 2, 2, 2, 1, null);
 
 
                 //Console.WriteLine("   {0}", DateTime.Now - beginTime1);
@@ -1047,6 +1047,34 @@ namespace TestApp
             }
 
             return result;
+        }
+
+        private Point3[] Float_to_Point3(float[][] point_f)
+        {
+            if (point_f.GetLength(0) != 3)
+            {
+                throw new Exception(String.Format("The first dimension of points array must have a size of 3."));
+            }
+            if (point_f[0].GetLength(0) != point_f[1].GetLength(0) || point_f[0].GetLength(0) != point_f[2].GetLength(0))
+            {
+                throw new Exception(String.Format("Three components of points array must have the same size"));
+            }
+            Point3[] Points3 = new Point3[point_f[0].GetLength(0)];
+            for (int i = 0; i < point_f[0].GetLength(0); i++)
+            {
+                Points3[i].x = point_f[0][i];
+                Points3[i].y = point_f[1][i];
+                Points3[i].z = point_f[2][i];
+            }
+            return Points3;
+        }
+
+        public Vector3[] GetVelocity_(string authToken, string dataset, float time,
+            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
+            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
+            float[][] points)
+        {
+            return GetVelocity(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null);
         }
     }
 }

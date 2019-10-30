@@ -757,8 +757,8 @@ namespace Website
             //cutoutstatusgrid.DataBind();
 
 
-            betacutoutstatusgrid.DataSource = BetaCutoutServiceTest();
-            betacutoutstatusgrid.DataBind();
+            //betacutoutstatusgrid.DataSource = BetaCutoutServiceTest();
+            //betacutoutstatusgrid.DataBind();
 
             // Something set an error.  Change status code.
             if (error)

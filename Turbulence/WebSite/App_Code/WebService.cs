@@ -1792,7 +1792,7 @@ namespace TurbulenceService
             {
                 throw new Exception(String.Format("Ending index must be larger or equal to the starting index!"));
             }
-            if (x_start <=0 || y_start <= 0 || z_start <= 0)
+            if (x_start <= 0 || y_start <= 0 || z_start <= 0)
             {
                 throw new Exception(String.Format("JHTDB started using 1-based indexing from Sept 16. Please update your JHTDB library if you have not done so."));
             }
@@ -4448,9 +4448,9 @@ namespace TurbulenceService
         public byte[] GetRawVelocity(string authToken, string dataset, int T,
             int X, int Y, int Z, int Xwidth, int Ywidth, int Zwidth, string addr = null)
         {
-            
+
             throw new Exception(String.Format("GetRawVelocity has been deprecated. Please update your JHTDB library and use GetCutout function instead."));
-            
+
             AuthInfo.AuthToken auth = authInfo.VerifyToken(authToken, Xwidth * Ywidth * Zwidth);
             if (authToken == "edu.jhu.pha.turbulence-monitor" || authToken == "edu.jhu.pha.turbulence-dev")
             {
@@ -4913,6 +4913,274 @@ namespace TurbulenceService
             return result;
 
         }
+        #endregion
+
+        #region Python_interface
+        private Point3[] Float_to_Point3(float[][] point_in)
+        {
+            if (point_in.GetLength(0) != 3)
+            {
+                throw new Exception(String.Format("The first dimension of points array must have a size of 3."));
+            }
+            if (point_in[0].GetLength(0) != point_in[1].GetLength(0) || point_in[0].GetLength(0) != point_in[2].GetLength(0))
+            {
+                throw new Exception(String.Format("Three components of points array must have the same size"));
+            }
+            Point3[] point_out = new Point3[point_in[0].GetLength(0)];
+            for (int i = 0; i < point_in[0].GetLength(0); i++)
+            {
+                point_out[i].x = point_in[0][i];
+                point_out[i].y = point_in[1][i];
+                point_out[i].z = point_in[2][i];
+            }
+            return point_out;
+        }
+
+        private float[] JHTDB_to_float(Point3[] data_in)
+        {
+            float[] data_out = new float[data_in.Length * 3];
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i * 3 + 0] = data_in[i].x;
+                data_out[i * 3 + 1] = data_in[i].y;
+                data_out[i * 3 + 2] = data_in[i].z;
+            }
+            return data_out;
+        }
+
+        private float[] JHTDB_to_float(Vector3[] data_in)
+        {
+            float[] data_out = new float[data_in.Length * 3];
+
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i * 3 + 0] = data_in[i].x;
+                data_out[i * 3 + 1] = data_in[i].y;
+                data_out[i * 3 + 2] = data_in[i].z;
+            }
+            return data_out;
+        }
+
+        private float[] JHTDB_to_float(Pressure[] data_in)
+        {
+            float[] data_out = new float[data_in.Length];
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i] = data_in[i].p;
+            }
+            return data_out;
+        }
+
+
+        private float[] JHTDB_to_float(Vector3P[] data_in)
+        {
+            float[] data_out = new float[data_in.Length*4];
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i * 4 + 0] = data_in[i].x;
+                data_out[i * 4 + 1] = data_in[i].y;
+                data_out[i * 4 + 2] = data_in[i].z;
+                data_out[i * 4 + 3] = data_in[i].p;
+            }
+            return data_out;
+        }
+
+        private float[] JHTDB_to_float(VelocityGradient[] data_in)
+        {
+            float[] data_out = new float[data_in.Length*9];
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i * 9 + 0] = data_in[i].duxdx;
+                data_out[i * 9 + 1] = data_in[i].duxdy;
+                data_out[i * 9 + 2] = data_in[i].duxdz;
+                data_out[i * 9 + 3] = data_in[i].duydx;
+                data_out[i * 9 + 4] = data_in[i].duydy;
+                data_out[i * 9 + 5] = data_in[i].duydz;
+                data_out[i * 9 + 6] = data_in[i].duzdx;
+                data_out[i * 9 + 7] = data_in[i].duzdy;
+                data_out[i * 9 + 8] = data_in[i].duzdz;
+            }
+            return data_out;
+        }
+
+        private float[] JHTDB_to_float(VelocityHessian[] data_in)
+        {
+            float[] data_out = new float[data_in.Length*18];
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i * 18 + 0] = data_in[i].d2uxdxdx;
+                data_out[i * 18 + 1] = data_in[i].d2uxdxdy;
+                data_out[i * 18 + 2] = data_in[i].d2uxdxdz;
+                data_out[i * 18 + 3] = data_in[i].d2uxdydy;
+                data_out[i * 18 + 4] = data_in[i].d2uxdydz;
+                data_out[i * 18 + 5] = data_in[i].d2uxdzdz;
+                data_out[i * 18 + 6] = data_in[i].d2uydxdx;
+                data_out[i * 18 + 7] = data_in[i].d2uydxdy;
+                data_out[i * 18 + 8] = data_in[i].d2uydxdz;
+                data_out[i * 18 + 9] = data_in[i].d2uydydy;
+                data_out[i * 18 + 10] = data_in[i].d2uydydz;
+                data_out[i * 18 + 11] = data_in[i].d2uydzdz;
+                data_out[i * 18 + 12] = data_in[i].d2uzdxdx;
+                data_out[i * 18 + 13] = data_in[i].d2uzdxdy;
+                data_out[i * 18 + 14] = data_in[i].d2uzdxdz;
+                data_out[i * 18 + 15] = data_in[i].d2uzdydy;
+                data_out[i * 18 + 16] = data_in[i].d2uzdydz;
+                data_out[i * 18 + 17] = data_in[i].d2uzdzdz;
+            }
+            return data_out;
+        }
+
+        private float[] JHTDB_to_float(PressureHessian[] data_in)
+        {
+            float[] data_out = new float[data_in.Length * 6];
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i * 6 + 0] = data_in[i].d2pdxdx;
+                data_out[i * 6 + 1] = data_in[i].d2pdxdy;
+                data_out[i * 6 + 2] = data_in[i].d2pdxdz;
+                data_out[i * 6 + 3] = data_in[i].d2pdydy;
+                data_out[i * 6 + 4] = data_in[i].d2pdydz;
+                data_out[i * 6 + 5] = data_in[i].d2pdzdz;
+            }
+            return data_out;
+        }
+
+        private float[] JHTDB_to_float(SGSTensor[] data_in)
+        {
+            float[] data_out = new float[data_in.Length * 6];
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i * 6 + 0] = data_in[i].xx;
+                data_out[i * 6 + 1] = data_in[i].yy;
+                data_out[i * 6 + 2] = data_in[i].zz;
+                data_out[i * 6 + 3] = data_in[i].xy;
+                data_out[i * 6 + 4] = data_in[i].xz;
+                data_out[i * 6 + 5] = data_in[i].yz;
+            }
+            return data_out;
+        }
+
+        private float[] JHTDB_to_float(ThresholdInfo[] data_in)
+        {
+            float[] data_out = new float[data_in.Length * 4];
+            for (int i = 0; i < data_in.Length; i++)
+            {
+                data_out[i * 4 + 0] = data_in[i].x;
+                data_out[i * 4 + 1] = data_in[i].y;
+                data_out[i * 4 + 2] = data_in[i].z;
+                data_out[i * 4 + 3] = data_in[i].value;
+            }
+            return data_out;
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetData_Python",
+        Description = @"Spatially interpolate the pressure at a number of points for a given time.")]
+        public float[] GetData_Python(string function_name, string authToken, string dataset, float time,
+            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
+            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
+            float[][] points)
+        {
+            switch (function_name)
+            {
+                case "GetVelocity":
+                    return JHTDB_to_float(GetVelocity(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetMagneticField":
+                    return JHTDB_to_float(GetMagneticField(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetVectorPotential":
+                    return JHTDB_to_float(GetVectorPotential(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetPressure":
+                    return JHTDB_to_float(GetPressure(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetTemperature":
+                    return JHTDB_to_float(GetTemperature(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetDensity":
+                    return JHTDB_to_float(GetDensity(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetVelocityAndPressure":
+                    return JHTDB_to_float(GetVelocityAndPressure(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetVelocityAndTemperature":
+                    return JHTDB_to_float(GetVelocityAndTemperature(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetForce":
+                    return JHTDB_to_float(GetForce(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+
+                case "GetVelocityGradient":
+                    return JHTDB_to_float(GetVelocityGradient(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetMagneticFieldGradient":
+                    return JHTDB_to_float(GetMagneticFieldGradient(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetVectorPotentialGradient":
+                    return JHTDB_to_float(GetVectorPotentialGradient(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetPressureGradient":
+                    return JHTDB_to_float(GetPressureGradient(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetTemperatureGradient":
+                    return JHTDB_to_float(GetTemperatureGradient(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetDensityGradient":
+                    return JHTDB_to_float(GetDensityGradient(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+
+                case "GetVelocityHessian":
+                    return JHTDB_to_float(GetVelocityHessian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetMagneticHessian":
+                    return JHTDB_to_float(GetMagneticHessian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetVectorPotentialHessian":
+                    return JHTDB_to_float(GetVectorPotentialHessian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetPressureHessian":
+                    return JHTDB_to_float(GetPressureHessian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetTemperatureHessian":
+                    return JHTDB_to_float(GetTemperatureHessian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetDensityHessian":
+                    return JHTDB_to_float(GetDensityHessian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+
+                case "GetVelocityLaplacian":
+                    return JHTDB_to_float(GetVelocityLaplacian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetMagneticFieldLaplacian":
+                    return JHTDB_to_float(GetMagneticFieldLaplacian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                case "GetVectorPotentialLaplacian":
+                    return JHTDB_to_float(GetVectorPotentialLaplacian(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+
+                case "GetInvariant":
+                    return JHTDB_to_float(GetInvariant(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null));
+                default:
+                    throw new Exception(String.Format("Function name incorrect."));
+            }
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetFilter_Python",
+        Description = @"Spatially interpolate the pressure at a number of points for a given time.")]
+        public float[] GetFilter_Python(string function_name, string authToken, string dataset, string field, float time, float filterwidth,
+            TurbulenceOptions.SpatialInterpolation spatialInterpolation, float[][] points, float spacing = 0.0f)
+        {
+            switch (function_name)
+            {
+                case "GetBoxFilter":
+                    return JHTDB_to_float(GetBoxFilter(authToken, dataset, field, time, filterwidth, Float_to_Point3(points), null));
+                case "GetBoxFilterSGSscalar":
+                    return GetBoxFilterSGSscalar(authToken, dataset, field, time, filterwidth, Float_to_Point3(points), null);
+                case "GetBoxFilterSGSvector":
+                    return JHTDB_to_float(GetBoxFilterSGSvector(authToken, dataset, field, time, filterwidth, Float_to_Point3(points), null));
+                case "GetBoxFilterSGSsymtensor":
+                    return JHTDB_to_float(GetBoxFilterSGSsymtensor(authToken, dataset, field, time, filterwidth, Float_to_Point3(points), null));
+                case "GetBoxFilterSGStensor":
+                    return JHTDB_to_float(GetBoxFilterSGStensor(authToken, dataset, field, time, filterwidth, Float_to_Point3(points), null));
+                case "GetBoxFilterGradient":
+                    return JHTDB_to_float(GetBoxFilterGradient(authToken, dataset, field, time, filterwidth, spacing, Float_to_Point3(points), null));
+                default:
+                    throw new Exception(String.Format("Function name incorrect."));
+            }
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetPosition_Python",
+        Description = @"Spatially interpolate the pressure at a number of points for a given time.")]
+        public float[] GetPosition_Python(string function_name, string authToken, string dataset, float StartTime, float EndTime, float dt,
+            TurbulenceOptions.SpatialInterpolation spatialInterpolation, float[][] points)
+        {
+            return JHTDB_to_float(GetPosition(authToken, dataset, StartTime, EndTime, dt, spatialInterpolation, Float_to_Point3(points), null));
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetThreshold_Python",
+        Description = @"Spatially interpolate the pressure at a number of points for a given time.")]
+        public float[] GetThreshold_Python(string function_name, string authToken, string dataset, string field, float time, float threshold,
+            TurbulenceOptions.SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end)
+        {
+            return JHTDB_to_float(GetThreshold(authToken, dataset, field, time, threshold, spatialInterpolation, x_start, y_start, z_start, x_end, y_end, z_end, null));
+        }
+
         #endregion
     }
 }
