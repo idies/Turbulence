@@ -1300,6 +1300,10 @@ namespace TurbulenceService
                     bit = sfc.X / 128 + sfc.Y / 128 * num_x_regions + sfc.Z / 128 * num_x_regions * num_y_regions;
                 }
                 //TODO: what is this value?
+                else if (GridResolutionX == 8192)
+                {
+                    bit = (int)(sfc / (long)(1 << 30));
+                }
                 else if (GridResolutionX == 4096)
                 {
                     bit = (int)(sfc / (long)(1 << 24));
