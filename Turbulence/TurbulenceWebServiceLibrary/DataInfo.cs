@@ -27,6 +27,7 @@ namespace TurbulenceService
             strat4096 = 11,
             bl_zaki = 12,
             channel5200 = 13,
+            isotropic8192 = 14,
         }
 
         // TODO: This needs to be refactored. We probably don't want to keep track of
@@ -197,6 +198,7 @@ namespace TurbulenceService
                                {"channel", "channel"},
                                {"channel5200", "channel5200"},
                                {"isotropic4096", "isotropic4096"},
+                               {"isotropic8192", "isotropic8192"},
                                {"strat4096", "strat4096"},
                                {"rotstrat4096", "strat4096"},
                                {"transition_bl", "bl_zaki"},
@@ -260,6 +262,10 @@ namespace TurbulenceService
                 return false;
             }
             else if (dataset == DataSets.isotropic4096 && time > 0.0F)
+            {
+                return false;
+            }
+            else if (dataset == DataSets.isotropic8192 && time > 0.0F)
             {
                 return false;
             }

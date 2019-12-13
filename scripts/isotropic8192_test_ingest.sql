@@ -7,18 +7,18 @@ DECLARE @prod_iter BIGINT
 
 SET @iter=1
 
-WHILE @iter<513
+WHILE @iter<4097
 
 BEGIN
 
 SET @slice= @iter
 SET @prod_iter = 100 + @slice
-SET @prod = 'iso4096db'+STR(@prod_iter,len(@prod_iter))
+SET @prod = 'iso8192db' + right('0000'+ cast(@iter as varchar(4)),4) 
 SET @min = (@iter-1)*134217728 
 SET @max = @min + 134217727
 
 
-INSERT into [turbinfo].[dbo].[DatabaseMap] 
+INSERT into [turbinfo_test].[dbo].[DatabaseMap] 
 		([DatasetID],
 		[DatasetName],
 		[ProductionMachineName],
@@ -34,11 +34,11 @@ INSERT into [turbinfo].[dbo].[DatabaseMap]
 		[dbtype]) 
 	
 	VALUES 
-		(10,
-		'isotropic4096',
+		(14,
+		'isotropic8192',
 		'dsp012',
 		@prod,
-		'turblib',
+		'turbdev_zw',
 		0,
 		@slice,
 		1,
@@ -55,4 +55,4 @@ GO
 
 /****** Script for SelectTopNRows command from SSMS  ******/
 SELECT *
-  FROM [turbinfo].[dbo].[DatabaseMap] WHERE DatasetName = 'isotropic4096' 
+  FROM [turbinfo_test].[dbo].[DatabaseMap] WHERE DatasetName = 'isotropic8192' 

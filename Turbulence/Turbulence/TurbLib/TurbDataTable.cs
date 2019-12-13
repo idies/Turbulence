@@ -255,6 +255,12 @@ namespace Turbulence.TurbLib
                 this.gridResolution[1] = 4096;
                 this.gridResolution[2] = 4096;
             }
+            if (dbName.Contains("iso8192"))
+            {
+                this.gridResolution[0] = 8192;
+                this.gridResolution[1] = 8192;
+                this.gridResolution[2] = 8192;
+            }
 
             this.dx = (2.0 * Math.PI) / (double)gridResolution[2];
             this.dy = (2.0 * Math.PI) / (double)gridResolution[1];
@@ -482,6 +488,12 @@ namespace Turbulence.TurbLib
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
                         0.0002f, 0, 0, 10, 0, 1);
                 }
+                else if (dbName.Contains("iso8192"))
+                {
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
+                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
+                        0.0002f, 0, 0, 10, 0, 1);
+                }
                 else if (dbName.Contains("strat4096"))
                 {
                     return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
@@ -556,6 +568,12 @@ namespace Turbulence.TurbLib
                         0.04f, 0, 1014, 1, 1, 0);
                 }
                 else if (dbName.Contains("iso4096"))
+                {
+                    return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
+                        tableName, blobDim, 0, 1, new string[] { "P" },
+                        0.0002f, 0, 0, 10, 0, 1);
+                }
+                else if (dbName.Contains("iso8192"))
                 {
                     return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },

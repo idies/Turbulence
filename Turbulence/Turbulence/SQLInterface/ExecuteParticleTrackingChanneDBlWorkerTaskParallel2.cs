@@ -103,7 +103,7 @@ public partial class StoredProcedures
                     }
                     else
                     {
-                        connections.Add(new SqlConnection(String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, DBName.Substring(0, DBName.Length - 3))));
+                        connections.Add(new SqlConnection(String.Format("Data Source={0};Initial Catalog={1};User ID='turbquery';Password='aa2465ways2k';Pooling=false;", serverName, DBName.Substring(0, DBName.IndexOf("db") + 2))));
                     }
                 }
             }

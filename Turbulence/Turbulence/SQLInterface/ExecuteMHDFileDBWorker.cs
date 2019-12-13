@@ -131,7 +131,7 @@ public partial class StoredProcedures
             //standardConn);
             cmd.CommandTimeout = 3600;
 
-            //string temp = string.Format("C:\\www\\zindexlistdb{0}.txt", dbname.Substring(dbname.Length - 3,3));
+            //string temp = string.Format("C:\\www\\zindexlistdb{0}.txt", dbname.Substring(dbname.Indexof("db") + 2,dbname.Length - dbname.IndexOf("db") - 2));
             //System.IO.StreamWriter file = new System.IO.StreamWriter(@temp.ToString(), true);
             //DateTime start = DateTime.Now;
             List<SQLUtility.zlistTable> zlist = new List<SQLUtility.zlistTable>();

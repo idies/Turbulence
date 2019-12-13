@@ -26,9 +26,9 @@ namespace TurbulenceService
          */
 
         public const bool DEVEL_MODE = false;
-        public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
+        //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
         public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
-        //public const string infodb_string = "turbinfo_test_conn";
+        public const string infodb_string = "turbinfo_test_conn";
         public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
 
         // batch scheduler queue
@@ -102,6 +102,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096: //check this
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                     GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -211,6 +212,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -252,6 +254,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -298,7 +301,8 @@ namespace TurbulenceService
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
-                case DataInfo.DataSets.isotropic4096: //check this                  
+                case DataInfo.DataSets.isotropic4096: //check this         
+                case DataInfo.DataSets.isotropic8192:
                     GetScalarData(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
@@ -484,6 +488,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.isotropic4096: //check this
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.bl_zaki:
                     Vector3[] velocities = GetVelocity(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points1, addr);
                     Pressure[] pressures = GetPressure(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, addr);
@@ -629,6 +634,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                     GetVectorGradient(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -736,6 +742,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -777,6 +784,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -823,7 +831,8 @@ namespace TurbulenceService
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
-                case DataInfo.DataSets.isotropic4096: //check this                  
+                case DataInfo.DataSets.isotropic4096: //check this  
+                case DataInfo.DataSets.isotropic8192:
                     GetScalarGradient(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
@@ -1059,6 +1068,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                     GetVectorHessian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -1166,6 +1176,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -1207,6 +1218,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -1254,7 +1266,8 @@ namespace TurbulenceService
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
-                case DataInfo.DataSets.isotropic4096: //check this                  
+                case DataInfo.DataSets.isotropic4096: //check this    
+                case DataInfo.DataSets.isotropic8192:
                     GetScalarHessian(auth, dataset, dataset_enum, DataInfo.TableNames.pr, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
                     break;
@@ -1510,6 +1523,7 @@ namespace TurbulenceService
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                 case DataInfo.DataSets.mixing:
                     GetVectorLaplacian(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
@@ -1618,6 +1632,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -1659,6 +1674,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -1825,6 +1841,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.mhd1024:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                     if (field.Contains("vorticity"))
                     {
@@ -2070,6 +2087,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                     GetVectorGradient(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, vel_grad, ref rowid, addr);
@@ -4394,6 +4412,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.bl_zaki:
@@ -4479,6 +4498,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096: //This is not really used in filedb, but we don't want to get an invalid dataset.
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                     tableName = DataInfo.TableNames.vel;
                     break;
@@ -4546,6 +4566,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
@@ -4602,6 +4623,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.isotropic1024fine:
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                 case DataInfo.DataSets.channel:
                 case DataInfo.DataSets.channel5200:
@@ -4661,6 +4683,7 @@ namespace TurbulenceService
                     break;
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.mixing:
                     tableName = DataInfo.TableNames.pr;
                     break;

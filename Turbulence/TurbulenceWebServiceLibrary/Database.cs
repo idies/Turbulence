@@ -140,6 +140,13 @@ namespace TurbulenceService
                     this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
                     channel_grid = false;
                     break;
+                case DataInfo.DataSets.isotropic8192:
+                    this.gridResolution = new int[] { 8192, 8192, 8192 };
+                    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
+                    this.dy = (2.0 * Math.PI) / (double)this.GridResolutionY;
+                    this.dz = (2.0 * Math.PI) / (double)this.GridResolutionZ;
+                    channel_grid = false;
+                    break;
                 //case DataInfo.DataSets.rmhd:
                 //    this.gridResolution = new int[] { 2048, 2048, 2048 };
                 //    this.dx = (2.0 * Math.PI) / (double)this.GridResolutionX;
@@ -248,6 +255,7 @@ namespace TurbulenceService
                 case DataInfo.DataSets.channel5200:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096:
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                 case DataInfo.DataSets.bl_zaki:
                     //case DataInfo.DataSets.rmhd:
@@ -272,6 +280,10 @@ namespace TurbulenceService
                     this.timeInc = 10;
                     break;
                 case DataInfo.DataSets.isotropic4096: //There is only one timestep for this dataset so this isn't really necessary.
+                    this.Dt = 0.0002F;
+                    this.timeInc = 1;
+                    break;
+                case DataInfo.DataSets.isotropic8192: //There is only one timestep for this dataset so this isn't really necessary.
                     this.Dt = 0.0002F;
                     this.timeInc = 1;
                     break;
@@ -885,7 +897,7 @@ namespace TurbulenceService
                                     }
                                     else
                                     {
-                                        dbname = databases[i].Substring(0, databases[i].Length - 3); //"iso4096db"
+                                        dbname = databases[i].Substring(0, databases[i].IndexOf("db") + 2); //"iso4096db"
                                     }
 
                                     String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
@@ -993,7 +1005,7 @@ namespace TurbulenceService
                                     }
                                     else
                                     {
-                                        dbname = databases[i].Substring(0, databases[i].Length - 3); //"iso4096db"
+                                        dbname = databases[i].Substring(0, databases[i].IndexOf("db") + 2); //"iso4096db"
                                     }
 
                                     String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
@@ -1083,7 +1095,7 @@ namespace TurbulenceService
                 }
                 else
                 {
-                    dbname = databases[server].Substring(0, databases[server].Length - 3); //"iso4096db"
+                    dbname = databases[server].Substring(0, databases[server].IndexOf("db") + 2); //"iso4096db"
                 }
 
                 String cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = 600;",
