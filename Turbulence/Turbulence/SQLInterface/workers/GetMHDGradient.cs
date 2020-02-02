@@ -97,9 +97,9 @@ namespace Turbulence.SQLInterface.workers
             if (spatialInterp == TurbulenceOptions.SpatialInterpolation.Fd4Lag4)
             {
                 // The integer coordinates are computed only once
-                X = LagInterpolation.CalcNode(request.x, setInfo.Dx);
-                Y = LagInterpolation.CalcNode(request.y, setInfo.Dx);
-                Z = LagInterpolation.CalcNode(request.z, setInfo.Dx);
+                X = LagInterpolation.CalcNodeWithRound(request.x, setInfo.Dx);
+                Y = LagInterpolation.CalcNodeWithRound(request.y, setInfo.Dy);
+                Z = LagInterpolation.CalcNodeWithRound(request.z, setInfo.Dz);
 
                 int LagIntOrder = 4;
                 //x_values = new int[] { X - kernelSize / 2 + 1, X + kernelSize / 2 };    // From X-3 to X+4
@@ -417,9 +417,9 @@ namespace Turbulence.SQLInterface.workers
                     int LagIntOrder = 4;
                     int FdOrder = 4;
 
-                    x = LagInterpolation.CalcNode(input.x, setInfo.Dx);
-                    y = LagInterpolation.CalcNode(input.y, setInfo.Dx);
-                    z = LagInterpolation.CalcNode(input.z, setInfo.Dx);
+                    x = LagInterpolation.CalcNodeWithRound(input.x, setInfo.Dx);
+                    y = LagInterpolation.CalcNodeWithRound(input.y, setInfo.Dy);
+                    z = LagInterpolation.CalcNodeWithRound(input.z, setInfo.Dz);
                     
                     // The coefficients are computed only once and cached, so that they don't have to be 
                     // recomputed for each partial sum                    

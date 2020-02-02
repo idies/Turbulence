@@ -72,7 +72,7 @@ namespace TestApp
             try
             {
                 DateTime beginTime, stopTime;
-                int nx = 1, ny = 2;
+                int nx = 1, ny = 1;
                 int pointsize = nx * ny * 1;
                 Point3[] points = new Point3[pointsize];
                 turbulence.Point3[] points1 = new turbulence.Point3[pointsize];
@@ -86,17 +86,19 @@ namespace TestApp
                 float time = 0f;
                 service.Timeout = -1;
 
-                points[0].x = 0.0f; //0.3f;// dd * 2048;
-                points[0].y = 0.0f; //0.4f;// dd * 2048;
-                points[0].z = 0.0f; //0.5f;// dd * 2048;
-                float dz = (float)(2 * Math.PI / 8192);
-                points[1].x = 8*dz; //4.0f;// dd * 2048;
-                points[1].y = 0.0f; //5.0f;// dd * 2048;
-                points[1].z = 0.0f; //6.0f;// dd * 2048;
+                points[0].x = 0.0215f; //0.0f; //0.3f;// dd * 2048;
+                points[0].y = 1.5719f; //0.0f; //0.4f;// dd * 2048;
+                points[0].z = 0.0215f; //0.0f; //0.5f;// dd * 2048;
+                float dz = (float)(2 * Math.PI / 4096);
+                //points[1].x = 0.0215f; // 8*dz; //4.0f;// dd * 2048;
+                //points[1].y = 1.5752f; // 0.0f; //5.0f;// dd * 2048;
+                //points[1].z = 0.0215f; // 0.0f; //6.0f;// dd * 2048;
                 beginTime = DateTime.Now;
                 Console.WriteLine("Calling GetVelocity");
-                Vector3[] result = testp.GetVelocity(authToken, "isotropic8192", time,
-                    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
+                //Vector3[] result = testp.GetVelocity(authToken, "isotropic4096", time,
+                //    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
+                VelocityGradient[] result = testp.GetVelocityGradient(authToken, "isotropic4096", time,
+                    TurbulenceOptions.SpatialInterpolation.M1Q4, TurbulenceOptions.TemporalInterpolation.None, points);
                 stopTime = DateTime.Now;
                 Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
@@ -688,7 +690,8 @@ namespace TestApp
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, VelocityGradient[] result, ref object rowid, string addr = null)
         {
-            bool round = true;
+            //bool round = true;
+            bool round = TurbulenceOptions.SplinesOption(spatialInterpolation) ? false : true;
             int kernelSize = -1;
             int kernelSizeY = -1;
 

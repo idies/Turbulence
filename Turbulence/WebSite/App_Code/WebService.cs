@@ -29,7 +29,8 @@ namespace TurbulenceService
         //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
         public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
         public const string infodb_string = "turbinfo_test_conn";
-        public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
+        //public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
+        public const string logdb_string = "turblog_conn";
 
         // batch scheduler queue
         public static BatchWorkerQueue batchQueue = null;
@@ -985,7 +986,8 @@ namespace TurbulenceService
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, VelocityGradient[] result, ref object rowid, string addr = null)
         {
-            bool round = true;
+            //bool round = true;
+            bool round = TurbulenceOptions.SplinesOption(spatialInterpolation) ? false : true;
             int kernelSize = -1;
             int kernelSizeY = -1;
 

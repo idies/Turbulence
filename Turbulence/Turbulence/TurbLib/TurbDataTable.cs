@@ -75,6 +75,8 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.Lag6:
                 case TurbulenceOptions.SpatialInterpolation.Lag8:
                 case TurbulenceOptions.SpatialInterpolation.Fd4Lag4:
+                    x = (int)(Math.Round(value / dx));
+                    break;
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -121,6 +123,8 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.Lag6:
                 case TurbulenceOptions.SpatialInterpolation.Lag8:
                 case TurbulenceOptions.SpatialInterpolation.Fd4Lag4:
+                    y = (int)(Math.Round(value / dy));
+                    break;
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -167,6 +171,8 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.Lag6:
                 case TurbulenceOptions.SpatialInterpolation.Lag8:
                 case TurbulenceOptions.SpatialInterpolation.Fd4Lag4:
+                    z = (int)(Math.Round(value / dz));
+                    break;
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -492,7 +498,7 @@ namespace Turbulence.TurbLib
                 {
                     return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        0.0002f, 0, 0, 10, 0, 1);
+                        1f, 0, 4, 1, 0, 1);
                 }
                 else if (dbName.Contains("strat4096"))
                 {
@@ -577,7 +583,7 @@ namespace Turbulence.TurbLib
                 {
                     return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        0.0002f, 0, 0, 10, 0, 1);
+                        1f, 0, 4, 1, 0, 1);
                 }
                 else
                 {
