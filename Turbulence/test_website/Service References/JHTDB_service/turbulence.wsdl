@@ -1094,6 +1094,100 @@
           </s:sequence>
         </s:complexType>
       </s:element>
+      <s:element name="GetData_Python">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="function_name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="temporalInterpolation" type="tns:TemporalInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfArrayOfFloat" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="ArrayOfArrayOfFloat">
+        <s:sequence>
+          <s:element minOccurs="0" maxOccurs="unbounded" name="ArrayOfFloat" nillable="true" type="tns:ArrayOfFloat" />
+        </s:sequence>
+      </s:complexType>
+      <s:element name="GetData_PythonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetData_PythonResult" type="tns:ArrayOfFloat" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFilter_Python">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="function_name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="filterwidth" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfArrayOfFloat" />
+            <s:element minOccurs="1" maxOccurs="1" name="spacing" type="s:float" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetFilter_PythonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetFilter_PythonResult" type="tns:ArrayOfFloat" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPosition_Python">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="function_name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="StartTime" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="EndTime" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="dt" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="0" maxOccurs="1" name="points" type="tns:ArrayOfArrayOfFloat" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetPosition_PythonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetPosition_PythonResult" type="tns:ArrayOfFloat" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetThreshold_Python">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="function_name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="authToken" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataset" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="field" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="time" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="threshold" type="s:float" />
+            <s:element minOccurs="1" maxOccurs="1" name="spatialInterpolation" type="tns:SpatialInterpolation" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_start" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="x_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="y_end" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="z_end" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetThreshold_PythonResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetThreshold_PythonResult" type="tns:ArrayOfFloat" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="NullOpSoapIn">
@@ -1360,6 +1454,30 @@
   <wsdl:message name="GetAnyCutoutWebSoapOut">
     <wsdl:part name="parameters" element="tns:GetAnyCutoutWebResponse" />
   </wsdl:message>
+  <wsdl:message name="GetData_PythonSoapIn">
+    <wsdl:part name="parameters" element="tns:GetData_Python" />
+  </wsdl:message>
+  <wsdl:message name="GetData_PythonSoapOut">
+    <wsdl:part name="parameters" element="tns:GetData_PythonResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetFilter_PythonSoapIn">
+    <wsdl:part name="parameters" element="tns:GetFilter_Python" />
+  </wsdl:message>
+  <wsdl:message name="GetFilter_PythonSoapOut">
+    <wsdl:part name="parameters" element="tns:GetFilter_PythonResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPosition_PythonSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPosition_Python" />
+  </wsdl:message>
+  <wsdl:message name="GetPosition_PythonSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPosition_PythonResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetThreshold_PythonSoapIn">
+    <wsdl:part name="parameters" element="tns:GetThreshold_Python" />
+  </wsdl:message>
+  <wsdl:message name="GetThreshold_PythonSoapOut">
+    <wsdl:part name="parameters" element="tns:GetThreshold_PythonResponse" />
+  </wsdl:message>
   <wsdl:portType name="TurbulenceServiceSoap">
     <wsdl:operation name="NullOp">
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Perform a null operation -- for testing throughput</wsdl:documentation>
@@ -1582,6 +1700,26 @@
       <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Retrieve the laplacian of the gradient of the specified field at a number of points for a given time. Development version, not intended for production use!</wsdl:documentation>
       <wsdl:input message="tns:GetAnyCutoutWebSoapIn" />
       <wsdl:output message="tns:GetAnyCutoutWebSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetData_Python">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the pressure at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetData_PythonSoapIn" />
+      <wsdl:output message="tns:GetData_PythonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetFilter_Python">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the pressure at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetFilter_PythonSoapIn" />
+      <wsdl:output message="tns:GetFilter_PythonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetPosition_Python">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the pressure at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetPosition_PythonSoapIn" />
+      <wsdl:output message="tns:GetPosition_PythonSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetThreshold_Python">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">Spatially interpolate the pressure at a number of points for a given time.</wsdl:documentation>
+      <wsdl:input message="tns:GetThreshold_PythonSoapIn" />
+      <wsdl:output message="tns:GetThreshold_PythonSoapOut" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="TurbulenceServiceSoap" type="tns:TurbulenceServiceSoap">
@@ -1982,6 +2120,42 @@
         <soap:body use="literal" />
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="GetData_Python">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetData_Python" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFilter_Python">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetFilter_Python" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPosition_Python">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetPosition_Python" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetThreshold_Python">
+      <soap:operation soapAction="http://turbulence.pha.jhu.edu/GetThreshold_Python" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
   <wsdl:binding name="TurbulenceServiceSoap12" type="tns:TurbulenceServiceSoap">
     <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
@@ -2374,6 +2548,42 @@
     </wsdl:operation>
     <wsdl:operation name="GetAnyCutoutWeb">
       <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetAnyCutoutWeb" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetData_Python">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetData_Python" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetFilter_Python">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetFilter_Python" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPosition_Python">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetPosition_Python" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetThreshold_Python">
+      <soap12:operation soapAction="http://turbulence.pha.jhu.edu/GetThreshold_Python" style="document" />
       <wsdl:input>
         <soap12:body use="literal" />
       </wsdl:input>

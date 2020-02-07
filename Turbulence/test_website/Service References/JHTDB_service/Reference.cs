@@ -1382,6 +1382,22 @@ namespace JHTDB_demo.JHTDB_service {
         // CODEGEN: Generating message contract since element name authToken from namespace http://turbulence.pha.jhu.edu/ is not marked nillable
         [System.ServiceModel.OperationContractAttribute(Action="http://turbulence.pha.jhu.edu/GetAnyCutoutWeb", ReplyAction="*")]
         JHTDB_demo.JHTDB_service.GetAnyCutoutWebResponse GetAnyCutoutWeb(JHTDB_demo.JHTDB_service.GetAnyCutoutWebRequest request);
+        
+        // CODEGEN: Generating message contract since element name function_name from namespace http://turbulence.pha.jhu.edu/ is not marked nillable
+        [System.ServiceModel.OperationContractAttribute(Action="http://turbulence.pha.jhu.edu/GetData_Python", ReplyAction="*")]
+        JHTDB_demo.JHTDB_service.GetData_PythonResponse GetData_Python(JHTDB_demo.JHTDB_service.GetData_PythonRequest request);
+        
+        // CODEGEN: Generating message contract since element name function_name from namespace http://turbulence.pha.jhu.edu/ is not marked nillable
+        [System.ServiceModel.OperationContractAttribute(Action="http://turbulence.pha.jhu.edu/GetFilter_Python", ReplyAction="*")]
+        JHTDB_demo.JHTDB_service.GetFilter_PythonResponse GetFilter_Python(JHTDB_demo.JHTDB_service.GetFilter_PythonRequest request);
+        
+        // CODEGEN: Generating message contract since element name function_name from namespace http://turbulence.pha.jhu.edu/ is not marked nillable
+        [System.ServiceModel.OperationContractAttribute(Action="http://turbulence.pha.jhu.edu/GetPosition_Python", ReplyAction="*")]
+        JHTDB_demo.JHTDB_service.GetPosition_PythonResponse GetPosition_Python(JHTDB_demo.JHTDB_service.GetPosition_PythonRequest request);
+        
+        // CODEGEN: Generating message contract since element name function_name from namespace http://turbulence.pha.jhu.edu/ is not marked nillable
+        [System.ServiceModel.OperationContractAttribute(Action="http://turbulence.pha.jhu.edu/GetThreshold_Python", ReplyAction="*")]
+        JHTDB_demo.JHTDB_service.GetThreshold_PythonResponse GetThreshold_Python(JHTDB_demo.JHTDB_service.GetThreshold_PythonRequest request);
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
@@ -5552,6 +5568,410 @@ namespace JHTDB_demo.JHTDB_service {
         }
     }
     
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetData_PythonRequest {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetData_Python", Namespace="http://turbulence.pha.jhu.edu/", Order=0)]
+        public JHTDB_demo.JHTDB_service.GetData_PythonRequestBody Body;
+        
+        public GetData_PythonRequest() {
+        }
+        
+        public GetData_PythonRequest(JHTDB_demo.JHTDB_service.GetData_PythonRequestBody Body) {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class GetData_PythonRequestBody {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public string function_name;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+        public string authToken;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+        public string dataset;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
+        public float time;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+        public JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=5)]
+        public JHTDB_demo.JHTDB_service.TemporalInterpolation temporalInterpolation;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=6)]
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat[] points;
+        
+        public GetData_PythonRequestBody() {
+        }
+        
+        public GetData_PythonRequestBody(string function_name, string authToken, string dataset, float time, JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation, JHTDB_demo.JHTDB_service.TemporalInterpolation temporalInterpolation, JHTDB_demo.JHTDB_service.ArrayOfFloat[] points) {
+            this.function_name = function_name;
+            this.authToken = authToken;
+            this.dataset = dataset;
+            this.time = time;
+            this.spatialInterpolation = spatialInterpolation;
+            this.temporalInterpolation = temporalInterpolation;
+            this.points = points;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetData_PythonResponse {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetData_PythonResponse", Namespace="http://turbulence.pha.jhu.edu/", Order=0)]
+        public JHTDB_demo.JHTDB_service.GetData_PythonResponseBody Body;
+        
+        public GetData_PythonResponse() {
+        }
+        
+        public GetData_PythonResponse(JHTDB_demo.JHTDB_service.GetData_PythonResponseBody Body) {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class GetData_PythonResponseBody {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat GetData_PythonResult;
+        
+        public GetData_PythonResponseBody() {
+        }
+        
+        public GetData_PythonResponseBody(JHTDB_demo.JHTDB_service.ArrayOfFloat GetData_PythonResult) {
+            this.GetData_PythonResult = GetData_PythonResult;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetFilter_PythonRequest {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetFilter_Python", Namespace="http://turbulence.pha.jhu.edu/", Order=0)]
+        public JHTDB_demo.JHTDB_service.GetFilter_PythonRequestBody Body;
+        
+        public GetFilter_PythonRequest() {
+        }
+        
+        public GetFilter_PythonRequest(JHTDB_demo.JHTDB_service.GetFilter_PythonRequestBody Body) {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class GetFilter_PythonRequestBody {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public string function_name;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+        public string authToken;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+        public string dataset;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+        public string field;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+        public float time;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=5)]
+        public float filterwidth;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=6)]
+        public JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat[] points;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=8)]
+        public float spacing;
+        
+        public GetFilter_PythonRequestBody() {
+        }
+        
+        public GetFilter_PythonRequestBody(string function_name, string authToken, string dataset, string field, float time, float filterwidth, JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation, JHTDB_demo.JHTDB_service.ArrayOfFloat[] points, float spacing) {
+            this.function_name = function_name;
+            this.authToken = authToken;
+            this.dataset = dataset;
+            this.field = field;
+            this.time = time;
+            this.filterwidth = filterwidth;
+            this.spatialInterpolation = spatialInterpolation;
+            this.points = points;
+            this.spacing = spacing;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetFilter_PythonResponse {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetFilter_PythonResponse", Namespace="http://turbulence.pha.jhu.edu/", Order=0)]
+        public JHTDB_demo.JHTDB_service.GetFilter_PythonResponseBody Body;
+        
+        public GetFilter_PythonResponse() {
+        }
+        
+        public GetFilter_PythonResponse(JHTDB_demo.JHTDB_service.GetFilter_PythonResponseBody Body) {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class GetFilter_PythonResponseBody {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat GetFilter_PythonResult;
+        
+        public GetFilter_PythonResponseBody() {
+        }
+        
+        public GetFilter_PythonResponseBody(JHTDB_demo.JHTDB_service.ArrayOfFloat GetFilter_PythonResult) {
+            this.GetFilter_PythonResult = GetFilter_PythonResult;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetPosition_PythonRequest {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetPosition_Python", Namespace="http://turbulence.pha.jhu.edu/", Order=0)]
+        public JHTDB_demo.JHTDB_service.GetPosition_PythonRequestBody Body;
+        
+        public GetPosition_PythonRequest() {
+        }
+        
+        public GetPosition_PythonRequest(JHTDB_demo.JHTDB_service.GetPosition_PythonRequestBody Body) {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class GetPosition_PythonRequestBody {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public string function_name;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+        public string authToken;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+        public string dataset;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=3)]
+        public float StartTime;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+        public float EndTime;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=5)]
+        public float dt;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=6)]
+        public JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=7)]
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat[] points;
+        
+        public GetPosition_PythonRequestBody() {
+        }
+        
+        public GetPosition_PythonRequestBody(string function_name, string authToken, string dataset, float StartTime, float EndTime, float dt, JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation, JHTDB_demo.JHTDB_service.ArrayOfFloat[] points) {
+            this.function_name = function_name;
+            this.authToken = authToken;
+            this.dataset = dataset;
+            this.StartTime = StartTime;
+            this.EndTime = EndTime;
+            this.dt = dt;
+            this.spatialInterpolation = spatialInterpolation;
+            this.points = points;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetPosition_PythonResponse {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetPosition_PythonResponse", Namespace="http://turbulence.pha.jhu.edu/", Order=0)]
+        public JHTDB_demo.JHTDB_service.GetPosition_PythonResponseBody Body;
+        
+        public GetPosition_PythonResponse() {
+        }
+        
+        public GetPosition_PythonResponse(JHTDB_demo.JHTDB_service.GetPosition_PythonResponseBody Body) {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class GetPosition_PythonResponseBody {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat GetPosition_PythonResult;
+        
+        public GetPosition_PythonResponseBody() {
+        }
+        
+        public GetPosition_PythonResponseBody(JHTDB_demo.JHTDB_service.ArrayOfFloat GetPosition_PythonResult) {
+            this.GetPosition_PythonResult = GetPosition_PythonResult;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetThreshold_PythonRequest {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetThreshold_Python", Namespace="http://turbulence.pha.jhu.edu/", Order=0)]
+        public JHTDB_demo.JHTDB_service.GetThreshold_PythonRequestBody Body;
+        
+        public GetThreshold_PythonRequest() {
+        }
+        
+        public GetThreshold_PythonRequest(JHTDB_demo.JHTDB_service.GetThreshold_PythonRequestBody Body) {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class GetThreshold_PythonRequestBody {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public string function_name;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=1)]
+        public string authToken;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=2)]
+        public string dataset;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=3)]
+        public string field;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=4)]
+        public float time;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=5)]
+        public float threshold;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=6)]
+        public JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=7)]
+        public int x_start;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=8)]
+        public int y_start;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=9)]
+        public int z_start;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=10)]
+        public int x_end;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=11)]
+        public int y_end;
+        
+        [System.Runtime.Serialization.DataMemberAttribute(Order=12)]
+        public int z_end;
+        
+        public GetThreshold_PythonRequestBody() {
+        }
+        
+        public GetThreshold_PythonRequestBody(string function_name, string authToken, string dataset, string field, float time, float threshold, JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end) {
+            this.function_name = function_name;
+            this.authToken = authToken;
+            this.dataset = dataset;
+            this.field = field;
+            this.time = time;
+            this.threshold = threshold;
+            this.spatialInterpolation = spatialInterpolation;
+            this.x_start = x_start;
+            this.y_start = y_start;
+            this.z_start = z_start;
+            this.x_end = x_end;
+            this.y_end = y_end;
+            this.z_end = z_end;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
+    public partial class GetThreshold_PythonResponse {
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Name="GetThreshold_PythonResponse", Namespace="http://turbulence.pha.jhu.edu/", Order=0)]
+        public JHTDB_demo.JHTDB_service.GetThreshold_PythonResponseBody Body;
+        
+        public GetThreshold_PythonResponse() {
+        }
+        
+        public GetThreshold_PythonResponse(JHTDB_demo.JHTDB_service.GetThreshold_PythonResponseBody Body) {
+            this.Body = Body;
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    [System.Runtime.Serialization.DataContractAttribute(Namespace="http://turbulence.pha.jhu.edu/")]
+    public partial class GetThreshold_PythonResponseBody {
+        
+        [System.Runtime.Serialization.DataMemberAttribute(EmitDefaultValue=false, Order=0)]
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat GetThreshold_PythonResult;
+        
+        public GetThreshold_PythonResponseBody() {
+        }
+        
+        public GetThreshold_PythonResponseBody(JHTDB_demo.JHTDB_service.ArrayOfFloat GetThreshold_PythonResult) {
+            this.GetThreshold_PythonResult = GetThreshold_PythonResult;
+        }
+    }
+    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     public interface TurbulenceServiceSoapChannel : JHTDB_demo.JHTDB_service.TurbulenceServiceSoap, System.ServiceModel.IClientChannel {
     }
@@ -6443,6 +6863,91 @@ namespace JHTDB_demo.JHTDB_service {
             inValue.Body.addr = addr;
             JHTDB_demo.JHTDB_service.GetAnyCutoutWebResponse retVal = ((JHTDB_demo.JHTDB_service.TurbulenceServiceSoap)(this)).GetAnyCutoutWeb(inValue);
             return retVal.Body.GetAnyCutoutWebResult;
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        JHTDB_demo.JHTDB_service.GetData_PythonResponse JHTDB_demo.JHTDB_service.TurbulenceServiceSoap.GetData_Python(JHTDB_demo.JHTDB_service.GetData_PythonRequest request) {
+            return base.Channel.GetData_Python(request);
+        }
+        
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat GetData_Python(string function_name, string authToken, string dataset, float time, JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation, JHTDB_demo.JHTDB_service.TemporalInterpolation temporalInterpolation, JHTDB_demo.JHTDB_service.ArrayOfFloat[] points) {
+            JHTDB_demo.JHTDB_service.GetData_PythonRequest inValue = new JHTDB_demo.JHTDB_service.GetData_PythonRequest();
+            inValue.Body = new JHTDB_demo.JHTDB_service.GetData_PythonRequestBody();
+            inValue.Body.function_name = function_name;
+            inValue.Body.authToken = authToken;
+            inValue.Body.dataset = dataset;
+            inValue.Body.time = time;
+            inValue.Body.spatialInterpolation = spatialInterpolation;
+            inValue.Body.temporalInterpolation = temporalInterpolation;
+            inValue.Body.points = points;
+            JHTDB_demo.JHTDB_service.GetData_PythonResponse retVal = ((JHTDB_demo.JHTDB_service.TurbulenceServiceSoap)(this)).GetData_Python(inValue);
+            return retVal.Body.GetData_PythonResult;
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        JHTDB_demo.JHTDB_service.GetFilter_PythonResponse JHTDB_demo.JHTDB_service.TurbulenceServiceSoap.GetFilter_Python(JHTDB_demo.JHTDB_service.GetFilter_PythonRequest request) {
+            return base.Channel.GetFilter_Python(request);
+        }
+        
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat GetFilter_Python(string function_name, string authToken, string dataset, string field, float time, float filterwidth, JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation, JHTDB_demo.JHTDB_service.ArrayOfFloat[] points, float spacing) {
+            JHTDB_demo.JHTDB_service.GetFilter_PythonRequest inValue = new JHTDB_demo.JHTDB_service.GetFilter_PythonRequest();
+            inValue.Body = new JHTDB_demo.JHTDB_service.GetFilter_PythonRequestBody();
+            inValue.Body.function_name = function_name;
+            inValue.Body.authToken = authToken;
+            inValue.Body.dataset = dataset;
+            inValue.Body.field = field;
+            inValue.Body.time = time;
+            inValue.Body.filterwidth = filterwidth;
+            inValue.Body.spatialInterpolation = spatialInterpolation;
+            inValue.Body.points = points;
+            inValue.Body.spacing = spacing;
+            JHTDB_demo.JHTDB_service.GetFilter_PythonResponse retVal = ((JHTDB_demo.JHTDB_service.TurbulenceServiceSoap)(this)).GetFilter_Python(inValue);
+            return retVal.Body.GetFilter_PythonResult;
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        JHTDB_demo.JHTDB_service.GetPosition_PythonResponse JHTDB_demo.JHTDB_service.TurbulenceServiceSoap.GetPosition_Python(JHTDB_demo.JHTDB_service.GetPosition_PythonRequest request) {
+            return base.Channel.GetPosition_Python(request);
+        }
+        
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat GetPosition_Python(string function_name, string authToken, string dataset, float StartTime, float EndTime, float dt, JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation, JHTDB_demo.JHTDB_service.ArrayOfFloat[] points) {
+            JHTDB_demo.JHTDB_service.GetPosition_PythonRequest inValue = new JHTDB_demo.JHTDB_service.GetPosition_PythonRequest();
+            inValue.Body = new JHTDB_demo.JHTDB_service.GetPosition_PythonRequestBody();
+            inValue.Body.function_name = function_name;
+            inValue.Body.authToken = authToken;
+            inValue.Body.dataset = dataset;
+            inValue.Body.StartTime = StartTime;
+            inValue.Body.EndTime = EndTime;
+            inValue.Body.dt = dt;
+            inValue.Body.spatialInterpolation = spatialInterpolation;
+            inValue.Body.points = points;
+            JHTDB_demo.JHTDB_service.GetPosition_PythonResponse retVal = ((JHTDB_demo.JHTDB_service.TurbulenceServiceSoap)(this)).GetPosition_Python(inValue);
+            return retVal.Body.GetPosition_PythonResult;
+        }
+        
+        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        JHTDB_demo.JHTDB_service.GetThreshold_PythonResponse JHTDB_demo.JHTDB_service.TurbulenceServiceSoap.GetThreshold_Python(JHTDB_demo.JHTDB_service.GetThreshold_PythonRequest request) {
+            return base.Channel.GetThreshold_Python(request);
+        }
+        
+        public JHTDB_demo.JHTDB_service.ArrayOfFloat GetThreshold_Python(string function_name, string authToken, string dataset, string field, float time, float threshold, JHTDB_demo.JHTDB_service.SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end) {
+            JHTDB_demo.JHTDB_service.GetThreshold_PythonRequest inValue = new JHTDB_demo.JHTDB_service.GetThreshold_PythonRequest();
+            inValue.Body = new JHTDB_demo.JHTDB_service.GetThreshold_PythonRequestBody();
+            inValue.Body.function_name = function_name;
+            inValue.Body.authToken = authToken;
+            inValue.Body.dataset = dataset;
+            inValue.Body.field = field;
+            inValue.Body.time = time;
+            inValue.Body.threshold = threshold;
+            inValue.Body.spatialInterpolation = spatialInterpolation;
+            inValue.Body.x_start = x_start;
+            inValue.Body.y_start = y_start;
+            inValue.Body.z_start = z_start;
+            inValue.Body.x_end = x_end;
+            inValue.Body.y_end = y_end;
+            inValue.Body.z_end = z_end;
+            JHTDB_demo.JHTDB_service.GetThreshold_PythonResponse retVal = ((JHTDB_demo.JHTDB_service.TurbulenceServiceSoap)(this)).GetThreshold_Python(inValue);
+            return retVal.Body.GetThreshold_PythonResult;
         }
     }
 }

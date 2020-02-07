@@ -21,8 +21,8 @@
     <MetadataSource Address="http://turbulence.pha.jhu.edu/service/turbulence.asmx" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="turbulence.wsdl" MetadataType="Wsdl" ID="2d94609d-a708-4b37-a71b-8367a397f65b" SourceId="1" SourceUrl="http://turbulence.pha.jhu.edu/service/turbulence.asmx?wsdl" />
-    <MetadataFile FileName="turbulence.disco" MetadataType="Disco" ID="3827ccf0-f199-4f11-82de-16183f709680" SourceId="1" SourceUrl="http://turbulence.pha.jhu.edu/service/turbulence.asmx?disco" />
+    <MetadataFile FileName="turbulence.wsdl" MetadataType="Wsdl" ID="608638f5-2613-434d-a568-6e8cc21a9ece" SourceId="1" SourceUrl="http://turbulence.pha.jhu.edu/service/turbulence.asmx?wsdl" />
+    <MetadataFile FileName="turbulence.disco" MetadataType="Disco" ID="a3b4b2ec-5bd2-4ebf-850a-c65afe9799ab" SourceId="1" SourceUrl="http://turbulence.pha.jhu.edu/service/turbulence.asmx?disco" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

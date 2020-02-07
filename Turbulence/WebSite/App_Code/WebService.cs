@@ -26,9 +26,9 @@ namespace TurbulenceService
          */
 
         public const bool DEVEL_MODE = false;
-        public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
+        //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
         public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
-        //public const string infodb_string = "turbinfo_test_conn";
+        public const string infodb_string = "turbinfo_test_conn";
         public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
 
         // batch scheduler queue
@@ -976,7 +976,8 @@ namespace TurbulenceService
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, VelocityGradient[] result, ref object rowid, string addr = null)
         {
-            bool round = true;
+            bool round = TurbulenceOptions.SplinesOption(spatialInterpolation) ? false : true;
+            //bool round = true;
             int kernelSize = -1;
             int kernelSizeY = -1;
 
@@ -4974,7 +4975,7 @@ namespace TurbulenceService
 
         private float[] JHTDB_to_float(Vector3P[] data_in)
         {
-            float[] data_out = new float[data_in.Length*4];
+            float[] data_out = new float[data_in.Length * 4];
             for (int i = 0; i < data_in.Length; i++)
             {
                 data_out[i * 4 + 0] = data_in[i].x;
@@ -4987,7 +4988,7 @@ namespace TurbulenceService
 
         private float[] JHTDB_to_float(VelocityGradient[] data_in)
         {
-            float[] data_out = new float[data_in.Length*9];
+            float[] data_out = new float[data_in.Length * 9];
             for (int i = 0; i < data_in.Length; i++)
             {
                 data_out[i * 9 + 0] = data_in[i].duxdx;
@@ -5005,7 +5006,7 @@ namespace TurbulenceService
 
         private float[] JHTDB_to_float(VelocityHessian[] data_in)
         {
-            float[] data_out = new float[data_in.Length*18];
+            float[] data_out = new float[data_in.Length * 18];
             for (int i = 0; i < data_in.Length; i++)
             {
                 data_out[i * 18 + 0] = data_in[i].d2uxdxdx;
@@ -5179,6 +5180,24 @@ namespace TurbulenceService
             TurbulenceOptions.SpatialInterpolation spatialInterpolation, int x_start, int y_start, int z_start, int x_end, int y_end, int z_end)
         {
             return JHTDB_to_float(GetThreshold(authToken, dataset, field, time, threshold, spatialInterpolation, x_start, y_start, z_start, x_end, y_end, z_end, null));
+        }
+
+        private byte[] JHTDB_to_byte(Vector3[] data_in)
+        {
+            float[] temp = JHTDB_to_float(data_in);
+            byte[] data_out = new byte[temp.Length * sizeof(float)];
+            Buffer.BlockCopy(temp, 0, data_out, 0, data_out.Length);
+            return data_out;
+        }
+
+        [WebMethod(CacheDuration = 0, BufferResponse = true, MessageName = "GetVelocity2",
+        Description = @"Spatially interpolate the velocity at a number of points for a given time.")]
+        public byte[] GetVelocity2(string authToken, string dataset, float time,
+            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
+            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
+            Point3[] points)
+        {
+            return JHTDB_to_byte(GetVelocity(authToken, dataset, time, spatialInterpolation, temporalInterpolation, points, null));
         }
 
         #endregion

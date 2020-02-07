@@ -52,16 +52,16 @@ namespace TestApp
         /// <param name="args">Command line arguments</param>
         public static void Main()
         {
-            string fname = Path.GetTempFileName();
-            hid_t file = H5F.create(fname, H5F.ACC_EXCL);
-            // this is expected, because Path.GetTempFileName() creates
-            // an empty file
-            //Assert.IsFalse(file >= 0);
+            //string fname = Path.GetTempFileName();
+            //hid_t file = H5F.create(fname, H5F.ACC_EXCL);
+            //// this is expected, because Path.GetTempFileName() creates
+            //// an empty file
+            ////Assert.IsFalse(file >= 0);
 
-            file = H5F.create(fname, H5F.ACC_TRUNC);
-            //Assert.IsTrue(file >= 0);
-            H5F.close(file);
-            File.Delete(fname);
+            //file = H5F.create(fname, H5F.ACC_TRUNC);
+            ////Assert.IsTrue(file >= 0);
+            //H5F.close(file);
+            //File.Delete(fname);
 
             TestProgram testp = new TestProgram();
             turbulence.TurbulenceService service = new turbulence.TurbulenceService();
@@ -72,7 +72,7 @@ namespace TestApp
             try
             {
                 DateTime beginTime, stopTime;
-                int nx = 1, ny = 2;
+                int nx = 1, ny = 1;
                 int pointsize = nx * ny * 1;
                 Point3[] points = new Point3[pointsize];
                 turbulence.Point3[] points1 = new turbulence.Point3[pointsize];
@@ -86,18 +86,27 @@ namespace TestApp
                 float time = 0f;
                 service.Timeout = -1;
 
-                points[0].x = 0.3f;// dd * 2048;
-                points[0].y = 0.4f;// dd * 2048;
-                points[0].z = 0.5f;// dd * 2048;
-                points[1].x = 4.0f;// dd * 2048;
-                points[1].y = 5.0f; ;// dd * 2048;
-                points[1].z = 6.0f;// dd * 2048;
-                beginTime = DateTime.Now;
-                Console.WriteLine("Calling GetVelocity");
-                Vector3[] result = testp.GetVelocity(authToken, "isotropic1024coarse", time,
-                    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
-                stopTime = DateTime.Now;
-                Console.WriteLine("Execution time: {0}", stopTime - beginTime);
+                //points[0].x = 0.3f;// dd * 2048;
+                //points[0].y = 0.4f;// dd * 2048;
+                //points[0].z = 0.5f;// dd * 2048;
+                //points[1].x = 4.0f;// dd * 2048;
+                //points[1].y = 5.0f;// dd * 2048;
+                //points[1].z = 6.0f;// dd * 2048;
+                for (int i = 0; i < nx; i++)
+                {
+                    for (int j = 0; j < ny; j++)
+                    {
+                        points[i * ny + j].x = (float)(2.0f * Math.PI / 4096) * 14;
+                        points[i * ny + j].y = (float)1.57482545949499;
+                        points[i * ny + j].z = (float)(2.0f * Math.PI / 4096) * 14;
+                    }
+                }
+                //beginTime = DateTime.Now;
+                //Console.WriteLine("Calling GetVelocity");
+                //Vector3[] result = testp.GetVelocity(authToken, "isotropic1024coarse", time,
+                //    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
+                //stopTime = DateTime.Now;
+                //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
                 //for (int i = 0; i < nx; i++)
                 //{
@@ -131,12 +140,12 @@ namespace TestApp
                 //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
 
-                //beginTime = DateTime.Now;
-                //Console.WriteLine("Calling GetVelocityGradient");
-                //VelocityGradient[] result_vel_hess = testp.GetVelocityGradient(authToken, "channel", time,
-                //    TurbulenceOptions.SpatialInterpolation.Fd4Lag4, TurbulenceOptions.TemporalInterpolation.None, points);
-                //stopTime = DateTime.Now;
-                //Console.WriteLine("Execution time: {0}", stopTime - beginTime);
+                beginTime = DateTime.Now;
+                Console.WriteLine("Calling GetVelocityGradient");
+                VelocityGradient[] result_vel_grad = testp.GetVelocityGradient(authToken, "isotropic4096", 0,
+                    TurbulenceOptions.SpatialInterpolation.Fd4Lag4, TurbulenceOptions.TemporalInterpolation.None, points);
+                stopTime = DateTime.Now;
+                Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
                 //beginTime = DateTime.Now;
                 //Console.WriteLine("Calling GetAnyCutoutWeb");
@@ -1049,32 +1058,5 @@ namespace TestApp
             return result;
         }
 
-        private Point3[] Float_to_Point3(float[][] point_f)
-        {
-            if (point_f.GetLength(0) != 3)
-            {
-                throw new Exception(String.Format("The first dimension of points array must have a size of 3."));
-            }
-            if (point_f[0].GetLength(0) != point_f[1].GetLength(0) || point_f[0].GetLength(0) != point_f[2].GetLength(0))
-            {
-                throw new Exception(String.Format("Three components of points array must have the same size"));
-            }
-            Point3[] Points3 = new Point3[point_f[0].GetLength(0)];
-            for (int i = 0; i < point_f[0].GetLength(0); i++)
-            {
-                Points3[i].x = point_f[0][i];
-                Points3[i].y = point_f[1][i];
-                Points3[i].z = point_f[2][i];
-            }
-            return Points3;
-        }
-
-        public Vector3[] GetVelocity_(string authToken, string dataset, float time,
-            TurbulenceOptions.SpatialInterpolation spatialInterpolation,
-            TurbulenceOptions.TemporalInterpolation temporalInterpolation,
-            float[][] points)
-        {
-            return GetVelocity(authToken, dataset, time, spatialInterpolation, temporalInterpolation, Float_to_Point3(points), null);
-        }
     }
 }
