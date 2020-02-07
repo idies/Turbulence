@@ -283,8 +283,8 @@ namespace TurbulenceService
                     this.Dt = 0.0002F;
                     this.timeInc = 1;
                     break;
-                case DataInfo.DataSets.isotropic8192: //There is only one timestep for this dataset so this isn't really necessary.
-                    this.Dt = 0.0002F;
+                case DataInfo.DataSets.isotropic8192:
+                    this.Dt = 1.0F;
                     this.timeInc = 1;
                     break;
                 case DataInfo.DataSets.strat4096: //These are seperated snapshots, so we set Dt=1.

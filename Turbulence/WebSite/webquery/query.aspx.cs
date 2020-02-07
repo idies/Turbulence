@@ -97,7 +97,7 @@ namespace Website
                 EndTimeRow.Visible = false;
                 DeltaTRow.Visible = false;
                 SnapshotRow.Visible = true;
-                SnapshotRange.Text = "0";
+                SnapshotRange.Text = "0, 1,..., 4";
             }
             if (dataset.SelectedValue.Equals("channel5200"))
             {
@@ -322,8 +322,8 @@ namespace Website
                 }
                 else if (dataset.SelectedValue.Equals("isotropic8192"))
                 {
-                    timerange.Text = "0";
-                    SnapshotRange.Text = "0";
+                    timerange.Text = "0, 1,..., 4";
+                    SnapshotRange.Text = "0, 1,..., 4";
                 }
                 else if (dataset.SelectedValue.Equals("rotstrat4096"))
                 {
@@ -742,7 +742,7 @@ namespace Website
             }
             else if (dataset.SelectedValue.Equals("isotropic8192"))
             {
-                SnapshotRange.Text = "0";
+                SnapshotRange.Text = "0, 1,..., 4";
                 this.GetTemperature.Enabled = false;
                 this.GetTemperatureGradient.Enabled = false;
                 this.GetTemperatureHessian.Enabled = false;

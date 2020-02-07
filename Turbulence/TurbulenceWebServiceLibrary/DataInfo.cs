@@ -265,7 +265,7 @@ namespace TurbulenceService
             {
                 return false;
             }
-            else if (dataset == DataSets.isotropic8192 && time > 0.0F)
+            else if (dataset == DataSets.isotropic8192 && time > 4.0F)
             {
                 return false;
             }
