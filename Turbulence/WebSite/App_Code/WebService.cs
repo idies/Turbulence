@@ -29,8 +29,8 @@ namespace TurbulenceService
         //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
         public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
         public const string infodb_string = "turbinfo_test_conn";
-        //public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
-        public const string logdb_string = "turblog_conn";
+        public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
+        //public const string logdb_string = "turblog_conn";
 
         // batch scheduler queue
         public static BatchWorkerQueue batchQueue = null;
@@ -2226,6 +2226,12 @@ namespace TurbulenceService
             {
                 dx = (2.0 * Math.PI) / 4096;
             }
+
+            else if (dataset == "isotropic8192")
+            {
+                dx = (2.0 * Math.PI) / 8192;
+            }
+
             else
             {
                 dx = (2.0 * Math.PI) / (double)database.GridResolutionX;
@@ -2479,6 +2485,12 @@ namespace TurbulenceService
             {
                 dx = (2.0 * Math.PI) / 4096;
             }
+
+            else if (dataset == "isotropic8192")
+            {
+                dx = (2.0 * Math.PI) / 8192;
+            }
+
             else
             {
                 dx = (2.0 * Math.PI) / (double)database.GridResolutionX;
@@ -2551,6 +2563,12 @@ namespace TurbulenceService
             {
                 dx = (2.0 * Math.PI) / 4096;
             }
+
+            else if (dataset == "isotropic8192")
+            {
+                dx = (2.0 * Math.PI) / 8192;
+            }
+
             else
             {
                 dx = (2.0 * Math.PI) / (double)database.GridResolutionX;

@@ -45,7 +45,7 @@ We have a generic identifier that may be used if you are simply testing out
 the interfaces.  The number and size of requests may be limited.
 
 The current testing identifier is: <br />
-<code>edu.jhu.pha.turbulence.testing-201311</code>
+<code>edu.jhu.pha.turbulence.testing-201406</code>
 
 <h3>Get a Group/Individual Identifier</h3>
 

@@ -150,6 +150,15 @@ namespace TurbulenceService
                         return TableNames.pr;
                     else
                         throw new Exception("Invalid field specified!");
+
+                case DataSets.isotropic8192:
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                        return TableNames.vel;
+                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                        return TableNames.pr;
+                    else
+                        throw new Exception("Invalid field specified!");
+
                 case DataSets.strat4096:
                     if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.vel;
@@ -265,7 +274,7 @@ namespace TurbulenceService
             {
                 return false;
             }
-            else if (dataset == DataSets.isotropic8192 && time > 4.0F)
+            else if (dataset == DataSets.isotropic8192 && time > 5.0F)
             {
                 return false;
             }

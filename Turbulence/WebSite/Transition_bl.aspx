@@ -47,7 +47,7 @@
 						<li>After the simulation has reached a statistical stationary state, 4701 frames of data, which includes the 3 components of the velocity vector and the pressure, are generated and written in files that can be accessed directly by the database (FileDB system).</li>
 						<li>Since the grid is staggered, data at the wall are not stored in the database. However, JHTDB provides values in the region between the wall and the first grid point, y&isin;[0, 0.0036], using 4th-order Lagrange polynomial inter- and extrapolation.</li>
 						<li>The y-locations of the grid points in the vertical direction can be downloaded from this <a href="docs/transition_bl/y.txt" target="_blank">text file</a>.</li>
-						<li>The time-averaged statistics can be downloaded from this <a href="docs/transition_bl/Transition_BL_Time_Averaged_Profiles.h5" target="_blank">HDF5 file</a>. Breif notes are <a href="docs/transition_bl/Notes_for_Transition_BL_Time_Averaged_Profiles.txt" target="_blank">here</a>.</li>
+						<li>The time-averaged statistics can be downloaded from this <a href="docs/transition_bl/Transition_BL_Time_Averaged_Profiles.h5" target="_blank">HDF5 file</a>. Brief notes are <a href="docs/transition_bl/Notes_for_Transition_BL_Time_Averaged_Profiles.txt" target="_blank">here</a>.</li>
 					</ul>
 
 				</div>

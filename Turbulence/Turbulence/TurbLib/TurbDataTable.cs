@@ -409,6 +409,14 @@ namespace Turbulence.TurbLib
                "isotropic4096", 4096, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
                0.0002f, 0, 0, 1, 0, 1);
             }
+
+            else if (tableName.Equals("isotropic8192"))
+            {/* Check to see if this really gets executed...*/
+                return new TurbDataTable("isotropic turbulence with a resolution of 8192",
+               "isotropic4096", 8192, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+               1f, 0, 5, 1, 0, 1);
+            }
+
             else if (tableName.Equals("strat4096"))
             {/* Check to see if this really gets executed...*/
                 return new TurbDataTable("roration and stratified turbulence with a resolution of 4096",
@@ -498,7 +506,7 @@ namespace Turbulence.TurbLib
                 {
                     return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
-                        1f, 0, 4, 1, 0, 1);
+                        1f, 0, 5, 1, 0, 1);
                 }
                 else if (dbName.Contains("strat4096"))
                 {
@@ -583,7 +591,7 @@ namespace Turbulence.TurbLib
                 {
                     return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
-                        1f, 0, 4, 1, 0, 1);
+                        1f, 0, 5, 1, 0, 1);
                 }
                 else
                 {
