@@ -26,9 +26,9 @@ namespace TurbulenceService
          */
 
         public const bool DEVEL_MODE = false;
-        //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
+        public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
         public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
-        public const string infodb_string = "turbinfo_test_conn";
+        //public const string infodb_string = "turbinfo_test_conn";
         public const string logdb_string = (infodb_string == "turbinfo_conn") ? "turblog_conn" : "turbinfo_test_conn";
         //public const string logdb_string = "turblog_conn";
 

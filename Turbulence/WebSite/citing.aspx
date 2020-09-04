@@ -107,6 +107,19 @@
 							Journal of Fluid Mechanics 774, 395-415, 2015.
 						</p>
 					</blockquote>
+                    <p>For articles that use the 8192<sup>3</sup> isotropic turbulence, we suggest also including:</p>
+					<blockquote>
+						<p>
+							For snapshots 0-4: P.K. Yeung, X.M. Zhai, and K.R. Sreenivasan.
+							&quot;Extreme events in computational turbulence&quot;.
+							Proceedings of the National Academy of Sciences 112, 12633-12638, 2015.
+						</p>
+                        <p>
+							For snapshots 5: P.K. Yeung, K.R. Sreenivasan, and S.B. Pope.
+							&quot;Effects of finite spatial and temporal resolution on extreme events in direct numerical simulations of incompressible isotropic turbulence&quot;.
+							Physical Review Fluids 3, 064603, 2018.
+						</p>
+					</blockquote>
 					<p>For articles that use the Lagrangian tracking GetPosition function, we suggest also including:</p>
 					<blockquote>
 						<p>
@@ -132,6 +145,8 @@
 						Developing Boundary Layer Dataset: <a href="https://doi.org/10.7281/T17S7KX8">https://doi.org/10.7281/T17S7KX8</a>
 						<br /><br />
 						Turbulent Channel Flow at Re<sub>&tau;</sub>=5200: <a href="https://doi.org/10.7281/T1PV6HJV">https://doi.org/10.7281/T1PV6HJV</a>
+                        <br /><br />
+                        Forced Isotropic Turbulence Dataset on 8192<sup>3</sup> Grid: TDB
 						<%--<br />--%>
 					</blockquote>
 
