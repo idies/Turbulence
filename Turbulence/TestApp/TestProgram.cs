@@ -31,7 +31,7 @@ namespace TestApp
         public const bool DEVEL_MODE = false;
         //public const string infodb_string = !DEVEL_MODE ? "turbinfo_conn" : "turbinfo_test_conn";
         public const string infodb_backup_string = !DEVEL_MODE ? "turbinfo_backup_conn" : "";
-        public const string infodb_string = "turbinfo_conn";
+        public const string infodb_string = "turbinfo_test_conn";
         public const string logdb_string = "turblog_conn";
 
         // batch scheduler queue
@@ -72,7 +72,7 @@ namespace TestApp
             try
             {
                 DateTime beginTime, stopTime;
-                int nx = 1, ny = 2;
+                int nx = 1, ny = 1;
                 int pointsize = nx * ny * 1;
                 Point3[] points = new Point3[pointsize];
                 turbulence.Point3[] points1 = new turbulence.Point3[pointsize];
@@ -86,16 +86,19 @@ namespace TestApp
                 float time = 0f;
                 service.Timeout = -1;
 
-                points[0].x = 0.3f;// dd * 2048;
-                points[0].y = 0.4f;// dd * 2048;
-                points[0].z = 0.5f;// dd * 2048;
-                points[1].x = 4.0f;// dd * 2048;
-                points[1].y = 5.0f; ;// dd * 2048;
-                points[1].z = 6.0f;// dd * 2048;
+                points[0].x = 0.0215f; //0.0f; //0.3f;// dd * 2048;
+                points[0].y = 1.5719f; //0.0f; //0.4f;// dd * 2048;
+                points[0].z = 0.0215f; //0.0f; //0.5f;// dd * 2048;
+                float dz = (float)(2 * Math.PI / 4096);
+                //points[1].x = 0.0215f; // 8*dz; //4.0f;// dd * 2048;
+                //points[1].y = 1.5752f; // 0.0f; //5.0f;// dd * 2048;
+                //points[1].z = 0.0215f; // 0.0f; //6.0f;// dd * 2048;
                 beginTime = DateTime.Now;
                 Console.WriteLine("Calling GetVelocity");
-                Vector3[] result = testp.GetVelocity(authToken, "isotropic1024coarse", time,
-                    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
+                //Vector3[] result = testp.GetVelocity(authToken, "isotropic4096", time,
+                //    TurbulenceOptions.SpatialInterpolation.None, TurbulenceOptions.TemporalInterpolation.None, points);
+                VelocityGradient[] result = testp.GetVelocityGradient(authToken, "isotropic4096", time,
+                    TurbulenceOptions.SpatialInterpolation.M1Q4, TurbulenceOptions.TemporalInterpolation.None, points);
                 stopTime = DateTime.Now;
                 Console.WriteLine("Execution time: {0}", stopTime - beginTime);
 
@@ -222,6 +225,7 @@ namespace TestApp
                 case DataInfo.DataSets.isotropic1024coarse:
                 case DataInfo.DataSets.mixing:
                 case DataInfo.DataSets.isotropic4096: //check this
+                case DataInfo.DataSets.isotropic8192:
                 case DataInfo.DataSets.strat4096:
                     GetVectorData(auth, dataset, dataset_enum, DataInfo.TableNames.vel, worker,
                         time, spatialInterpolation, temporalInterpolation, points, result, ref rowid, addr);
@@ -686,7 +690,8 @@ namespace TestApp
             float time, TurbulenceOptions.SpatialInterpolation spatialInterpolation, TurbulenceOptions.TemporalInterpolation temporalInterpolation,
             Point3[] points, VelocityGradient[] result, ref object rowid, string addr = null)
         {
-            bool round = true;
+            //bool round = true;
+            bool round = TurbulenceOptions.SplinesOption(spatialInterpolation) ? false : true;
             int kernelSize = -1;
             int kernelSizeY = -1;
 

@@ -104,9 +104,12 @@
     <Content Include="images\channel5200.png" />
     <Content Include="images\iso1024-small.jpg" />
     <Content Include="images\isotropic4096.jpg" />
+    <Content Include="images\isotropic8192-small.jpg" />
+    <Content Include="images\isotropic8192.png" />
     <Content Include="images\mhd-small.jpg" />
     <Content Include="images\rotstrat4096.jpg" />
     <Content Include="images\transition_bl.png" />
+    <Content Include="Isotropic8192.aspx" />
     <Content Include="publications.aspx" />
     <Content Include="publications_old.aspx" />
     <Content Include="Transition_bl.aspx" />
@@ -243,6 +246,7 @@
     <Content Include="download\JHTDB-Sample-assignment-SolutionSet-2018.pdf" />
     <Content Include="docs\README-CHANNEL5200.pdf" />
     <Content Include="docs\transition_bl\Transition_BL_Time_Averaged_Profiles.h5" />
+    <Content Include="docs\README-isotropic8192.pdf" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

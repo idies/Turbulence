@@ -191,7 +191,7 @@ namespace Website
                     else
                     {
                         cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = {4};",
-                        servers_primary[i], databases[i].Substring(0, databases[i].Length - 3), ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"], sqlConnectionTimeout);
+                        servers_primary[i], databases[i].Substring(0, databases[i].IndexOf("db") + 2), ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"], sqlConnectionTimeout);
                     }
                     //string msg = "server: " + servers + " database: " + databases[i] + " dbType: " + dbType[i] + System.Environment.NewLine;
                     //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
@@ -302,7 +302,7 @@ namespace Website
                         else
                         {
                             cString = String.Format("Server={0};Database={1};Asynchronous Processing=true;User ID={2};Password={3};Pooling=false; Connect Timeout = {4};",
-                            servers_backup[i], databases[i].Substring(0, databases[i].Length - 3), ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"], sqlConnectionTimeout);
+                            servers_backup[i], databases[i].Substring(0, databases[i].IndexOf("db") + 2), ConfigurationManager.AppSettings["turbquery_uid"], ConfigurationManager.AppSettings["turbquery_password"], sqlConnectionTimeout);
                         }
                         //string msg = "server: " + servers + " database: " + databases[i] + " dbType: " + dbType[i] + System.Environment.NewLine;
                         //System.IO.File.AppendAllText(@"c:\www\sqloutput-turb4.log", msg);
@@ -411,7 +411,7 @@ namespace Website
                             cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'true' " +
                             "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
                             "AND CodeDatabaseName = @codebase AND ProductionDatabaseName like @database;", database.infodb);
-                            cmd.Parameters.AddWithValue("@database", databases[i].Substring(0, databases[i].Length - 3) + "%");
+                            cmd.Parameters.AddWithValue("@database", databases[i].Substring(0, databases[i].IndexOf("db") + 2) + "%");
                         }
                         cmd.Parameters.AddWithValue("@server", servers_primary[i]);
                         cmd.Parameters.AddWithValue("@server2", servers_backup[i]);
@@ -438,7 +438,7 @@ namespace Website
                             cmd.CommandText = String.Format("UPDATE {0}..DatabaseMap SET HotSpareActive = 'false' " +
                             "WHERE ProductionMachineName = @server AND HotSpareMachineName = @server2 " +
                             "AND CodeDatabaseName = @codebase AND ProductionDatabaseName like @database;", database.infodb);
-                            cmd.Parameters.AddWithValue("@database", databases[i].Substring(0, databases[i].Length - 3) + "%");
+                            cmd.Parameters.AddWithValue("@database", databases[i].Substring(0, databases[i].IndexOf("db") + 2) + "%");
                         }
                         cmd.Parameters.AddWithValue("@server", servers_primary[i]);
                         cmd.Parameters.AddWithValue("@server2", servers_backup[i]);
@@ -454,7 +454,7 @@ namespace Website
                 }
                 else
                 {
-                    dt.Rows.Add(databases[i].Substring(0, databases[i].Length - 3), servers_primary[i] + flag_primary, servers_backup[i] + flag_backup, connect || connect1, memory, simpleCLR || simpleCLR1, "-", dtt);
+                    dt.Rows.Add(databases[i].Substring(0, databases[i].IndexOf("db") + 2), servers_primary[i] + flag_primary, servers_backup[i] + flag_backup, connect || connect1, memory, simpleCLR || simpleCLR1, "-", dtt);
                 }
             }
             return dt;

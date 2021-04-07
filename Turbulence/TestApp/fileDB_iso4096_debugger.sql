@@ -9,29 +9,29 @@ CREATE TABLE [dbo].[#temp_zw] (
     [z]      REAL   NULL
 );
 INSERT INTO [dbo].[#temp_zw]  
-VALUES (0, 1626119, 0.3, 0.4, 0.5);
+VALUES (0, 2147486586, 0.0215, 1.5719, 0.0215);
 
 SELECT reqseq, zindex, x, y, z FROM #temp_zw
 
 DECLARE	@return_value Int
 
-EXEC	@return_value = [dbo].[ExecuteMHDWorker]
+EXEC	@return_value = [dbo].[ExecuteMHDFileDBWorker]
 		@serverName = N'dsp012',
-		@dbname = N'turbdb101',
+		@dbname = N'iso4096db117',
 		@codedb = N'turbdev_zw',
-		@turbinfodb = N'turbinfo',
-		@turbinfoserver = N'lumberjack',
+		@turbinfodb = N'turbinfo_test',
+		@turbinfoserver = N'sciserver02',
 		@dataset = N'vel',
-		@workerType = 56,
+		@workerType = 64,
 		@blobDim = 8,
 		@time = 0,
-		@spatialInterp = 0,
+		@spatialInterp = 104,
 		@temporalInterp = 0,
 		@arg = 0,
 		@inputSize = 1,
-		@tempTable = N'#temp_zw'
-		--@startz = 0,
-		--@endz = 536870911
+		@tempTable = N'#temp_zw',
+		@startz = 2147483648,
+		@endz = 2281701375
 SELECT	@return_value as 'Return Value'
 
 GO

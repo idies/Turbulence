@@ -88,6 +88,17 @@ namespace Website
                 SnapshotRow.Visible = true;
                 SnapshotRange.Text = "0";
             }
+            if (dataset.SelectedValue.Equals("isotropic8192"))
+            {
+                //  timerange.Text = "0.0 - 0.0";
+                // EndTimeRange.Text = "0.0 - 0.0";
+                //DeltaTRange.Text = "DB dt = .0";
+                TimeRow.Visible = false;
+                EndTimeRow.Visible = false;
+                DeltaTRow.Visible = false;
+                SnapshotRow.Visible = true;
+                SnapshotRange.Text = "0, 1,..., 5";
+            }
             if (dataset.SelectedValue.Equals("channel5200"))
             {
                 TimeRow.Visible = false;
@@ -122,6 +133,17 @@ namespace Website
                     DeltaTRow.Visible = false;
                 }
                 else if (dataset.SelectedValue.Equals("isotropic4096"))
+                {
+                    //  timerange.Text = "0.0 - 0.0";
+                    // EndTimeRange.Text = "0.0 - 0.0";
+                    //DeltaTRange.Text = "DB dt = .0";
+                    //TimeRow.Visible = false;
+                    //  SnapshotRow.Visible = true;
+                    //SnapshotRange.Text = "0";
+                    EndTimeRow.Visible = false;
+                    DeltaTRow.Visible = false;
+                }
+                else if (dataset.SelectedValue.Equals("isotropic8192"))
                 {
                     //  timerange.Text = "0.0 - 0.0";
                     // EndTimeRange.Text = "0.0 - 0.0";
@@ -298,6 +320,11 @@ namespace Website
                     timerange.Text = "0";
                     SnapshotRange.Text = "0";
                 }
+                else if (dataset.SelectedValue.Equals("isotropic8192"))
+                {
+                    timerange.Text = "0, 1,..., 5";
+                    SnapshotRange.Text = "0, 1,..., 5";
+                }
                 else if (dataset.SelectedValue.Equals("rotstrat4096"))
                 {
                     timerange.Text = "0, 1,..., 4";
@@ -379,6 +406,32 @@ namespace Website
                     xe_range.Text = "Ending index (inclusive): <br />x_e [1, 4096]";
                     ye_range.Text = "<br />y_e [1, 4096]";
                     ze_range.Text = "<br />z_e [1, 4096]";
+                    coord_range_details.Text = "<br />";
+                }
+                else
+                {
+                    x_range.Text = "x [0, 2&pi;]";
+                    y_range.Text = "y [0, 2&pi;]";
+                    z_range.Text = "z [0, 2&pi;]";
+                    xe_range.Visible = false;
+                    ye_range.Visible = false;
+                    ze_range.Visible = false;
+                    x_end.Visible = false;
+                    y_end.Visible = false;
+                    z_end.Visible = false;
+                    coord_range_details.Text = "Values outside [0,2&pi;] are treated as mod(2&pi;).";
+                }
+            }
+            if (dataset.SelectedValue.Equals("isotropic8192"))
+            {
+                if (method.SelectedValue.Equals("GetThreshold"))
+                {
+                    x_range.Text = "Starting index (inclusive): <br />x_s [1, 8192]";
+                    y_range.Text = "<br />y_s [1, 8192]";
+                    z_range.Text = "<br />z_s [1, 8192]";
+                    xe_range.Text = "Ending index (inclusive): <br />x_e [1, 8192]";
+                    ye_range.Text = "<br />y_e [1, 8192]";
+                    ze_range.Text = "<br />z_e [1, 8192]";
                     coord_range_details.Text = "<br />";
                 }
                 else
@@ -637,6 +690,59 @@ namespace Website
             else if (dataset.SelectedValue.Equals("isotropic4096"))
             {
                 SnapshotRange.Text = "0";
+                this.GetTemperature.Enabled = false;
+                this.GetTemperatureGradient.Enabled = false;
+                this.GetTemperatureHessian.Enabled = false;
+                this.GetVelocityAndTemperature.Enabled = false;
+                this.GetVelocityAndPressure.Enabled = true;
+                this.GetPressureHessian.Enabled = true;
+                this.GetPressureGradient.Enabled = true;
+                this.GetPressure.Enabled = true;
+                this.GetMagneticField.Enabled = false;
+                this.GetMagneticFieldGradient.Enabled = false;
+                this.GetMagneticFieldHessian.Enabled = false;
+                this.GetMagneticFieldLaplacian.Enabled = false;
+                this.GetVectorPotential.Enabled = false;
+                this.GetVectorPotentialGradient.Enabled = false;
+                this.GetVectorPotentialHessian.Enabled = false;
+                this.GetVectorPotentialLaplacian.Enabled = false;
+                this.magneticEntry.Enabled = false;
+                this.potentialEntry.Enabled = false;
+                this.magneticEntry2.Enabled = false;
+                this.potentialEntry2.Enabled = false;
+                this.GetForce.Enabled = false;
+                this.GetPosition.Enabled = false;
+                this.GetBoxFilter.Enabled = true;
+                this.GetBoxFilterSGSscalar.Enabled = true;
+                this.GetBoxFilterSGSvector.Enabled = true;
+                this.GetBoxFilterSGSsymtensor.Enabled = true;
+                this.GetBoxFilterSGStensor.Enabled = false;
+                this.GetBoxFilterGradient.Enabled = true;
+                this.densityEntry.Enabled = false;
+                this.densityEntry2.Enabled = false;
+                this.GetDensity.Enabled = false;
+                this.GetDensityGradient.Enabled = false;
+                this.GetDensityHessian.Enabled = false;
+                this.temperatureEntry.Enabled = false;
+                this.temperatureEntry2.Enabled = false;
+                this.pressureEntry.Enabled = true;
+                this.pressureEntry2.Enabled = true;
+                if (method.SelectedValue.Contains("Magnetic") || method.SelectedValue.Contains("Vector"))
+                {
+                    method.SelectedValue = "GetVelocity";
+                }
+                if (fieldList.SelectedValue.Contains("Density"))
+                {
+                    fieldList.SelectedValue = "Velocity";
+                }
+                if (fieldList2.SelectedValue.Contains("Density"))
+                {
+                    fieldList2.SelectedValue = "Velocity";
+                }
+            }
+            else if (dataset.SelectedValue.Equals("isotropic8192"))
+            {
+                SnapshotRange.Text = "0, 1,..., 5";
                 this.GetTemperature.Enabled = false;
                 this.GetTemperatureGradient.Enabled = false;
                 this.GetTemperatureHessian.Enabled = false;
@@ -1058,7 +1164,10 @@ namespace Website
         protected void temporal_flags_update()
         {
             string[] flags;
-            if (dataset.SelectedValue.Equals("isotropic4096") || dataset.SelectedValue.Equals("rotstrat4096") || dataset.SelectedValue.Equals("channel5200"))
+            if (dataset.SelectedValue.Equals("isotropic8192") || 
+                dataset.SelectedValue.Equals("isotropic4096") || 
+                dataset.SelectedValue.Equals("rotstrat4096") || 
+                dataset.SelectedValue.Equals("channel5200"))
             {
                 flags = new string[] { "None" };
             }
@@ -1244,7 +1353,10 @@ namespace Website
 
                 float timef = 0;
 
-                if (!dataset.Text.Equals("rotstrat4096") && !dataset.Text.Equals("isotropic4096") && !dataset.Text.Equals("channel5200"))
+                if (!dataset.Text.Equals("rotstrat4096") && 
+                    !dataset.Text.Equals("isotropic4096") &&
+                    !dataset.Text.Equals("isotropic8192") &&
+                    !dataset.Text.Equals("channel5200"))
                 {
                     timef = Convert.ToSingle(time.Text);
 
@@ -2498,6 +2610,16 @@ namespace Website
                 }
                 SnapshotNumber.Text = "0";  
             }
+            else if (dataset.SelectedValue.Equals("isotropic8192"))
+            {
+                if (!method.SelectedValue.Equals("GetThreshold"))
+                {
+                    x.Text = "3.14";
+                    y.Text = "3.14";
+                    z.Text = "3.14";
+                }
+                SnapshotNumber.Text = "0";
+            }
             else if (dataset.SelectedValue.Equals("rotstrat4096"))
             {
                 if (!method.SelectedValue.Equals("GetThreshold"))
@@ -2531,6 +2653,7 @@ namespace Website
                 dataset.SelectedValue.Equals("mhd1024") ||
                 dataset.SelectedValue.Equals("mixing") ||
                 dataset.SelectedValue.Equals("isotropic4096") ||
+                dataset.SelectedValue.Equals("isotropic8192") ||
                 dataset.SelectedValue.Equals("rotstrat4096"))
             {
                 if (method.SelectedValue.Equals("GetThreshold"))

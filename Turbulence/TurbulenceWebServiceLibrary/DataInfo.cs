@@ -27,6 +27,7 @@ namespace TurbulenceService
             strat4096 = 11,
             bl_zaki = 12,
             channel5200 = 13,
+            isotropic8192 = 14,
         }
 
         // TODO: This needs to be refactored. We probably don't want to keep track of
@@ -149,6 +150,15 @@ namespace TurbulenceService
                         return TableNames.pr;
                     else
                         throw new Exception("Invalid field specified!");
+
+                case DataSets.isotropic8192:
+                    if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
+                        return TableNames.vel;
+                    else if (field.Equals("p") || field.Contains("pr") || field.Contains("Pr"))
+                        return TableNames.pr;
+                    else
+                        throw new Exception("Invalid field specified!");
+
                 case DataSets.strat4096:
                     if (field.Equals("u") || field.Contains("vel") || field.Contains("Vel") || field.Contains("vorticity") || field.Equals("q") || field.Equals("Q"))
                         return TableNames.vel;
@@ -197,6 +207,7 @@ namespace TurbulenceService
                                {"channel", "channel"},
                                {"channel5200", "channel5200"},
                                {"isotropic4096", "isotropic4096"},
+                               {"isotropic8192", "isotropic8192"},
                                {"strat4096", "strat4096"},
                                {"rotstrat4096", "strat4096"},
                                {"transition_bl", "bl_zaki"},
@@ -260,6 +271,10 @@ namespace TurbulenceService
                 return false;
             }
             else if (dataset == DataSets.isotropic4096 && time > 0.0F)
+            {
+                return false;
+            }
+            else if (dataset == DataSets.isotropic8192 && time > 5.0F)
             {
                 return false;
             }

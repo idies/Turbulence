@@ -51,6 +51,7 @@
 														<asp:ListItem>isotropic1024coarse</asp:ListItem>
 														<asp:ListItem>isotropic1024fine</asp:ListItem>
 														<asp:ListItem>isotropic4096</asp:ListItem>
+                                                        <asp:ListItem>isotropic8192</asp:ListItem>
 														<asp:ListItem>mhd1024</asp:ListItem>
 														<asp:ListItem>mixing</asp:ListItem>
 														<asp:ListItem>rotstrat4096</asp:ListItem>

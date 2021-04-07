@@ -75,6 +75,8 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.Lag6:
                 case TurbulenceOptions.SpatialInterpolation.Lag8:
                 case TurbulenceOptions.SpatialInterpolation.Fd4Lag4:
+                    x = (int)(Math.Round(value / dx));
+                    break;
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -121,6 +123,8 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.Lag6:
                 case TurbulenceOptions.SpatialInterpolation.Lag8:
                 case TurbulenceOptions.SpatialInterpolation.Fd4Lag4:
+                    y = (int)(Math.Round(value / dy));
+                    break;
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -167,6 +171,8 @@ namespace Turbulence.TurbLib
                 case TurbulenceOptions.SpatialInterpolation.Lag6:
                 case TurbulenceOptions.SpatialInterpolation.Lag8:
                 case TurbulenceOptions.SpatialInterpolation.Fd4Lag4:
+                    z = (int)(Math.Round(value / dz));
+                    break;
                 case TurbulenceOptions.SpatialInterpolation.M1Q4:
                 case TurbulenceOptions.SpatialInterpolation.M1Q6:
                 case TurbulenceOptions.SpatialInterpolation.M1Q8:
@@ -254,6 +260,12 @@ namespace Turbulence.TurbLib
                 this.gridResolution[0] = 4096;
                 this.gridResolution[1] = 4096;
                 this.gridResolution[2] = 4096;
+            }
+            if (dbName.Contains("iso8192"))
+            {
+                this.gridResolution[0] = 8192;
+                this.gridResolution[1] = 8192;
+                this.gridResolution[2] = 8192;
             }
 
             this.dx = (2.0 * Math.PI) / (double)gridResolution[2];
@@ -397,6 +409,14 @@ namespace Turbulence.TurbLib
                "isotropic4096", 4096, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
                0.0002f, 0, 0, 1, 0, 1);
             }
+
+            else if (tableName.Equals("isotropic8192"))
+            {/* Check to see if this really gets executed...*/
+                return new TurbDataTable("isotropic turbulence with a resolution of 8192",
+               "isotropic4096", 8192, 64, 4, 4, new string[] { "Ux", "Uy", "Uz", "P" },
+               1f, 0, 5, 1, 0, 1);
+            }
+
             else if (tableName.Equals("strat4096"))
             {/* Check to see if this really gets executed...*/
                 return new TurbDataTable("roration and stratified turbulence with a resolution of 4096",
@@ -482,6 +502,12 @@ namespace Turbulence.TurbLib
                         tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
                         0.0002f, 0, 0, 10, 0, 1);
                 }
+                else if (dbName.Contains("iso8192"))
+                {
+                    return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
+                        tableName, blobDim, 0, 3, new string[] { "Ux", "Uy", "Uz" },
+                        1f, 0, 5, 1, 0, 1);
+                }
                 else if (dbName.Contains("strat4096"))
                 {
                     return new TurbDataTable(serverName, dbName, serverinfo, "velocity",
@@ -560,6 +586,12 @@ namespace Turbulence.TurbLib
                     return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
                         tableName, blobDim, 0, 1, new string[] { "P" },
                         0.0002f, 0, 0, 10, 0, 1);
+                }
+                else if (dbName.Contains("iso8192"))
+                {
+                    return new TurbDataTable(serverName, dbName, serverinfo, "pressure",
+                        tableName, blobDim, 0, 1, new string[] { "P" },
+                        1f, 0, 5, 1, 0, 1);
                 }
                 else
                 {

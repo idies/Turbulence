@@ -968,7 +968,7 @@ namespace Turbulence.SQLInterface
                     "from {0}..DataPath " +
                     "where ProductionDatabaseName = @dbname " +
                     "AND minTime <= @timestep AND @timestep <= maxTime AND ProductionMachineName=@servername",
-                    dbname.Substring(0, dbname.Length - 3));
+                    dbname.Substring(0, dbname.IndexOf("db") + 2)); 
                 cmd_path.Parameters.AddWithValue("@dbname", dbname);
                 cmd_path.Parameters.AddWithValue("@timestep", timestep);
                 if (sqlConn.ConnectionString.ToLower().Contains("context connection"))
@@ -1090,7 +1090,7 @@ namespace Turbulence.SQLInterface
             {
                 SqlCommand cmd1 = new SqlCommand(
                         String.Format(@"SELECT startZ, endZ, blobBefore " +
-                        "FROM {0}.dbo.zorderList WHERE dbNo={1}", dbname.Substring(0, dbname.Length - 3), dbname.Substring(dbname.Length - 3, 3)),
+                        "FROM {0}.dbo.zorderList WHERE dbNo={1}", dbname.Substring(0, dbname.IndexOf("db") + 2), dbname.Substring(dbname.IndexOf("db") + 2, dbname.Length - dbname.IndexOf("db") - 2)),
                         sqlConn);
                 cmd1.CommandTimeout = 3600;
                 using (SqlDataReader reader = cmd1.ExecuteReader())
