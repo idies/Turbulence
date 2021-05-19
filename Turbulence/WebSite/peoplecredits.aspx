@@ -74,6 +74,8 @@
 						<li>Jesus Pulido</li>
 						<li><a href="http://public.lanl.gov/livescu/">Daniel Livescu</a></li>
 						<li><a href="http://www.me.gatech.edu/faculty/yeung">P.K. Yeung </a></li>
+                        <li>Annick Pouquet (NCAR)</li>
+                        <li>Duane Rosenberg (NOAA)</li>
 					</ul>
 
 					<p class="style23">Visitors:</p>
@@ -87,7 +89,7 @@
 					<p class="style23">Technical Staff:</p>
 					<ul class="style24">
 						<li>Victor Paul</li>
-						<li>Jan vandenBerg</li>
+						<li>Jan VandenBerg (+ sadly passed away in 2021)</li>
 						<li>Suzanne Werner</li>
 					</ul>
 

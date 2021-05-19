@@ -45,7 +45,7 @@
 					</p>
 					<blockquote>
 						<p>
-							Y. Li, E. Perlman, M. Wan, Y. Yang, R. Burns, C. Meneveau, R. Burns, S. Chen, A. Szalay &amp; G. Eyink. 
+							Y. Li, E. Perlman, M. Wan, Y. Yang, C. Meneveau, R. Burns, S. Chen, A. Szalay &amp; G. Eyink. 
 							&quot;A public turbulence database cluster and applications to study Lagrangian evolution of velocity increments in turbulence&quot;. 
 							Journal of Turbulence <strong>9</strong>, No. 31, 2008.
 						</p>

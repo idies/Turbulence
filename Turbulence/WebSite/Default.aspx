@@ -79,8 +79,9 @@
 							a DNS of homogeneous buoyancy driven turbulence (27 Terabytes), 
 							and a transitional boundary layer flow (105 Terabytes). 
 							Also available are individual snapshots (spatially but not temporally resolved data) of 
-							4096<sup>3</sup> DNS of isotropic turbulence (1 snapshot) 
-							and rotating stratified turbulence (5 snapshots, 5 Terabytes), 
+							4096<sup>3</sup> DNS of isotropic turbulence (1 snapshot), 
+                            8192<sup>3</sup> DNS of isotropic turbulence (6 snapshots at higher Reynolds number),
+							rotating stratified turbulence (5 snapshots, 5 Terabytes), 
 							and channel flow at Re<sub>&tau;</sub>=5200 (11 snapshots, 20 Terabytes).
 							Basic characteristics of the data sets can be found in the <a href="datasets.aspx">datasets description page</a>.
 							Technical details about the database techniques used for this project are described in the <a href="publications.aspx">publications</a>.

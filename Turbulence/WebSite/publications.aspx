@@ -188,7 +188,8 @@
 						<span class="style21">Sample publications of Turbulence Database usage:</span>
 						<br />
 					</p>
-					<script src="https://bibbase.org/service/mendeley/ad469375-6e0c-3e76-b763-9d9fdd9285a3/group/302cd49e-47c4-3446-9da2-2f3bd6678dd3?jsonp=1&authorFirst=1&folding=1"></script>
+                    <script src="https://bibbase.org/service/mendeley/75799766-8e2d-3c98-81f9-e3efa41233d0/group/c9329632-2a50-3043-b803-cadc8dbdfc3f?jsonp=1"></script>
+					<!--<script src="https://bibbase.org/service/mendeley/ad469375-6e0c-3e76-b763-9d9fdd9285a3/group/302cd49e-47c4-3446-9da2-2f3bd6678dd3?jsonp=1&authorFirst=1&folding=1"></script> -->
 					<%--<script src="https://bibbase.org/show?bib=http%3A%2F%2Ftest.turbulence.pha.jhu.edu%2Fdocs%2FJHTDB_usage.bib&jsonp=1&authorFirst=1"></script>--%>
 
 					<!--       <p align="center"><font face="Arial, Helvetica, sans-serif"><img src="fig3.jpg" width="170" height="176" /></font></p>  -->
