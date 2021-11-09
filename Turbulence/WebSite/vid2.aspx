@@ -22,7 +22,16 @@
 <!--#include file="navbar.htm" -->
 
 <div id="centercolumnwide">
-      <iframe width="560" height="315" src="//www.youtube.com/embed/tkFL3_0P0Gk" frameborder="0" allowfullscreen></iframe>
+
+    <h2 class="titletext">Velocity and vorticity contours plots on a plane sweeping through turbulence</h2>
+
+      <iframe width="560" height="315" src="//www.youtube.com/embed/y0AsKGhx-Ug" frameborder="0" allowfullscreen></iframe>
+
+    <p class="videodescription">Velocity color contour maps in the Re-lambda = 430 isotropic turbulence DNS dataset on a 
+        2D plane being swept across the domain at a fixed time. Later portions of the video show vorticity contours 
+        dominated by small-scale vortices.</p>
+    <p class="videodescription">Video courtesy of YouTube user 
+        <a href="https://www.youtube.com/channel/UC-Ms0OtoIkpwt8T_dm8Srcw" target="_blank">GummiF</a>.</p>
       
     
 </div>
