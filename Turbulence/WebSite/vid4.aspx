@@ -20,13 +20,19 @@
 
 </div>
 <!--#include file="navbar.htm" -->
+<div id="centercolumnwide">
+     
 
-<div id="centercolumnwide" style="margin: 0 auto; width:480px; height: 270px">
-<iframe width="560"  height="315"  src="//www.youtube.com/embed/2eBATGy-oLg" frameborder="0" allowfullscreen></iframe>
-      
+    <h2 class="titletext">Evolution of three material surfaces in a snapshot of isotropic turbulence</h2>
+
+    <iframe width="560"  height="315"  src="//www.youtube.com/embed/2eBATGy-oLg" frameborder="0" allowfullscreen></iframe>
+
+
+    <p class="videodescription">A velocity field in a snapshot of the Re-lambda = 430 isotropic turbulence DNS dataset is 
+        used to advect three originally parallel material surfaces. The wrinkling of the material surface reflects the 
+        spatially complex multiscale velocity field. (Animation produced by Dr. K. Bürger).</p>
     
-          
-</div>
+
 <div id="rightcolumn"> 
       
 </div>  

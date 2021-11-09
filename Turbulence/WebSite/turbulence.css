@@ -177,3 +177,8 @@ video {
     margin: 0 auto;
     border: 0;
 }
+
+.videodescription {
+    margin: 60px;
+    font-size: large;
+}
