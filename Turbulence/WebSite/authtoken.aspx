@@ -49,7 +49,9 @@ The current testing identifier is: <br />
 
 <h3>Get a Group/Individual Identifier</h3>
 
-<p>Please send an e-mail to <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a> with a short description on your intended use of the database.</p>
+<p>Please send an e-mail to <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a> 
+    including your name, email address, and institutional affiliation and department, together with a short description 
+    of your intended use of the database.</p>
 
     
 </div>
