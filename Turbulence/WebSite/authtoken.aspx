@@ -1,14 +1,12 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml" >
-
 <head><title>Johns Hopkins Turbulence Databases (JHTDB)</title>
 
-<link href="../bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+<link href="bootstrap-3.2.0-dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
 <script src="Scripts/jquery.min.js"></script>
-<script src="../bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
-<link href="../turbulence.css" rel="stylesheet" type="text/css" />
+<script src="bootstrap-3.2.0-dist/js/bootstrap.min.js"></script>
+<link href="turbulence.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
         function wait_message() {
             document.getElementById("message").innerHTML = "<b>Please wait, your request is being processed. Depending on the size of your request, this may take a moment</b>";
@@ -49,9 +47,10 @@ The current testing identifier is: <br />
 
 <h3>Get a Group/Individual Identifier</h3>
 
-<p>Please send an e-mail to <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a> with a short description on your intended use of the database.</p>
+<p>Please send an e-mail to <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a> 
+    including your name, email address, and institutional affiliation and department, together with a short 
+    description on your intended use of the database.</p>
 
-    
 </div>
 <div id="rightcolumn"> 
       
