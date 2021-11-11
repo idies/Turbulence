@@ -40,7 +40,7 @@ To this end, each web service request requires you to provide an "authorization 
 The <a href="/webquery/query.aspx">form-based interface</a> does not require any form of identification to use.
 
 We have a generic identifier that may be used if you are simply testing out
-the interfaces.  The number and size of requests may be limited.
+the interfaces. The number and size of requests may be limited.
 
 The current testing identifier is: <br />
 <code>edu.jhu.pha.turbulence.testing-201311</code>
@@ -49,7 +49,7 @@ The current testing identifier is: <br />
 
 <p>Please send an e-mail to <a href="mailto:turbulence@lists.johnshopkins.edu">turbulence@lists.johnshopkins.edu</a> 
     including your name, email address, and institutional affiliation and department, together with a short 
-    description on your intended use of the database.</p>
+    description of your intended use of the database.</p>
 
 </div>
 <div id="rightcolumn"> 
