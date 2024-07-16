@@ -31,7 +31,7 @@
 
 				<div id="centercolumn-wide">
 					<h3 align="center">Query the JHTDB</h3>
-
+					<asp:Literal ID="sablNote" runat="server" Text="<h5 align='center'>Note: Until further notice, sabl2048 data cannot be queried pointwise. This menu is provided only to document available variables and domain limits.</h5>"></asp:Literal>
 					<form id="query" runat="server">
 						<div>
 							<hr />
@@ -55,6 +55,8 @@
 														<asp:ListItem>mixing</asp:ListItem>
 														<asp:ListItem>rotstrat4096</asp:ListItem>
 														<asp:ListItem>transition_bl</asp:ListItem>
+														<asp:ListItem>sabl2048high</asp:ListItem>
+														<asp:ListItem>sabl2048low</asp:ListItem>
 													</asp:DropDownList></td>
 												<td></td>
 											</tr>

@@ -477,6 +477,8 @@ namespace Website
 
         protected void dataset_update()
         {
+            sablNote.Visible = dataset.SelectedValue.Equals("sabl2048high") || dataset.SelectedValue.Equals("sabl2048low");
+
             this.velocityEntry.Enabled = true;
             this.velocityEntry2.Enabled = true;
             if (dataset.SelectedValue.Equals("isotropic1024coarse"))

@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Website {
-    
-    
-    public partial class webquery_query {
-        
+namespace Website
+{
+
+
+    public partial class webquery_query
+    {
+
         /// <summary>
         /// testingserver control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal testingserver;
-        
+
         /// <summary>
         /// status control.
         /// </summary>
@@ -29,7 +31,16 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal status;
-        
+
+        /// <summary>
+        /// sablNote control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal sablNote;
+
         /// <summary>
         /// query control.
         /// </summary>
@@ -38,7 +49,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm query;
-        
+
         /// <summary>
         /// dataset control.
         /// </summary>
@@ -47,7 +58,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList dataset;
-        
+
         /// <summary>
         /// TimeRow control.
         /// </summary>
@@ -56,7 +67,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow TimeRow;
-        
+
         /// <summary>
         /// time control.
         /// </summary>
@@ -65,7 +76,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox time;
-        
+
         /// <summary>
         /// timerange control.
         /// </summary>
@@ -74,7 +85,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal timerange;
-        
+
         /// <summary>
         /// SnapshotRow control.
         /// </summary>
@@ -83,7 +94,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow SnapshotRow;
-        
+
         /// <summary>
         /// SnapshotNumber control.
         /// </summary>
@@ -92,7 +103,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox SnapshotNumber;
-        
+
         /// <summary>
         /// SnapshotRange control.
         /// </summary>
@@ -101,7 +112,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal SnapshotRange;
-        
+
         /// <summary>
         /// EndTimeRow control.
         /// </summary>
@@ -110,7 +121,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow EndTimeRow;
-        
+
         /// <summary>
         /// EndTime control.
         /// </summary>
@@ -119,7 +130,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox EndTime;
-        
+
         /// <summary>
         /// EndTimeRange control.
         /// </summary>
@@ -128,7 +139,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal EndTimeRange;
-        
+
         /// <summary>
         /// DeltaTRow control.
         /// </summary>
@@ -137,7 +148,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow DeltaTRow;
-        
+
         /// <summary>
         /// dt control.
         /// </summary>
@@ -146,7 +157,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox dt;
-        
+
         /// <summary>
         /// DeltaTRange control.
         /// </summary>
@@ -155,7 +166,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal DeltaTRange;
-        
+
         /// <summary>
         /// method control.
         /// </summary>
@@ -164,7 +175,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList method;
-        
+
         /// <summary>
         /// GetPressure control.
         /// </summary>
@@ -173,7 +184,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetPressure;
-        
+
         /// <summary>
         /// GetTemperature control.
         /// </summary>
@@ -182,7 +193,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetTemperature;
-        
+
         /// <summary>
         /// GetMagneticField control.
         /// </summary>
@@ -191,7 +202,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetMagneticField;
-        
+
         /// <summary>
         /// GetVectorPotential control.
         /// </summary>
@@ -200,7 +211,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetVectorPotential;
-        
+
         /// <summary>
         /// GetDensity control.
         /// </summary>
@@ -209,7 +220,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetDensity;
-        
+
         /// <summary>
         /// GetVelocityAndPressure control.
         /// </summary>
@@ -218,7 +229,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetVelocityAndPressure;
-        
+
         /// <summary>
         /// GetVelocityAndTemperature control.
         /// </summary>
@@ -227,7 +238,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetVelocityAndTemperature;
-        
+
         /// <summary>
         /// GetPressureGradient control.
         /// </summary>
@@ -236,7 +247,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetPressureGradient;
-        
+
         /// <summary>
         /// GetTemperatureGradient control.
         /// </summary>
@@ -245,7 +256,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetTemperatureGradient;
-        
+
         /// <summary>
         /// GetMagneticFieldGradient control.
         /// </summary>
@@ -254,7 +265,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetMagneticFieldGradient;
-        
+
         /// <summary>
         /// GetVectorPotentialGradient control.
         /// </summary>
@@ -263,7 +274,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetVectorPotentialGradient;
-        
+
         /// <summary>
         /// GetDensityGradient control.
         /// </summary>
@@ -272,7 +283,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetDensityGradient;
-        
+
         /// <summary>
         /// GetPressureHessian control.
         /// </summary>
@@ -281,7 +292,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetPressureHessian;
-        
+
         /// <summary>
         /// GetTemperatureHessian control.
         /// </summary>
@@ -290,7 +301,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetTemperatureHessian;
-        
+
         /// <summary>
         /// GetMagneticFieldHessian control.
         /// </summary>
@@ -299,7 +310,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetMagneticFieldHessian;
-        
+
         /// <summary>
         /// GetVectorPotentialHessian control.
         /// </summary>
@@ -308,7 +319,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetVectorPotentialHessian;
-        
+
         /// <summary>
         /// GetDensityHessian control.
         /// </summary>
@@ -317,7 +328,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetDensityHessian;
-        
+
         /// <summary>
         /// GetMagneticFieldLaplacian control.
         /// </summary>
@@ -326,7 +337,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetMagneticFieldLaplacian;
-        
+
         /// <summary>
         /// GetVectorPotentialLaplacian control.
         /// </summary>
@@ -335,7 +346,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetVectorPotentialLaplacian;
-        
+
         /// <summary>
         /// GetForce control.
         /// </summary>
@@ -344,7 +355,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetForce;
-        
+
         /// <summary>
         /// GetPosition control.
         /// </summary>
@@ -353,7 +364,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetPosition;
-        
+
         /// <summary>
         /// GetBoxFilter control.
         /// </summary>
@@ -362,7 +373,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilter;
-        
+
         /// <summary>
         /// GetBoxFilterSGSscalar control.
         /// </summary>
@@ -371,7 +382,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSscalar;
-        
+
         /// <summary>
         /// GetBoxFilterSGSvector control.
         /// </summary>
@@ -380,7 +391,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSvector;
-        
+
         /// <summary>
         /// GetBoxFilterSGSsymtensor control.
         /// </summary>
@@ -389,7 +400,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGSsymtensor;
-        
+
         /// <summary>
         /// GetBoxFilterSGStensor control.
         /// </summary>
@@ -398,7 +409,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilterSGStensor;
-        
+
         /// <summary>
         /// GetBoxFilterGradient control.
         /// </summary>
@@ -407,7 +418,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetBoxFilterGradient;
-        
+
         /// <summary>
         /// GetThreshold control.
         /// </summary>
@@ -416,7 +427,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem GetThreshold;
-        
+
         /// <summary>
         /// spatialRow control.
         /// </summary>
@@ -425,7 +436,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow spatialRow;
-        
+
         /// <summary>
         /// spatial control.
         /// </summary>
@@ -434,7 +445,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList spatial;
-        
+
         /// <summary>
         /// temporalRow control.
         /// </summary>
@@ -443,7 +454,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow temporalRow;
-        
+
         /// <summary>
         /// temporal control.
         /// </summary>
@@ -452,7 +463,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList temporal;
-        
+
         /// <summary>
         /// fieldRow control.
         /// </summary>
@@ -461,7 +472,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow fieldRow;
-        
+
         /// <summary>
         /// fieldList control.
         /// </summary>
@@ -470,7 +481,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList fieldList;
-        
+
         /// <summary>
         /// velocityEntry control.
         /// </summary>
@@ -479,7 +490,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem velocityEntry;
-        
+
         /// <summary>
         /// pressureEntry control.
         /// </summary>
@@ -488,7 +499,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem pressureEntry;
-        
+
         /// <summary>
         /// temperatureEntry control.
         /// </summary>
@@ -497,7 +508,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem temperatureEntry;
-        
+
         /// <summary>
         /// magneticEntry control.
         /// </summary>
@@ -506,7 +517,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem magneticEntry;
-        
+
         /// <summary>
         /// potentialEntry control.
         /// </summary>
@@ -515,7 +526,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem potentialEntry;
-        
+
         /// <summary>
         /// densityEntry control.
         /// </summary>
@@ -524,7 +535,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem densityEntry;
-        
+
         /// <summary>
         /// vorticityEntry control.
         /// </summary>
@@ -533,7 +544,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem vorticityEntry;
-        
+
         /// <summary>
         /// QEntry control.
         /// </summary>
@@ -542,7 +553,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem QEntry;
-        
+
         /// <summary>
         /// fieldList2 control.
         /// </summary>
@@ -551,7 +562,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList fieldList2;
-        
+
         /// <summary>
         /// velocityEntry2 control.
         /// </summary>
@@ -560,7 +571,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem velocityEntry2;
-        
+
         /// <summary>
         /// pressureEntry2 control.
         /// </summary>
@@ -569,7 +580,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem pressureEntry2;
-        
+
         /// <summary>
         /// temperatureEntry2 control.
         /// </summary>
@@ -578,7 +589,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem temperatureEntry2;
-        
+
         /// <summary>
         /// magneticEntry2 control.
         /// </summary>
@@ -587,7 +598,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem magneticEntry2;
-        
+
         /// <summary>
         /// potentialEntry2 control.
         /// </summary>
@@ -596,7 +607,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem potentialEntry2;
-        
+
         /// <summary>
         /// densityEntry2 control.
         /// </summary>
@@ -605,7 +616,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.ListItem densityEntry2;
-        
+
         /// <summary>
         /// filterWidthRow control.
         /// </summary>
@@ -614,7 +625,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow filterWidthRow;
-        
+
         /// <summary>
         /// filterWidth control.
         /// </summary>
@@ -623,7 +634,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox filterWidth;
-        
+
         /// <summary>
         /// filterSpacingRow control.
         /// </summary>
@@ -632,7 +643,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow filterSpacingRow;
-        
+
         /// <summary>
         /// filterSpacing control.
         /// </summary>
@@ -641,7 +652,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox filterSpacing;
-        
+
         /// <summary>
         /// thresholdRow control.
         /// </summary>
@@ -650,7 +661,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableRow thresholdRow;
-        
+
         /// <summary>
         /// threshold control.
         /// </summary>
@@ -659,7 +670,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox threshold;
-        
+
         /// <summary>
         /// QueryText control.
         /// </summary>
@@ -668,7 +679,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl QueryText;
-        
+
         /// <summary>
         /// x_range control.
         /// </summary>
@@ -677,7 +688,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal x_range;
-        
+
         /// <summary>
         /// y_range control.
         /// </summary>
@@ -686,7 +697,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal y_range;
-        
+
         /// <summary>
         /// z_range control.
         /// </summary>
@@ -695,7 +706,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal z_range;
-        
+
         /// <summary>
         /// x control.
         /// </summary>
@@ -704,7 +715,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox x;
-        
+
         /// <summary>
         /// y control.
         /// </summary>
@@ -713,7 +724,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox y;
-        
+
         /// <summary>
         /// z control.
         /// </summary>
@@ -722,7 +733,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox z;
-        
+
         /// <summary>
         /// xe_range control.
         /// </summary>
@@ -731,7 +742,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal xe_range;
-        
+
         /// <summary>
         /// ye_range control.
         /// </summary>
@@ -740,7 +751,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ye_range;
-        
+
         /// <summary>
         /// ze_range control.
         /// </summary>
@@ -749,7 +760,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal ze_range;
-        
+
         /// <summary>
         /// x_end control.
         /// </summary>
@@ -758,7 +769,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox x_end;
-        
+
         /// <summary>
         /// y_end control.
         /// </summary>
@@ -767,7 +778,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox y_end;
-        
+
         /// <summary>
         /// z_end control.
         /// </summary>
@@ -776,7 +787,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox z_end;
-        
+
         /// <summary>
         /// coord_range_details control.
         /// </summary>
@@ -785,7 +796,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal coord_range_details;
-        
+
         /// <summary>
         /// Go control.
         /// </summary>
@@ -794,7 +805,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Go;
-        
+
         /// <summary>
         /// inputmethod control.
         /// </summary>
@@ -803,7 +814,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList inputmethod;
-        
+
         /// <summary>
         /// fileup1 control.
         /// </summary>
@@ -812,7 +823,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.FileUpload fileup1;
-        
+
         /// <summary>
         /// fileinfo control.
         /// </summary>
@@ -821,7 +832,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal fileinfo;
-        
+
         /// <summary>
         /// Button1 control.
         /// </summary>
@@ -830,7 +841,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button1;
-        
+
         /// <summary>
         /// Button2 control.
         /// </summary>
@@ -839,7 +850,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Button2;
-        
+
         /// <summary>
         /// outputformat control.
         /// </summary>
@@ -848,7 +859,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RadioButtonList outputformat;
-        
+
         /// <summary>
         /// includeHeader control.
         /// </summary>
@@ -857,7 +868,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox includeHeader;
-        
+
         /// <summary>
         /// bulkwork control.
         /// </summary>
@@ -866,7 +877,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button bulkwork;
-        
+
         /// <summary>
         /// error control.
         /// </summary>
@@ -875,7 +886,7 @@ namespace Website {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal error;
-        
+
         /// <summary>
         /// output control.
         /// </summary>
